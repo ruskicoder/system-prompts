@@ -12,6 +12,9 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform-prompts
     steps:
       - name: Install pnpm
         run: npm install -g pnpm
@@ -23,6 +26,7 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+          cache-dependency-path: platform-prompts/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
