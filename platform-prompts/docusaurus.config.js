@@ -18,11 +18,27 @@ const config = {
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   deploymentBranch: "gh-pages",
+  markdown: {
+    format: "detect",
+  },
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
   },
-  plugins: [path.resolve(__dirname, "src/plugins/dynamic-pages")],
+  plugins: [
+    path.resolve(__dirname, "src/plugins/dynamic-pages"),
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "orchestrator",
+        path: "../prompt-orchestrator",
+        routeBasePath: "orchestrator",
+        sidebarPath: "./sidebarsOrchestrator.js",
+        editUrl:
+          "https://github.com/ruskicoder/system-prompts/edit/master/prompt-orchestrator/",
+      },
+    ],
+  ],
   presets: [
     [
       "classic",
@@ -54,6 +70,13 @@ const config = {
           srcDark: "img/logo-dark.svg",
         },
         items: [
+          {
+            type: "docSidebar",
+            sidebarId: "orchestratorSidebar",
+            docsPluginId: "orchestrator",
+            position: "left",
+            label: "Orchestrator",
+          },
           {
             href: "https://github.com/ruskicoder/system-prompts",
             label: "GitHub",
