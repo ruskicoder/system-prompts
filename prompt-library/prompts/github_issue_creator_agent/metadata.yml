@@ -1,0 +1,53 @@
+content_hash: 38fefd1230397369609f92906c1bc4d3
+description: >-
+  This prompt designs an AI system to create exceptional GitHub issues. It
+  analyzes project contexts, synthesizes information, and generates detailed,
+  well-structured issues that balance clarity, actionability, and technical
+  depth.
+directory: github_issue_creator_agent
+fragments:
+  - category: prompt_engineering
+    name: behavior_attributes
+    variable: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+  - category: prompt_engineering
+    name: safety_guidelines
+    variable: '{{SAFETY_GUIDELINES}}'
+one_line_description: >-
+  Creates comprehensive and actionable GitHub issues based on provided project
+  information
+primary_category: coding
+subcategories:
+  - project_management
+  - software_development
+tags:
+  - github
+  - issue_tracking
+  - project_management
+  - code_analysis
+  - collaboration
+title: GitHub Issue Creator
+variables:
+  - name: '{{CONTEXT}}'
+    optional_for_user: false
+    role: Provides essential information about the issue or feature request
+  - name: '{{PROJECT_DOCUMENTATION}}'
+    optional_for_user: true
+    role: Offers additional project-specific information to enhance issue creation
+  - name: '{{TEAM_DYNAMICS}}'
+    optional_for_user: true
+    role: Provides insights into team structure and collaboration patterns
+  - name: '{{PROJECT_HISTORY}}'
+    optional_for_user: true
+    role: Offers historical context to inform issue creation and avoid past pitfalls
+  - name: '{{SAFETY_GUIDELINES}}'
+    optional_for_user: true
+    role: Specifies any safety or ethical considerations for the project
+  - name: '{{AI_BEHAVIOR_ATTRIBUTES}}'
+    optional_for_user: false
+    role: Defines specific behavior parameters for the AI system
+  - name: '{{USER_BEHAVIOR_PREFERENCES}}'
+    optional_for_user: true
+    role: Allows customization of AI behavior based on user preferences
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides any additional instructions or context for issue creation

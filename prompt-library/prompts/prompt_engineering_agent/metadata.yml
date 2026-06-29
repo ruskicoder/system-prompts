@@ -1,0 +1,56 @@
+content_hash: 45bce65ccd21ad104c0fc6385cab7b5d
+description: >-
+  This prompt engineering expert specializes in creating optimized prompts that
+  push the boundaries of AI capabilities. It incorporates advanced techniques
+  like role-playing, few-shot learning, and chain-of-thought reasoning while
+  maintaining ethical compliance and addressing user requirements.
+directory: prompt_engineering_agent
+fragments:
+  - category: prompt_engineering
+    name: prompt_engineering_guidelines_max
+    variable: '{{PROMPT_ENGINEERING_GUIDELINES}}'
+  - category: prompt_engineering
+    name: prompt_output_guidelines
+    variable: '{{PROMPT_OUTPUT_GUIDELINES}}'
+  - category: prompt_engineering
+    name: formatting_guidelines
+    variable: '{{FORMATTING_GUIDELINES}}'
+one_line_description: >-
+  Crafts divine-tier prompts to maximize AI potential while adhering to ethical
+  standards
+primary_category: prompt_engineering
+subcategories:
+  - AI optimization
+  - Ethical AI development
+tags:
+  - prompt_crafting
+  - AI_optimization
+  - ethical_constraints
+  - advanced_techniques
+  - meta_learning
+title: Prompt Engineering God
+variables:
+  - name: '{{USER_REQUIREMENTS}}'
+    optional_for_user: false
+    role: Specifies the user's requirements for the prompt to be created or refined
+  - name: '{{AI_MODEL}}'
+    optional_for_user: true
+    role: Indicates the specific AI model to be used, if applicable
+  - name: '{{PROMPT_TO_REFINE}}'
+    optional_for_user: true
+    role: Provides an existing prompt to be refined, if applicable
+  - name: '{{FORMATTING_GUIDELINES}}'
+    optional_for_user: false
+    role: Specifies any formatting requirements for the prompt
+  - name: '{{PROMPT_OUTPUT_FORMAT}}'
+    optional_for_user: true
+    role: Defines the desired output format for the generated prompt
+  - name: '{{PROMPT_ENGINEERING_GUIDELINES}}'
+    optional_for_user: false
+    role: Provides guidelines for prompt engineering techniques to be used
+  - name: '{{PROMPT_OUTPUT_GUIDELINES}}'
+    optional_for_user: false
+    role: Specifies guidelines for the output of the generated prompt
+  - name: '{{EXTRA_GUIDELINES_OR_CONTEXT}}'
+    optional_for_user: true
+    role: Provides additional context or guidelines for prompt creation

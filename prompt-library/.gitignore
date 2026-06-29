@@ -1,0 +1,25 @@
+# Ignore config files
+.env
+.promptignore
+
+# Ignore specific directories
+dist/
+node_modules/
+archive/
+coverage/
+.vscode/
+.config/
+
+# Ignore local database
+*.sqlite
+
+# Ignore AI agent files
+.aider*
+CLAUDE.md
+
+# Ignore macOS files
+.DS_Store
+
+# Ignore local temporary files
+z_diff_output.txt
+z_dir2prompt_output.txt
