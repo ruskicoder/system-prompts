@@ -10,14 +10,14 @@ const config = {
   future: {
     v4: true,
   },
-  url: "https://EliFuzz.github.io",
-  baseUrl: "/awesome-system-prompts/",
-  projectName: "EliFuzz.github.io",
-  organizationName: "EliFuzz",
+  url: "https://ruskicoder.github.io",
+  baseUrl: "/system-prompts/",
+  projectName: "system-prompts",
+  organizationName: "ruskicoder",
   trailingSlash: false,
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  deploymentBranch: "main",
+  deploymentBranch: "gh-pages",
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -32,7 +32,7 @@ const config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
           editUrl:
-            "https://github.com/EliFuzz/awesome-system-prompts/blob/main/",
+            "https://github.com/ruskicoder/system-prompts/tree/master/",
           exclude: ["assets/**"],
         },
         blog: false,
@@ -55,7 +55,7 @@ const config = {
         },
         items: [
           {
-            href: "https://github.com/EliFuzz",
+            href: "https://github.com/ruskicoder/system-prompts",
             label: "GitHub",
             position: "right",
           },
