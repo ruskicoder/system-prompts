@@ -12,27 +12,28 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform-prompts
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install pnpm
-        run: npm install -g pnpm
+        run: npm install -g pnpm@9
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
           cache: pnpm
           cache-dependency-path: platform-prompts/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        working-directory: platform-prompts
 
       - name: Build website
         run: pnpm build
-        working-directory: platform-prompts
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
