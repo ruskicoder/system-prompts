@@ -32,7 +32,7 @@ const config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
           editUrl:
-            "https://github.com/ruskicoder/system-prompts/tree/master/",
+            "https://github.com/ruskicoder/system-prompts/edit/master/platform-prompts/",
           exclude: ["assets/**"],
         },
         blog: false,
