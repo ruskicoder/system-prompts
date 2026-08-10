@@ -59,8 +59,11 @@ Present to user:
 - Implement one logical unit at a time
 - After each unit: verify it works before moving on
 
-### Phase 5: Verify
+### Phase 5: Real Test Verification & Shipping Sync
 - Run tests for affected execution flows
+- **Real Test Contract**: Wait on real completion signals, not fixed sleeps. Test against non-cached truth endpoints or vary cache keys. Isolate tests from persisted service state.
+- **Shipping Verification**: Run full test verification suite (`pnpm test` / `npm run verify`) prior to committing.
+- **Documentation Synchronization**: If code changes alter API contracts, configuration, or developer workflows, update corresponding documentation files in the same change set.
 - `detect_changes()` to confirm scope matches plan
 - Linter on new/changed files
 

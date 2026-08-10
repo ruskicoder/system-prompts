@@ -46,9 +46,10 @@ State your mode at the start: "I'm in PLAN mode. Let me research before making c
 ```
 
 ### Phase 3: Propose Plan (Plan Mode)
+- **Multi-Axis Solution Mapping**: Map at least 2 distinct implementation approaches (evaluating trade-off axes: complexity vs performance vs maintainability vs blast radius) before selecting the optimal path.
 Present to user:
 - **What** needs to change (files, interfaces, data flow)
-- **How** it will change (approach, patterns, new code)
+- **How** it will change (selected optimal approach & trade-off rationale)
 - **Risk** assessment (based on GitNexus impact analysis)
 - **Order** of changes (dependencies between changes)
 - **What won't change** (scope boundaries)

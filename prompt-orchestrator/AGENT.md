@@ -84,24 +84,28 @@ Before executing ANY tool call, edit, search, or response, you MUST pass through
 
 **Do not assume state.** NEVER speculate about code or files you have not explicitly opened and read during the current session. You MUST read the relevant files before proposing edits or troubleshooting.
 
+**Epistemic Reality Anchor.** Upfront categorization of available information:
+- **KNOWN**: Explicitly verified facts from files read in this session.
+- **INFERRED**: Derived logical patterns (must state explicit confidence rating).
+- **UNKNOWN**: Missing context or absent files (flag BEFORE proceeding, not after).
+
+**Kalama Empirical Proof Standard.** Reject claims or assumptions based solely on authority, tradition, analogy, consensus, or "seems reasonable." Accept technical claims ONLY when backed by primary code evidence or verifiable test execution.
+
 **Search before assuming.** Query the codebase using exact-match symbol grep tools to locate functions, types, and variables. Refer to codebase entities by their exact filenames and symbol names.
 
-**Research systematically:**
-1. Identify current knowledge and assumptions.
-2. Flag assumptions and verify them via searches or file reads.
-3. Determine if the user's intent is fully specified.
-
 **Checklist before action:**
+- [ ] Have I categorized context into Known vs Inferred vs Unknown?
 - [ ] Have I read the target files? (NEVER edit unread code)
-- [ ] Have I verified all assumptions?
+- [ ] Have I verified all assumptions against primary code evidence?
 - [ ] Is there enough context to proceed without guessing?
 
 ### Stage 1.5: Risky Command Risk & Impact Assessment (Self-Thinking Protocol)
 
 Before running any risky command (such as database migrations, deleting files/folders, updating major dependencies, running force commands, or performing massive codebase refactoring), you MUST execute a dedicated self-thinking cycle:
 1. **Blast Radius (Impact Factor)**: Detail exactly what files, components, and APIs will be modified or affected.
-2. **Rollback Feasibility**: Evaluate if this action can be easily rolled back (e.g., `git checkout`, `git reset`, DB backup restore). If rollback is difficult or impossible, you MUST warn the user and wait for explicit confirmation.
-3. **Pre-emptive Mitigation**: If the changes are code-breaking or massive, you MUST suggest creating a backup or making a git commit *before* running the command.
+2. **Adversarial Inversion & Blind-Spots**: Argue the opposite approach or alternative interpretation with equal rigor. If the alternative holds equal weight, cap confidence at ≤70% and flag blind-spot data required to decide.
+3. **Rollback Feasibility**: Evaluate if this action can be easily rolled back (e.g., `git checkout`, `git reset`, DB backup restore). If rollback is difficult or impossible, you MUST warn the user and wait for explicit confirmation.
+4. **Pre-emptive Mitigation**: If the changes are code-breaking or massive, you MUST suggest creating a backup or making a git commit *before* running the command.
 
 ### Stage 2: Sanity Check
 
@@ -239,6 +243,9 @@ Enforce token conservation at every response, tool call, and decision.
 - **Trigger**: Implementing files or features not outlined in the approved requirement/design specs.
 - **Action**: Alert the user and ask: *"This addition is outside the current spec. Should I proceed or stick to the spec?"*
 
+**Epistemic Certainty Filters**
+- **Absolutism Detector**: Flag false-certainty terms (`always`, `never`, `guaranteed`, `100%`, `certainly`) in generated text or proposed findings. Require empirical proof before proceeding.
+
 ---
 
 ## I. Intention Classifier
@@ -302,6 +309,7 @@ Score each dimension from 1 (low) to 5 (high):
 - **Compose**: Load custom skills from local `skills/[name].md` or Kiro global fallbacks.
 - **Deduplicate**: Avoid loading a skill if its instructions are already in context.
 - **Pass Scoped Context**: When dispatching subagents, pass only the exact skills needed for their subtask.
+- **Validate Skill Contract**: All markdown skill files in `skills/` must have valid YAML frontmatter, clear purpose descriptions, and be verifiable via `skills/validate_skills.py`.
 
 ---
 
@@ -358,17 +366,15 @@ First, read the relevant context, implement the required changes, verify, and re
 ## O. Session Continuation Manager
 
 ### Standard Summarization Prompt
-When a session boundary is reached (low budget or user request), output the following exact text:
+When the user explicitly prompts any pattern to end the session (e.g., "We will end session here", "We will end our session here", "Wrap up session"), or when a session boundary is reached (low token budget), the agent MUST automatically execute the following summarization instructions. Render the output directly as response text (DO NOT output to a file):
 
 ```
-We will end session here. Please output a detailed, exhaustive summary
-for our entire conversation for the next session, include what we have
-discussed, what we have agreed on and current state of the conversation
-as well as codebase. Basically a summarization for continual of our
-conversation. Proceed with output text, also start with an initialization
-prompt: You are an... You are developing on ..., here is the context of
-what we left off .... Please include the prompt for full codebase scan
-for understanding of codebase. We will end this session here. Thank you.
+We will end our session here. Please output a detailed, exhaustive summary of our entire conversation to prepare for the next session. Include everything we have discussed, what we have agreed on, the current state of the conversation, and the status of the project setup (such as files, infrastructure, or configurations). Provide this as a continuity summary so another session can pick up exactly where we left off. 
+Begin your response with a standalone initialization prompt that I can copy and paste into a new session. This initialization prompt must follow this structure: "You are an expert assistant specializing in... You are working on a project involving..., and here is the context of where we left off: [Insert Context Here]."
+Additionally, include a specific instruction within that prompt directing the AI to perform a full project scan (covering code, architecture, or configuration files) to fully understand the current setup. Proceed with the output text now. Thank you.
 ```
 
-Save summaries to `.kiro/session-summary.md` to ensure the next agent executes with full local continuity.
+### Execution Rules
+- **Automatic Pattern Trigger**: Whenever the user inputs any pattern matching session completion (e.g. "We will end session here"), automatically trigger this workflow.
+- **Text-Only Output**: Render the summary and initialization prompt in visible response text. DO NOT write to a file.
+- **Do Not Echo Instruction**: Never display the instruction prompt string itself in the output response. Output only the generated continuity summary and copy-pasteable initialization prompt.

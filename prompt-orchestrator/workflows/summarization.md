@@ -35,53 +35,37 @@
 ### Step 3: Summarize Using Standard Prompt
 
 ```
-We will end session here. Please output a detailed, exhaustive summary
-for our entire conversation for the next session, include what we have
-discussed, what we have agreed on and current state of the conversation
-as well as codebase. Basically a summarization for continual of our
-conversation. Proceed with output text, also start with an initialization
-prompt: You are an... You are developing on ..., here is the context of
-what we left off .... Please include the prompt for full codebase scan
-for understanding of codebase. We will end this session here. Thank you.
+We will end our session here. Please output a detailed, exhaustive summary of our entire conversation to prepare for the next session. Include everything we have discussed, what we have agreed on, the current state of the conversation, and the status of the project setup (such as files, infrastructure, or configurations). Provide this as a continuity summary so another session can pick up exactly where we left off. 
+Begin your response with a standalone initialization prompt that I can copy and paste into a new session. This initialization prompt must follow this structure: "You are an expert assistant specializing in... You are working on a project involving..., and here is the context of where we left off: [Insert Context Here]."
+Additionally, include a specific instruction within that prompt directing the AI to perform a full project scan (covering code, architecture, or configuration files) to fully understand the current setup. Proceed with the output text now. Thank you.
 ```
 
 ### Step 4: Summary Structure
 The summary MUST include:
 
-1. **Initialization Prompt** (ready to be used in next session)
-   - "You are an AI agent working on [project]. Here is the context..."
+1. **Initialization Prompt** (standalone, ready to copy-paste into a new session)
+   - Must strictly follow structure: `"You are an expert assistant specializing in... You are working on a project involving..., and here is the context of where we left off: [Insert Context Here]."`
+   - Includes explicit instruction: `"Perform a full project scan (covering code, architecture, or configuration files) to fully understand the current setup before proceeding."`
    
 2. **What Was Discussed**
-   - Feature/task description
-   - Key decisions made
+   - Everything discussed, feature/task description
+   - Key decisions agreed on
    - Alternatives considered and rejected
    
-3. **Current State**
-   - Files changed (list with paths)
+3. **Current State & Project Setup**
+   - Status of project setup (files, infrastructure, configurations)
    - What's working / verified
    - What's still pending / broken
    
-4. **What's Left**
+4. **What's Left & Next Steps**
    - Remaining tasks from the todo list
    - Known issues or blockers
    - Next steps in priority order
-   
-5. **Codebase State**
-   - Branch name and commit status
-   - detect_changes summary
-   - Any uncommitted changes
-   - Prompt for full codebase scan on resume
 
-6. **Context for Continuation**
-   - Key design decisions and rationale
-   - Architecture choices made
-   - User preferences established
-   - Any open questions awaiting user input
-
-### Step 5: Save for Continuation
-- Write summary to a known location if possible (e.g., `.kiro/session-summary.md`)
-- Save memories for important context
-- Ensure the summary is self-contained — next session should not need the conversation history
+### Step 5: Render Response in Text (DO NOT Output to File)
+- Render the complete continuity summary and initialization prompt directly in visible response TEXT.
+- DO NOT output the summary to a file (do not write to `.kiro/session-summary.md` or any disk file).
+- Never echo or display the instruction prompt string itself in the response.
 
 ## Token Budget
 - **Summary itself**: 2K-5K tokens (maximize useful context within budget)

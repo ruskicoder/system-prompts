@@ -29,13 +29,7 @@
 - When does it happen? (always, intermittent, specific conditions)
 - What changed recently that might have caused it?
 
-### Phase 2: Trace Root Cause (Ariya-4 Problem Frame)
-
-Before proposing any fix, complete all 4 fields of the Ariya-4 Problem Frame:
-- **Problem**: What is actually broken (the root mechanism, not the symptom).
-- **Cause**: Root causes (structural constraints, misaligned incentives, or reinforcing feedback loops).
-- **Cessation**: Definition of Done (measurable, specific, bounded criteria for resolution).
-- **Path**: Least-friction route from Problem to Cessation.
+### Phase 2: Trace Root Cause
 
 ```
 1. query({search_query: "<error text or symptom>"})
