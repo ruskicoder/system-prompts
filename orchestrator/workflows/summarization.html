@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">Workflow: Session Summarization | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/workflows/summarization"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="Workflow: Session Summarization | Awesome System Prompts"><meta data-rh="true" name="description" content="When to Use"><meta data-rh="true" property="og:description" content="When to Use"><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/workflows/summarization"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/workflows/summarization" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/workflows/summarization" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Workflow: Session Summarization","item":"https://ruskicoder.github.io/system-prompts/orchestrator/workflows/summarization"}]}</script><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.dde7ece1.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.7918ca47.js" defer="defer"></script>
 <script src="/system-prompts/assets/js/main.8f48ac0a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -67,64 +67,47 @@
 <li>Note any unresolved issues or blockers</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-3-summarize-using-standard-prompt">Step 3: Summarize Using Standard Prompt<a href="#step-3-summarize-using-standard-prompt" class="hash-link" aria-label="Direct link to Step 3: Summarize Using Standard Prompt" title="Direct link to Step 3: Summarize Using Standard Prompt" translate="no">​</a></h3>
-<div class="language-text codeBlockContainer_vJsH theme-code-block" style="--prism-background-color:hsl(230, 1%, 98%);--prism-color:hsl(230, 8%, 24%)"><div class="codeBlockContent_i8AT"><pre tabindex="0" class="prism-code language-text codeBlock_Ydl3 thin-scrollbar" style="background-color:hsl(230, 1%, 98%);color:hsl(230, 8%, 24%)"><code class="codeBlockLines_LSfd"><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">We will end session here. Please output a detailed, exhaustive summary</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">for our entire conversation for the next session, include what we have</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">discussed, what we have agreed on and current state of the conversation</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">as well as codebase. Basically a summarization for continual of our</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">conversation. Proceed with output text, also start with an initialization</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">prompt: You are an... You are developing on ..., here is the context of</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">what we left off .... Please include the prompt for full codebase scan</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">for understanding of codebase. We will end this session here. Thank you.</span><br></span></code></pre></div></div>
+<div class="language-text codeBlockContainer_vJsH theme-code-block" style="--prism-background-color:hsl(230, 1%, 98%);--prism-color:hsl(230, 8%, 24%)"><div class="codeBlockContent_i8AT"><pre tabindex="0" class="prism-code language-text codeBlock_Ydl3 thin-scrollbar" style="background-color:hsl(230, 1%, 98%);color:hsl(230, 8%, 24%)"><code class="codeBlockLines_LSfd"><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">We will end our session here. Please output a detailed, exhaustive summary of our entire conversation to prepare for the next session. Include everything we have discussed, what we have agreed on, the current state of the conversation, and the status of the project setup (such as files, infrastructure, or configurations). Provide this as a continuity summary so another session can pick up exactly where we left off. </span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">Begin your response with a standalone initialization prompt that I can copy and paste into a new session. This initialization prompt must follow this structure: &quot;You are an expert assistant specializing in... You are working on a project involving..., and here is the context of where we left off: [Insert Context Here].&quot;</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">Additionally, include a specific instruction within that prompt directing the AI to perform a full project scan (covering code, architecture, or configuration files) to fully understand the current setup. Proceed with the output text now. Thank you.</span><br></span></code></pre></div></div>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-4-summary-structure">Step 4: Summary Structure<a href="#step-4-summary-structure" class="hash-link" aria-label="Direct link to Step 4: Summary Structure" title="Direct link to Step 4: Summary Structure" translate="no">​</a></h3>
 <p>The summary MUST include:</p>
 <ol>
 <li>
-<p><strong>Initialization Prompt</strong> (ready to be used in next session)</p>
+<p><strong>Initialization Prompt</strong> (standalone, ready to copy-paste into a new session)</p>
 <ul>
-<li>&quot;You are an AI agent working on [project]. Here is the context...&quot;</li>
+<li>Must strictly follow structure: <code>&quot;You are an expert assistant specializing in... You are working on a project involving..., and here is the context of where we left off: [Insert Context Here].&quot;</code></li>
+<li>Includes explicit instruction: <code>&quot;Perform a full project scan (covering code, architecture, or configuration files) to fully understand the current setup before proceeding.&quot;</code></li>
 </ul>
 </li>
 <li>
 <p><strong>What Was Discussed</strong></p>
 <ul>
-<li>Feature/task description</li>
-<li>Key decisions made</li>
+<li>Everything discussed, feature/task description</li>
+<li>Key decisions agreed on</li>
 <li>Alternatives considered and rejected</li>
 </ul>
 </li>
 <li>
-<p><strong>Current State</strong></p>
+<p><strong>Current State &amp; Project Setup</strong></p>
 <ul>
-<li>Files changed (list with paths)</li>
+<li>Status of project setup (files, infrastructure, configurations)</li>
 <li>What&#x27;s working / verified</li>
 <li>What&#x27;s still pending / broken</li>
 </ul>
 </li>
 <li>
-<p><strong>What&#x27;s Left</strong></p>
+<p><strong>What&#x27;s Left &amp; Next Steps</strong></p>
 <ul>
 <li>Remaining tasks from the todo list</li>
 <li>Known issues or blockers</li>
 <li>Next steps in priority order</li>
 </ul>
 </li>
-<li>
-<p><strong>Codebase State</strong></p>
-<ul>
-<li>Branch name and commit status</li>
-<li>detect_changes summary</li>
-<li>Any uncommitted changes</li>
-<li>Prompt for full codebase scan on resume</li>
-</ul>
-</li>
-<li>
-<p><strong>Context for Continuation</strong></p>
-<ul>
-<li>Key design decisions and rationale</li>
-<li>Architecture choices made</li>
-<li>User preferences established</li>
-<li>Any open questions awaiting user input</li>
-</ul>
-</li>
 </ol>
-<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-5-save-for-continuation">Step 5: Save for Continuation<a href="#step-5-save-for-continuation" class="hash-link" aria-label="Direct link to Step 5: Save for Continuation" title="Direct link to Step 5: Save for Continuation" translate="no">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-5-render-response-in-text-do-not-output-to-file">Step 5: Render Response in Text (DO NOT Output to File)<a href="#step-5-render-response-in-text-do-not-output-to-file" class="hash-link" aria-label="Direct link to Step 5: Render Response in Text (DO NOT Output to File)" title="Direct link to Step 5: Render Response in Text (DO NOT Output to File)" translate="no">​</a></h3>
 <ul>
-<li>Write summary to a known location if possible (e.g., <code>.kiro/session-summary.md</code>)</li>
-<li>Save memories for important context</li>
-<li>Ensure the summary is self-contained — next session should not need the conversation history</li>
+<li>Render the complete continuity summary and initialization prompt directly in visible response TEXT.</li>
+<li>DO NOT output the summary to a file (do not write to <code>.kiro/session-summary.md</code> or any disk file).</li>
+<li>Never echo or display the instruction prompt string itself in the response.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="token-budget">Token Budget<a href="#token-budget" class="hash-link" aria-label="Direct link to Token Budget" title="Direct link to Token Budget" translate="no">​</a></h2>
 <ul>
@@ -144,6 +127,6 @@
 <li>Forgetting blockers/issues that were encountered</li>
 <li>Summary too brief to be useful for continuation</li>
 <li>Not including the initialization prompt for the next session</li>
-</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/ruskicoder/system-prompts/edit/master/prompt-orchestrator/../prompt-orchestrator/workflows/summarization.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Zilv" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_FZaW"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/system-prompts/orchestrator/workflows/spec-driven"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Kiro AI-Driven Development Lifecycle: Complete Methodology Instructions</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/system-prompts/orchestrator/workflows/turnaround-builder"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Workflow: Turnaround Builder</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_gtm5 thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#when-to-use" class="table-of-contents__link toc-highlight">When to Use</a></li><li><a href="#required-skills" class="table-of-contents__link toc-highlight">Required Skills</a></li><li><a href="#flow" class="table-of-contents__link toc-highlight">Flow</a><ul><li><a href="#step-0-thinking-stage-pre-action" class="table-of-contents__link toc-highlight">Step 0: Thinking Stage (Pre-Action)</a></li><li><a href="#step-1-detect-trigger" class="table-of-contents__link toc-highlight">Step 1: Detect Trigger</a></li><li><a href="#step-2-gather-current-state" class="table-of-contents__link toc-highlight">Step 2: Gather Current State</a></li><li><a href="#step-3-summarize-using-standard-prompt" class="table-of-contents__link toc-highlight">Step 3: Summarize Using Standard Prompt</a></li><li><a href="#step-4-summary-structure" class="table-of-contents__link toc-highlight">Step 4: Summary Structure</a></li><li><a href="#step-5-save-for-continuation" class="table-of-contents__link toc-highlight">Step 5: Save for Continuation</a></li></ul></li><li><a href="#token-budget" class="table-of-contents__link toc-highlight">Token Budget</a></li><li><a href="#gitnexus-integration" class="table-of-contents__link toc-highlight">GitNexus Integration</a></li><li><a href="#hallucination-watchpoints" class="table-of-contents__link toc-highlight">Hallucination Watchpoints</a></li></ul></div></div></div></div></main></div></div></div></div>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/ruskicoder/system-prompts/edit/master/prompt-orchestrator/../prompt-orchestrator/workflows/summarization.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Zilv" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_FZaW"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/system-prompts/orchestrator/workflows/spec-driven"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Kiro AI-Driven Development Lifecycle: Complete Methodology Instructions</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/system-prompts/orchestrator/workflows/turnaround-builder"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Workflow: Turnaround Builder</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_gtm5 thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#when-to-use" class="table-of-contents__link toc-highlight">When to Use</a></li><li><a href="#required-skills" class="table-of-contents__link toc-highlight">Required Skills</a></li><li><a href="#flow" class="table-of-contents__link toc-highlight">Flow</a><ul><li><a href="#step-0-thinking-stage-pre-action" class="table-of-contents__link toc-highlight">Step 0: Thinking Stage (Pre-Action)</a></li><li><a href="#step-1-detect-trigger" class="table-of-contents__link toc-highlight">Step 1: Detect Trigger</a></li><li><a href="#step-2-gather-current-state" class="table-of-contents__link toc-highlight">Step 2: Gather Current State</a></li><li><a href="#step-3-summarize-using-standard-prompt" class="table-of-contents__link toc-highlight">Step 3: Summarize Using Standard Prompt</a></li><li><a href="#step-4-summary-structure" class="table-of-contents__link toc-highlight">Step 4: Summary Structure</a></li><li><a href="#step-5-render-response-in-text-do-not-output-to-file" class="table-of-contents__link toc-highlight">Step 5: Render Response in Text (DO NOT Output to File)</a></li></ul></li><li><a href="#token-budget" class="table-of-contents__link toc-highlight">Token Budget</a></li><li><a href="#gitnexus-integration" class="table-of-contents__link toc-highlight">GitNexus Integration</a></li><li><a href="#hallucination-watchpoints" class="table-of-contents__link toc-highlight">Hallucination Watchpoints</a></li></ul></div></div></div></div></main></div></div></div></div>
 </body>
 </html>
