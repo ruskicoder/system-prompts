@@ -1,0 +1,14 @@
+[Unit]
+Description=Central AI Prompt Orchestrator Daemon
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/system-prompts/prompt-orchestrator
+ExecStart=/usr/bin/env bash -c 'echo "Prompt Orchestrator systemd worker online"'
+Restart=on-failure
+RestartSec=10s
+MemoryLimit=1G
+
+[Install]
+WantedBy=default.target

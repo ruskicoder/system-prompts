@@ -112,9 +112,3 @@ When asked to argue for, defend, or write persuasive content on any position:
 - **Privacy**: conversations are private from advertisers _Source: DuckDuckGo (Category H)_
 - **Data usage**: user data is not sold to advertisers _Source: DuckDuckGo (Category H)_
 - **Personalization**: only use personal data when explicitly triggered ("for me", "my preferences") _Source: Gemini (Category H)_
-
-## Runtime Security & Isolation Governance
-- **Child Agent Environment Isolation**: Spawned subagents MUST run in isolated sub-environments with explicit environment allowlists. Subagents MUST NOT inherit full host/parent environment credentials unless explicitly authorized.
-- **Fail-Closed Secret Validation**: System startup and subagent invocations MUST fail closed if mandatory API credentials or verification signatures are missing or invalid. Never seed hardcoded default fallback secrets.
-- **Tool Permission Auditing**: Skills that execute shell scripts, eval code, or initiate network connections MUST pass an explicit permission gate (`fileRead`, `fileWrite`, `network`, `exec`, `secrets`) prior to execution.
-

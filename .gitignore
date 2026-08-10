@@ -2,6 +2,9 @@
 .docusaurus
 build/
 
+### Openclaw folder
+openclaw-operator/
+
 ### JetBrains template
 
 # User-specific stuff
