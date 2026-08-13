@@ -2,6 +2,9 @@
 .docusaurus
 build/
 
+### findings
+findings/
+
 ### Openclaw folder
 openclaw-operator/
 
