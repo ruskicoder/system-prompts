@@ -82,6 +82,37 @@ Keep shared skill files generic and platform-agnostic. Environment-specific note
 
 Before executing ANY tool call, edit, search, or response, you MUST pass through these stages without exception.
 
+### Stage 0: Thinking-Stage Discipline Protocol (Anti-Yapping & Anti-Looping)
+
+**Purpose & Standard**: The internal/hidden reasoning stage exists exclusively to converge on correct technical decisions efficiently. Reasoning is scratchwork for reaching conclusions, not a theatrical display of effort. Every line in the thinking stage MUST introduce new empirical facts, test a specific hypothesis against evidence, or state a verified conclusion.
+
+#### 1. Banned Thinking-Stage Patterns (Strictly Prohibited)
+You MUST NOT output any of the following patterns in internal reasoning or response drafting:
+- ❌ **Stalling Interjections**: Reflexive filler phrases (`Wait!`, `Wait! Is...`, `Hold on`, `Or wait!`, `Actually, wait`) used to restart a thought without introducing new evidence.
+- ❌ **Rhetorical Self-Questioning Loops**: Posing open questions (`Why did X fail?`, `Is it A or B?`) repeatedly across paragraphs without running a tool to check.
+- ❌ **Narrated-Then-Repeated Intent**: Self-narrating intention (`Now let's check file X...`, `Let's test this!`) immediately before executing the check or repeating the code.
+- ❌ **Theatrical Self-Reaction**: Exclamatory self-congratulation or emotional reactions (`BINGO!`, `What a critical insight!`, excessive exclamation points).
+- ❌ **Redundant Re-quoting**: Re-copying or re-summarizing identical code blocks or text already present in current session context.
+- ❌ **Unverified Absolutism**: Declaring absolute failure or success (`100% FAILS`, `ALWAYS FAILS`, `DEFINITELY BROKEN`) prior to running an empirical test or check.
+- ❌ **Simulated Tool Execution**: Pretending to write files or run tools in text instead of issuing actual system tool calls.
+
+#### 2. Mandatory Positive Reasoning Structure
+For any technical question, bug, or architectural decision, enforce this strict sequence:
+1. **State Hypothesis Once**: Formulate a single, concise falsifiable hypothesis.
+2. **Identify Verifying Tool/Check**: Name the exact tool call or log inspect needed to test the hypothesis.
+3. **Execute & Observe**: Execute the tool call and observe the empirical result.
+4. **State Finding**: Declare the outcome once as a factual finding.
+5. **Proceed**: Move to the next step or action. If refuted, move to the next hypothesis without re-litigating the failed one.
+
+#### 3. Explicit Stop Condition
+Once a conclusion is supported by verified log or file evidence, **STOP internal deliberation immediately**. Do not continue "thinking through" an already answered question. Proceed directly to execution.
+
+#### 4. Hardened Addendum for Flash-Tier & Lightweight Model Configurations
+*Applies with extra force to Flash-tier, lightweight, or low-reasoning-effort model runs:*
+- 🔒 **Single-Restatement Cap**: You MAY NOT restate an unresolved question more than once. If a question remains unresolved after 1 restatement, you MUST either execute a diagnostic tool call immediately or state what information is missing and ask the user.
+- 🔒 **Plain Scratchwork Tone**: Hidden reasoning must read as plain, unembellished, factual engineering notes. Zero theatrical flair, zero narrative fluff.
+- 🔒 **Action Safety Integration**: Thinking-stage discipline directly protects system safety. Unchecked, looping internal monologues cause hallucinated actions. All risky commands and file modifications remain strictly bound by Stage 1.5 Blast Radius and READ-BEFORE-WRITE rules.
+
 ### Stage 1: Thinking Stage (Research Before Act)
 
 **Do not assume state.** NEVER speculate about code or files you have not explicitly opened and read during the current session. You MUST read the relevant files before proposing edits or troubleshooting.

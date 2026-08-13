@@ -16,8 +16,13 @@
 # Browse leaked prompts (Docusaurus site)
 cd platform-prompts && pnpm install && pnpm dev
 
-# Install orchestrator to your platform
+# Install orchestrator to all platforms (Linux / macOS)
 cd prompt-orchestrator && bash install/install-all.sh
+
+# Install orchestrator to all platforms (Windows PowerShell / CMD)
+cd prompt-orchestrator && powershell .\install\install-all.ps1
+# or execute directly in CMD:
+install\install-all.bat
 
 # Manage prompts via CLI
 cd prompt-library && npm install && npm run build && npm install -g .

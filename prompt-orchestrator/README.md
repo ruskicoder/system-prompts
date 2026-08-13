@@ -14,6 +14,7 @@
 
 ## Install
 
+### Linux / macOS (Bash)
 ```bash
 # Install to all supported platforms
 bash install/install-all.sh
@@ -23,6 +24,25 @@ bash install/install-opencode.sh
 bash install/install-gemini.sh
 bash install/install-antigravity.sh
 bash install/install-codex.sh
+bash install/install-cursor.sh
+bash install/install-openclaw.sh
+```
+
+### Windows (PowerShell / CMD)
+```powershell
+# Install to all supported platforms (PowerShell)
+powershell .\install\install-all.ps1
+
+# Or run from Command Prompt (CMD) or double-click:
+install\install-all.bat
+
+# Or install to a specific platform (PowerShell)
+powershell .\install\install-opencode.ps1
+powershell .\install\install-gemini.ps1
+powershell .\install\install-antigravity.ps1
+powershell .\install\install-codex.ps1
+powershell .\install\install-cursor.ps1
+powershell .\install\install-openclaw.ps1
 ```
 
 ## Architecture
