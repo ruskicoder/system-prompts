@@ -1,14 +1,37 @@
-# Install prompt-orchestrator to OpenClaw on Windows
+# install-openclaw.ps1 - OpenClaw Installer
 $ErrorActionPreference = "Stop"
 
-$OrchestratorDir = Resolve-Path "$PSScriptRoot\.."
-$TargetDir = "$env:USERPROFILE\.openclaw"
+if (-not $PSScriptRoot) {
+    Throw "PSScriptRoot is undefined."
+}
 
-Write-Host "==> Installing prompt-orchestrator to OpenClaw at $TargetDir..."
-New-Item -ItemType Directory -Force -Path "$TargetDir" | Out-Null
+$OrchestratorDir = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot -ChildPath ".."))
 
-Copy-Item -Path "$OrchestratorDir\AGENT.md" -Destination "$TargetDir\AGENT.md" -Force
-Copy-Item -Path "$OrchestratorDir\skills" -Destination "$TargetDir\" -Recurse -Force
-Copy-Item -Path "$OrchestratorDir\workflows" -Destination "$TargetDir\" -Recurse -Force
+# Pre-flight Source Validation
+$RequiredSources = @("AGENT.md", "skills", "workflows")
+foreach ($Source in $RequiredSources) {
+    $SourcePath = Join-Path -Path $OrchestratorDir -ChildPath $Source
+    if (-not (Test-Path -Path $SourcePath)) {
+        Throw "Pre-flight validation failed: Source '$Source' missing."
+    }
+}
 
-Write-Host "==> OpenClaw installation complete."
+$Target = "$env:USERPROFILE\.openclaw"
+
+Write-Host "====================================================" -ForegroundColor Cyan
+Write-Host " OpenClaw Target Deployment                         " -ForegroundColor Cyan
+Write-Host "====================================================" -ForegroundColor Cyan
+Write-Host "--> Deploying configuration payload to: " -NoNewline -ForegroundColor Gray
+Write-Host "$Target" -ForegroundColor Yellow
+
+# Create leaf directories safely
+New-Item -ItemType Directory -Force -Path "$Target\skills" | Out-Null
+New-Item -ItemType Directory -Force -Path "$Target\workflows" | Out-Null
+
+Copy-Item -Path "$OrchestratorDir\AGENT.md" -Destination "$Target\AGENT.md" -Force
+Copy-Item -Path "$OrchestratorDir\skills\*" -Destination "$Target\skills\" -Recurse -Force
+Copy-Item -Path "$OrchestratorDir\workflows\*" -Destination "$Target\workflows\" -Recurse -Force
+
+Write-Host "    [OK] AGENT.md, skills, and workflows deployed successfully." -ForegroundColor Green
+Write-Host "`n[SUCCESS] OpenClaw deployment complete.`n" -ForegroundColor Green
+Exit 0
