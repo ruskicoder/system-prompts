@@ -12,4 +12,4 @@ cp -r "${ORCHESTRATOR_DIR}/skills/"* "${TARGET_DIR}/skills/"
 cp -r "${ORCHESTRATOR_DIR}/workflows/"* "${TARGET_DIR}/workflows/"
 cp -r "${ORCHESTRATOR_DIR}/.kiro/"* "${TARGET_DIR}/steering/"
 
-echo "==> Done: AGENTS.md (556 lines), $(ls "${ORCHESTRATOR_DIR}/skills/"*.md | wc -l) skills, $(ls "${ORCHESTRATOR_DIR}/workflows/"*.md | wc -l) workflows, steering config"
+echo "==> Done: AGENTS.md ($(wc -l < "${ORCHESTRATOR_DIR}/AGENT.md") lines), $(ls "${ORCHESTRATOR_DIR}/skills/"*.md | wc -l) skills, $(ls "${ORCHESTRATOR_DIR}/workflows/"*.md | wc -l) workflows, steering config"

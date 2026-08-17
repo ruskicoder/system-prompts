@@ -11,4 +11,4 @@ cp "${ORCHESTRATOR_DIR}/AGENT.md" "${TARGET_DIR}/GEMINI.md"
 cp -r "${ORCHESTRATOR_DIR}/skills/"* "${TARGET_DIR}/skills/"
 cp -r "${ORCHESTRATOR_DIR}/workflows/"* "${TARGET_DIR}/workflows/"
 
-echo "==> Done: GEMINI.md (556 lines), $(ls "${ORCHESTRATOR_DIR}/skills/"*.md | wc -l) skills, $(ls "${ORCHESTRATOR_DIR}/workflows/"*.md | wc -l) workflows"
+echo "==> Done: GEMINI.md ($(wc -l < "${ORCHESTRATOR_DIR}/AGENT.md") lines), $(ls "${ORCHESTRATOR_DIR}/skills/"*.md | wc -l) skills, $(ls "${ORCHESTRATOR_DIR}/workflows/"*.md | wc -l) workflows"
