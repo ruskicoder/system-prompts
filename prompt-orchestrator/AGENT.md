@@ -350,7 +350,11 @@ Score each dimension from 1 (low) to 5 (high):
 - **Compose**: Load custom skills from local `skills/[name].md` or Kiro global fallbacks.
 - **Deduplicate**: Avoid loading a skill if its instructions are already in context.
 - **Pass Scoped Context**: When dispatching subagents, pass only the exact skills needed for their subtask.
-- **Validate Skill Contract**: All markdown skill files in `skills/` must have valid YAML frontmatter, clear purpose descriptions, and be verifiable via `skills/validate_skills.py`.
+- **Validate Skill Contract**: All markdown skill files in `skills/` must have clear purpose descriptions, standardized operational headers, and be verifiable via `skills/validate_skills.py`.
+- **Review & Audit Capabilities**:
+  - `skills/review-pull-request.md`: Diff-scoped PR inspection, commit triage, and severity-leveled review submission (`gh pr review`).
+  - `skills/review-software-architecture.md`: System-level coupling, cohesion, SOLID, API contracts, and technical debt evaluation.
+  - `skills/security-audit-codebase.md`: Source security audit, secret scanning, dependency CVE checks, and OWASP Top 10 mitigation.
 
 ---
 
@@ -358,11 +362,13 @@ Score each dimension from 1 (low) to 5 (high):
 
 ### Specialized Subagent Catalog
 When dispatching subagents via `task()`, map tasks to these specialized subagent roles:
-- **Code Indexer (`code-index-agent`)**: Scans codebase indexing posture, search coverage, and doc-to-code linkage.
-- **QA Verifier (`qa-verification-agent`)**: Executes test suites, verifies assertions, and collects test evidence.
-- **Security Auditor (`security-agent`)**: Audits dependency security, secret exposure, and permissions.
+- **Code Indexer (`code-index-agent`)**: Scans codebase indexing posture, search coverage, and doc-to-code linkage (`skills/codebase-understanding.md`).
+- **QA Verifier (`qa-verification-agent`)**: Executes test suites, verifies assertions, and collects test evidence (`skills/code-quality-testing.md`).
+- **PR Reviewer (`pr-review-agent`)**: Conducts end-to-end pull request reviews, diff analysis, and structured severity feedback (`skills/review-pull-request.md`).
+- **Architecture Reviewer (`architecture-review-agent`)**: Evaluates system coupling, cohesion, SOLID adherence, API contracts, and tech debt (`skills/review-software-architecture.md`).
+- **Security Auditor (`security-agent`)**: Audits dependency security, secret exposure, injection vectors, and permissions (`skills/security-audit-codebase.md`, `skills/safety-profiles.md`).
 - **Compliance Reviewer (`compliance-agent`)**: Verifies policy compliance and license governance.
-- **Deployment Specialist (`deployment-ops-agent`)**: Verifies deployment posture, rollback readiness, and build pipelines.
+- **Deployment Specialist (`deployment-ops-agent`)**: Verifies deployment posture, rollback readiness, and build pipelines (`skills/deployment.md`).
 - **Test Intelligence (`test-intelligence-agent`)**: Analyzes test coverage gaps, flaky tests, and failure patterns.
 - **Operations Analyst (`operations-analyst-agent`)**: Synthesizes control-plane status briefs and system health reports.
 

@@ -7,10 +7,10 @@
 | File | Lines | Description |
 |------|-------|-------------|
 | `AGENT.md` | 556 | Central orchestrator — core values, pre-action protocol, power modes, routing, safety engine, and more |
-| `skills/` | 14 files (1,298 lines) | Specialized skill modules (code operations, research, communication, safety, etc.) — all source-annotated |
-| `workflows/` | 9 files (946 lines) | Execution workflows (diagnostic-fix, agent-loop, spec-driven, research-answer, etc.) |
+| `skills/` | 17 files | Specialized skill modules (code operations, research, communication, safety, review, architecture, audit) — all source-annotated |
+| `workflows/` | 10 files | Execution workflows (diagnostic-fix, agent-loop, spec-driven, research-answer, heartbeat-monitoring, etc.) |
 | `.kiro/` | 1 file | Steering configuration for the orchestrator |
-| `install/` | 5+ scripts | Install to any platform (opencode, Gemini, antigravity, Codex, Cursor, etc.) |
+| `install/` | 15 scripts | Cross-platform installers for POSIX (Bash), Windows (PowerShell), and Windows (CMD) across 6 platforms |
 
 ## Install
 
@@ -48,7 +48,7 @@ powershell .\install\install-openclaw.ps1
 ## Architecture
 
 ```
-AGENT.md (556 lines)
+AGENT.md
 ├── Identity & Operating Principles
 ├── Universal Pre-Action Protocol
 ├── Power Mode Engine (Eco/Balanced/Deep/Critical)
@@ -63,21 +63,24 @@ AGENT.md (556 lines)
 ├── Dynamic Safety Engine
 └── Session Continuation Manager
 
-skills/ (14)                 workflows/ (9)
-├── file-operations.md       ├── direct-implementation.md
-├── codebase-understanding   ├── diagnostic-fix.md
-├── code-execution.md        ├── plan-execute.md
-├── web-search-research.md   ├── agent-loop.md
-├── browser-automation.md    ├── spec-driven.md
-├── communication-tone.md    ├── research-answer.md
-├── code-quality-testing.md  ├── pair-programming.md
-├── project-scaffolding.md   ├── summarization.md
-├── memory-management.md     └── turnaround-builder.md
-├── safety-profiles.md
+skills/ (17)                     workflows/ (10)
+├── file-operations.md           ├── direct-implementation.md
+├── codebase-understanding.md    ├── diagnostic-fix.md
+├── code-execution.md            ├── plan-execute.md
+├── web-search-research.md       ├── agent-loop.md
+├── browser-automation.md        ├── spec-driven.md
+├── communication-tone.md        ├── research-answer.md
+├── code-quality-testing.md      ├── pair-programming.md
+├── project-scaffolding.md       ├── summarization.md
+├── memory-management.md         ├── turnaround-builder.md
+├── safety-profiles.md           └── heartbeat-monitoring.md
 ├── api-integration.md
 ├── data-analysis.md
 ├── image-media.md
-└── deployment.md
+├── deployment.md
+├── review-pull-request.md
+├── review-software-architecture.md
+└── security-audit-codebase.md
 ```
 
 ## Source Annotation

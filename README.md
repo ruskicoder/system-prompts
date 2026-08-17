@@ -7,7 +7,7 @@
 | Directory | Purpose |
 |-----------|---------|
 | **[platform-prompts/](platform-prompts/)** | 73 platform leaked prompts + Docusaurus website for browsing all prompts (leaks + orchestrator) |
-| **[prompt-orchestrator/](prompt-orchestrator/)** | Master AI agent orchestrator framework: AGENT.md, 14 skills, 9 workflows, install scripts for any platform |
+| **[prompt-orchestrator/](prompt-orchestrator/)** | Master AI agent orchestrator framework: AGENT.md, 17 skills, 10 workflows, cross-platform installers |
 | **[prompt-library/](prompt-library/)** | CLI tool for managing, organizing, and executing AI prompts (by Thibault You) |
 
 ## Quick Start
