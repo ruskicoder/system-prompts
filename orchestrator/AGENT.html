@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">Central AI Agent Orchestrator | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/AGENT"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="Central AI Agent Orchestrator | Awesome System Prompts"><meta data-rh="true" name="description" content="A. Identity &amp; Operating Principles"><meta data-rh="true" property="og:description" content="A. Identity &amp; Operating Principles"><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/AGENT"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/AGENT" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/AGENT" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Agent Orchestrator","item":"https://ruskicoder.github.io/system-prompts/orchestrator/AGENT"}]}</script><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.0497dfe4.js" defer="defer"></script>
-<script src="/system-prompts/assets/js/main.8f48ac0a.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.08410d93.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/main.2f0f1502.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -443,18 +443,27 @@
 <li><strong>Compose</strong>: Load custom skills from local <code>skills/[name].md</code> or Kiro global fallbacks.</li>
 <li><strong>Deduplicate</strong>: Avoid loading a skill if its instructions are already in context.</li>
 <li><strong>Pass Scoped Context</strong>: When dispatching subagents, pass only the exact skills needed for their subtask.</li>
-<li><strong>Validate Skill Contract</strong>: All markdown skill files in <code>skills/</code> must have valid YAML frontmatter, clear purpose descriptions, and be verifiable via <code>skills/validate_skills.py</code>.</li>
+<li><strong>Validate Skill Contract</strong>: All markdown skill files in <code>skills/</code> must have clear purpose descriptions, standardized operational headers, and be verifiable via <code>skills/validate_skills.py</code>.</li>
+<li><strong>Review &amp; Audit Capabilities</strong>:
+<ul>
+<li><code>skills/review-pull-request.md</code>: Diff-scoped PR inspection, commit triage, and severity-leveled review submission (<code>gh pr review</code>).</li>
+<li><code>skills/review-software-architecture.md</code>: System-level coupling, cohesion, SOLID, API contracts, and technical debt evaluation.</li>
+<li><code>skills/security-audit-codebase.md</code>: Source security audit, secret scanning, dependency CVE checks, and OWASP Top 10 mitigation.</li>
+</ul>
+</li>
 </ul>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="m-subagent-dispatch--specialized-catalog">M. Subagent Dispatch &amp; Specialized Catalog<a href="#m-subagent-dispatch--specialized-catalog" class="hash-link" aria-label="Direct link to M. Subagent Dispatch &amp; Specialized Catalog" title="Direct link to M. Subagent Dispatch &amp; Specialized Catalog" translate="no">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="specialized-subagent-catalog">Specialized Subagent Catalog<a href="#specialized-subagent-catalog" class="hash-link" aria-label="Direct link to Specialized Subagent Catalog" title="Direct link to Specialized Subagent Catalog" translate="no">​</a></h3>
 <p>When dispatching subagents via <code>task()</code>, map tasks to these specialized subagent roles:</p>
 <ul>
-<li><strong>Code Indexer (<code>code-index-agent</code>)</strong>: Scans codebase indexing posture, search coverage, and doc-to-code linkage.</li>
-<li><strong>QA Verifier (<code>qa-verification-agent</code>)</strong>: Executes test suites, verifies assertions, and collects test evidence.</li>
-<li><strong>Security Auditor (<code>security-agent</code>)</strong>: Audits dependency security, secret exposure, and permissions.</li>
+<li><strong>Code Indexer (<code>code-index-agent</code>)</strong>: Scans codebase indexing posture, search coverage, and doc-to-code linkage (<code>skills/codebase-understanding.md</code>).</li>
+<li><strong>QA Verifier (<code>qa-verification-agent</code>)</strong>: Executes test suites, verifies assertions, and collects test evidence (<code>skills/code-quality-testing.md</code>).</li>
+<li><strong>PR Reviewer (<code>pr-review-agent</code>)</strong>: Conducts end-to-end pull request reviews, diff analysis, and structured severity feedback (<code>skills/review-pull-request.md</code>).</li>
+<li><strong>Architecture Reviewer (<code>architecture-review-agent</code>)</strong>: Evaluates system coupling, cohesion, SOLID adherence, API contracts, and tech debt (<code>skills/review-software-architecture.md</code>).</li>
+<li><strong>Security Auditor (<code>security-agent</code>)</strong>: Audits dependency security, secret exposure, injection vectors, and permissions (<code>skills/security-audit-codebase.md</code>, <code>skills/safety-profiles.md</code>).</li>
 <li><strong>Compliance Reviewer (<code>compliance-agent</code>)</strong>: Verifies policy compliance and license governance.</li>
-<li><strong>Deployment Specialist (<code>deployment-ops-agent</code>)</strong>: Verifies deployment posture, rollback readiness, and build pipelines.</li>
+<li><strong>Deployment Specialist (<code>deployment-ops-agent</code>)</strong>: Verifies deployment posture, rollback readiness, and build pipelines (<code>skills/deployment.md</code>).</li>
 <li><strong>Test Intelligence (<code>test-intelligence-agent</code>)</strong>: Analyzes test coverage gaps, flaky tests, and failure patterns.</li>
 <li><strong>Operations Analyst (<code>operations-analyst-agent</code>)</strong>: Synthesizes control-plane status briefs and system health reports.</li>
 </ul>
