@@ -1,3 +1,9 @@
+---
+name: project-scaffolding
+description: Scaffold new applications, generate dependency manifests, and create initial directory structures. Use when initializing new codebases, setting up modern React/Vite/FastAPI stacks, or generating minimal project skeletons.
+argument-hint: "<stack or project description>"
+---
+
 # Skill: Project Scaffolding
 
 ## Purpose

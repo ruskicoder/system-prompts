@@ -1,3 +1,9 @@
+---
+name: code-execution
+description: Execute shell commands, run code, manage processes, and interact with the operating system environment safely. Use when running terminal commands, build tools, background services, cross-platform scripts (Linux, macOS, Windows), or managing process lifecycles.
+argument-hint: "<command or script to execute>"
+---
+
 # Skill: Code Execution & Shell
 
 ## Purpose

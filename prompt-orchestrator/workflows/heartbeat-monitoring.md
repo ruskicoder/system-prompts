@@ -1,3 +1,9 @@
+---
+name: heartbeat-monitoring
+description: Periodic background system health check, task integrity audit, artifact review, and security scan workflow. Generates daily digest summaries and returns HEARTBEAT_OK when state is unchanged.
+argument-hint: "[daily | audit | status]"
+---
+
 # Workflow: Heartbeat Monitoring & System Health
 
 ## When to Use

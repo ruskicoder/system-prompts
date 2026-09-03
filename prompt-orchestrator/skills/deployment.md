@@ -1,3 +1,9 @@
+---
+name: deployment
+description: Deploy applications, configure cloud hosting targets (Vercel, Netlify, GitHub Pages, S3), manage build pipelines, and verify post-deployment health. Trigger with "deploy app", "publish release", "setup hosting", or when configuring production rollout workflows.
+argument-hint: "<target platform or service>"
+---
+
 # Skill: Deployment
 
 ## Purpose

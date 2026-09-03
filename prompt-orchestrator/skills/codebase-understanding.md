@@ -1,3 +1,9 @@
+---
+name: codebase-understanding
+description: Leverage the GitNexus knowledge graph and call traces to understand codebase structure, execution flows, symbol dependencies, and blast radius. Trigger with "understand codebase", "trace call flow", "impact analysis", "what calls X", or when navigating unfamiliar code architectures.
+argument-hint: "<symbol, flow, or query>"
+---
+
 # Skill: Codebase Understanding (GitNexus)
 
 ## Purpose

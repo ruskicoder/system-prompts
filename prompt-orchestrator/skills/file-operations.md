@@ -1,3 +1,9 @@
+---
+name: file-operations
+description: Read, write, search, and edit files across the workspace. Enforces the READ-BEFORE-WRITE rule, batch file reads, atomic SEARCH/REPLACE blocks, and file discovery via grep and glob rather than terminal commands.
+argument-hint: "<file path or search pattern>"
+---
+
 # Skill: File Operations
 
 ## Purpose

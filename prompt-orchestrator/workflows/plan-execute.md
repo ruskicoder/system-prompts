@@ -1,3 +1,9 @@
+---
+name: plan-execute
+description: Multi-phase plan-then-execute workflow for non-trivial features and refactorings. Enforces strict intent gating between read-only planning mode (GitNexus impact analysis, multi-axis solution mapping) and execution mode.
+argument-hint: "<feature or refactoring goal>"
+---
+
 # Workflow: Plan-then-Execute
 
 ## When to Use

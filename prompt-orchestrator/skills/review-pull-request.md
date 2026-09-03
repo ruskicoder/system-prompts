@@ -1,3 +1,9 @@
+---
+name: review-pull-request
+description: Conduct end-to-end pull request reviews using GitHub CLI (gh). Covers diff analysis, commit history inspection, CI check verification, severity-leveled feedback (Blocking, Suggestion, Nit, Praise), and formal review submission (gh pr review).
+argument-hint: "<PR number, URL, or owner/repo#number>"
+---
+
 # Skill: Pull Request Review (Review Pull Request)
 
 ## Purpose

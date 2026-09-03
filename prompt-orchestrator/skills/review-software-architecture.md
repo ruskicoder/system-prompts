@@ -1,3 +1,9 @@
+---
+name: review-software-architecture
+description: Conduct system-level software architecture reviews assessing component coupling, cohesion, SOLID adherence, API contracts, data model design, operational scalability, and prioritized technical debt.
+argument-hint: "<codebase path, ADR, or architecture RFC>"
+---
+
 # Skill: Software Architecture Review (Review Software Architecture)
 
 ## Purpose

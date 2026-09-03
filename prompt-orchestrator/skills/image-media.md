@@ -1,3 +1,9 @@
+---
+name: image-media
+description: Generate, edit, and process visual artifacts, diagrams, and multimedia assets. Use when creating UI mockups, visual explainers, image transformations, or media layouts (carousel, bento grid).
+argument-hint: "<image prompt or media task>"
+---
+
 # Skill: Image & Media Handling
 
 ## Purpose

@@ -1,3 +1,9 @@
+---
+name: security-audit-codebase
+description: Perform systematic codebase security audits covering regex secret scanning, dependency vulnerability audits (npm audit, pip-audit, cargo audit), injection vulnerability detection, and OWASP Top 10 mitigation.
+argument-hint: "<target directory or focus area>"
+---
+
 # Skill: Codebase Security Audit (Security Audit Codebase)
 
 ## Purpose

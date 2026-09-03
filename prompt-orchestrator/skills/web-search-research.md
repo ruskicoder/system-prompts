@@ -1,3 +1,9 @@
+---
+name: web-search-research
+description: Gather current, verified information from the web through systematic search queries, grounding checks, and authoritative source citation. Use for time-sensitive topics, API lookups, and fact-checking.
+argument-hint: "<search query or research topic>"
+---
+
 # Skill: Web Search & Research
 
 ## Purpose

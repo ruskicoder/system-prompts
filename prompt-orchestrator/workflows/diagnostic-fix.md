@@ -1,3 +1,9 @@
+---
+name: diagnostic-fix
+description: Structured diagnostic-then-fix workflow using GitNexus knowledge graph and Ariya-4 problem framing. Gathers symptoms, isolates root causes, formulates hypotheses, verifies via reproduction, and applies targeted fixes.
+argument-hint: "<error symptom or stack trace>"
+---
+
 # Workflow: Diagnostic-then-Fix
 
 ## When to Use

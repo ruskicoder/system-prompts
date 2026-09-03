@@ -1,3 +1,9 @@
+---
+name: pair-programming
+description: Collaborative, user-driven interactive pair programming workflow. Explains concepts, proposes solutions without unsolicited edits, answers code questions, and applies changes only upon explicit confirmation.
+argument-hint: "<topic or code question>"
+---
+
 # Workflow: Interactive Pair Programming
 
 ## When to Use

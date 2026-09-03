@@ -1,3 +1,9 @@
+---
+name: summarization
+description: Comprehensive session wrap-up and continuity checkpointing workflow. Generates a standalone copy-pasteable initialization prompt, captures decisions, records current setup status, and lists next steps before session end.
+argument-hint: "[session wrap-up prompt]"
+---
+
 # Workflow: Session Summarization
 
 ## When to Use

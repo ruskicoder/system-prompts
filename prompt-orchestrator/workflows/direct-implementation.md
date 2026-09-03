@@ -1,3 +1,9 @@
+---
+name: direct-implementation
+description: Rapid single-turn direct implementation workflow for unambiguous, low-risk, single-file code changes and bug fixes with known root causes. Enforces pre-action checks and post-edit sanity verification.
+argument-hint: "<change description or target file>"
+---
+
 # Workflow: Direct Implementation
 
 ## When to Use

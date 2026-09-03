@@ -1,3 +1,9 @@
+---
+name: browser-automation
+description: Navigate, interact with, and extract data from web pages programmatically. Trigger with "browse web page", "automate browser", "extract from URL", or when performing web scraping, form filling, DOM element inspection, or UI interaction.
+argument-hint: "<URL or browser task>"
+---
+
 # Skill: Browser Automation
 
 ## Purpose

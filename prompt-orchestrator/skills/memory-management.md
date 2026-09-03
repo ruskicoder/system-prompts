@@ -1,3 +1,9 @@
+---
+name: memory-management
+description: Persist and retrieve architectural context, user preferences, and project milestones across sessions. Use for crash-safe checkpointing, updating persistent memories, and managing context window retention.
+argument-hint: "<memory action or context to save>"
+---
+
 # Skill: Memory & Context Management
 
 ## Purpose

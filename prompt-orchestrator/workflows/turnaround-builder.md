@@ -1,3 +1,9 @@
+---
+name: turnaround-builder
+description: End-to-end prototyping and greenfield application turnaround builder. Generates complete project skeletons, manifests, UI components, backend routes, and verified builds in a single comprehensive pass.
+argument-hint: "<application concept or prototype description>"
+---
+
 # Workflow: Turnaround Builder
 
 ## When to Use

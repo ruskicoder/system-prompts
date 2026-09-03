@@ -1,3 +1,9 @@
+---
+name: data-analysis
+description: Analyze, transform, clean, and visualize structured datasets using Python REPL, pandas, numpy, and plotting libraries. Trigger with "analyze data", "process CSV", "EDA", "generate plots", "statistical summary", or when computing numerical results.
+argument-hint: "<dataset path or analysis goal>"
+---
+
 # Skill: Data Analysis & Processing
 
 ## Purpose

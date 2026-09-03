@@ -1,3 +1,9 @@
+---
+name: code-quality-testing
+description: Write clean, runnable, tested code and execute unit/integration test suites and linter passes. Trigger with "run tests", "fix test failure", "add unit tests", or when debugging root causes, verifying immediate code runnability, or enforcing coding standards.
+argument-hint: "<test command or test target>"
+---
+
 # Skill: Code Quality & Testing
 
 ## Purpose

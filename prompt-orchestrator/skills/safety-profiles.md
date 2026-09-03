@@ -1,3 +1,8 @@
+---
+name: safety-profiles
+description: Context-appropriate safety guardrails across three dynamic operational levels (Default, Strict, Relaxed). Enforces PII redaction, harmful content blocking, and specialized permissions for authorized security research.
+---
+
 # Skill: Safety Profiles
 
 ## Purpose

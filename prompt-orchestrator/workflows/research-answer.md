@@ -1,3 +1,9 @@
+---
+name: research-answer
+description: Systematic web and codebase research workflow for information queries and fact verification. Gathers authoritative sources, executes query chains, evaluates evidence, and synthesizes grounded answers with inline citations.
+argument-hint: "<research question or topic>"
+---
+
 # Workflow: Research-then-Answer
 
 ## When to Use

@@ -1,3 +1,9 @@
+---
+name: agent-loop
+description: Continuous autonomous agent execution loop for open-ended, complex, or emergent multi-step tasks. Iterates through assessment, single tool execution, observation, and state updating until the task goal is fully resolved.
+argument-hint: "<task goal or prompt>"
+---
+
 # Workflow: Agent Loop
 
 ## When to Use

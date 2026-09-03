@@ -1,3 +1,9 @@
+---
+name: spec-driven
+description: Full lifecycle spec-driven development methodology across three gated phases - Requirements (EARS-format acceptance criteria), Design (architecture, data models, edge cases), and Tasks (phased implementation plan).
+argument-hint: "<feature name or specification scope>"
+---
+
 # Kiro AI-Driven Development Lifecycle: Complete Methodology Instructions
 
 ## Table of Contents

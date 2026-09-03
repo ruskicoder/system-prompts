@@ -1,3 +1,9 @@
+---
+name: api-integration
+description: Integrate with external APIs, REST, GraphQL, web services, SDKs, and third-party tools. Use when connecting external services, managing API keys securely, handling authentication (OAuth, JWT, API keys), implementing network retry logic, or configuring HTTP client libraries.
+argument-hint: "<API name, endpoint, or service>"
+---
+
 # Skill: API Integration & External Services
 
 ## Purpose
