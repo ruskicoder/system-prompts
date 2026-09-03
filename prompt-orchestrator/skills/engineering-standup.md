@@ -6,8 +6,6 @@ argument-hint: "[yesterday | today | blockers]"
 
 # /standup
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
-
 Generate a standup update by pulling together recent activity across your tools.
 
 ## How It Works

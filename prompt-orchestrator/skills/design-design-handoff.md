@@ -6,8 +6,6 @@ argument-hint: "<Figma URL or design description>"
 
 # /design-handoff
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
-
 Generate comprehensive developer handoff documentation from a design.
 
 ## Usage

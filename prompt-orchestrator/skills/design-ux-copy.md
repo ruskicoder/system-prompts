@@ -6,8 +6,6 @@ argument-hint: "<context or copy to review>"
 
 # /ux-copy
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
-
 Write or review UX copy for any interface context.
 
 ## Usage

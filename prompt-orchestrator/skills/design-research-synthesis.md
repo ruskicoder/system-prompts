@@ -6,8 +6,6 @@ argument-hint: "<research data, transcripts, or survey results>"
 
 # /research-synthesis
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
-
 Synthesize user research data into actionable insights. See the **user-research** skill for research methods, interview guides, and analysis frameworks.
 
 ## Usage

@@ -6,8 +6,6 @@ argument-hint: "<PR URL, diff, or file path>"
 
 # /code-review
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../../CONNECTORS.md).
-
 Review code changes with a structured lens on security, performance, correctness, and maintainability.
 
 ## Usage
