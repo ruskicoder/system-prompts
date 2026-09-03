@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-orchestrator docs-version-current docs-doc-page docs-doc-id-skills/doc-coauthoring" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.9.1">
+<title data-rh="true">Doc Co-Authoring Workflow | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/skills/doc-coauthoring"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="Doc Co-Authoring Workflow | Awesome System Prompts"><meta data-rh="true" name="description" content="Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks."><meta data-rh="true" property="og:description" content="Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/skills/doc-coauthoring"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/skills/doc-coauthoring" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/skills/doc-coauthoring" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Doc Co-Authoring Workflow","item":"https://ruskicoder.github.io/system-prompts/orchestrator/skills/doc-coauthoring"}]}</script><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
+<script src="/system-prompts/assets/js/runtime~main.3303b712.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/main.9eb4f839.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"light"),document.documentElement.setAttribute("data-theme-choice",t||"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/system-prompts/img/logo.svg"><link rel="preload" as="image" href="/system-prompts/img/logo-dark.svg"><div role="region" aria-label="Skip to main content"><a class="skipToContent_ikys" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/system-prompts/"><div class="navbar__logo"><img src="/system-prompts/img/logo.svg" alt="System Prompts" class="themedComponent_uZsf themedComponent--light_F2Ib"><img src="/system-prompts/img/logo-dark.svg" alt="System Prompts" class="themedComponent_uZsf themedComponent--dark_ecaT"></div><b class="navbar__title text--truncate">System Prompts</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/system-prompts/orchestrator">Orchestrator</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/ruskicoder/system-prompts" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_T7Rq"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_MSuh colorModeToggle_Bb3Z"><button class="clean-btn toggleButton_z5bN toggleButtonDisabled_xZ6p" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_e8r5 lightToggleIcon_j5Ut"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_e8r5 darkToggleIcon_zsiq"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_e8r5 systemToggleIcon_Hglj"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Eek8"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_S5id"><div class="docsWrapper_aK5g"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_dNSX" type="button"></button><div class="docRoot_OUYp"><aside class="theme-doc-sidebar-container docSidebarContainer_y_sw"><div class="sidebarViewport_osek"><div class="sidebar_zWe0"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_Rfmp"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/system-prompts/orchestrator"><span title="Overview" class="linkLabel_sOeK">Overview</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/system-prompts/orchestrator/AGENT"><span title="Agent Orchestrator" class="linkLabel_sOeK">Agent Orchestrator</span></a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_KxjX menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" href="/system-prompts/orchestrator/skills/api-integration"><span title="Skills" class="categoryLinkLabel_dFUW">Skills</span></a></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/api-integration"><span title="Skill: API Integration &amp; External Services" class="linkLabel_sOeK">Skill: API Integration &amp; External Services</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/browser-automation"><span title="Skill: Browser Automation" class="linkLabel_sOeK">Skill: Browser Automation</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/code-execution"><span title="Skill: Code Execution &amp; Shell" class="linkLabel_sOeK">Skill: Code Execution &amp; Shell</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/code-quality-testing"><span title="Skill: Code Quality &amp; Testing" class="linkLabel_sOeK">Skill: Code Quality &amp; Testing</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/codebase-understanding"><span title="Skill: Codebase Understanding (GitNexus)" class="linkLabel_sOeK">Skill: Codebase Understanding (GitNexus)</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/communication-tone"><span title="Skill: Communication &amp; Tone" class="linkLabel_sOeK">Skill: Communication &amp; Tone</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/data-analysis"><span title="Skill: Data Analysis &amp; Processing" class="linkLabel_sOeK">Skill: Data Analysis &amp; Processing</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/deployment"><span title="Skill: Deployment" class="linkLabel_sOeK">Skill: Deployment</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-accessibility-review"><span title="/accessibility-review" class="linkLabel_sOeK">/accessibility-review</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-design-critique"><span title="/design-critique" class="linkLabel_sOeK">/design-critique</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-design-handoff"><span title="/design-handoff" class="linkLabel_sOeK">/design-handoff</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-design-system"><span title="/design-system" class="linkLabel_sOeK">/design-system</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-research-synthesis"><span title="/research-synthesis" class="linkLabel_sOeK">/research-synthesis</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-user-research"><span title="User Research" class="linkLabel_sOeK">User Research</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/design-ux-copy"><span title="/ux-copy" class="linkLabel_sOeK">/ux-copy</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/system-prompts/orchestrator/skills/doc-coauthoring"><span title="Doc Co-Authoring Workflow" class="linkLabel_sOeK">Doc Co-Authoring Workflow</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/docx-skill"><span title="DOCX creation, editing, and analysis" class="linkLabel_sOeK">DOCX creation, editing, and analysis</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-architecture"><span title="/architecture" class="linkLabel_sOeK">/architecture</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-code-review"><span title="/code-review" class="linkLabel_sOeK">/code-review</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-debug"><span title="/debug" class="linkLabel_sOeK">/debug</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-deploy-checklist"><span title="/deploy-checklist" class="linkLabel_sOeK">/deploy-checklist</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-documentation"><span title="Technical Documentation" class="linkLabel_sOeK">Technical Documentation</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-incident-response"><span title="/incident-response" class="linkLabel_sOeK">/incident-response</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-standup"><span title="/standup" class="linkLabel_sOeK">/standup</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-system-design"><span title="System Design" class="linkLabel_sOeK">System Design</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-tech-debt"><span title="Tech Debt Management" class="linkLabel_sOeK">Tech Debt Management</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/engineering-testing-strategy"><span title="Testing Strategy" class="linkLabel_sOeK">Testing Strategy</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/file-operations"><span title="Skill: File Operations" class="linkLabel_sOeK">Skill: File Operations</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/image-media"><span title="Skill: Image &amp; Media Handling" class="linkLabel_sOeK">Skill: Image &amp; Media Handling</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/learn"><span title="Learning Mode" class="linkLabel_sOeK">Learning Mode</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/memory-management"><span title="Skill: Memory &amp; Context Management" class="linkLabel_sOeK">Skill: Memory &amp; Context Management</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/project-scaffolding"><span title="Skill: Project Scaffolding" class="linkLabel_sOeK">Skill: Project Scaffolding</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/review-pull-request"><span title="Skill: Pull Request Review (Review Pull Request)" class="linkLabel_sOeK">Skill: Pull Request Review (Review Pull Request)</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/review-software-architecture"><span title="Skill: Software Architecture Review (Review Software Architecture)" class="linkLabel_sOeK">Skill: Software Architecture Review (Review Software Architecture)</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/safety-profiles"><span title="Skill: Safety Profiles" class="linkLabel_sOeK">Skill: Safety Profiles</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/security-audit-codebase"><span title="Skill: Codebase Security Audit (Security Audit Codebase)" class="linkLabel_sOeK">Skill: Codebase Security Audit (Security Audit Codebase)</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/skill-creator"><span title="Skill Creator" class="linkLabel_sOeK">Skill Creator</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/web-artifacts-builder"><span title="Web Artifacts Builder" class="linkLabel_sOeK">Web Artifacts Builder</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/system-prompts/orchestrator/skills/web-search-research"><span title="Skill: Web Search &amp; Research" class="linkLabel_sOeK">Skill: Web Search &amp; Research</span></a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_KxjX menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/system-prompts/orchestrator/workflows/agent-loop"><span title="Workflows" class="categoryLinkLabel_dFUW">Workflows</span></a></div></li></ul></nav><button type="button" title="Collapse sidebar" aria-label="Collapse sidebar" class="button button--secondary button--outline collapseSidebarButton_grNO"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_Zjze"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_yLsV"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_l_FJ"><div class="docItemContainer_z0oT"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Gsti" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/system-prompts/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon__T1e"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><span class="breadcrumbs__link">Skills</span></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Doc Co-Authoring Workflow</span></li></ul></nav><div class="tocCollapsible_j797 theme-doc-toc-mobile tocMobile_QVP8"><button type="button" class="clean-btn tocCollapsibleButton_lDUa">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Doc Co-Authoring Workflow</h1></header>
+<p>This skill provides a structured workflow for guiding users through collaborative document creation. Act as an active guide, walking users through three stages: Context Gathering, Refinement &amp; Structure, and Reader Testing.</p>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="when-to-offer-this-workflow">When to Offer This Workflow<a href="#when-to-offer-this-workflow" class="hash-link" aria-label="Direct link to When to Offer This Workflow" title="Direct link to When to Offer This Workflow" translate="no">​</a></h2>
+<p><strong>Trigger conditions:</strong></p>
+<ul>
+<li>User mentions writing documentation: &quot;write a doc&quot;, &quot;draft a proposal&quot;, &quot;create a spec&quot;, &quot;write up&quot;</li>
+<li>User mentions specific doc types: &quot;PRD&quot;, &quot;design doc&quot;, &quot;decision doc&quot;, &quot;RFC&quot;</li>
+<li>User seems to be starting a substantial writing task</li>
+</ul>
+<p><strong>Initial offer:</strong>
+Offer the user a structured workflow for co-authoring the document. Explain the three stages:</p>
+<ol>
+<li><strong>Context Gathering</strong>: User provides all relevant context while Claude asks clarifying questions</li>
+<li><strong>Refinement &amp; Structure</strong>: Iteratively build each section through brainstorming and editing</li>
+<li><strong>Reader Testing</strong>: Test the doc with a fresh Claude (no context) to catch blind spots before others read it</li>
+</ol>
+<p>Explain that this approach helps ensure the doc works well when others read it (including when they paste it into Claude). Ask if they want to try this workflow or prefer to work freeform.</p>
+<p>If user declines, work freeform. If user accepts, proceed to Stage 1.</p>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="stage-1-context-gathering">Stage 1: Context Gathering<a href="#stage-1-context-gathering" class="hash-link" aria-label="Direct link to Stage 1: Context Gathering" title="Direct link to Stage 1: Context Gathering" translate="no">​</a></h2>
+<p><strong>Goal:</strong> Close the gap between what the user knows and what Claude knows, enabling smart guidance later.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="initial-questions">Initial Questions<a href="#initial-questions" class="hash-link" aria-label="Direct link to Initial Questions" title="Direct link to Initial Questions" translate="no">​</a></h3>
+<p>Start by asking the user for meta-context about the document:</p>
+<ol>
+<li>What type of document is this? (e.g., technical spec, decision doc, proposal)</li>
+<li>Who&#x27;s the primary audience?</li>
+<li>What&#x27;s the desired impact when someone reads this?</li>
+<li>Is there a template or specific format to follow?</li>
+<li>Any other constraints or context to know?</li>
+</ol>
+<p>Inform them they can answer in shorthand or dump information however works best for them.</p>
+<p><strong>If user provides a template or mentions a doc type:</strong></p>
+<ul>
+<li>Ask if they have a template document to share</li>
+<li>If they provide a link to a shared document, use the appropriate integration to fetch it</li>
+<li>If they provide a file, read it</li>
+</ul>
+<p><strong>If user mentions editing an existing shared document:</strong></p>
+<ul>
+<li>Use the appropriate integration to read the current state</li>
+<li>Check for images without alt-text</li>
+<li>If images exist without alt-text, explain that when others use Claude to understand the doc, Claude won&#x27;t be able to see them. Ask if they want alt-text generated. If so, request they paste each image into chat for descriptive alt-text generation.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="info-dumping">Info Dumping<a href="#info-dumping" class="hash-link" aria-label="Direct link to Info Dumping" title="Direct link to Info Dumping" translate="no">​</a></h3>
+<p>Once initial questions are answered, encourage the user to dump all the context they have. Request information such as:</p>
+<ul>
+<li>Background on the project/problem</li>
+<li>Related team discussions or shared documents</li>
+<li>Why alternative solutions aren&#x27;t being used</li>
+<li>Organizational context (team dynamics, past incidents, politics)</li>
+<li>Timeline pressures or constraints</li>
+<li>Technical architecture or dependencies</li>
+<li>Stakeholder concerns</li>
+</ul>
+<p>Advise them not to worry about organizing it - just get it all out. Offer multiple ways to provide context:</p>
+<ul>
+<li>Info dump stream-of-consciousness</li>
+<li>Point to team channels or threads to read</li>
+<li>Link to shared documents</li>
+</ul>
+<p><strong>If integrations are available</strong> (e.g., Slack, Teams, Google Drive, SharePoint, or other MCP servers), mention that these can be used to pull in context directly.</p>
+<p><strong>If no integrations are detected and in Claude.ai or Claude app:</strong> Suggest they can enable connectors in their Claude settings to allow pulling context from messaging apps and document storage directly.</p>
+<p>Inform them clarifying questions will be asked once they&#x27;ve done their initial dump.</p>
+<p><strong>During context gathering:</strong></p>
+<ul>
+<li>
+<p>If user mentions team channels or shared documents:</p>
+<ul>
+<li>If integrations available: Inform them the content will be read now, then use the appropriate integration</li>
+<li>If integrations not available: Explain lack of access. Suggest they enable connectors in Claude settings, or paste the relevant content directly.</li>
+</ul>
+</li>
+<li>
+<p>If user mentions entities/projects that are unknown:</p>
+<ul>
+<li>Ask if connected tools should be searched to learn more</li>
+<li>Wait for user confirmation before searching</li>
+</ul>
+</li>
+<li>
+<p>As user provides context, track what&#x27;s being learned and what&#x27;s still unclear</p>
+</li>
+</ul>
+<p><strong>Asking clarifying questions:</strong></p>
+<p>When user signals they&#x27;ve done their initial dump (or after substantial context provided), ask clarifying questions to ensure understanding:</p>
+<p>Generate 5-10 numbered questions based on gaps in the context.</p>
+<p>Inform them they can use shorthand to answer (e.g., &quot;1: yes, 2: see #channel, 3: no because backwards compat&quot;), link to more docs, point to channels to read, or just keep info-dumping. Whatever&#x27;s most efficient for them.</p>
+<p><strong>Exit condition:</strong>
+Sufficient context has been gathered when questions show understanding - when edge cases and trade-offs can be asked about without needing basics explained.</p>
+<p><strong>Transition:</strong>
+Ask if there&#x27;s any more context they want to provide at this stage, or if it&#x27;s time to move on to drafting the document.</p>
+<p>If user wants to add more, let them. When ready, proceed to Stage 2.</p>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="stage-2-refinement--structure">Stage 2: Refinement &amp; Structure<a href="#stage-2-refinement--structure" class="hash-link" aria-label="Direct link to Stage 2: Refinement &amp; Structure" title="Direct link to Stage 2: Refinement &amp; Structure" translate="no">​</a></h2>
+<p><strong>Goal:</strong> Build the document section by section through brainstorming, curation, and iterative refinement.</p>
+<p><strong>Instructions to user:</strong>
+Explain that the document will be built section by section. For each section:</p>
+<ol>
+<li>Clarifying questions will be asked about what to include</li>
+<li>5-20 options will be brainstormed</li>
+<li>User will indicate what to keep/remove/combine</li>
+<li>The section will be drafted</li>
+<li>It will be refined through surgical edits</li>
+</ol>
+<p>Start with whichever section has the most unknowns (usually the core decision/proposal), then work through the rest.</p>
+<p><strong>Section ordering:</strong></p>
+<p>If the document structure is clear:
+Ask which section they&#x27;d like to start with.</p>
+<p>Suggest starting with whichever section has the most unknowns. For decision docs, that&#x27;s usually the core proposal. For specs, it&#x27;s typically the technical approach. Summary sections are best left for last.</p>
+<p>If user doesn&#x27;t know what sections they need:
+Based on the type of document and template, suggest 3-5 sections appropriate for the doc type.</p>
+<p>Ask if this structure works, or if they want to adjust it.</p>
+<p><strong>Once structure is agreed:</strong></p>
+<p>Create the initial document structure with placeholder text for all sections.</p>
+<p><strong>If access to artifacts is available:</strong>
+Use <code>create_file</code> to create an artifact. This gives both Claude and the user a scaffold to work from.</p>
+<p>Inform them that the initial structure with placeholders for all sections will be created.</p>
+<p>Create artifact with all section headers and brief placeholder text like &quot;[To be written]&quot; or &quot;[Content here]&quot;.</p>
+<p>Provide the scaffold link and indicate it&#x27;s time to fill in each section.</p>
+<p><strong>If no access to artifacts:</strong>
+Create a markdown file in the working directory. Name it appropriately (e.g., <code>decision-doc.md</code>, <code>technical-spec.md</code>).</p>
+<p>Inform them that the initial structure with placeholders for all sections will be created.</p>
+<p>Create file with all section headers and placeholder text.</p>
+<p>Confirm the filename has been created and indicate it&#x27;s time to fill in each section.</p>
+<p><strong>For each section:</strong></p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-1-clarifying-questions">Step 1: Clarifying Questions<a href="#step-1-clarifying-questions" class="hash-link" aria-label="Direct link to Step 1: Clarifying Questions" title="Direct link to Step 1: Clarifying Questions" translate="no">​</a></h3>
+<p>Announce work will begin on the [SECTION NAME] section. Ask 5-10 clarifying questions about what should be included:</p>
+<p>Generate 5-10 specific questions based on context and section purpose.</p>
+<p>Inform them they can answer in shorthand or just indicate what&#x27;s important to cover.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-2-brainstorming">Step 2: Brainstorming<a href="#step-2-brainstorming" class="hash-link" aria-label="Direct link to Step 2: Brainstorming" title="Direct link to Step 2: Brainstorming" translate="no">​</a></h3>
+<p>For the [SECTION NAME] section, brainstorm [5-20] things that might be included, depending on the section&#x27;s complexity. Look for:</p>
+<ul>
+<li>Context shared that might have been forgotten</li>
+<li>Angles or considerations not yet mentioned</li>
+</ul>
+<p>Generate 5-20 numbered options based on section complexity. At the end, offer to brainstorm more if they want additional options.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-3-curation">Step 3: Curation<a href="#step-3-curation" class="hash-link" aria-label="Direct link to Step 3: Curation" title="Direct link to Step 3: Curation" translate="no">​</a></h3>
+<p>Ask which points should be kept, removed, or combined. Request brief justifications to help learn priorities for the next sections.</p>
+<p>Provide examples:</p>
+<ul>
+<li>&quot;Keep 1,4,7,9&quot;</li>
+<li>&quot;Remove 3 (duplicates 1)&quot;</li>
+<li>&quot;Remove 6 (audience already knows this)&quot;</li>
+<li>&quot;Combine 11 and 12&quot;</li>
+</ul>
+<p><strong>If user gives freeform feedback</strong> (e.g., &quot;looks good&quot; or &quot;I like most of it but...&quot;) instead of numbered selections, extract their preferences and proceed. Parse what they want kept/removed/changed and apply it.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-4-gap-check">Step 4: Gap Check<a href="#step-4-gap-check" class="hash-link" aria-label="Direct link to Step 4: Gap Check" title="Direct link to Step 4: Gap Check" translate="no">​</a></h3>
+<p>Based on what they&#x27;ve selected, ask if there&#x27;s anything important missing for the [SECTION NAME] section.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-5-drafting">Step 5: Drafting<a href="#step-5-drafting" class="hash-link" aria-label="Direct link to Step 5: Drafting" title="Direct link to Step 5: Drafting" translate="no">​</a></h3>
+<p>Use <code>str_replace</code> to replace the placeholder text for this section with the actual drafted content.</p>
+<p>Announce the [SECTION NAME] section will be drafted now based on what they&#x27;ve selected.</p>
+<p><strong>If using artifacts:</strong>
+After drafting, provide a link to the artifact.</p>
+<p>Ask them to read through it and indicate what to change. Note that being specific helps learning for the next sections.</p>
+<p><strong>If using a file (no artifacts):</strong>
+After drafting, confirm completion.</p>
+<p>Inform them the [SECTION NAME] section has been drafted in [filename]. Ask them to read through it and indicate what to change. Note that being specific helps learning for the next sections.</p>
+<p><strong>Key instruction for user (include when drafting the first section):</strong>
+Provide a note: Instead of editing the doc directly, ask them to indicate what to change. This helps learning of their style for future sections. For example: &quot;Remove the X bullet - already covered by Y&quot; or &quot;Make the third paragraph more concise&quot;.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-6-iterative-refinement">Step 6: Iterative Refinement<a href="#step-6-iterative-refinement" class="hash-link" aria-label="Direct link to Step 6: Iterative Refinement" title="Direct link to Step 6: Iterative Refinement" translate="no">​</a></h3>
+<p>As user provides feedback:</p>
+<ul>
+<li>Use <code>str_replace</code> to make edits (never reprint the whole doc)</li>
+<li><strong>If using artifacts:</strong> Provide link to artifact after each edit</li>
+<li><strong>If using files:</strong> Just confirm edits are complete</li>
+<li>If user edits doc directly and asks to read it: mentally note the changes they made and keep them in mind for future sections (this shows their preferences)</li>
+</ul>
+<p><strong>Continue iterating</strong> until user is satisfied with the section.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="quality-checking">Quality Checking<a href="#quality-checking" class="hash-link" aria-label="Direct link to Quality Checking" title="Direct link to Quality Checking" translate="no">​</a></h3>
+<p>After 3 consecutive iterations with no substantial changes, ask if anything can be removed without losing important information.</p>
+<p>When section is done, confirm [SECTION NAME] is complete. Ask if ready to move to the next section.</p>
+<p><strong>Repeat for all sections.</strong></p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="near-completion">Near Completion<a href="#near-completion" class="hash-link" aria-label="Direct link to Near Completion" title="Direct link to Near Completion" translate="no">​</a></h3>
+<p>As approaching completion (80%+ of sections done), announce intention to re-read the entire document and check for:</p>
+<ul>
+<li>Flow and consistency across sections</li>
+<li>Redundancy or contradictions</li>
+<li>Anything that feels like &quot;slop&quot; or generic filler</li>
+<li>Whether every sentence carries weight</li>
+</ul>
+<p>Read entire document and provide feedback.</p>
+<p><strong>When all sections are drafted and refined:</strong>
+Announce all sections are drafted. Indicate intention to review the complete document one more time.</p>
+<p>Review for overall coherence, flow, completeness.</p>
+<p>Provide any final suggestions.</p>
+<p>Ask if ready to move to Reader Testing, or if they want to refine anything else.</p>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="stage-3-reader-testing">Stage 3: Reader Testing<a href="#stage-3-reader-testing" class="hash-link" aria-label="Direct link to Stage 3: Reader Testing" title="Direct link to Stage 3: Reader Testing" translate="no">​</a></h2>
+<p><strong>Goal:</strong> Test the document with a fresh Claude (no context bleed) to verify it works for readers.</p>
+<p><strong>Instructions to user:</strong>
+Explain that testing will now occur to see if the document actually works for readers. This catches blind spots - things that make sense to the authors but might confuse others.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="testing-approach">Testing Approach<a href="#testing-approach" class="hash-link" aria-label="Direct link to Testing Approach" title="Direct link to Testing Approach" translate="no">​</a></h3>
+<p><strong>If access to sub-agents is available (e.g., in Claude Code):</strong></p>
+<p>Perform the testing directly without user involvement.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-1-predict-reader-questions">Step 1: Predict Reader Questions<a href="#step-1-predict-reader-questions" class="hash-link" aria-label="Direct link to Step 1: Predict Reader Questions" title="Direct link to Step 1: Predict Reader Questions" translate="no">​</a></h3>
+<p>Announce intention to predict what questions readers might ask when trying to discover this document.</p>
+<p>Generate 5-10 questions that readers would realistically ask.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-2-test-with-sub-agent">Step 2: Test with Sub-Agent<a href="#step-2-test-with-sub-agent" class="hash-link" aria-label="Direct link to Step 2: Test with Sub-Agent" title="Direct link to Step 2: Test with Sub-Agent" translate="no">​</a></h3>
+<p>Announce that these questions will be tested with a fresh Claude instance (no context from this conversation).</p>
+<p>For each question, invoke a sub-agent with just the document content and the question.</p>
+<p>Summarize what Reader Claude got right/wrong for each question.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-3-run-additional-checks">Step 3: Run Additional Checks<a href="#step-3-run-additional-checks" class="hash-link" aria-label="Direct link to Step 3: Run Additional Checks" title="Direct link to Step 3: Run Additional Checks" translate="no">​</a></h3>
+<p>Announce additional checks will be performed.</p>
+<p>Invoke sub-agent to check for ambiguity, false assumptions, contradictions.</p>
+<p>Summarize any issues found.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-4-report-and-fix">Step 4: Report and Fix<a href="#step-4-report-and-fix" class="hash-link" aria-label="Direct link to Step 4: Report and Fix" title="Direct link to Step 4: Report and Fix" translate="no">​</a></h3>
+<p>If issues found:
+Report that Reader Claude struggled with specific issues.</p>
+<p>List the specific issues.</p>
+<p>Indicate intention to fix these gaps.</p>
+<p>Loop back to refinement for problematic sections.</p>
+<hr>
+<p><strong>If no access to sub-agents (e.g., claude.ai web interface):</strong></p>
+<p>The user will need to do the testing manually.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-1-predict-reader-questions-1">Step 1: Predict Reader Questions<a href="#step-1-predict-reader-questions-1" class="hash-link" aria-label="Direct link to Step 1: Predict Reader Questions" title="Direct link to Step 1: Predict Reader Questions" translate="no">​</a></h3>
+<p>Ask what questions people might ask when trying to discover this document. What would they type into Claude.ai?</p>
+<p>Generate 5-10 questions that readers would realistically ask.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-2-setup-testing">Step 2: Setup Testing<a href="#step-2-setup-testing" class="hash-link" aria-label="Direct link to Step 2: Setup Testing" title="Direct link to Step 2: Setup Testing" translate="no">​</a></h3>
+<p>Provide testing instructions:</p>
+<ol>
+<li>Open a fresh Claude conversation: <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">https://claude.ai</a></li>
+<li>Paste or share the document content (if using a shared doc platform with connectors enabled, provide the link)</li>
+<li>Ask Reader Claude the generated questions</li>
+</ol>
+<p>For each question, instruct Reader Claude to provide:</p>
+<ul>
+<li>The answer</li>
+<li>Whether anything was ambiguous or unclear</li>
+<li>What knowledge/context the doc assumes is already known</li>
+</ul>
+<p>Check if Reader Claude gives correct answers or misinterprets anything.</p>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-3-additional-checks">Step 3: Additional Checks<a href="#step-3-additional-checks" class="hash-link" aria-label="Direct link to Step 3: Additional Checks" title="Direct link to Step 3: Additional Checks" translate="no">​</a></h3>
+<p>Also ask Reader Claude:</p>
+<ul>
+<li>&quot;What in this doc might be ambiguous or unclear to readers?&quot;</li>
+<li>&quot;What knowledge or context does this doc assume readers already have?&quot;</li>
+<li>&quot;Are there any internal contradictions or inconsistencies?&quot;</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-4-iterate-based-on-results">Step 4: Iterate Based on Results<a href="#step-4-iterate-based-on-results" class="hash-link" aria-label="Direct link to Step 4: Iterate Based on Results" title="Direct link to Step 4: Iterate Based on Results" translate="no">​</a></h3>
+<p>Ask what Reader Claude got wrong or struggled with. Indicate intention to fix those gaps.</p>
+<p>Loop back to refinement for any problematic sections.</p>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_O4hB" id="exit-condition-both-approaches">Exit Condition (Both Approaches)<a href="#exit-condition-both-approaches" class="hash-link" aria-label="Direct link to Exit Condition (Both Approaches)" title="Direct link to Exit Condition (Both Approaches)" translate="no">​</a></h3>
+<p>When Reader Claude consistently answers questions correctly and doesn&#x27;t surface new gaps or ambiguities, the doc is ready.</p>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="final-review">Final Review<a href="#final-review" class="hash-link" aria-label="Direct link to Final Review" title="Direct link to Final Review" translate="no">​</a></h2>
+<p>When Reader Testing passes:
+Announce the doc has passed Reader Claude testing. Before completion:</p>
+<ol>
+<li>Recommend they do a final read-through themselves - they own this document and are responsible for its quality</li>
+<li>Suggest double-checking any facts, links, or technical details</li>
+<li>Ask them to verify it achieves the impact they wanted</li>
+</ol>
+<p>Ask if they want one more review, or if the work is done.</p>
+<p><strong>If user wants final review, provide it. Otherwise:</strong>
+Announce document completion. Provide a few final tips:</p>
+<ul>
+<li>Consider linking this conversation in an appendix so readers can see how the doc was developed</li>
+<li>Use appendices to provide depth without bloating the main doc</li>
+<li>Update the doc as feedback is received from real readers</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="tips-for-effective-guidance">Tips for Effective Guidance<a href="#tips-for-effective-guidance" class="hash-link" aria-label="Direct link to Tips for Effective Guidance" title="Direct link to Tips for Effective Guidance" translate="no">​</a></h2>
+<p><strong>Tone:</strong></p>
+<ul>
+<li>Be direct and procedural</li>
+<li>Explain rationale briefly when it affects user behavior</li>
+<li>Don&#x27;t try to &quot;sell&quot; the approach - just execute it</li>
+</ul>
+<p><strong>Handling Deviations:</strong></p>
+<ul>
+<li>If user wants to skip a stage: Ask if they want to skip this and write freeform</li>
+<li>If user seems frustrated: Acknowledge this is taking longer than expected. Suggest ways to move faster</li>
+<li>Always give user agency to adjust the process</li>
+</ul>
+<p><strong>Context Management:</strong></p>
+<ul>
+<li>Throughout, if context is missing on something mentioned, proactively ask</li>
+<li>Don&#x27;t let gaps accumulate - address them as they come up</li>
+</ul>
+<p><strong>Artifact Management:</strong></p>
+<ul>
+<li>Use <code>create_file</code> for drafting full sections</li>
+<li>Use <code>str_replace</code> for all edits</li>
+<li>Provide artifact link after every change</li>
+<li>Never use artifacts for brainstorming lists - that&#x27;s just conversation</li>
+</ul>
+<p><strong>Quality over Speed:</strong></p>
+<ul>
+<li>Don&#x27;t rush through stages</li>
+<li>Each iteration should make meaningful improvements</li>
+<li>The goal is a document that actually works for readers</li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/ruskicoder/system-prompts/edit/master/prompt-orchestrator/../prompt-orchestrator/skills/doc-coauthoring.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Zilv" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_FZaW"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/system-prompts/orchestrator/skills/design-ux-copy"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">/ux-copy</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/system-prompts/orchestrator/skills/docx-skill"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">DOCX creation, editing, and analysis</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_gtm5 thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#when-to-offer-this-workflow" class="table-of-contents__link toc-highlight">When to Offer This Workflow</a></li><li><a href="#stage-1-context-gathering" class="table-of-contents__link toc-highlight">Stage 1: Context Gathering</a><ul><li><a href="#initial-questions" class="table-of-contents__link toc-highlight">Initial Questions</a></li><li><a href="#info-dumping" class="table-of-contents__link toc-highlight">Info Dumping</a></li></ul></li><li><a href="#stage-2-refinement--structure" class="table-of-contents__link toc-highlight">Stage 2: Refinement &amp; Structure</a><ul><li><a href="#step-1-clarifying-questions" class="table-of-contents__link toc-highlight">Step 1: Clarifying Questions</a></li><li><a href="#step-2-brainstorming" class="table-of-contents__link toc-highlight">Step 2: Brainstorming</a></li><li><a href="#step-3-curation" class="table-of-contents__link toc-highlight">Step 3: Curation</a></li><li><a href="#step-4-gap-check" class="table-of-contents__link toc-highlight">Step 4: Gap Check</a></li><li><a href="#step-5-drafting" class="table-of-contents__link toc-highlight">Step 5: Drafting</a></li><li><a href="#step-6-iterative-refinement" class="table-of-contents__link toc-highlight">Step 6: Iterative Refinement</a></li><li><a href="#quality-checking" class="table-of-contents__link toc-highlight">Quality Checking</a></li><li><a href="#near-completion" class="table-of-contents__link toc-highlight">Near Completion</a></li></ul></li><li><a href="#stage-3-reader-testing" class="table-of-contents__link toc-highlight">Stage 3: Reader Testing</a><ul><li><a href="#testing-approach" class="table-of-contents__link toc-highlight">Testing Approach</a></li><li><a href="#step-1-predict-reader-questions" class="table-of-contents__link toc-highlight">Step 1: Predict Reader Questions</a></li><li><a href="#step-2-test-with-sub-agent" class="table-of-contents__link toc-highlight">Step 2: Test with Sub-Agent</a></li><li><a href="#step-3-run-additional-checks" class="table-of-contents__link toc-highlight">Step 3: Run Additional Checks</a></li><li><a href="#step-4-report-and-fix" class="table-of-contents__link toc-highlight">Step 4: Report and Fix</a></li><li><a href="#step-1-predict-reader-questions-1" class="table-of-contents__link toc-highlight">Step 1: Predict Reader Questions</a></li><li><a href="#step-2-setup-testing" class="table-of-contents__link toc-highlight">Step 2: Setup Testing</a></li><li><a href="#step-3-additional-checks" class="table-of-contents__link toc-highlight">Step 3: Additional Checks</a></li><li><a href="#step-4-iterate-based-on-results" class="table-of-contents__link toc-highlight">Step 4: Iterate Based on Results</a></li><li><a href="#exit-condition-both-approaches" class="table-of-contents__link toc-highlight">Exit Condition (Both Approaches)</a></li></ul></li><li><a href="#final-review" class="table-of-contents__link toc-highlight">Final Review</a></li><li><a href="#tips-for-effective-guidance" class="table-of-contents__link toc-highlight">Tips for Effective Guidance</a></li></ul></div></div></div></div></main></div></div></div></div>
+</body>
+</html>
