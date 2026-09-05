@@ -1,0 +1,2 @@
+description = "Conduct end-to-end pull request reviews using GitHub CLI (gh). Covers diff analysis, commit history inspection, CI check verification, severity-leveled feedback (Blocking, Suggestion, Nit, Praise)..."
+prompt = "This is the 'review-pull-request' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/review-pull-request/SKILL.md' (canonical source: 'skills/review-pull-request.md') exactly, then apply them to: {{args}}"

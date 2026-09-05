@@ -1,0 +1,2 @@
+description = "Generate, edit, and process visual artifacts, diagrams, and multimedia assets. Use when creating UI mockups, visual explainers, image transformations, or media layouts (carousel, bento grid)."
+prompt = "This is the 'image-media' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/image-media/SKILL.md' (canonical source: 'skills/image-media.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Synthesize user research into themes, insights, and recommendations. Use when you have interview transcripts, survey results, usability test notes, support tickets, or NPS responses that need to be..."
+prompt = "This is the 'research-synthesis' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/research-synthesis/SKILL.md' (canonical source: 'skills/design-research-synthesis.md') exactly, then apply them to: {{args}}"

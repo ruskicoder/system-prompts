@@ -3,11 +3,25 @@
 Contract Validator for prompt-orchestrator skills and workflows.
 Validates YAML frontmatter (name, description, optional argument-hint/license),
 title headers, and operational sections across all markdown files in skills/ and workflows/.
+
+Also validates the *generated* multi-agent integration output (see
+tools/generate_integrations.py) so a stale or hand-edited copy under
+.agents/skills/, .claude/skills/, or .opencode/skills/ is caught in CI:
+the directory name must match the SKILL.md `name` field, the name must be
+lowercase-hyphenated, and the description must be <= 1024 chars, per the
+open Agent Skills specification (https://agentskills.io).
+
+Run with no arguments to validate everything, or pass explicit paths.
+Pass --skip-generated to validate only skills/ and workflows/.
 """
 
+import re
 import sys
 import yaml
 from pathlib import Path
+
+NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+GENERATED_SKILL_DIRS = [".agents/skills", ".claude/skills", ".opencode/skills"]
 
 def validate_markdown_file(filepath: Path) -> list:
     errors = []
@@ -89,6 +103,68 @@ def validate_markdown_file(filepath: Path) -> list:
 
     return errors
 
+
+def validate_agent_skill_dir(skill_dir: Path) -> list:
+    """Validate a generated Agent-Skills-standard folder (dir/SKILL.md)."""
+    skill_md = skill_dir / "SKILL.md"
+    if not skill_md.exists():
+        return [f"{skill_dir.name}/: missing SKILL.md"]
+
+    errors = validate_markdown_file(skill_md)
+
+    content = skill_md.read_text(encoding="utf-8")
+    lines = content.splitlines()
+    closing_idx = next(
+        (i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"),
+        -1,
+    )
+    if closing_idx != -1:
+        try:
+            data = yaml.safe_load("\n".join(lines[1:closing_idx])) or {}
+        except yaml.YAMLError:
+            data = {}
+
+        name = str(data.get("name", "")).strip()
+        if name and name != skill_dir.name:
+            errors.append(
+                f"SKILL.md name '{name}' does not match directory name "
+                f"'{skill_dir.name}' (required by the Agent Skills spec)"
+            )
+        if name and not NAME_RE.match(name):
+            errors.append(
+                f"name '{name}' must be lowercase alphanumeric with hyphens only"
+            )
+        description = str(data.get("description", "")).strip()
+        if len(description) > 1024:
+            errors.append(
+                f"description is {len(description)} chars; spec caps this at 1024"
+            )
+
+    return errors
+
+
+def validate_generated_dir(base_dir: Path) -> tuple[int, int]:
+    skill_dirs = sorted(p for p in base_dir.glob("*") if p.is_dir())
+    if not skill_dirs:
+        print(f"No skill folders found in {base_dir}")
+        return 0, 0
+
+    passed = 0
+    failed = 0
+    print(f"\n==> Validating {len(skill_dirs)} generated skill folders in {base_dir}...")
+    for skill_dir in skill_dirs:
+        errs = validate_agent_skill_dir(skill_dir)
+        if errs:
+            failed += 1
+            print(f"❌ [FAIL] {skill_dir.name}/")
+            for err in errs:
+                print(f"   - {err}")
+        else:
+            passed += 1
+            print(f"✅ [PASS] {skill_dir.name}/")
+    return passed, failed
+
+
 def validate_directory(dir_path: Path) -> tuple[int, int]:
     md_files = sorted(dir_path.glob("*.md"))
     if not md_files:
@@ -120,9 +196,11 @@ def main():
     total_passed = 0
     total_failed = 0
 
-    if len(sys.argv) > 1:
+    positional_args = [a for a in sys.argv[1:] if not a.startswith("--")]
+
+    if positional_args:
         # Custom paths provided
-        for arg in sys.argv[1:]:
+        for arg in positional_args:
             target = Path(arg)
             if target.is_dir():
                 p, f = validate_directory(target)
@@ -139,6 +217,8 @@ def main():
                     total_passed += 1
                     print(f"✅ [PASS] {target.name}")
     else:
+        skip_generated = "--skip-generated" in sys.argv
+
         # Default: validate both skills and workflows directories
         if skills_dir.exists():
             p, f = validate_directory(skills_dir)
@@ -148,6 +228,14 @@ def main():
             p, f = validate_directory(workflows_dir)
             total_passed += p
             total_failed += f
+
+        if not skip_generated:
+            for rel in GENERATED_SKILL_DIRS:
+                generated_dir = root_dir / rel
+                if generated_dir.exists():
+                    p, f = validate_generated_dir(generated_dir)
+                    total_passed += p
+                    total_failed += f
 
     print(f"\n==================================================")
     print(f"Overall Results: {total_passed} passed, {total_failed} failed out of {total_passed + total_failed} total.")

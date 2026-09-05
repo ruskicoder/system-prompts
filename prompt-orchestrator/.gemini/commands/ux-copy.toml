@@ -1,0 +1,2 @@
+description = "Write or review UX copy — microcopy, error messages, empty states, CTAs. Trigger with \"write copy for\", \"what should this button say?\", \"review this error message\", or when naming a CTA, wording a..."
+prompt = "This is the 'ux-copy' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/ux-copy/SKILL.md' (canonical source: 'skills/design-ux-copy.md') exactly, then apply them to: {{args}}"

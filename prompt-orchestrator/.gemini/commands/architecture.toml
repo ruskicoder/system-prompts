@@ -1,0 +1,2 @@
+description = "Create or evaluate an architecture decision record (ADR). Use when choosing between technologies (e.g., Kafka vs SQS), documenting a design decision with trade-offs and consequences, reviewing a..."
+prompt = "This is the 'architecture' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/architecture/SKILL.md' (canonical source: 'skills/engineering-architecture.md') exactly, then apply them to: {{args}}"

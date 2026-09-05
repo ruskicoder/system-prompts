@@ -1,0 +1,2 @@
+description = "Context-appropriate safety guardrails across three dynamic operational levels (Default, Strict, Relaxed). Enforces PII redaction, harmful content blocking, and specialized permissions for authorized..."
+prompt = "This is the 'safety-profiles' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/safety-profiles/SKILL.md' (canonical source: 'skills/safety-profiles.md') exactly, then apply them to: {{args}}"

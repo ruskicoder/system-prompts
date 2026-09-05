@@ -1,0 +1,2 @@
+description = "Audit, document, or extend your design system. Use when checking for naming inconsistencies or hardcoded values across components, writing documentation for a component's variants, states, and..."
+prompt = "This is the 'design-system' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/design-system/SKILL.md' (canonical source: 'skills/design-design-system.md') exactly, then apply them to: {{args}}"

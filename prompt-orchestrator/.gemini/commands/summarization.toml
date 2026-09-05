@@ -1,0 +1,2 @@
+description = "Comprehensive session wrap-up and continuity checkpointing workflow. Generates a standalone copy-pasteable initialization prompt, captures decisions, records current setup status, and lists next steps..."
+prompt = "This is the 'summarization' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/summarization/SKILL.md' (canonical source: 'workflows/summarization.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Run a WCAG 2.1 AA accessibility audit on a design or page. Trigger with \"audit accessibility\", \"check a11y\", \"is this accessible?\", or when reviewing a design for color contrast, keyboard navigation..."
+prompt = "This is the 'accessibility-review' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/accessibility-review/SKILL.md' (canonical source: 'skills/design-accessibility-review.md') exactly, then apply them to: {{args}}"

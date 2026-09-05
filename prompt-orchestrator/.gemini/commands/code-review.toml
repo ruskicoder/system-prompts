@@ -1,0 +1,2 @@
+description = "Review code changes for security, performance, and correctness. Trigger with a PR URL or diff, \"review this before I merge\", \"is this code safe?\", or when checking a change for N+1 queries, injection..."
+prompt = "This is the 'code-review' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/code-review/SKILL.md' (canonical source: 'skills/engineering-code-review.md') exactly, then apply them to: {{args}}"

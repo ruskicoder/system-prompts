@@ -1,0 +1,2 @@
+description = "Conduct system-level software architecture reviews assessing component coupling, cohesion, SOLID adherence, API contracts, data model design, operational scalability, and prioritized technical debt."
+prompt = "This is the 'review-software-architecture' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/review-software-architecture/SKILL.md' (canonical source: 'skills/review-software-architecture.md') exactly, then apply them to: {{args}}"

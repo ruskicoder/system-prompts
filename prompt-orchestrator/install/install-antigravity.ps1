@@ -7,8 +7,7 @@ if (-not $PSScriptRoot) {
 
 $OrchestratorDir = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot -ChildPath ".."))
 
-# Pre-flight Source Validation
-$RequiredSources = @("AGENT.md", "skills", "workflows")
+$RequiredSources = @(".gemini\commands", ".agents\skills", "AGENT.md")
 foreach ($Source in $RequiredSources) {
     $SourcePath = Join-Path -Path $OrchestratorDir -ChildPath $Source
     if (-not (Test-Path -Path $SourcePath)) {
@@ -16,31 +15,30 @@ foreach ($Source in $RequiredSources) {
     }
 }
 
+$AgentsSkillsHome = "$env:USERPROFILE\.agents\skills"
+New-Item -ItemType Directory -Force -Path "$AgentsSkillsHome" | Out-Null
+Copy-Item -Path "$OrchestratorDir\.agents\skills\*" -Destination "$AgentsSkillsHome\" -Recurse -Force
+
 $Targets = @(
     "$env:USERPROFILE\.gemini\antigravity",
     "$env:USERPROFILE\.gemini\antigravity-ide"
 )
 
 Write-Host "====================================================" -ForegroundColor Cyan
-Write-Host " Antigravity Target Deployment                     " -ForegroundColor Cyan
+Write-Host " Antigravity Target Deployment                      " -ForegroundColor Cyan
 Write-Host "====================================================" -ForegroundColor Cyan
 
 foreach ($Target in $Targets) {
     Write-Host "--> Deploying configuration payload to: " -NoNewline -ForegroundColor Gray
     Write-Host "$Target" -ForegroundColor Yellow
-    
-    # Pre-create concrete leaf directories safely
-    New-Item -ItemType Directory -Force -Path "$Target\skills" | Out-Null
-    New-Item -ItemType Directory -Force -Path "$Target\workflows" | Out-Null
-    New-Item -ItemType Directory -Force -Path "$Target\steering" | Out-Null
 
-    # Copy files and folder contents
+    New-Item -ItemType Directory -Force -Path "$Target\commands" | Out-Null
+    Copy-Item -Path "$OrchestratorDir\.gemini\commands\*" -Destination "$Target\commands\" -Recurse -Force
     Copy-Item -Path "$OrchestratorDir\AGENT.md" -Destination "$Target\AGENTS.md" -Force
-    Copy-Item -Path "$OrchestratorDir\skills\*" -Destination "$Target\skills\" -Recurse -Force
-    Copy-Item -Path "$OrchestratorDir\workflows\*" -Destination "$Target\workflows\" -Recurse -Force
-    
+
     Write-Host "    [OK] Payload deployed successfully." -ForegroundColor Green
 }
 
+Write-Host "    [OK] Shared skills deployed to $AgentsSkillsHome" -ForegroundColor Green
 Write-Host "`n[SUCCESS] Antigravity deployment complete.`n" -ForegroundColor Green
 Exit 0

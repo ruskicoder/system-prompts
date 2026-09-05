@@ -1,0 +1,2 @@
+description = "Perform systematic codebase security audits covering regex secret scanning, dependency vulnerability audits (npm audit, pip-audit, cargo audit), injection vulnerability detection, and OWASP Top 10..."
+prompt = "This is the 'security-audit-codebase' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/security-audit-codebase/SKILL.md' (canonical source: 'skills/security-audit-codebase.md') exactly, then apply them to: {{args}}"

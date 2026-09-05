@@ -14,10 +14,13 @@ The orchestrator is loaded from the repo root:
 
 ## Auto-Loaded Skills
 
-When AGENT.md selects a workflow, its required skills are loaded from:
+When AGENT.md selects a workflow, its required skills are loaded from, in order:
 
-- `skills/[name].md` (local repo)
+- `skills/[name].md` / `workflows/[name].md` (local repo, canonical source)
+- `.agents/skills/[name]/SKILL.md` (generated Agent Skills standard folder — same content, works with any tool that follows https://agentskills.io)
 - Fallback: OpenCode installed skills at `~/.config/opencode/skills/`
+
+These generated integration files (`.agents/`, `.claude/`, `.opencode/`, `.cursor/`, `.gemini/`, `.codex/`, `.windsurf/`) are produced by `tools/generate_integrations.py` from the canonical `skills/` and `workflows/` sources — see `INTEGRATIONS.md` for the full compatibility matrix.
 
 ## GitNexus Integration
 

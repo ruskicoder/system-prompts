@@ -1,0 +1,345 @@
+[
+  {
+    "id": "accessibility-review",
+    "kind": "skill",
+    "source": "skills/design-accessibility-review.md",
+    "description": "Run a WCAG 2.1 AA accessibility audit on a design or page. Trigger with \"audit accessibility\", \"check a11y\", \"is this accessible?\", or when reviewing a design for color contrast, keyboard navigation, touch target size, or screen reader behavior before handoff.",
+    "argument_hint": "<Figma URL, URL, or description>"
+  },
+  {
+    "id": "agent-loop",
+    "kind": "workflow",
+    "source": "workflows/agent-loop.md",
+    "description": "Continuous autonomous agent execution loop for open-ended, complex, or emergent multi-step tasks. Iterates through assessment, single tool execution, observation, and state updating until the task goal is fully resolved.",
+    "argument_hint": "<task goal or prompt>"
+  },
+  {
+    "id": "api-integration",
+    "kind": "skill",
+    "source": "skills/api-integration.md",
+    "description": "Integrate with external APIs, REST, GraphQL, web services, SDKs, and third-party tools. Use when connecting external services, managing API keys securely, handling authentication (OAuth, JWT, API keys), implementing network retry logic, or configuring HTTP client libraries.",
+    "argument_hint": "<API name, endpoint, or service>"
+  },
+  {
+    "id": "architecture",
+    "kind": "skill",
+    "source": "skills/engineering-architecture.md",
+    "description": "Create or evaluate an architecture decision record (ADR). Use when choosing between technologies (e.g., Kafka vs SQS), documenting a design decision with trade-offs and consequences, reviewing a system design proposal, or designing a new component from requirements and constraints.",
+    "argument_hint": "<decision or system to design>"
+  },
+  {
+    "id": "browser-automation",
+    "kind": "skill",
+    "source": "skills/browser-automation.md",
+    "description": "Navigate, interact with, and extract data from web pages programmatically. Trigger with \"browse web page\", \"automate browser\", \"extract from URL\", or when performing web scraping, form filling, DOM element inspection, or UI interaction.",
+    "argument_hint": "<URL or browser task>"
+  },
+  {
+    "id": "code-execution",
+    "kind": "skill",
+    "source": "skills/code-execution.md",
+    "description": "Execute shell commands, run code, manage processes, and interact with the operating system environment safely. Use when running terminal commands, build tools, background services, cross-platform scripts (Linux, macOS, Windows), or managing process lifecycles.",
+    "argument_hint": "<command or script to execute>"
+  },
+  {
+    "id": "code-quality-testing",
+    "kind": "skill",
+    "source": "skills/code-quality-testing.md",
+    "description": "Write clean, runnable, tested code and execute unit/integration test suites and linter passes. Trigger with \"run tests\", \"fix test failure\", \"add unit tests\", or when debugging root causes, verifying immediate code runnability, or enforcing coding standards.",
+    "argument_hint": "<test command or test target>"
+  },
+  {
+    "id": "code-review",
+    "kind": "skill",
+    "source": "skills/engineering-code-review.md",
+    "description": "Review code changes for security, performance, and correctness. Trigger with a PR URL or diff, \"review this before I merge\", \"is this code safe?\", or when checking a change for N+1 queries, injection risks, missing edge cases, or error handling gaps.",
+    "argument_hint": "<PR URL, diff, or file path>"
+  },
+  {
+    "id": "codebase-understanding",
+    "kind": "skill",
+    "source": "skills/codebase-understanding.md",
+    "description": "Leverage the GitNexus knowledge graph and call traces to understand codebase structure, execution flows, symbol dependencies, and blast radius. Trigger with \"understand codebase\", \"trace call flow\", \"impact analysis\", \"what calls X\", or when navigating unfamiliar code architectures.",
+    "argument_hint": "<symbol, flow, or query>"
+  },
+  {
+    "id": "communication-tone",
+    "kind": "skill",
+    "source": "skills/communication-tone.md",
+    "description": "Enforce anti-fluff communication, precise technical tone, zero sycophancy, minimal token consumption, and direct Markdown/code formatting. Use across all conversation turns to eliminate filler phrases, ungrounded speculation, and conversational preamble.",
+    "argument_hint": null
+  },
+  {
+    "id": "data-analysis",
+    "kind": "skill",
+    "source": "skills/data-analysis.md",
+    "description": "Analyze, transform, clean, and visualize structured datasets using Python REPL, pandas, numpy, and plotting libraries. Trigger with \"analyze data\", \"process CSV\", \"EDA\", \"generate plots\", \"statistical summary\", or when computing numerical results.",
+    "argument_hint": "<dataset path or analysis goal>"
+  },
+  {
+    "id": "debug",
+    "kind": "skill",
+    "source": "skills/engineering-debug.md",
+    "description": "Structured debugging session \u2014 reproduce, isolate, diagnose, and fix. Trigger with an error message or stack trace, \"this works in staging but not prod\", \"something broke after the deploy\", or when behavior diverges from expected and the cause isn't obvious.",
+    "argument_hint": "<error message or problem description>"
+  },
+  {
+    "id": "deploy-checklist",
+    "kind": "skill",
+    "source": "skills/engineering-deploy-checklist.md",
+    "description": "Pre-deployment verification checklist. Use when about to ship a release, deploying a change with database migrations or feature flags, verifying CI status and approvals before going to production, or documenting rollback triggers ahead of time.",
+    "argument_hint": "[service or release name]"
+  },
+  {
+    "id": "deployment",
+    "kind": "skill",
+    "source": "skills/deployment.md",
+    "description": "Deploy applications, configure cloud hosting targets (Vercel, Netlify, GitHub Pages, S3), manage build pipelines, and verify post-deployment health. Trigger with \"deploy app\", \"publish release\", \"setup hosting\", or when configuring production rollout workflows.",
+    "argument_hint": "<target platform or service>"
+  },
+  {
+    "id": "design-critique",
+    "kind": "skill",
+    "source": "skills/design-design-critique.md",
+    "description": "Get structured design feedback on usability, hierarchy, and consistency. Trigger with \"review this design\", \"critique this mockup\", \"what do you think of this screen?\", or when sharing a Figma link or screenshot for feedback at any stage from exploration to final polish.",
+    "argument_hint": "<Figma URL, screenshot, or description>"
+  },
+  {
+    "id": "design-handoff",
+    "kind": "skill",
+    "source": "skills/design-design-handoff.md",
+    "description": "Generate developer handoff specs from a design. Use when a design is ready for engineering and needs a spec sheet covering layout, design tokens, component props, interaction states, responsive breakpoints, edge cases, and animation details.",
+    "argument_hint": "<Figma URL or design description>"
+  },
+  {
+    "id": "design-system",
+    "kind": "skill",
+    "source": "skills/design-design-system.md",
+    "description": "Audit, document, or extend your design system. Use when checking for naming inconsistencies or hardcoded values across components, writing documentation for a component's variants, states, and accessibility notes, or designing a new pattern that fits the existing system.",
+    "argument_hint": "[audit | document | extend] <component or system>"
+  },
+  {
+    "id": "diagnostic-fix",
+    "kind": "workflow",
+    "source": "workflows/diagnostic-fix.md",
+    "description": "Structured diagnostic-then-fix workflow using GitNexus knowledge graph and Ariya-4 problem framing. Gathers symptoms, isolates root causes, formulates hypotheses, verifies via reproduction, and applies targeted fixes.",
+    "argument_hint": "<error symptom or stack trace>"
+  },
+  {
+    "id": "direct-implementation",
+    "kind": "workflow",
+    "source": "workflows/direct-implementation.md",
+    "description": "Rapid single-turn direct implementation workflow for unambiguous, low-risk, single-file code changes and bug fixes with known root causes. Enforces pre-action checks and post-edit sanity verification.",
+    "argument_hint": "<change description or target file>"
+  },
+  {
+    "id": "doc-coauthoring",
+    "kind": "skill",
+    "source": "skills/doc-coauthoring.md",
+    "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.",
+    "argument_hint": null
+  },
+  {
+    "id": "documentation",
+    "kind": "skill",
+    "source": "skills/engineering-documentation.md",
+    "description": "Write and maintain technical documentation. Trigger with \"write docs for\", \"document this\", \"create a README\", \"write a runbook\", \"onboarding guide\", or when the user needs help with any form of technical writing \u2014 API docs, architecture docs, or operational runbooks.",
+    "argument_hint": null
+  },
+  {
+    "id": "docx",
+    "kind": "skill",
+    "source": "skills/docx-skill.md",
+    "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files) or Word templates (.dotx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', '.dotx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx or .dotx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation.",
+    "argument_hint": null
+  },
+  {
+    "id": "file-operations",
+    "kind": "skill",
+    "source": "skills/file-operations.md",
+    "description": "Read, write, search, and edit files across the workspace. Enforces the READ-BEFORE-WRITE rule, batch file reads, atomic SEARCH/REPLACE blocks, and file discovery via grep and glob rather than terminal commands.",
+    "argument_hint": "<file path or search pattern>"
+  },
+  {
+    "id": "heartbeat-monitoring",
+    "kind": "workflow",
+    "source": "workflows/heartbeat-monitoring.md",
+    "description": "Periodic background system health check, task integrity audit, artifact review, and security scan workflow. Generates daily digest summaries and returns HEARTBEAT_OK when state is unchanged.",
+    "argument_hint": "[daily | audit | status]"
+  },
+  {
+    "id": "image-media",
+    "kind": "skill",
+    "source": "skills/image-media.md",
+    "description": "Generate, edit, and process visual artifacts, diagrams, and multimedia assets. Use when creating UI mockups, visual explainers, image transformations, or media layouts (carousel, bento grid).",
+    "argument_hint": "<image prompt or media task>"
+  },
+  {
+    "id": "incident-response",
+    "kind": "skill",
+    "source": "skills/engineering-incident-response.md",
+    "description": "Run an incident response workflow \u2014 triage, communicate, and write postmortem. Trigger with \"we have an incident\", \"production is down\", an alert that needs severity assessment, a status update mid-incident, or when writing a blameless postmortem after resolution.",
+    "argument_hint": "<incident description or alert>"
+  },
+  {
+    "id": "learn",
+    "kind": "skill",
+    "source": "skills/learn.md",
+    "description": "Use this skill when the user wants intellectual understanding \u2014 learning how or why something works, not getting a task done or soliciting Claude's judgment.\n\nTrigger for:\n- Explicit learning requests: teach, explain, ELI5, walk me through, quiz me, flashcards, \"I'm rusty on\"; definitions (\"what is X\")\n- Terse concept names implying \"help me understand this\": \"Galois theory,\" \"transformers, from scratch\"\n- Confusion signals: \"won't stick,\" \"keep mixing these up,\" \"not getting it\"\n- Learning-path questions: prerequisites, sequencing, what to study before X\n- Conceptual questions about mechanisms, causes, or dynamics\n\nDon't trigger for:\n- Tasks: coding, writing, calculation, translation, factual lookup, news updates\n- Personal troubleshooting; resource/textbook recommendations\n- Claude's evaluative verdict: opinion prompts (\"do you think X\", \"settle this\", \"honest take\", \"is X dead / still taken seriously\") and interpretive takes (\"was X really as harsh as people say\")",
+    "argument_hint": null
+  },
+  {
+    "id": "memory-management",
+    "kind": "skill",
+    "source": "skills/memory-management.md",
+    "description": "Persist and retrieve architectural context, user preferences, and project milestones across sessions. Use for crash-safe checkpointing, updating persistent memories, and managing context window retention.",
+    "argument_hint": "<memory action or context to save>"
+  },
+  {
+    "id": "pair-programming",
+    "kind": "workflow",
+    "source": "workflows/pair-programming.md",
+    "description": "Collaborative, user-driven interactive pair programming workflow. Explains concepts, proposes solutions without unsolicited edits, answers code questions, and applies changes only upon explicit confirmation.",
+    "argument_hint": "<topic or code question>"
+  },
+  {
+    "id": "plan-execute",
+    "kind": "workflow",
+    "source": "workflows/plan-execute.md",
+    "description": "Multi-phase plan-then-execute workflow for non-trivial features and refactorings. Enforces strict intent gating between read-only planning mode (GitNexus impact analysis, multi-axis solution mapping) and execution mode.",
+    "argument_hint": "<feature or refactoring goal>"
+  },
+  {
+    "id": "project-scaffolding",
+    "kind": "skill",
+    "source": "skills/project-scaffolding.md",
+    "description": "Scaffold new applications, generate dependency manifests, and create initial directory structures. Use when initializing new codebases, setting up modern React/Vite/FastAPI stacks, or generating minimal project skeletons.",
+    "argument_hint": "<stack or project description>"
+  },
+  {
+    "id": "research-answer",
+    "kind": "workflow",
+    "source": "workflows/research-answer.md",
+    "description": "Systematic web and codebase research workflow for information queries and fact verification. Gathers authoritative sources, executes query chains, evaluates evidence, and synthesizes grounded answers with inline citations.",
+    "argument_hint": "<research question or topic>"
+  },
+  {
+    "id": "research-synthesis",
+    "kind": "skill",
+    "source": "skills/design-research-synthesis.md",
+    "description": "Synthesize user research into themes, insights, and recommendations. Use when you have interview transcripts, survey results, usability test notes, support tickets, or NPS responses that need to be distilled into patterns, user segments, and prioritized next steps.",
+    "argument_hint": "<research data, transcripts, or survey results>"
+  },
+  {
+    "id": "review-pull-request",
+    "kind": "skill",
+    "source": "skills/review-pull-request.md",
+    "description": "Conduct end-to-end pull request reviews using GitHub CLI (gh). Covers diff analysis, commit history inspection, CI check verification, severity-leveled feedback (Blocking, Suggestion, Nit, Praise), and formal review submission (gh pr review).",
+    "argument_hint": "<PR number, URL, or owner/repo#number>"
+  },
+  {
+    "id": "review-software-architecture",
+    "kind": "skill",
+    "source": "skills/review-software-architecture.md",
+    "description": "Conduct system-level software architecture reviews assessing component coupling, cohesion, SOLID adherence, API contracts, data model design, operational scalability, and prioritized technical debt.",
+    "argument_hint": "<codebase path, ADR, or architecture RFC>"
+  },
+  {
+    "id": "safety-profiles",
+    "kind": "skill",
+    "source": "skills/safety-profiles.md",
+    "description": "Context-appropriate safety guardrails across three dynamic operational levels (Default, Strict, Relaxed). Enforces PII redaction, harmful content blocking, and specialized permissions for authorized security research.",
+    "argument_hint": null
+  },
+  {
+    "id": "security-audit-codebase",
+    "kind": "skill",
+    "source": "skills/security-audit-codebase.md",
+    "description": "Perform systematic codebase security audits covering regex secret scanning, dependency vulnerability audits (npm audit, pip-audit, cargo audit), injection vulnerability detection, and OWASP Top 10 mitigation.",
+    "argument_hint": "<target directory or focus area>"
+  },
+  {
+    "id": "skill-creator",
+    "kind": "skill",
+    "source": "skills/skill-creator.md",
+    "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
+    "argument_hint": null
+  },
+  {
+    "id": "spec-driven",
+    "kind": "workflow",
+    "source": "workflows/spec-driven.md",
+    "description": "Full lifecycle spec-driven development methodology across three gated phases - Requirements (EARS-format acceptance criteria), Design (architecture, data models, edge cases), and Tasks (phased implementation plan).",
+    "argument_hint": "<feature name or specification scope>"
+  },
+  {
+    "id": "standup",
+    "kind": "skill",
+    "source": "skills/engineering-standup.md",
+    "description": "Generate a standup update from recent activity. Use when preparing for daily standup, summarizing yesterday's commits and PRs and ticket moves, formatting work into yesterday/today/blockers, or structuring a few rough notes into a shareable update.",
+    "argument_hint": "[yesterday | today | blockers]"
+  },
+  {
+    "id": "summarization",
+    "kind": "workflow",
+    "source": "workflows/summarization.md",
+    "description": "Comprehensive session wrap-up and continuity checkpointing workflow. Generates a standalone copy-pasteable initialization prompt, captures decisions, records current setup status, and lists next steps before session end.",
+    "argument_hint": "[session wrap-up prompt]"
+  },
+  {
+    "id": "system-design",
+    "kind": "skill",
+    "source": "skills/engineering-system-design.md",
+    "description": "Design systems, services, and architectures. Trigger with \"design a system for\", \"how should we architect\", \"system design for\", \"what's the right architecture for\", or when the user needs help with API design, data modeling, or service boundaries.",
+    "argument_hint": null
+  },
+  {
+    "id": "tech-debt",
+    "kind": "skill",
+    "source": "skills/engineering-tech-debt.md",
+    "description": "Identify, categorize, and prioritize technical debt. Trigger with \"tech debt\", \"technical debt audit\", \"what should we refactor\", \"code health\", or when the user asks about code quality, refactoring priorities, or maintenance backlog.",
+    "argument_hint": null
+  },
+  {
+    "id": "testing-strategy",
+    "kind": "skill",
+    "source": "skills/engineering-testing-strategy.md",
+    "description": "Design test strategies and test plans. Trigger with \"how should we test\", \"test strategy for\", \"write tests for\", \"test plan\", \"what tests do we need\", or when the user needs help with testing approaches, coverage, or test architecture.",
+    "argument_hint": null
+  },
+  {
+    "id": "turnaround-builder",
+    "kind": "workflow",
+    "source": "workflows/turnaround-builder.md",
+    "description": "End-to-end prototyping and greenfield application turnaround builder. Generates complete project skeletons, manifests, UI components, backend routes, and verified builds in a single comprehensive pass.",
+    "argument_hint": "<application concept or prototype description>"
+  },
+  {
+    "id": "user-research",
+    "kind": "skill",
+    "source": "skills/design-user-research.md",
+    "description": "Plan, conduct, and synthesize user research. Trigger with \"user research plan\", \"interview guide\", \"usability test\", \"survey design\", \"research questions\", or when the user needs help with any aspect of understanding their users through research.",
+    "argument_hint": null
+  },
+  {
+    "id": "ux-copy",
+    "kind": "skill",
+    "source": "skills/design-ux-copy.md",
+    "description": "Write or review UX copy \u2014 microcopy, error messages, empty states, CTAs. Trigger with \"write copy for\", \"what should this button say?\", \"review this error message\", or when naming a CTA, wording a confirmation dialog, filling an empty state, or writing onboarding text.",
+    "argument_hint": "<context or copy to review>"
+  },
+  {
+    "id": "web-artifacts-builder",
+    "kind": "skill",
+    "source": "skills/web-artifacts-builder.md",
+    "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+    "argument_hint": null
+  },
+  {
+    "id": "web-search-research",
+    "kind": "skill",
+    "source": "skills/web-search-research.md",
+    "description": "Gather current, verified information from the web through systematic search queries, grounding checks, and authoritative source citation. Use for time-sensitive topics, API lookups, and fact-checking.",
+    "argument_hint": "<search query or research topic>"
+  }
+]

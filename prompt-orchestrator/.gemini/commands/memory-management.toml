@@ -1,0 +1,2 @@
+description = "Persist and retrieve architectural context, user preferences, and project milestones across sessions. Use for crash-safe checkpointing, updating persistent memories, and managing context window..."
+prompt = "This is the 'memory-management' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/memory-management/SKILL.md' (canonical source: 'skills/memory-management.md') exactly, then apply them to: {{args}}"

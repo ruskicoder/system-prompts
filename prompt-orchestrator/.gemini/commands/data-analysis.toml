@@ -1,0 +1,2 @@
+description = "Analyze, transform, clean, and visualize structured datasets using Python REPL, pandas, numpy, and plotting libraries. Trigger with \"analyze data\", \"process CSV\", \"EDA\", \"generate plots\", \"statistical..."
+prompt = "This is the 'data-analysis' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/data-analysis/SKILL.md' (canonical source: 'skills/data-analysis.md') exactly, then apply them to: {{args}}"

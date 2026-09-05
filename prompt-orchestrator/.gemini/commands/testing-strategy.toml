@@ -1,0 +1,2 @@
+description = "Design test strategies and test plans. Trigger with \"how should we test\", \"test strategy for\", \"write tests for\", \"test plan\", \"what tests do we need\", or when the user needs help with testing..."
+prompt = "This is the 'testing-strategy' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/testing-strategy/SKILL.md' (canonical source: 'skills/engineering-testing-strategy.md') exactly, then apply them to: {{args}}"

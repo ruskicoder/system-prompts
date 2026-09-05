@@ -1,0 +1,2 @@
+description = "Read, write, search, and edit files across the workspace. Enforces the READ-BEFORE-WRITE rule, batch file reads, atomic SEARCH/REPLACE blocks, and file discovery via grep and glob rather than terminal..."
+prompt = "This is the 'file-operations' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/file-operations/SKILL.md' (canonical source: 'skills/file-operations.md') exactly, then apply them to: {{args}}"

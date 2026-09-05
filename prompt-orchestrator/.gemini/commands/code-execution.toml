@@ -1,0 +1,2 @@
+description = "Execute shell commands, run code, manage processes, and interact with the operating system environment safely. Use when running terminal commands, build tools, background services, cross-platform..."
+prompt = "This is the 'code-execution' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/code-execution/SKILL.md' (canonical source: 'skills/code-execution.md') exactly, then apply them to: {{args}}"

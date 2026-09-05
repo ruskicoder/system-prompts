@@ -1,0 +1,2 @@
+description = "Use this skill when the user wants intellectual understanding — learning how or why something works, not getting a task done or soliciting Claude's judgment.\n\nTrigger for:\n- Explicit learning..."
+prompt = "This is the 'learn' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/learn/SKILL.md' (canonical source: 'skills/learn.md') exactly, then apply them to: {{args}}"

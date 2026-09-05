@@ -1,0 +1,2 @@
+description = "End-to-end prototyping and greenfield application turnaround builder. Generates complete project skeletons, manifests, UI components, backend routes, and verified builds in a single comprehensive..."
+prompt = "This is the 'turnaround-builder' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/turnaround-builder/SKILL.md' (canonical source: 'workflows/turnaround-builder.md') exactly, then apply them to: {{args}}"

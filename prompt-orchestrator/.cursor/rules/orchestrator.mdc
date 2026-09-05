@@ -1,0 +1,10 @@
+---
+description: Central AI Agent Orchestrator - core operating principles, routing, and safety rules for this repo
+alwaysApply: true
+---
+
+# Prompt Orchestrator
+
+Load and follow `AGENTS.md` at the repository root as your primary operating specification for this project: identity & operating principles, the universal pre-action protocol, power modes, workflow routing, and the safety engine.
+
+Reusable capabilities are available as Cursor commands under `.cursor/commands/` — type `/` in chat to browse and run them (for example `/agent-loop`, `/plan-execute`, `/security-audit-codebase`). Each command points to the matching definition in `skills/` or `workflows/` (also mirrored at `.agents/skills/<name>/SKILL.md`).

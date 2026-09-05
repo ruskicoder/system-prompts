@@ -1,0 +1,2 @@
+description = "Design systems, services, and architectures. Trigger with \"design a system for\", \"how should we architect\", \"system design for\", \"what's the right architecture for\", or when the user needs help with..."
+prompt = "This is the 'system-design' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/system-design/SKILL.md' (canonical source: 'skills/engineering-system-design.md') exactly, then apply them to: {{args}}"

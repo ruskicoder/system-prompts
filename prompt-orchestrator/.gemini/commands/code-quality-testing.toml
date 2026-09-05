@@ -1,0 +1,2 @@
+description = "Write clean, runnable, tested code and execute unit/integration test suites and linter passes. Trigger with \"run tests\", \"fix test failure\", \"add unit tests\", or when debugging root causes, verifying..."
+prompt = "This is the 'code-quality-testing' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/code-quality-testing/SKILL.md' (canonical source: 'skills/code-quality-testing.md') exactly, then apply them to: {{args}}"

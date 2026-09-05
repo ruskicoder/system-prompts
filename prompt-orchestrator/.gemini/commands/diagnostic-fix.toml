@@ -1,0 +1,2 @@
+description = "Structured diagnostic-then-fix workflow using GitNexus knowledge graph and Ariya-4 problem framing. Gathers symptoms, isolates root causes, formulates hypotheses, verifies via reproduction, and..."
+prompt = "This is the 'diagnostic-fix' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/diagnostic-fix/SKILL.md' (canonical source: 'workflows/diagnostic-fix.md') exactly, then apply them to: {{args}}"

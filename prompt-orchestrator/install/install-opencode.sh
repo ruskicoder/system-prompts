@@ -4,12 +4,28 @@ set -euo pipefail
 ORCHESTRATOR_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 TARGET_DIR="${HOME}/.config/opencode"
 
-echo "==> Installing prompt-orchestrator to opencode (${TARGET_DIR})"
-mkdir -p "${TARGET_DIR}/skills" "${TARGET_DIR}/workflows" "${TARGET_DIR}/steering"
+echo "==> Installing prompt-orchestrator to OpenCode (${TARGET_DIR})"
 
-cp "${ORCHESTRATOR_DIR}/AGENT.md" "${TARGET_DIR}/AGENTS.md"
-cp -r "${ORCHESTRATOR_DIR}/skills/"* "${TARGET_DIR}/skills/"
-cp -r "${ORCHESTRATOR_DIR}/workflows/"* "${TARGET_DIR}/workflows/"
-cp -r "${ORCHESTRATOR_DIR}/.kiro/"* "${TARGET_DIR}/steering/"
+for src in ".opencode/skills" ".opencode/commands" "AGENTS.md"; do
+    if [ ! -e "${ORCHESTRATOR_DIR}/${src}" ]; then
+        echo "!! Missing generated source '${src}'. Run: python3 tools/generate_integrations.py" >&2
+        exit 1
+    fi
+done
 
-echo "==> Done: AGENTS.md ($(wc -l < "${ORCHESTRATOR_DIR}/AGENT.md") lines), $(ls "${ORCHESTRATOR_DIR}/skills/"*.md | wc -l) skills, $(ls "${ORCHESTRATOR_DIR}/workflows/"*.md | wc -l) workflows, steering config"
+mkdir -p "${TARGET_DIR}/skills" "${TARGET_DIR}/commands"
+
+# Native skill discovery (OpenCode's built-in `skill` tool + auto-invocation)
+cp -r "${ORCHESTRATOR_DIR}/.opencode/skills/"* "${TARGET_DIR}/skills/"
+
+# Explicit "/name" slash commands (guaranteed to work even where
+# auto-invocation via the skill tool is ambiguous)
+cp -r "${ORCHESTRATOR_DIR}/.opencode/commands/"* "${TARGET_DIR}/commands/"
+
+# Universal instructions fallback, read natively by OpenCode
+cp "${ORCHESTRATOR_DIR}/AGENTS.md" "${TARGET_DIR}/AGENTS.md"
+
+SKILL_COUNT=$(ls -d "${ORCHESTRATOR_DIR}/.opencode/skills/"*/ 2>/dev/null | wc -l | tr -d ' ')
+CMD_COUNT=$(ls "${ORCHESTRATOR_DIR}/.opencode/commands/"*.md 2>/dev/null | wc -l | tr -d ' ')
+echo "==> Done: ${SKILL_COUNT} skills + ${CMD_COUNT} slash commands + AGENTS.md deployed."
+echo "    Type '/' in the OpenCode TUI to browse them."

@@ -1,0 +1,2 @@
+description = "Enforce anti-fluff communication, precise technical tone, zero sycophancy, minimal token consumption, and direct Markdown/code formatting. Use across all conversation turns to eliminate filler..."
+prompt = "This is the 'communication-tone' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/communication-tone/SKILL.md' (canonical source: 'skills/communication-tone.md') exactly, then apply them to: {{args}}"

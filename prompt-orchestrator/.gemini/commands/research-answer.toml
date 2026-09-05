@@ -1,0 +1,2 @@
+description = "Systematic web and codebase research workflow for information queries and fact verification. Gathers authoritative sources, executes query chains, evaluates evidence, and synthesizes grounded answers..."
+prompt = "This is the 'research-answer' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/research-answer/SKILL.md' (canonical source: 'workflows/research-answer.md') exactly, then apply them to: {{args}}"

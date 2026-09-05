@@ -1,0 +1,2 @@
+description = "Continuous autonomous agent execution loop for open-ended, complex, or emergent multi-step tasks. Iterates through assessment, single tool execution, observation, and state updating until the task..."
+prompt = "This is the 'agent-loop' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/agent-loop/SKILL.md' (canonical source: 'workflows/agent-loop.md') exactly, then apply them to: {{args}}"

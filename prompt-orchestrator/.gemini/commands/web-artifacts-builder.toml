@@ -1,0 +1,2 @@
+description = "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state..."
+prompt = "This is the 'web-artifacts-builder' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/web-artifacts-builder/SKILL.md' (canonical source: 'skills/web-artifacts-builder.md') exactly, then apply them to: {{args}}"

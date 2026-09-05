@@ -1,0 +1,2 @@
+description = "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This..."
+prompt = "This is the 'doc-coauthoring' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/doc-coauthoring/SKILL.md' (canonical source: 'skills/doc-coauthoring.md') exactly, then apply them to: {{args}}"

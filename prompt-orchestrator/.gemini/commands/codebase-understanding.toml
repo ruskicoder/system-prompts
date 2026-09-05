@@ -1,0 +1,2 @@
+description = "Leverage the GitNexus knowledge graph and call traces to understand codebase structure, execution flows, symbol dependencies, and blast radius. Trigger with \"understand codebase\", \"trace call flow\"..."
+prompt = "This is the 'codebase-understanding' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/codebase-understanding/SKILL.md' (canonical source: 'skills/codebase-understanding.md') exactly, then apply them to: {{args}}"

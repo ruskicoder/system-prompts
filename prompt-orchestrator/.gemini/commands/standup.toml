@@ -1,0 +1,2 @@
+description = "Generate a standup update from recent activity. Use when preparing for daily standup, summarizing yesterday's commits and PRs and ticket moves, formatting work into yesterday/today/blockers, or..."
+prompt = "This is the 'standup' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/standup/SKILL.md' (canonical source: 'skills/engineering-standup.md') exactly, then apply them to: {{args}}"

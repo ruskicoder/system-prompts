@@ -1,0 +1,2 @@
+description = "Gather current, verified information from the web through systematic search queries, grounding checks, and authoritative source citation. Use for time-sensitive topics, API lookups, and fact-checking."
+prompt = "This is the 'web-search-research' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/web-search-research/SKILL.md' (canonical source: 'skills/web-search-research.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Full lifecycle spec-driven development methodology across three gated phases - Requirements (EARS-format acceptance criteria), Design (architecture, data models, edge cases), and Tasks (phased..."
+prompt = "This is the 'spec-driven' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/spec-driven/SKILL.md' (canonical source: 'workflows/spec-driven.md') exactly, then apply them to: {{args}}"

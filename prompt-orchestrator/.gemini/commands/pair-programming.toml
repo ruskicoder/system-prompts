@@ -1,0 +1,2 @@
+description = "Collaborative, user-driven interactive pair programming workflow. Explains concepts, proposes solutions without unsolicited edits, answers code questions, and applies changes only upon explicit..."
+prompt = "This is the 'pair-programming' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/pair-programming/SKILL.md' (canonical source: 'workflows/pair-programming.md') exactly, then apply them to: {{args}}"

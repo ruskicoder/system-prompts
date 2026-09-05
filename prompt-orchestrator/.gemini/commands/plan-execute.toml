@@ -1,0 +1,2 @@
+description = "Multi-phase plan-then-execute workflow for non-trivial features and refactorings. Enforces strict intent gating between read-only planning mode (GitNexus impact analysis, multi-axis solution mapping)..."
+prompt = "This is the 'plan-execute' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/plan-execute/SKILL.md' (canonical source: 'workflows/plan-execute.md') exactly, then apply them to: {{args}}"

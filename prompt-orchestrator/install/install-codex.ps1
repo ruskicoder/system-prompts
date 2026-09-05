@@ -7,32 +7,33 @@ if (-not $PSScriptRoot) {
 
 $OrchestratorDir = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot -ChildPath ".."))
 
-# Pre-flight Source Validation
-$RequiredSources = @("AGENT.md", "skills", "workflows", ".kiro\steering")
+$RequiredSources = @(".agents\skills", ".codex\prompts", "AGENTS.md")
 foreach ($Source in $RequiredSources) {
     $SourcePath = Join-Path -Path $OrchestratorDir -ChildPath $Source
     if (-not (Test-Path -Path $SourcePath)) {
-        Throw "Pre-flight validation failed: Source architectural footprint component '$Source' missing."
+        Throw "Pre-flight validation failed: '$Source' missing. Run: python tools\generate_integrations.py"
     }
 }
 
-$Target = "$env:USERPROFILE\.codex"
+$CodexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { "$env:USERPROFILE\.codex" }
+$AgentsSkillsHome = "$env:USERPROFILE\.agents\skills"
 
 Write-Host "====================================================" -ForegroundColor Cyan
 Write-Host " Codex Target Deployment                            " -ForegroundColor Cyan
 Write-Host "====================================================" -ForegroundColor Cyan
 Write-Host "--> Deploying configuration payload to: " -NoNewline -ForegroundColor Gray
-Write-Host "$Target" -ForegroundColor Yellow
+Write-Host "$CodexHome" -ForegroundColor Yellow
 
-New-Item -ItemType Directory -Force -Path "$Target\skills" | Out-Null
-New-Item -ItemType Directory -Force -Path "$Target\workflows" | Out-Null
-New-Item -ItemType Directory -Force -Path "$Target\steering" | Out-Null
+New-Item -ItemType Directory -Force -Path "$AgentsSkillsHome" | Out-Null
+Copy-Item -Path "$OrchestratorDir\.agents\skills\*" -Destination "$AgentsSkillsHome\" -Recurse -Force
 
-Copy-Item -Path "$OrchestratorDir\AGENT.md" -Destination "$Target\AGENTS.md" -Force
-Copy-Item -Path "$OrchestratorDir\skills\*" -Destination "$Target\skills\" -Recurse -Force
-Copy-Item -Path "$OrchestratorDir\workflows\*" -Destination "$Target\workflows\" -Recurse -Force
-Copy-Item -Path "$OrchestratorDir\.kiro\steering\*" -Destination "$Target\steering\" -Recurse -Force
+New-Item -ItemType Directory -Force -Path "$CodexHome\prompts" | Out-Null
+Copy-Item -Path "$OrchestratorDir\.codex\prompts\*" -Destination "$CodexHome\prompts\" -Recurse -Force
 
-Write-Host "    [OK] AGENTS.md, skills, workflows, and steering deployed successfully." -ForegroundColor Green
+Copy-Item -Path "$OrchestratorDir\AGENTS.md" -Destination "$CodexHome\AGENTS.md" -Force
+
+Write-Host "    [OK] Skills deployed to $AgentsSkillsHome (Agent Skills standard)." -ForegroundColor Green
+Write-Host "    [OK] Legacy prompts deployed to $CodexHome\prompts (use '/prompts:<name>')." -ForegroundColor Green
+Write-Host "    [OK] AGENTS.md deployed." -ForegroundColor Green
 Write-Host "`n[SUCCESS] Codex deployment complete.`n" -ForegroundColor Green
 Exit 0

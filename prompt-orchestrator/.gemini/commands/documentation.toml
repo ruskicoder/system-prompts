@@ -1,0 +1,2 @@
+description = "Write and maintain technical documentation. Trigger with \"write docs for\", \"document this\", \"create a README\", \"write a runbook\", \"onboarding guide\", or when the user needs help with any form of..."
+prompt = "This is the 'documentation' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/documentation/SKILL.md' (canonical source: 'skills/engineering-documentation.md') exactly, then apply them to: {{args}}"

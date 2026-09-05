@@ -1,0 +1,13 @@
+{
+  "name": "prompt-orchestrator",
+  "owner": {
+    "name": "prompt-orchestrator"
+  },
+  "plugins": [
+    {
+      "name": "prompt-orchestrator",
+      "source": "./",
+      "description": "Central AI Agent Orchestrator: routing, safety, and 49 specialized skills/workflows distilled from 73 leaked platform prompts."
+    }
+  ]
+}

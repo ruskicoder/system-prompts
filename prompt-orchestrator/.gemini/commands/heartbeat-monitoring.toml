@@ -1,0 +1,2 @@
+description = "Periodic background system health check, task integrity audit, artifact review, and security scan workflow. Generates daily digest summaries and returns HEARTBEAT_OK when state is unchanged."
+prompt = "This is the 'heartbeat-monitoring' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/heartbeat-monitoring/SKILL.md' (canonical source: 'workflows/heartbeat-monitoring.md') exactly, then apply them to: {{args}}"

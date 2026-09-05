@@ -1,4 +1,4 @@
-# install-all.ps1 - Master Installer Suite
+# install-all.ps1 - Master Installer Suite (global-scope installers)
 $ErrorActionPreference = "Continue"
 
 if (-not $PSScriptRoot) {
@@ -13,11 +13,25 @@ Write-Host "====================================================" -ForegroundCol
 Write-Host " Prompt Orchestrator Windows Setup Environment       " -ForegroundColor Cyan
 Write-Host "====================================================" -ForegroundColor Cyan
 
+# Regenerate derived integration files if Python + PyYAML are available.
+$PythonCmd = Get-Command python -ErrorAction SilentlyContinue
+if ($PythonCmd) {
+    & $PythonCmd.Source -c "import yaml" 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "`n--- Regenerating integrations (tools\generate_integrations.py) ---" -ForegroundColor Yellow
+        & $PythonCmd.Source (Join-Path -Path $OrchestratorDir -ChildPath "tools\generate_integrations.py")
+    }
+}
+
+# Global-scope installers only. install-project.ps1 and install-windsurf.ps1
+# target a specific project directory and are run separately:
+#   powershell install\install-project.ps1 -TargetDir C:\path\to\project
 $TargetsMap = [ordered]@{
+    "Claude / Claude Code"      = "install-claude.ps1"
     "Antigravity (Agent & IDE)" = "install-antigravity.ps1"
     "Gemini CLI"                = "install-gemini.ps1"
     "Codex"                     = "install-codex.ps1"
-    "Cursor Rules"              = "install-cursor.ps1"
+    "Cursor"                    = "install-cursor.ps1"
     "OpenClaw"                  = "install-openclaw.ps1"
     "OpenCode"                  = "install-opencode.ps1"
 }
@@ -37,12 +51,12 @@ $GlobalFailureFlag = $false
 foreach ($Platform in $TargetsMap.Keys) {
     $ScriptName = $TargetsMap[$Platform]
     $ScriptPath = Join-Path -Path $ScriptFolder -ChildPath $ScriptName
-    
+
     Write-Host "`n==> Thread Launching: Target $Platform ($ScriptName)" -ForegroundColor Yellow
-    
+
     try {
         $Process = Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`"" -NoNewWindow -PassThru -Wait
-        
+
         if ($Process.ExitCode -eq 0) {
             Write-Host "   Status: Platform link sequence verified successfully." -ForegroundColor Green
             $ResultsTable[$Platform] = "SUCCESS"
@@ -73,6 +87,9 @@ foreach ($Platform in $ResultsTable.Keys) {
 }
 
 Write-Host "====================================================" -ForegroundColor Cyan
+Write-Host "`nTo also install into a specific project (Cursor/OpenCode/Windsurf project scope), run:" -ForegroundColor Gray
+Write-Host "    powershell install\install-project.ps1 -TargetDir C:\path\to\project" -ForegroundColor Gray
+Write-Host "    powershell install\install-windsurf.ps1 -TargetDir C:\path\to\project" -ForegroundColor Gray
 
 if ($GlobalFailureFlag) {
     Write-Host "`n[FATAL] Deployment reported failures. Review log output above." -ForegroundColor Red

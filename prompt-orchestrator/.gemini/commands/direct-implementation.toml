@@ -1,0 +1,2 @@
+description = "Rapid single-turn direct implementation workflow for unambiguous, low-risk, single-file code changes and bug fixes with known root causes. Enforces pre-action checks and post-edit sanity verification."
+prompt = "This is the 'direct-implementation' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/direct-implementation/SKILL.md' (canonical source: 'workflows/direct-implementation.md') exactly, then apply them to: {{args}}"

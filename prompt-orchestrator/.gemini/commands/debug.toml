@@ -1,0 +1,2 @@
+description = "Structured debugging session — reproduce, isolate, diagnose, and fix. Trigger with an error message or stack trace, \"this works in staging but not prod\", \"something broke after the deploy\", or when..."
+prompt = "This is the 'debug' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/debug/SKILL.md' (canonical source: 'skills/engineering-debug.md') exactly, then apply them to: {{args}}"

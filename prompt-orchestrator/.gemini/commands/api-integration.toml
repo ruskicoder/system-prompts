@@ -1,0 +1,2 @@
+description = "Integrate with external APIs, REST, GraphQL, web services, SDKs, and third-party tools. Use when connecting external services, managing API keys securely, handling authentication (OAuth, JWT, API..."
+prompt = "This is the 'api-integration' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/api-integration/SKILL.md' (canonical source: 'skills/api-integration.md') exactly, then apply them to: {{args}}"
