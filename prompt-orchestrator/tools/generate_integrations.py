@@ -30,7 +30,8 @@ workflows/ and re-run this script instead):
     .opencode/commands/<id>.md          OpenCode  "/id"
     .cursor/commands/<id>.md            Cursor    "/id"
     .codex/prompts/<id>.md              Codex CLI "/prompts:id"
-    .gemini/commands/<id>.toml          Gemini CLI + Antigravity "/id"
+    .gemini/commands/<id>.toml          Gemini CLI "/id"
+    integrations/antigravity/prompt-orchestrator/  Antigravity global plugin
     .windsurf/workflows/<id>.md         Windsurf  "/id"
     AGENTS.md                           universal instructions fallback
     CLAUDE.md                           Claude Code project memory
@@ -61,11 +62,13 @@ except ImportError:  # pragma: no cover
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / "skills"
 WORKFLOWS_DIR = ROOT / "workflows"
+ANTIGRAVITY_PLUGIN = ROOT / "integrations" / "antigravity" / "prompt-orchestrator"
 
 FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n?", re.DOTALL)
 
 # Directories this script fully owns and regenerates on every run.
 GENERATED_DIRS = [
+    ANTIGRAVITY_PLUGIN,
     ROOT / ".agents" / "skills",
     ROOT / ".claude" / "skills",
     ROOT / ".opencode" / "skills",
@@ -429,7 +432,7 @@ def write_integrations_doc(entries: list[dict]) -> None:
         "| Cursor | `.cursor/rules/orchestrator.mdc` (always-on context) | `.cursor/commands/<name>.md` |",
         "| OpenCode | `.opencode/skills/<name>/SKILL.md`, `.claude/skills/…`, `.agents/skills/…` (native skill tool) | `.opencode/commands/<name>.md` |",
         "| Gemini CLI | `.agents/skills/<name>/SKILL.md` (Skills framework) | `.gemini/commands/<name>.toml` |",
-        "| Antigravity | `.agents/skills/<name>/SKILL.md` (Skills framework, shares Gemini CLI's open-standard support) | `.gemini/commands/<name>.toml` |",
+        "| Antigravity | Workspace: `.agents/skills/<name>/SKILL.md`; global: `~/.gemini/config/plugins/prompt-orchestrator/skills/<name>/SKILL.md` | Native skill invocation (browse `/`); no Gemini TOML commands required |",
         "| Windsurf | `.windsurf/rules/orchestrator.md` (always-on context) | `.windsurf/workflows/<name>.md` |",
         "| Any other Agent-Skills-compliant tool | `.agents/skills/<name>/SKILL.md` | n/a (falls back to auto-discovery) |",
         "| Anything else | `AGENTS.md` at repo root (plain-text fallback read by nearly every coding agent) | n/a |",
@@ -449,15 +452,22 @@ def write_integrations_doc(entries: list[dict]) -> None:
 
 
 def main() -> None:
+    entries = load_registry()
     for d in GENERATED_DIRS:
         if d.exists():
             shutil.rmtree(d)
         d.mkdir(parents=True, exist_ok=True)
 
-    entries = load_registry()
     print(f"Loaded {len(entries)} skills/workflows from skills/ and workflows/")
 
+    (ANTIGRAVITY_PLUGIN / "plugin.json").write_text(
+        json.dumps({"name": "prompt-orchestrator", "description":
+                    f"{len(entries)} reusable engineering skills and workflows."}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     for entry in entries:
+        write_skill_md(entry, ANTIGRAVITY_PLUGIN / "skills")
         write_skill_md(entry, ROOT / ".agents" / "skills")
         write_skill_md(entry, ROOT / ".claude" / "skills")
         write_skill_md(entry, ROOT / ".opencode" / "skills")

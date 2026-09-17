@@ -13,7 +13,7 @@ This repo ships **49 skills/workflows** as a single canonical source (`skills/*.
 | **Cursor** | `.cursor/rules/orchestrator.mdc` — always-on project context | `.cursor/commands/<name>.md` → `/<name>` |
 | **OpenCode** | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` — native `skill` tool discovers all three | `.opencode/commands/<name>.md` → `/<name>` |
 | **Gemini CLI** | `.agents/skills/<name>/SKILL.md` — Skills framework | `.gemini/commands/<name>.toml` → `/<name>` |
-| **Antigravity** | `.agents/skills/<name>/SKILL.md` — shares Gemini CLI's open-standard support | `.gemini/commands/<name>.toml` → `/<name>` |
+| **Antigravity** | Workspace: `.agents/skills/<name>/SKILL.md`; global: `~/.gemini/config/plugins/prompt-orchestrator/skills/<name>/SKILL.md` | Native skill invocation; browse `/` in a fresh session |
 | **Windsurf** | `.windsurf/rules/orchestrator.md` — always-on Cascade context | `.windsurf/workflows/<name>.md` → `/<name>` |
 | **Any other Agent-Skills-compliant tool** | `.agents/skills/<name>/SKILL.md` | — |
 | **Anything else** | `AGENTS.md` at the repo root — the plain-text fallback nearly every coding agent reads | — |
@@ -35,7 +35,7 @@ skills/*.md, workflows/*.md   (you edit these — 49 files, YAML frontmatter + i
                                                                 AGENTS.md, INTEGRATIONS.md
 ```
 
-**Never hand-edit the generated directories** (`.agents/`, `.claude/`, `.opencode/`, `.cursor/`, `.codex/`, `.gemini/`, `.windsurf/`, `AGENTS.md`, `CLAUDE.md`, `INTEGRATIONS.md`, `.claude-plugin/`). Edit `skills/*.md` or `workflows/*.md`, then re-run:
+**Never hand-edit the generated directories** (`.agents/`, `.claude/`, `.opencode/`, `.cursor/`, `.codex/`, `.gemini/`, `.windsurf/`, `integrations/antigravity/`, `AGENTS.md`, `CLAUDE.md`, `INTEGRATIONS.md`, `.claude-plugin/`). Edit `skills/*.md` or `workflows/*.md`, then re-run:
 
 ```bash
 python3 tools/generate_integrations.py
@@ -63,7 +63,8 @@ python3 skills/validate_skills.py
 | `.opencode/skills/`, `.opencode/commands/` | **Generated.** OpenCode native skills + explicit slash commands |
 | `.cursor/commands/`, `.cursor/rules/` | **Generated.** Cursor slash commands + always-on rule |
 | `.codex/prompts/` | **Generated.** Codex CLI legacy custom prompts (guaranteed `/prompts:<name>`) |
-| `.gemini/commands/` | **Generated.** TOML slash commands for Gemini CLI and Antigravity |
+| `.gemini/commands/` | **Generated.** TOML slash commands for Gemini CLI |
+| `integrations/antigravity/prompt-orchestrator/` | **Generated.** Antigravity plugin manifest and all skills/workflows as native skill folders |
 | `.windsurf/workflows/`, `.windsurf/rules/` | **Generated.** Windsurf Cascade workflows + always-on rule |
 | `.claude-plugin/` | **Generated.** Claude Code plugin marketplace manifest (`/plugin marketplace add .` then `/plugin install prompt-orchestrator@prompt-orchestrator`) |
 | `tools/generate_integrations.py` | The generator — re-run after editing any skill/workflow |
@@ -107,7 +108,7 @@ bash install/install-codex.sh         # ~/.agents/skills + ~/.codex/prompts + AG
 bash install/install-cursor.sh        # ~/.cursor/commands + ~/.cursor/rules
 bash install/install-opencode.sh      # ~/.config/opencode/{skills,commands}
 bash install/install-gemini.sh        # ~/.gemini/commands (TOML) + ~/.agents/skills + GEMINI.md
-bash install/install-antigravity.sh   # ~/.gemini/antigravity{,-ide}/commands + ~/.agents/skills
+bash install/install-antigravity.sh   # ~/.gemini/config/plugins/prompt-orchestrator
 bash install/install-openclaw.sh      # ~/.openclaw
 
 # Windsurf and single-project setups are per-project, not global:
@@ -133,6 +134,56 @@ powershell .\install\install-gemini.ps1
 powershell .\install\install-antigravity.ps1
 powershell .\install\install-openclaw.ps1
 ```
+
+### Antigravity plugin installation and verification
+
+The Antigravity installer requires **Python 3.8+**, using only its standard library.
+PowerShell searches for `python3`, `python`, then the Windows `py -3` launcher.
+Generating and validating repository content additionally requires PyYAML, as before.
+
+The generated package contains `plugin.json` and 49 `skills/<name>/SKILL.md` files
+(39 skills and 10 workflows). Both installers validate exact registry membership and
+compare every skill with its generated source before writing the destination.
+Installation stages a complete package, then replaces only `prompt-orchestrator`.
+
+- Linux/macOS: `~/.gemini/config/plugins/prompt-orchestrator/`
+- Windows: `%USERPROFILE%\.gemini\config\plugins\prompt-orchestrator\`
+- Isolated Bash test: `bash install/install-antigravity.sh --config-dir "/tmp/antigravity test/config"`
+- Isolated PowerShell test: `powershell -File install\install-antigravity.ps1 -ConfigDir "$env:TEMP\antigravity test\config"`
+
+These paths follow Google's [plugin documentation](https://antigravity.google/docs/plugins)
+and [installation codelab](https://codelabs.developers.google.com/cloud-dev-plugin-agy?hl=en).
+The [CLI reference](https://antigravity.google/docs/cli/plugins/) lists a different
+legacy-looking path; verify CLI discovery on the installed version rather than
+assuming parity. Workspace installations continue using `.agents/skills`.
+
+Existing plugins are preserved under `~/.gemini/config/plugin-backups/` with a
+unique suffix, outside plugin discovery. The installer prints the exact backup
+path. For rollback, close Antigravity, move the new `plugins/prompt-orchestrator`
+directory outside `plugins/`, then move the printed backup to
+`plugins/prompt-orchestrator`. For a first installation, move the new plugin outside
+`plugins/` to undo it. Do not move or remove sibling plugins.
+
+The installer leaves old Antigravity commands/workflows, shared `~/.agents/skills`,
+and `~/.gemini/GEMINI.md` untouched. It installs skills only; global orchestrator
+rules are outside this fix. Workflows are included as skills, following Google's
+[migration guidance](https://antigravity.google/docs/migration/workflows-to-skills/).
+
+After installing, open a **fresh session outside this repository**. In Settings →
+Customizations, confirm the plugin skills are listed. Browse `/` and load both a
+regular skill and `plan-execute`, checking that their source is the installed plugin.
+If `agy` is available, also inspect `agy plugin list` and test skill loading in a
+fresh CLI session. A successful file copy alone does not prove runtime discovery.
+
+Run regression checks from `prompt-orchestrator/`:
+
+```bash
+python3 -B skills/validate_skills.py
+python3 -B -m unittest discover -s install -p 'test_*.py' -v
+```
+
+The PowerShell entrypoint test is skipped when neither `pwsh` nor `powershell`
+is available; run the same suite on Windows to verify the native entrypoint.
 
 ### Claude Code plugin marketplace (alternative to install-claude.sh)
 

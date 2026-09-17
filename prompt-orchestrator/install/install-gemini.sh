@@ -19,7 +19,7 @@ mkdir -p "${TARGET_DIR}/commands" "${AGENTS_SKILLS_HOME}"
 # TOML slash commands ("/name")
 cp -r "${ORCHESTRATOR_DIR}/.gemini/commands/"* "${TARGET_DIR}/commands/"
 
-# Agent Skills standard (shared with Antigravity, Codex, OpenCode, etc.)
+# Agent Skills standard (shared with Codex, OpenCode, etc.)
 cp -r "${ORCHESTRATOR_DIR}/.agents/skills/"* "${AGENTS_SKILLS_HOME}/"
 
 # Gemini CLI project memory file

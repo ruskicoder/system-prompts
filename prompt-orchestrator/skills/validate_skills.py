@@ -16,6 +16,7 @@ Pass --skip-generated to validate only skills/ and workflows/.
 """
 
 import re
+import importlib.util
 import sys
 import yaml
 from pathlib import Path
@@ -230,6 +231,18 @@ def main():
             total_failed += f
 
         if not skip_generated:
+            helper_path = root_dir / "install/antigravity_plugin.py"
+            spec = importlib.util.spec_from_file_location("antigravity_plugin", helper_path)
+            helper = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(helper)
+            try:
+                helper.validate_package(root_dir / helper.PACKAGE_PATH, root_dir)
+                p, f = validate_generated_dir(root_dir / helper.PACKAGE_PATH / "skills")
+                total_passed += p + 1
+                total_failed += f
+            except (OSError, ValueError, KeyError, TypeError) as error:
+                print(f"[FAIL] Antigravity plugin: {error}")
+                total_failed += 1
             for rel in GENERATED_SKILL_DIRS:
                 generated_dir = root_dir / rel
                 if generated_dir.exists():
