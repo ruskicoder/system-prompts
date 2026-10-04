@@ -6,7 +6,7 @@ owner: unassigned
 summary: "The docs-scaffold skill and its CLI."
 kind: module
 sources: [skills/docs-scaffold.md, skills/docs-scaffold/**]
-verified: {commit: "", date: ""}
+verified: {commit: 3a00f10, date: 2026-10-04}
 ---
 
 # docs-scaffold
