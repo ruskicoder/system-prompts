@@ -14,16 +14,15 @@ docs-scaffold skill added (`skills/docs-scaffold.md`, CLI in `skills/docs-scaffo
 
 ## Next steps
 
-- Review and commit the change set.
-- After committing, review and `verify` the catalog, generator, installers, and docs-scaffold sections.
-- Write design.md and tests.md that are still `todo`, plus glossary, operations and verification docs.
+- Write the design.md and tests.md pages still marked `todo`, plus glossary, operations and verification docs.
 - Decide whether to add a Kiro steering pointer to `docs/README.md`.
+- Run the PowerShell installers on Windows; they were not executed here (no PowerShell).
 
 ## Last sync
 
 <!-- docs-scaffold:sync:start -->
-- last_sync: 2026-10-04T16:03:07+07:00
-- head: 2e9e22a
-- journal: 20261004-160032.md entry 007 hash 6e558b628ad62ed8
-- health: 0 error, 4 warn, 17 info
+- last_sync: 2026-10-04T16:13:25+07:00
+- head: 3a00f10
+- journal: 20261004-161156.md entry 005 hash 473ae194b4e85f2a
+- health: 0 error, 0 warn, 17 info
 <!-- docs-scaffold:sync:end -->
