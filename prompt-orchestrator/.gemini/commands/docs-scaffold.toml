@@ -1,0 +1,2 @@
+description = "Scaffold and maintain documentation as a single source of truth (SSOT) for humans and AI agents, in embedded (docs inside the code repo, Kiro specs) or standalone (separate docs repo) layouts. Detects..."
+prompt = "This is the 'docs-scaffold' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/docs-scaffold/SKILL.md' (canonical source: 'skills/docs-scaffold.md') exactly, then apply them to: {{args}}"

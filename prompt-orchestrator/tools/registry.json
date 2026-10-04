@@ -140,6 +140,13 @@
     "argument_hint": null
   },
   {
+    "id": "docs-scaffold",
+    "kind": "skill",
+    "source": "skills/docs-scaffold.md",
+    "description": "Scaffold and maintain documentation as a single source of truth (SSOT) for humans and AI agents, in embedded (docs inside the code repo, Kiro specs) or standalone (separate docs repo) layouts. Detects gaps, stale sections, broken links and edited history with a warn-only CLI; preserves wrong or changed specs in .deprecated/; keeps an append-only, hash-chained session journal in the git-ignored ignore/ folder so agents can resume and audit their last steps.",
+    "argument_hint": "<init | check | new | verify | deprecate | session> [args]"
+  },
+  {
     "id": "documentation",
     "kind": "skill",
     "source": "skills/engineering-documentation.md",

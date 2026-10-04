@@ -27,17 +27,27 @@ def validate_package(package, root):
         for name in names
     ) or len(set(names)) != len(names):
         raise ValueError("Invalid or empty skill registry")
+    # Each skill folder must mirror its generated .agents/skills/<name>/ folder
+    # exactly: SKILL.md plus any companion files (scripts, templates).
     expected = {Path("plugin.json"), Path("skills")}
+    references = {}
     for name in names:
+        source = root / ".agents/skills" / name
         expected.update({Path("skills") / name, Path("skills") / name / "SKILL.md"})
+        for ref in source.rglob("*") if source.is_dir() else []:
+            target = Path("skills") / name / ref.relative_to(source)
+            expected.add(target)
+            if ref.is_file():
+                references[target] = ref
     actual = {p.relative_to(package) for p in package.rglob("*")}
     if actual != expected or any(p.is_symlink() for p in package.rglob("*")):
         raise ValueError("Plugin contents do not match the registry (missing, extra, or linked files)")
     for name in names:
-        installed = package / "skills" / name / "SKILL.md"
-        reference = root / ".agents/skills" / name / "SKILL.md"
-        if not installed.is_file() or installed.read_bytes() != reference.read_bytes():
+        if not (package / "skills" / name / "SKILL.md").is_file():
             raise ValueError(f"Skill differs from generated source: {name}")
+    for target, ref in references.items():
+        if (package / target).read_bytes() != ref.read_bytes():
+            raise ValueError(f"Skill differs from generated source: {target.parts[1]}")
     return len(names)
 
 

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "type": "embedded",
+  "docs_root": "docs",
+  "changes_dir": ".kiro/specs",
+  "ignore_dir": "ignore",
+  "repos": {},
+  "section_size": [
+    2,
+    10
+  ],
+  "unit_kinds": {
+    "module": [
+      "design.md",
+      "tests.md"
+    ]
+  }
+}
