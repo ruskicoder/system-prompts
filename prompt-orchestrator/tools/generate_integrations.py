@@ -120,6 +120,9 @@ def parse_entry(path: Path) -> dict:
         )
 
     kind = "workflow" if path.parent.name == "workflows" else "skill"
+    # Optional companion files (scripts, templates) live in a sibling folder
+    # named after the skill and are copied next to every generated SKILL.md.
+    assets = path.parent / name
 
     return {
         "id": name,
@@ -129,6 +132,7 @@ def parse_entry(path: Path) -> dict:
         "argument_hint": argument_hint,
         "license": license_,
         "body": body.rstrip() + "\n",
+        "assets": assets if assets.is_dir() else None,
     }
 
 
@@ -188,6 +192,9 @@ def write_skill_md(entry: dict, base_dir: Path) -> None:
             "this one. -->\n\n"
         )
     (skill_dir / "SKILL.md").write_text(fm + "\n" + header + entry["body"], encoding="utf-8")
+    if entry.get("assets"):
+        shutil.copytree(entry["assets"], skill_dir, dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
 
 
 # ---------------------------------------------------------------------------
@@ -363,7 +370,7 @@ def write_claude_plugin(entries: list[dict]) -> None:
     plugin_json = {
         "name": "prompt-orchestrator",
         "description": (
-            "Central AI Agent Orchestrator: routing, safety, and 49 "
+            f"Central AI Agent Orchestrator: routing, safety, and {len(entries)} "
             "specialized skills/workflows distilled from 73 leaked "
             "platform prompts."
         ),

@@ -81,6 +81,14 @@ class PluginInstallationTests(unittest.TestCase):
             self.install()
         self.assertFalse(self.config.exists())
 
+    def test_changed_companion_file_is_rejected(self):
+        companion = next(p for p in (self.package / "skills").rglob("*")
+                         if p.is_file() and p.name != "SKILL.md")
+        companion.write_text("corrupted")
+        with self.assertRaises(ValueError):
+            self.install()
+        self.assertFalse(self.config.exists())
+
     def test_extra_skill_is_rejected(self):
         (self.package / "skills/stale").mkdir()
         with self.assertRaises(ValueError):
