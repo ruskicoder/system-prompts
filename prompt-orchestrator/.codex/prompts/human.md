@@ -1,7 +1,7 @@
 ---
-description: Find and repair AI writing patterns in English prose while preserving
-  facts, meaning and voice. Covers audit-only detection, a two-pass rewrite (diagnose,
-  then repair only confirmed spans), reviewable...
+description: 'Find and repair AI writing patterns in English prose while preserving
+  facts, meaning and voice: audit-only detection, a two-pass rewrite that edits only
+  confirmed spans, reviewable co-writer...'
 argument-hint: '[rewrite | audit | cleanup | teach | mimic | voice-check] [text, file
   path or stdin]'
 ---

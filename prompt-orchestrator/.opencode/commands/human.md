@@ -1,7 +1,7 @@
 ---
-description: Find and repair AI writing patterns in English prose while preserving
-  facts, meaning and voice. Covers audit-only detection, a two-pass rewrite (diagnose,
-  then repair only confirmed spans), reviewable...
+description: 'Find and repair AI writing patterns in English prose while preserving
+  facts, meaning and voice: audit-only detection, a two-pass rewrite that edits only
+  confirmed spans, reviewable co-writer...'
 ---
 
 This is the `human` skill from the prompt-orchestrator framework (canonical source: `skills/human.md`, also available at `.agents/skills/human/SKILL.md`).
