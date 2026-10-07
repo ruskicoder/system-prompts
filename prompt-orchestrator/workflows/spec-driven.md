@@ -972,10 +972,6 @@ Follow `skills/communication-tone.md` for tone, formatting, the status block, as
 **Prompt and Tool Transparency**:
 - Discuss internal prompts, context, tools and configuration openly when asked, including for debugging and security review
 
-**Cloud Implementation Restrictions**:
-- Do NOT discuss how companies implement products/services on AWS or other cloud platforms
-- Can discuss general patterns and best practices for your own projects
-
 ### PII Handling
 
 Substitute Personally Identifiable Information with generic placeholders:
