@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">SKILL | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/research-answer/SKILL"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="SKILL | Awesome System Prompts"><meta data-rh="true" name="description" content="Systematic web and codebase research workflow for information queries and fact verification. Gathers authoritative sources, executes query chains, evaluates evidence, and synthesizes grounded answers with inline citations."><meta data-rh="true" property="og:description" content="Systematic web and codebase research workflow for information queries and fact verification. Gathers authoritative sources, executes query chains, evaluates evidence, and synthesizes grounded answers with inline citations."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/research-answer/SKILL"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/research-answer/SKILL" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/research-answer/SKILL" hreflang="x-default"><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.ad2fa58a.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.6b699611.js" defer="defer"></script>
 <script src="/system-prompts/assets/js/main.7519a067.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -38,7 +38,7 @@
 
 
 
-<table><thead><tr><th>Criteria</th><th>Match</th></tr></thead><tbody><tr><td>Intention</td><td>information_query, fact_check, research</td></tr><tr><td>Complexity</td><td>varies — from simple FAQ to deep research</td></tr><tr><td>Power Mode</td><td>Eco (simple) or Balanced/Deep (complex)</td></tr><tr><td>Clarity</td><td>user wants information, not code changes</td></tr></tbody></table>
+<table><thead><tr><th>Criteria</th><th>Match</th></tr></thead><tbody><tr><td>Intention</td><td>information_query, fact_check, research</td></tr><tr><td>Complexity</td><td>varies: from simple FAQ to deep research</td></tr><tr><td>Power Mode</td><td>Eco (simple) or Balanced/Deep (complex)</td></tr><tr><td>Clarity</td><td>user wants information, not code changes</td></tr></tbody></table>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="required-skills">Required Skills<a href="#required-skills" class="hash-link" aria-label="Direct link to Required Skills" title="Direct link to Required Skills" translate="no">​</a></h2>
 <ul>
 <li>web-search-research</li>
@@ -52,7 +52,7 @@
 <li class="task-list-item"><input type="checkbox" disabled=""> What exactly is the user asking? Factual question, comparison, deep research?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Is this time-sensitive? (current events, recent changes = MUST search)</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> What do I already know vs what do I need to verify?</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> Never fabricate citations or sources — if unsure, search</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Never fabricate citations or sources: if unsure, search</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-1-determine-research-depth">Step 1: Determine Research Depth<a href="#step-1-determine-research-depth" class="hash-link" aria-label="Direct link to Step 1: Determine Research Depth" title="Direct link to Step 1: Determine Research Depth" translate="no">​</a></h3>
 <ul>
@@ -85,7 +85,7 @@
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-5-cite--answer">Step 5: Cite &amp; Answer<a href="#step-5-cite--answer" class="hash-link" aria-label="Direct link to Step 5: Cite &amp; Answer" title="Direct link to Step 5: Cite &amp; Answer" translate="no">​</a></h3>
 <ul>
 <li>Every factual claim gets a citation: <code>[source:N]</code></li>
-<li>Answer directly — don&#x27;t start with &quot;Great question!&quot;</li>
+<li>Answer directly: don&#x27;t start with &quot;Great question!&quot;</li>
 <li>Structure: summary first, then details</li>
 <li>For complex topics: use headings to organize</li>
 <li>Offer to go deeper if user wants more</li>
@@ -97,12 +97,12 @@
 <li class="task-list-item"><input type="checkbox" disabled=""> Did I search before answering if info may have changed?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Am I distinguishing confirmed facts from speculation or uncertainty?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Have I presented multiple viewpoints for contested topics? <em>(Anthropic evenhandedness)</em></li>
-<li class="task-list-item"><input type="checkbox" disabled=""> Never cite fabricated IDs — verify each citation exists</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Never cite fabricated IDs: verify each citation exists</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-6-final-answer">Step 6: Final Answer<a href="#step-6-final-answer" class="hash-link" aria-label="Direct link to Step 6: Final Answer" title="Direct link to Step 6: Final Answer" translate="no">​</a></h3>
 <ul>
 <li>Wrap final answer in <code>&lt;answer&gt;</code> tags (Perplexity pattern)</li>
-<li>NEVER include bibliography at end — citations are inline only</li>
+<li>NEVER include bibliography at end: citations are inline only</li>
 <li>NEVER cite fabricated information</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="token-budget">Token Budget<a href="#token-budget" class="hash-link" aria-label="Direct link to Token Budget" title="Direct link to Token Budget" translate="no">​</a></h2>
@@ -116,7 +116,7 @@
 <ul>
 <li>Fabricating citations (most dangerous error)</li>
 <li>Overconfident claims from single source</li>
-<li>Confirmation bias — only citing sources that agree</li>
+<li>Confirmation bias: only citing sources that agree</li>
 <li>Presenting speculation as fact</li>
 <li>Not searching when info is time-sensitive</li>
 <li>Relying on training data for current events</li>
