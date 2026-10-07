@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-orchestrator docs-version-current docs-doc-page docs-doc-id-integrations/antigravity/prompt-orchestrator/skills/human/references/voice" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.9.1">
+<title data-rh="true">Teach and mimic workflows | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/human/references/voice"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="Teach and mimic workflows | Awesome System Prompts"><meta data-rh="true" name="description" content="Voice building from samples, the calibration game, voiced drafting, voice check and the refine loop."><meta data-rh="true" property="og:description" content="Voice building from samples, the calibration game, voiced drafting, voice check and the refine loop."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/human/references/voice"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/human/references/voice" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/human/references/voice" hreflang="x-default"><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
+<script src="/system-prompts/assets/js/runtime~main.ad2fa58a.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/main.7519a067.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"light"),document.documentElement.setAttribute("data-theme-choice",t||"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/system-prompts/img/logo.svg"><link rel="preload" as="image" href="/system-prompts/img/logo-dark.svg"><div role="region" aria-label="Skip to main content"><a class="skipToContent_ikys" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/system-prompts/"><div class="navbar__logo"><img src="/system-prompts/img/logo.svg" alt="System Prompts" class="themedComponent_uZsf themedComponent--light_F2Ib"><img src="/system-prompts/img/logo-dark.svg" alt="System Prompts" class="themedComponent_uZsf themedComponent--dark_ecaT"></div><b class="navbar__title text--truncate">System Prompts</b></a><a class="navbar__item navbar__link" href="/system-prompts/orchestrator">Orchestrator</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/ruskicoder/system-prompts" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_T7Rq"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_MSuh colorModeToggle_Bb3Z"><button class="clean-btn toggleButton_z5bN toggleButtonDisabled_xZ6p" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_e8r5 lightToggleIcon_j5Ut"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_e8r5 darkToggleIcon_zsiq"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_e8r5 systemToggleIcon_Hglj"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Eek8"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_S5id"><div class="docsWrapper_aK5g"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_dNSX" type="button"></button><div class="docRoot_OUYp"><main class="docMainContainer_yLsV docMainContainerEnhanced_W69y"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_l_FJ"><div class="docItemContainer_z0oT"><article><div class="tocCollapsible_j797 theme-doc-toc-mobile tocMobile_QVP8"><button type="button" class="clean-btn tocCollapsibleButton_lDUa">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Teach and mimic workflows</h1></header>
+<p>Voice building from samples, the calibration game, voiced drafting, voice check and the refine loop.</p>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="teach-workflow">Teach workflow<a href="#teach-workflow" class="hash-link" aria-label="Direct link to Teach workflow" title="Direct link to Teach workflow" translate="no">​</a></h2>
+<p>Build a reusable voice from a writer&#x27;s samples. You drive it end to end; the user supplies only approvals and answers, never a directory or a command. Store everything under <code>.human/voice/&lt;name&gt;/</code> in the working directory and keep that folder out of version control unless the user decides otherwise.</p>
+<ol>
+<li>Gather samples. If the user offers none, harvest them from their chat transcripts and from folders they name as their own writing. Supported transcript sources are Claude Code (<code>~/.claude/projects/**/*.jsonl</code>) and Codex CLI or Desktop (<code>~/.codex/sessions/**/rollout-*.jsonl</code>), detected by content shape:</li>
+</ol>
+<div class="language-bash codeBlockContainer_vJsH theme-code-block" style="--prism-background-color:hsl(230, 1%, 98%);--prism-color:hsl(230, 8%, 24%)"><div class="codeBlockContent_i8AT"><pre tabindex="0" class="prism-code language-bash codeBlock_Ydl3 thin-scrollbar" style="background-color:hsl(230, 1%, 98%);color:hsl(230, 8%, 24%)"><code class="codeBlockLines_LSfd"><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">python3 &lt;skill-dir&gt;/scripts/human_tool.py harvest SOURCE [SOURCE...] -o candidates.json</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">python3 &lt;skill-dir&gt;/scripts/human_tool.py harvest-classify --candidates candidates.json --mode heuristic</span><br></span></code></pre></div></div>
+<p>The adapters keep only explicitly user-authored turns. They drop assistant, developer, tool and reasoning turns, and injected content such as a pasted <code>AGENTS.md</code> or an environment banner (counted as <code>instruction-injection</code>). Every kept candidate runs through the scanners: a hard hit, or two or more scanner categories, marks it <code>suspect_ai</code>, ranked last. Show the ranked candidates with sources and flags. The user approves or rejects each one. Never auto-approve a <code>suspect_ai</code> candidate: human review is the defense against assistant text leaking into the voice. Heavy &quot;um/uh&quot; text is marked <code>dictated</code> and can still be kept. Harvesting stays local. Copy only approved samples into <code>.human/voice/&lt;name&gt;/samples/</code> as <code>.txt</code> or <code>.md</code> (convert other formats first).</p>
+<ol start="2">
+<li>
+<p>Check the sample requirements: at least 5 documents and 2,000 to 3,000 words in the same genre as the target writing. Thinner or cross-genre samples set <code>low_confidence</code>. Tell the user the voice is provisional and ask for more same-genre samples before trusting a mimic. Do not teach on blog posts and then score legal memos.</p>
+</li>
+<li>
+<p>Build the profile and card:</p>
+</li>
+</ol>
+<div class="language-bash codeBlockContainer_vJsH theme-code-block" style="--prism-background-color:hsl(230, 1%, 98%);--prism-color:hsl(230, 8%, 24%)"><div class="codeBlockContent_i8AT"><pre tabindex="0" class="prism-code language-bash codeBlock_Ydl3 thin-scrollbar" style="background-color:hsl(230, 1%, 98%);color:hsl(230, 8%, 24%)"><code class="codeBlockLines_LSfd"><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">python3 &lt;skill-dir&gt;/scripts/human_tool.py profile samples/ -o profile.json</span><br></span><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">python3 &lt;skill-dir&gt;/scripts/human_tool.py card --profile profile.json --samples samples/ --out . --name NAME --provenance</span><br></span></code></pre></div></div>
+<p>The profile is the machine fingerprint the scorer uses (character 3-grams, function-word rates, sentence-length distribution, punctuation, contractions, lexical diversity, word length). The card is what the writing model follows: <code>card.md</code> (under 300 words: rhythm, contraction habits with real examples, punctuation used and avoided, top openers, a Never list, and an index of situation sheets) plus one <code>card/&lt;situation&gt;.md</code> sheet per covered situation with 1 to 3 verbatim snippets and measured markers. <code>card</code> refuses (exit 2) when the profile does not describe the supplied samples, so a stale profile cannot drive a card. <code>--provenance</code> writes <code>provenance.json</code> (per-sample sha256, word counts, low-confidence flag).</p>
+<ol start="4">
+<li>Close coverage gaps. A situation with no sample evidence gets no sheet and is listed as Uncovered: the card never invents a voice. <code>card --coverage</code> prints the coverage matrix without writing files. Ask only for the situations the target writing needs:</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Situation</th><th>Ask the user</th></tr></thead><tbody><tr><td>explaining-technical</td><td>&quot;Share something you wrote explaining how a thing works or why it behaves that way.&quot;</td></tr><tr><td>anecdote</td><td>&quot;Share a few sentences telling a small story about something that happened to you.&quot;</td></tr><tr><td>argument</td><td>&quot;Share something where you defended a claim.&quot;</td></tr><tr><td>disagreement</td><td>&quot;Share something where you pushed back on an idea.&quot;</td></tr><tr><td>praise</td><td>&quot;Share something where you recommended something you liked.&quot;</td></tr><tr><td>hedging-uncertainty</td><td>&quot;Share something where you were unsure and said so.&quot;</td></tr><tr><td>numbers-data</td><td>&quot;Share something you wrote that works with quantities or measurements.&quot;</td></tr><tr><td>addressing-reader</td><td>&quot;Share a note or instructions written to a reader.&quot;</td></tr></tbody></table>
+<p>Openings and closings are covered as soon as one document exists.</p>
+<ol start="5">
+<li>
+<p>Calibration game, when samples stay thin. Five dimensions can be varied by deterministic, fact-preserving transforms: <code>contractions</code>, <code>em_dash</code>, <code>sentence_length</code>, <code>connectives</code>, <code>staccato</code>.</p>
+<ul>
+<li>Pick 60 to 150 word base passages from the user&#x27;s own approved samples.</li>
+<li>Ask <code>calibrate-score --next</code> which dimension to play, then generate a pair with <code>calibrate-pairs generate --base passage.txt --dimension DIM --seed N</code>, raising the seed each round. Exit 3 means the passage cannot express that dimension: pick another passage or dimension.</li>
+<li>Show the two texts as A and B without naming the dimension. Randomize which side is shown first with a seeded shuffle per round and record the mapping. Accept &quot;neither&quot;.</li>
+<li>Append one line per round to <code>.human/voice/&lt;name&gt;/preferences.jsonl</code>: <code>{&quot;pair_id&quot;, &quot;dimension&quot;, &quot;choice&quot;: &quot;a|b|neither&quot;, &quot;ts&quot;, &quot;a_label&quot;, &quot;b_label&quot;}</code>, taking the labels from the generator&#x27;s <code>transform_applied</code>. Re-recording the same <code>pair_id</code> is safe (latest wins).</li>
+<li>Stop a dimension at confidence 0.7 or 9 observations. Below 5 observations it reports <code>insufficient</code>; a <code>tied</code> result means play more rounds.</li>
+<li>With a profile present, run <code>calibrate-score --preferences prefs.jsonl --profile profile.json</code>. Show every conflict between a stated preference and a measured value to the user verbatim and let them choose. Never resolve one silently.</li>
+<li>A variant may trip the scanner (a staccato pole reads as <code>anti_slop_register</code>). Do not hide that pole. If the user keeps choosing it, tell them once that their preference overrides the default register guard, and mark that dimension &quot;user-preference overrides register guard&quot; on the card. Card claims from the game carry provenance <code>stated-preference</code>; claims from samples carry <code>measured-from-samples</code>.</li>
+</ul>
+</li>
+<li>
+<p>Prove the loop with a scored demo: mimic one paragraph, run <code>voice-score</code> and the scanners, and show the results. A voiced demo that trips a removal gate fails; do not ship it with an excuse.</p>
+</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_O4hB" id="mimic-workflow">Mimic workflow<a href="#mimic-workflow" class="hash-link" aria-label="Direct link to Mimic workflow" title="Direct link to Mimic workflow" translate="no">​</a></h2>
+<ol>
+<li>Load <code>card.md</code> (always) and the one <code>card/&lt;situation&gt;.md</code> sheet the task needs.</li>
+<li>Draft or rewrite in that voice. Follow measured markers and verbatim snippets. Do not invent a habit the samples do not support.</li>
+<li>Run every removal gate on the output (<code>scan</code>, <code>structure</code>, <code>readability</code>, <code>preserve</code> and <code>diff</code> against the original draft).</li>
+<li>Score the voice: <code>python3 &lt;skill-dir&gt;/scripts/human_tool.py voice-score --profile profile.json --impostors IMPOSTORS/ --seed 7 --samples samples/ draft.md</code>.</li>
+</ol>
+<p>The rule: a mimic that scores well on voice but trips a removal gate is rejected. Voice never buys an exemption from the core contract. Meaning preservation against the original draft is its own hard gate and is never blended into the voice score.</p>
+<p>Voice check (&quot;does this sound like me?&quot;): run <code>voice-score</code> only and change nothing. Report the composite (lower is closer to the writer), the GI rank, and the two or three metric deltas that explain the score in plain words (&quot;your sentences run longer than usual; contractions match&quot;). Check drafts often; commission rewrites rarely.</p>
+<p>Scoring: composite = <code>0.5 * (1 - GI) + 0.5 * zsum</code>. GI (General Impostors) is the share of random feature-subset trials in which the draft beats every impostor at resembling the profile. <code>zsum</code> is the weighted per-feature distance normalized against the impostor pool and clipped to plus or minus 3. Both halves reward beating plausible other writers, which is what defeats a draft stuffed with the writer&#x27;s markers. Drafts under 150 words are <code>low_confidence</code>. <code>--samples</code> adds a copy gate against verbatim lifting. The composite is a guide, not an oracle: treat per-draft deltas as the signal and under-claim.</p>
+<p>Refine loop, only when single passes keep landing short:</p>
+<div class="language-bash codeBlockContainer_vJsH theme-code-block" style="--prism-background-color:hsl(230, 1%, 98%);--prism-color:hsl(230, 8%, 24%)"><div class="codeBlockContent_i8AT"><pre tabindex="0" class="prism-code language-bash codeBlock_Ydl3 thin-scrollbar" style="background-color:hsl(230, 1%, 98%);color:hsl(230, 8%, 24%)"><code class="codeBlockLines_LSfd"><span class="token-line" style="color:hsl(230, 8%, 24%)"><span class="token plain">python3 &lt;skill-dir&gt;/scripts/human_tool.py refine --samples samples/ --draft draft.md --out OUT --impostors IMPOSTORS/ --seed 1 --candidates-dir CANDS/</span><br></span></code></pre></div></div>
+<ul>
+<li>Samples are split by document into a retrieval pool A (about 60%) and a held-out acceptance split DEV (about 40%). Fewer than 5 documents is refused.</li>
+<li>Agent-hosted mode (works on any platform): for iteration <code>i</code>, write 2 to 4 candidates to <code>CANDS/iter&lt;i&gt;/*.md</code> yourself, each drafted from the draft, the A-split card, the 2 nearest A samples and the previous iteration&#x27;s directives in <code>OUT/report.json</code>, then rerun the command. Alternatively pass <code>--generate-cmd &quot;&lt;your CLI that reads a prompt on stdin and prints a draft&gt;&quot;</code> and omit <code>--candidates-dir</code>; the default command is <code>claude -p</code>.</li>
+<li>Hard gates discard a candidate regardless of score: scanner-clean, structure-clean, draft-to-candidate preservation, no copying from A (4-gram and longest-common-substring), and at least 150 words. Survivors are scored on DEV; an iteration is accepted only if DEV improves by <code>--min-delta</code>, and the best result never regresses.</li>
+<li>It stops at the iteration cap, after <code>--patience</code> iterations without a DEV gain, or on divergence: the A score improving while DEV worsens for two consecutive iterations. Divergence is the reward-hacking signature (fitting the samples&#x27; topics, not the writer&#x27;s style); the loop halts and sets <code>reward_hacking_warning</code>.</li>
+<li>Outputs: <code>OUT/final.md</code>, the amended card <code>OUT/voice-card.refined.md</code> and <code>OUT/report.json</code>. Compare against zero-shot, few-shot and retrieval few-shot baselines on the same drafts; refine must beat retrieval few-shot to earn its cost.</li>
+<li>Claim a win only when <code>stats</code> on the paired per-item results shows a bootstrap CI lower bound above 0 and p below 0.05.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Failure</th><th>Symptom</th><th>Caught by</th></tr></thead><tbody><tr><td>Topic bleed</td><td>copying what samples are about, not how they read</td><td>divergence guard</td></tr><tr><td>Verbatim copying</td><td>lifting sample phrasing</td><td>copy gate</td></tr><tr><td>Register lock</td><td>latching onto one sample&#x27;s register</td><td>DEV split</td></tr><tr><td>Reward hacking</td><td>pool score rises while held-out score falls</td><td>divergence guard</td></tr><tr><td>Slop reintroduced</td><td>AI tells return in voiced prose</td><td>removal gates</td></tr></tbody></table></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/ruskicoder/system-prompts/edit/master/prompt-orchestrator/../prompt-orchestrator/integrations/antigravity/prompt-orchestrator/skills/human/references/voice.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Zilv" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_FZaW"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"></nav></div></div><div class="col col--3"><div class="tableOfContents_gtm5 thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#teach-workflow" class="table-of-contents__link toc-highlight">Teach workflow</a></li><li><a href="#mimic-workflow" class="table-of-contents__link toc-highlight">Mimic workflow</a></li></ul></div></div></div></div></main></div></div></div></div>
+</body>
+</html>
