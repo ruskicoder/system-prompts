@@ -1,0 +1,2 @@
+description = "Find and repair AI writing patterns in English prose while preserving facts, meaning and voice. Covers audit-only detection, a two-pass rewrite (diagnose, then repair only confirmed spans), reviewable..."
+prompt = "This is the 'human' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/human/SKILL.md' (canonical source: 'skills/human.md') exactly, then apply them to: {{args}}"
