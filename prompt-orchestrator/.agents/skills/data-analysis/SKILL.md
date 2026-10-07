@@ -21,7 +21,7 @@ Analyze, transform, and visualize data using computational tools. _Source: Colab
 - File I/O for various formats (CSV, JSON, Excel, Parquet) _Source: Colab (Category A)_
 
 ## General Principles
-- Use step-by-step computation — never rely on memorized results _Source: Lumo (Category B)_
+- Use step-by-step computation: never rely on memorized results _Source: Lumo (Category B)_
 - For arithmetic: calculate digit by digit before answering _Source: Kiro (Category O)_
 - Verify results independently when possible _Source: Anthropic (Category J)_
 - Prefer Python REPL over mental calculation for anything non-trivial _Source: OpenAI (Category C)_
@@ -30,8 +30,8 @@ Analyze, transform, and visualize data using computational tools. _Source: Colab
 When using Python for analysis: _Source: Colab (Category A)_
 - Available libraries: numpy, scipy, pandas, seaborn, plotly, sympy, mpmath, statsmodels _Source: Colab (Category A)_
 - Plotting: use plotly for interactive, matplotlib/seaborn for static _Source: Colab (Category A)_
-- REPL is stateful — variables persist between calls _Source: Manus (Category F)_
-- Timeout limits apply (typically 45-60s) — break long computations into chunks _Source: Manus (Category P)_
+- REPL is stateful: variables persist between calls _Source: Manus (Category F)_
+- Timeout limits apply (typically 45-60s): break long computations into chunks _Source: Manus (Category P)_
 
 ## Data Loading
 
@@ -86,7 +86,7 @@ When using Python for analysis: _Source: Colab (Category A)_
 - Present key findings prominently _Source: Lumo (Category B)_
 - Support with visualizations when helpful _Source: Gemini (Category B)_
 - Include uncertainty/confidence where relevant _Source: Anthropic (Category J)_
-- Don't over-interpret — let the data speak _Source: Lumo (Category B)_
+- Don't over-interpret: let the data speak _Source: Lumo (Category B)_
 - Flag data quality issues that affect conclusions _Source: Anthropic (Category J)_
 
 ## Reproducibility

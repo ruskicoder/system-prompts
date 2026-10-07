@@ -23,7 +23,7 @@ Systematically identify, categorize, and prioritize technical debt.
 Score each item on:
 - **Impact**: How much does it slow the team down? (1-5)
 - **Risk**: What happens if we don't fix it? (1-5)
-- **Effort**: How hard is the fix? (1-5, inverted — lower effort = higher priority)
+- **Effort**: How hard is the fix? (1-5, inverted; lower effort = higher priority)
 
 Priority = (Impact + Risk) x (6 - Effort)
 

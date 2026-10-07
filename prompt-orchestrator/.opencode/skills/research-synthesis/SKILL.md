@@ -90,6 +90,6 @@ If **~~knowledge base** is connected:
 
 ## Tips
 
-1. **Include raw quotes** — Direct participant quotes make insights credible and memorable.
-2. **Separate observations from interpretations** — "5 of 8 users clicked the wrong button" is an observation. "The button placement is confusing" is an interpretation.
-3. **Quantify where possible** — "Most users" is vague. "7 of 10 users" is specific.
+1. **Include raw quotes**: Direct participant quotes make insights credible and memorable.
+2. **Separate observations from interpretations**: "5 of 8 users clicked the wrong button" is an observation. "The button placement is confusing" is an interpretation.
+3. **Quantify where possible**: "Most users" is vague. "7 of 10 users" is specific.

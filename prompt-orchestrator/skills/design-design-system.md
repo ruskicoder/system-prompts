@@ -6,7 +6,7 @@ argument-hint: "[audit | document | extend] <component or system>"
 
 # /design-system
 
-Manage your design system — audit for consistency, document components, or design new patterns.
+Manage your design system: audit for consistency, document components, or design new patterns.
 
 ## Usage
 
@@ -44,12 +44,12 @@ Common UI solutions combining components:
 
 ## Principles
 
-1. **Consistency over creativity** — The system exists so teams don't reinvent the wheel
-2. **Flexibility within constraints** — Components should be composable, not rigid
-3. **Document everything** — If it's not documented, it doesn't exist
-4. **Version and migrate** — Breaking changes need migration paths
+1. **Consistency over creativity**: The system exists so teams don't reinvent the wheel
+2. **Flexibility within constraints**: Components should be composable, not rigid
+3. **Document everything**: If it's not documented, it doesn't exist
+4. **Version and migrate**: Breaking changes need migration paths
 
-## Output — Audit
+## Output: Audit
 
 ```markdown
 ## Design System Audit
@@ -81,7 +81,7 @@ Common UI solutions combining components:
 3. [Third priority]
 ```
 
-## Output — Document
+## Output: Document
 
 ```markdown
 ## Component: [Name]
@@ -123,7 +123,7 @@ Common UI solutions combining components:
 [Framework-appropriate code snippet]
 ```
 
-## Output — Extend
+## Output: Extend
 
 ```markdown
 ## New Component: [Name]
@@ -174,7 +174,7 @@ Common UI solutions combining components:
 ## If Connectors Available
 
 If **~~design tool** is connected:
-- Audit components directly in Figma — check naming, variants, and token usage
+- Audit components directly in Figma: check naming, variants, and token usage
 - Pull component properties and layer structure for documentation
 
 If **~~knowledge base** is connected:
@@ -183,6 +183,6 @@ If **~~knowledge base** is connected:
 
 ## Tips
 
-1. **Start with an audit** — Know where you are before deciding where to go.
-2. **Document as you build** — It's easier to document a component while designing it.
-3. **Prioritize coverage over perfection** — 80% of components documented beats 100% of 10 components.
+1. **Start with an audit**: Know where you are before deciding where to go.
+2. **Document as you build**: It's easier to document a component while designing it.
+3. **Prioritize coverage over perfection**: 80% of components documented beats 100% of 10 components.

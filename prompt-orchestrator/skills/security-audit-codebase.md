@@ -73,7 +73,7 @@ grep -rn "postgres://\|postgresql://\|mysql://\|mongodb://\|redis://" .
 grep -rn "BEGIN.*PRIVATE KEY" .
 ```
 
-**Expected:** No active credentials in code — only environment variable references (`process.env.API_KEY`, `os.environ.get(...)`) or documented placeholder tokens (`YOUR_API_KEY_HERE`).
+**Expected:** No active credentials in code, only environment variable references (`process.env.API_KEY`, `os.environ.get(...)`) or documented placeholder tokens (`YOUR_API_KEY_HERE`).
 **On Failure:** Immediately revoke/rotate the compromised secret, untrack the file, and sanitize git history using `git-filter-repo`.
 
 ### Step 2: Verify `.gitignore` & Version Control Hygiene

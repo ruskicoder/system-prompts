@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Structured debugging session — reproduce, isolate, diagnose, and fix. Trigger with an error message or stack trace, "this works in staging but not prod", "something broke after the deploy", or when behavior diverges from expected and the cause isn't obvious.
+description: Structured debugging session (reproduce, isolate, diagnose, and fix). Trigger with an error message or stack trace, "this works in staging but not prod", "something broke after the deploy", or when behavior diverges from expected and the cause isn't obvious.
 argument-hint: "<error message or problem description>"
 ---
 
@@ -88,6 +88,6 @@ If **~~project tracker** is connected:
 
 ## Tips
 
-1. **Share error messages exactly** — Don't paraphrase. The exact text matters.
-2. **Mention what changed** — Recent deploys, dependency updates, and config changes are top suspects.
-3. **Include context** — "This works in staging but not prod" or "Only affects large payloads" narrows things fast.
+1. **Share error messages exactly**: Don't paraphrase. The exact text matters.
+2. **Mention what changed**: Recent deploys, dependency updates, and config changes are top suspects.
+3. **Include context**: "This works in staging but not prod" or "Only affects large payloads" narrows things fast.

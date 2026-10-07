@@ -111,6 +111,6 @@ If **~~user feedback** is connected:
 
 ## Tips
 
-1. **Share the context** — "This is a checkout flow for a B2B SaaS" helps me give relevant feedback.
-2. **Specify your stage** — Early exploration gets different feedback than final polish.
-3. **Ask me to focus** — "Just look at the navigation" gives you more depth on one area.
+1. **Share the context**: "This is a checkout flow for a B2B SaaS" helps me give relevant feedback.
+2. **Specify your stage**: Early exploration gets different feedback than final polish.
+3. **Ask me to focus**: "Just look at the navigation" gives you more depth on one area.

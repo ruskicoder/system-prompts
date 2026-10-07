@@ -14,14 +14,14 @@ argument-hint: '[session wrap-up prompt]'
 | Criteria | Match |
 |----------|-------|
 | Trigger | user requests it OR token budget reaches critical |
-| Context | any workflow, any mode — ending a session |
+| Context | any workflow, any mode: ending a session |
 | Power Mode | Critical |
-| Priority | HIGH — preserves work across sessions |
+| Priority | HIGH: preserves work across sessions |
 
 ## Required Skills
 - memory-management
 - communication-tone
-- codebase-understanding (GitNexus) — for tracking what changed
+- codebase-understanding (GitNexus): for tracking what changed
 
 ## Flow
 
@@ -79,11 +79,11 @@ The summary MUST include:
 
 ## Token Budget
 - **Summary itself**: 2K-5K tokens (maximize useful context within budget)
-- If budget is critically low: output the most essential information first — initialization prompt, current state, next steps — in that priority order
+- If budget is critically low: output the most essential information first (initialization prompt, current state, next steps) in that priority order
 
 ## GitNexus Integration
-- `detect_changes()` — critical for tracking what was modified
-- `status` — verify index state
+- `detect_changes()`: critical for tracking what was modified
+- `status`: verify index state
 - Any index-worthy updates (if significant code changes were made, recommend re-running `npx gitnexus analyze` in next session)
 
 ## Hallucination Watchpoints

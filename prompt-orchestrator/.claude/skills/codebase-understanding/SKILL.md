@@ -127,12 +127,12 @@ RETURN pred.startLine, r.reason AS branch, dep.startLine, dep.text
 
 ## Integrated System Skills
 The following GitNexus skills are installed as OpenCode skills and can be loaded via the skill system:
-- `gitnexus-exploring` — codebase exploration
-- `gitnexus-debugging` — debugging with knowledge graph
-- `gitnexus-impact-analysis` — blast radius analysis
-- `gitnexus-refactoring` — safe refactoring
-- `gitnexus-pr-review` — PR review with impact analysis
-- `gitnexus-pdg-query` — control/data dependence queries
-- `gitnexus-taint-analysis` — security vulnerability analysis
-- `gitnexus-cli` — CLI commands reference
-- `gitnexus-guide` — full tool/resource reference
+- `gitnexus-exploring`: codebase exploration
+- `gitnexus-debugging`: debugging with knowledge graph
+- `gitnexus-impact-analysis`: blast radius analysis
+- `gitnexus-refactoring`: safe refactoring
+- `gitnexus-pr-review`: PR review with impact analysis
+- `gitnexus-pdg-query`: control/data dependence queries
+- `gitnexus-taint-analysis`: security vulnerability analysis
+- `gitnexus-cli`: CLI commands reference
+- `gitnexus-guide`: full tool/resource reference

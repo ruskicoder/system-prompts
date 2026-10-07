@@ -46,7 +46,7 @@ _Source: Kiro (Category O)_
 - Small, focused files (Lovable rule): aim for <50 lines per component _Source: Lovable (Category Q)_
 - One component per file, one hook per file _Source: Same-Dev (Category E)_
 - Group by feature, not by type _Source: Kiro (Category O)_
-- Flat is better than nested — avoid unnecessary subfolders _Source: Kiro (Category O)_
+- Flat is better than nested: avoid unnecessary subfolders _Source: Kiro (Category O)_
 
 ```python
 # GOOD: feature-based structure
@@ -92,4 +92,4 @@ _Source: Kiro (Category O)_
 - Never leave placeholder implementations _Source: Lovable (Category E)_
 - Don't include functions/classes that aren't called _Source: Same-Dev (Category E)_
 - Remove commented-out code _Source: Same-Dev (Category E)_
-- Don't over-abstract — wait for duplication to happen before extracting _Source: Amp (Category E)_
+- Don't over-abstract: wait for duplication to happen before extracting _Source: Amp (Category E)_

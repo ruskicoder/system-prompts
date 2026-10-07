@@ -2,8 +2,8 @@
 name: documentation
 description: Write and maintain technical documentation. Trigger with "write docs
   for", "document this", "create a README", "write a runbook", "onboarding guide",
-  or when the user needs help with any form of technical writing — API docs, architecture
-  docs, or operational runbooks.
+  or when the user needs help with any form of technical writing (API docs, architecture
+  docs, or operational runbooks).
 ---
 
 <!-- Generated from skills/engineering-documentation.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -47,8 +47,8 @@ Write clear, maintainable technical documentation for different audiences and pu
 
 ## Principles
 
-1. **Write for the reader** — Who is reading this and what do they need?
-2. **Start with the most useful information** — Don't bury the lede
-3. **Show, don't tell** — Code examples, commands, screenshots
-4. **Keep it current** — Outdated docs are worse than no docs
-5. **Link, don't duplicate** — Reference other docs instead of copying
+1. **Write for the reader**: Who is reading this and what do they need?
+2. **Start with the most useful information**: Don't bury the lede
+3. **Show, don't tell**: Code examples, commands, screenshots
+4. **Keep it current**: Outdated docs are worse than no docs
+5. **Link, don't duplicate**: Reference other docs instead of copying

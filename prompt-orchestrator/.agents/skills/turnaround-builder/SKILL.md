@@ -30,7 +30,7 @@ argument-hint: <application concept or prototype description>
 
 ### Step 0: Thinking Stage (Pre-Action)
 - [ ] What technology stack best fits this project? Use defaults unless specified
-- [ ] What's the CORE functionality? Don't over-engineer — minimum viable
+- [ ] What's the CORE functionality? Don't over-engineer: minimum viable
 - [ ] What files are truly needed? No unnecessary abstractions *(Kiro)*
 - [ ] Think HOLISTICALLY and COMPREHENSIVELY BEFORE creating an artifact *(Bolt)*
 - [ ] Consider ALL relevant files, dependencies, and potential impacts
@@ -81,11 +81,11 @@ Generate all files in one comprehensive pass:
 - **Components**: shadcn/ui by default, lucide-react for icons
 - **Styling**: Tailwind CSS exclusively
 - **Code**: minimal, clean, production-quality
-- **Error handling**: let errors bubble up (Lovable rule) — they'll be caught in dev
+- **Error handling**: let errors bubble up (Lovable rule); they'll be caught in dev
 - **DO NOT overengineer**: minimum viable implementation
 
 ## What NOT to Do
-- Don't ask "what UI framework?" — use defaults
+- Don't ask "what UI framework?"; use defaults
 - Don't ask permission for package choices
 - Don't create placeholder files or stubs
 - Don't leave TODO comments
@@ -104,7 +104,7 @@ Generate all files in one comprehensive pass:
 - Larger projects should be split into phases
 
 ## GitNexus Integration
-- Minimal — new code has no graph yet
+- Minimal: new code has no graph yet
 - If integrating into existing repo: `impact` on affected interfaces
 
 ## Hallucination Watchpoints

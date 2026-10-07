@@ -1,5 +1,5 @@
 ---
-description: Structured debugging session — reproduce, isolate, diagnose, and fix.
+description: Structured debugging session (reproduce, isolate, diagnose, and fix).
   Trigger with an error message or stack trace, "this works in staging but not prod",
   "something broke after the deploy", or when...
 ---

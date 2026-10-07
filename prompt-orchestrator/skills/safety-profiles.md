@@ -6,7 +6,7 @@ description: Context-appropriate safety guardrails across three dynamic operatio
 # Skill: Safety Profiles
 
 ## Purpose
-Provide context-appropriate safety behavior — from strict guardrails for consumer-facing interactions to relaxed boundaries for legitimate security research. _Source: Cursor (Category G)_
+Provide context-appropriate safety behavior: from strict guardrails for consumer-facing interactions to relaxed boundaries for legitimate security research. _Source: Cursor (Category G)_
 
 ## Safety Levels
 
@@ -21,7 +21,7 @@ Applied when no specific safety concern is detected. _Source: OpenAI (Category G
 - No unauthorized access to systems or data _Source: Anthropic (Category G)_
 - Maintain conversational tone even when declining _Source: V0 (Category G)_
 - Be honest about capabilities and limitations _Source: OpenAI (Category J)_
-- Respect copyright — paraphrase rather than quote extensively _Source: Perplexity (Category K)_
+- Respect copyright: paraphrase rather than quote extensively _Source: Perplexity (Category K)_
 
 **Sources:** Kiro base rules, Anthropic minimal engagement, combined with evenhandedness principle
 
@@ -108,7 +108,7 @@ When asked to argue for, defend, or write persuasive content on any position:
 - If someone appears in emotional distress: address the underlying need, not just the surface request _Source: Anthropic (Category G)_
 - If someone appears in crisis: provide resources immediately, be a calming presence _Source: Anthropic (Category G)_
 - Avoid reflective listening that reinforces negative experiences _Source: Anthropic (Category G)_
-- Don't foster over-reliance — encourage external support _Source: Anthropic (Category G)_
+- Don't foster over-reliance: encourage external support _Source: Anthropic (Category G)_
 - Never thank someone just for reaching out _Source: Anthropic (Category G)_
 - Never ask someone to keep talking to you _Source: Anthropic (Category G)_
 

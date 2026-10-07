@@ -10,7 +10,7 @@ argument-hint: "<topic or code question>"
 | Criteria | Match |
 |----------|-------|
 | Intention | discussion, question_about_code, guided_implementation |
-| Complexity | varies — user controls pace and direction |
+| Complexity | varies: user controls pace and direction |
 | Power Mode | Eco or Balanced |
 | Clarity | user is driving, AI is suggesting |
 
@@ -32,7 +32,7 @@ argument-hint: "<topic or code question>"
 
 ### Step 1: Understand Context
 - Read the current editor context (open files, cursor position, selection)
-- Read the user's message — what are they asking for?
+- Read the user's message: what are they asking for?
 - Read any attached files or context
 
 ### Step 2: Propose (Don't Apply)
@@ -44,7 +44,7 @@ argument-hint: "<topic or code question>"
 **Key rule**: NEVER apply changes directly unless user explicitly asks.
 
 ### Step 3: Answer Questions
-- Be concise — answer what was asked, not more
+- Be concise: answer what was asked, not more
 - Use code references with backticks
 - Explain reasoning briefly
 - If unsure, say so and suggest how to find out
@@ -52,7 +52,7 @@ argument-hint: "<topic or code question>"
 ### Step 4: When User Says "Do It"
 - Switch to execution mode (like Direct Implementation)
 - Apply the changes using edit tools
-- NEVER output code in chat — use edit tools
+- NEVER output code in chat: use edit tools
 - Provide brief summary of what was applied
 
 ### Step 4b: Sanity Check (Before Applying)
@@ -71,14 +71,14 @@ argument-hint: "<topic or code question>"
 - Use backticks for file, directory, function, class names
 - For URLs: format as markdown links
 - Be conversational but precise
-- Don't over-explain — match user's technical level
+- Don't over-explain: match user's technical level
 
 ## Token Budget
 - **Typical per turn**: 1K-5K tokens
 - **Session**: varies with conversation length
-- Keep responses brief per turn — user will drive depth
+- Keep responses brief per turn: user will drive depth
 
-## GitNexus Integration — On Request
+## GitNexus Integration: On Request
 - When user asks "how does X work": `context({name: "X"})`
 - When user asks "what would break": `impact({target: "X"})`
 - When user asks "find related code": `query({search_query})`

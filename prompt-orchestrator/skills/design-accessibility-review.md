@@ -55,7 +55,7 @@ Audit for accessibility: @$1
 2. Keyboard-only navigation
 3. Screen reader testing (VoiceOver, NVDA)
 4. Color contrast verification
-5. Zoom to 200% — does layout break?
+5. Zoom to 200%: does layout break?
 
 ## Output
 
@@ -121,6 +121,6 @@ If **~~project tracker** is connected:
 
 ## Tips
 
-1. **Start with contrast and keyboard** — These catch the most common and impactful issues.
-2. **Test with real assistive technology** — My audit is a great start, but manual testing with VoiceOver/NVDA catches things I can't.
-3. **Prioritize by impact** — Fix issues that block users first, polish later.
+1. **Start with contrast and keyboard**: These catch the most common and impactful issues.
+2. **Test with real assistive technology**: My audit is a great start, but manual testing with VoiceOver/NVDA catches things I can't.
+3. **Prioritize by impact**: Fix issues that block users first, polish later.
