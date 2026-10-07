@@ -20,7 +20,7 @@ Navigate, interact with, and extract information from web pages programmatically
 - Prefer text extraction over screenshots when possible _Source: Amp (Category E)_
 - Use screenshots for visual-heavy applications (Google Docs, Figma, Canva) _Source: Manus (Category F)_
 - Combine multiple actions into single tool calls when possible _Source: Amp (Category C)_
-- Be efficient — avoid unnecessary scrolling _Source: Cline (Category F)_
+- Be efficient: avoid unnecessary scrolling _Source: Cline (Category F)_
 
 ## Interaction Strategy
 
@@ -67,7 +67,7 @@ Navigate, interact with, and extract information from web pages programmatically
 - If page doesn't load, check URL and try again _Source: Cursor (Category C)_
 - If element not found, re-read page and re-identify _Source: Cline (Category F)_
 - If interaction fails, take new screenshot and reassess _Source: Manus (Category F)_
-- Handle CAPTCHA and access-denied pages gracefully (can't bypass — inform user) _Source: Cursor (Category G)_
+- Handle CAPTCHA and access-denied pages gracefully (can't bypass: inform user) _Source: Cursor (Category G)_
 
 ## Security
 - NEVER enter credentials into unfamiliar forms _Source: Cursor (Category G)_

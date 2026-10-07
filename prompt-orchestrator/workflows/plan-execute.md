@@ -15,7 +15,7 @@ argument-hint: "<feature or refactoring goal>"
 | Clarity | requirements are clear but implementation is non-trivial |
 
 ## Required Skills
-- codebase-understanding (GitNexus) — for pre-analysis
+- codebase-understanding (GitNexus): for pre-analysis
 - file-operations
 - code-execution
 - code-quality-testing
@@ -35,8 +35,8 @@ argument-hint: "<feature or refactoring goal>"
 ### Phase 1: Intent Gate (Factory pattern)
 Determine: **Am I in plan mode or execute mode?**
 
-- **Plan mode**: research, gather context, propose approach — NO file changes
-- **Execute mode**: implement following the approved plan — NO scope changes
+- **Plan mode**: research, gather context, propose approach; NO file changes
+- **Execute mode**: implement following the approved plan; NO scope changes
 
 State your mode at the start: "I'm in PLAN mode. Let me research before making changes."
 
@@ -77,7 +77,7 @@ Present to user:
 ### Phase 5b: Sanity Check
 - [ ] Does the implementation match the approved plan? Any deviations?
 - [ ] Have all planned files been created/modified? No orphaned code? *(Kiro)*
-- [ ] `detect_changes()` — is scope limited to what was planned?
+- [ ] `detect_changes()`: is scope limited to what was planned?
 - [ ] Does the existing functionality still work? (regression check)
 - [ ] Are there linter errors or test failures?
 
@@ -91,11 +91,11 @@ Present to user:
 - **Max recommended**: 100K tokens
 - **Warning threshold**: >100K → switch to Spec-Driven or session summarization
 
-## GitNexus Integration — Heavy in Plan Phase
-- `query` — understanding related code
-- `impact` — pre-implementation blast radius
-- `context` — interface understanding
-- `detect_changes` — post-implementation verification
+## GitNexus Integration: Heavy in Plan Phase
+- `query`: understanding related code
+- `impact`: pre-implementation blast radius
+- `context`: interface understanding
+- `detect_changes`: post-implementation verification
 
 ## Hallucination Watchpoints
 - Switching to execute mode without user approval

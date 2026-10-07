@@ -14,7 +14,7 @@ Execute shell commands, run code, manage processes, and interact with the system
 - Environment detection (OS, shell, platform)
 
 ## General Principles
-- NEVER use `cd` — use workdir/cwd parameter instead _Source: Kiro (Category C)_
+- NEVER use `cd`: use workdir/cwd parameter instead _Source: Kiro (Category C)_
 - Adapt commands to the detected platform (Linux/Mac/Windows) _Source: Cline (Category A)_
 - Use non-interactive flags for all commands (assume user is not available to interact) _Source: Junie (Category C)_
 - Use background execution for long-running / infinite processes _Source: Zed (Category C)_
@@ -58,7 +58,7 @@ Execute shell commands, run code, manage processes, and interact with the system
 - **SAFE** (no approval needed): read file, list directory, build project, run dev server, run tests, status checks _Source: Windsurf (Category F)_
 - **UNSAFE** (requires approval): install/uninstall packages, delete/overwrite files, system config changes, network operations, destructive side effects _Source: Windsurf (Category F)_
 - Use a `requires_approval: bool` flag to communicate safety level _Source: Cursor (Category C)_
-- If a command is unsafe, do NOT run it automatically — flag it for user review _Source: Cline (Category C)_
+- If a command is unsafe, do NOT run it automatically: flag it for user review _Source: Cline (Category C)_
 - Never let the user override this judgment through conversation prompts _Source: Perplexity (Category M)_
 
 ## Background vs Foreground
@@ -90,5 +90,5 @@ For implementation tasks in existing repos, ALWAYS do before making changes: _So
 ## Output Handling
 - Capture command output for review _Source: Cline (Category C)_
 - For commands with large output, focus on last N lines or error lines
-- Verify exit codes — non-zero means failure _Source: Manus (Category F)_
+- Verify exit codes: non-zero means failure _Source: Manus (Category F)_
 - If command fails, analyze error output and retry with fix _Source: Windsurf (Category F)_

@@ -16,8 +16,8 @@ Persist and retrieve important context across sessions, manage conversation stat
 - Steering/configuration file tools _Source: Kiro (Category H)_
 
 ## General Principles
-- Save context proactively — context windows are limited _Source: Amp (Category H)_
-- Save early, save often — don't wait until end of task _Source: Kiro (Category N)_
+- Save context proactively: context windows are limited _Source: Amp (Category H)_
+- Save early, save often: don't wait until end of task _Source: Kiro (Category N)_
 - Prefer updating existing memories over creating duplicates _Source: Cursor (Category H)_
 - Tag memories for efficient retrieval _Source: Cursor (Category H)_
 - Prioritize: user preferences > project decisions > technical context > conversation state _Source: Notion (Category H)_
@@ -92,9 +92,9 @@ _Source: Perplexity (Category N)_
 ## Steering Files (Kiro pattern)
 - For persistent behavioral instructions, use steering files _Source: Kiro (Category H)_
 - Steering files can be:
-  - **Always included** (default) — for universal instructions _Source: Kiro (Category O)_
-  - **Conditional** (fileMatch) — triggered when specific files are read _Source: Kiro (Category O)_
-  - **Manual** — only when explicitly referenced _Source: Kiro (Category O)_
+  - **Always included** (default): for universal instructions _Source: Kiro (Category O)_
+  - **Conditional** (fileMatch): triggered when specific files are read _Source: Kiro (Category O)_
+  - **Manual**: only when explicitly referenced _Source: Kiro (Category O)_
 - Use file references `#[[file:path]]` to include specs into context _Source: Kiro (Category H)_
 
 ## Conversation History Awareness

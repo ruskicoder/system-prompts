@@ -1,6 +1,6 @@
 ---
 name: ux-copy
-description: Write or review UX copy — microcopy, error messages, empty states, CTAs.
+description: Write or review UX copy (microcopy, error messages, empty states, CTAs).
   Trigger with "write copy for", "what should this button say?", "review this error
   message", or when naming a CTA, wording a confirmation dialog, filling an empty
   state, or writing onboarding text.
@@ -105,6 +105,6 @@ If **~~design tool** is connected:
 
 ## Tips
 
-1. **Be specific about context** — "Error message when payment fails" is better than "error message."
-2. **Share your brand voice** — "We're professional but warm" helps me match your tone.
-3. **Consider the user's emotional state** — Error messages need empathy. Success messages can celebrate.
+1. **Be specific about context**: "Error message when payment fails" is better than "error message."
+2. **Share your brand voice**: "We're professional but warm" helps me match your tone.
+3. **Consider the user's emotional state**: Error messages need empathy. Success messages can celebrate.

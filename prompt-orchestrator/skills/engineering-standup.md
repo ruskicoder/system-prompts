@@ -68,6 +68,6 @@ If **~~chat** is connected:
 
 ## Tips
 
-1. **Run it every morning** — Build a habit and never scramble for standup notes.
-2. **Add context** — After I generate, add any nuance about blockers or priorities.
-3. **Share format** — Ask me to format for Slack, email, or your team's standup tool.
+1. **Run it every morning**: Build a habit and never scramble for standup notes.
+2. **Add context**: After I generate, add any nuance about blockers or priorities.
+3. **Share format**: Ask me to format for Slack, email, or your team's standup tool.

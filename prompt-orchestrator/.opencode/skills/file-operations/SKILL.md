@@ -25,9 +25,9 @@ Read, write, search, and edit files in the filesystem with maximum efficiency an
 
 ## General Principles
 - Prefer batch reads (readMultipleFiles) over sequential single-file reads _Source: Amp (Category C)_
-- Read entire files when practical — partial reads force extra roundtrips _Source: Cursor (Category D)_
+- Read entire files when practical: partial reads force extra roundtrips _Source: Cursor (Category D)_
 - Search first (grep/glob) before reading when you don't know exact file location _Source: Cursor (Category H)_
-- Never print file contents to user — use edit/write tools instead _Source: Qoder (Category E)_
+- Never print file contents to user: use edit/write tools instead _Source: Qoder (Category E)_
 - Never generate binary, hashes, or non-textual content _Source: Cursor (Category E)_
 
 ## Reading Files
@@ -47,7 +47,7 @@ readMultipleFiles(paths=[...])
 1. Use `glob` / `fileSearch` when you know part of the filename _Source: Cursor (Category D)_
 2. Use `grep` / `grepSearch` when searching for content patterns _Source: Cursor (Category D)_
 3. Use `listDirectory` for understanding structure _Source: Kiro (Category D)_
-4. NEVER use shell `find`, `grep`, `cat` for file operations — use dedicated tools _Source: Kiro (Category C)_
+4. NEVER use shell `find`, `grep`, `cat` for file operations: use dedicated tools _Source: Kiro (Category C)_
 
 ## Writing Files
 
@@ -63,10 +63,10 @@ readMultipleFiles(paths=[...])
 
 ### Editing Existing Files (SEARCH/REPLACE)
 - Use `edit` / `strReplace` / `search_replace` for targeted edits _Source: Kiro (Category D)_
-- CRITICAL: `oldString` / `SEARCH` block must match EXACTLY — character for character, including whitespace _Source: Aider (Category D)_
+- CRITICAL: `oldString` / `SEARCH` block must match EXACTLY, character for character, including whitespace _Source: Aider (Category D)_
 - Include 2-5 lines of surrounding context to ensure uniqueness _Source: Cline (Category D)_
 - Break large edits into a series of smaller, targeted SEARCH/REPLACE blocks _Source: Cline (Category D)_
-- Each block should change a focused section — don't edit half a file at once _Source: Cline (Category D)_
+- Each block should change a focused section: don't edit half a file at once _Source: Cline (Category D)_
 
 ```python
 # GOOD: precise with context
@@ -97,9 +97,9 @@ edit(
 
 ### Content Search (grep)
 - Use `grep` / `grepSearch` for regex pattern matching across files _Source: Cursor (Category D)_
-- Rust regex syntax — escape special characters: `(`, `)`, `[`, `]`, `{`, `}`, `+`, `*`, `?`, `^`, `$`, `|`, `.`, `\` _Source: Cursor (Category D)_
+- Rust regex syntax. Escape special characters: `(`, `)`, `[`, `]`, `{`, `}`, `+`, `*`, `?`, `^`, `$`, `|`, `.`, `\` _Source: Cursor (Category D)_
 - Include patterns to filter file types when possible _Source: Cursor (Category D)_
-- Results capped at 50 — refine query if results fill up _Source: Cursor (Category D)_
+- Results capped at 50: refine query if results fill up _Source: Cursor (Category D)_
 
 ### File Search (glob)
 - Use `glob` / `fileSearch` when you know part of the filename _Source: Cursor (Category D)_

@@ -78,7 +78,7 @@ Each iteration:
 ### Step 4b: Sanity Check (Every 3-5 iterations)
 - [ ] Is the task actually complete? *(Cursor: "Only terminate when sure the problem is solved")*
 - [ ] Have I introduced any regressions?
-- [ ] `detect_changes()` — verify scope
+- [ ] `detect_changes()`: verify scope
 - [ ] Are there lingering issues or partial implementations?
 - [ ] Is this a loop I've been stuck in? (Check hallucination detectors)
 - [ ] Verify: run relevant tests, check linter
@@ -96,12 +96,12 @@ Each iteration:
 - **Warning**: check token usage after every 5 tool calls
 - **Critical**: >150K → offer session summarization to user
 
-## GitNexus Integration — Continuous
-- `query` — understanding as you explore
-- `context` — before editing unfamiliar symbols
-- `impact` — before potentially breaking changes
-- `detect_changes` — periodic verification
-- `check` — structural integrity validation
+## GitNexus Integration: Continuous
+- `query`: understanding as you explore
+- `context`: before editing unfamiliar symbols
+- `impact`: before potentially breaking changes
+- `detect_changes`: periodic verification
+- `check`: structural integrity validation
 
 ## Hallucination Watchpoints
 - **Tool loop**: calling the same tool repeatedly with no progress
@@ -119,8 +119,8 @@ If any watchpoint triggers:
 4. Ask for guidance
 
 ## Autonomy Principles
-- Be proactive — don't ask permission for research or context gathering
-- Be decisive — if unsure between two approaches, pick one and proceed
-- Be thorough — don't leave partial implementations
-- Be safe — flag destructive operations for user approval
-- Be efficient — don't over-engineer, don't over-investigate
+- Be proactive: don't ask permission for research or context gathering
+- Be decisive: if unsure between two approaches, pick one and proceed
+- Be thorough: don't leave partial implementations
+- Be safe: flag destructive operations for user approval
+- Be efficient: don't over-engineer, don't over-investigate

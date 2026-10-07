@@ -1,6 +1,6 @@
 ---
-description: 'Use this skill when the user wants intellectual understanding — learning
-  how or why something works, not getting a task done or soliciting Claude''s judgment.
+description: 'Use this skill when the user wants intellectual understanding (learning
+  how or why something works), not getting a task done or soliciting Claude''s judgment.
 
 
   Trigger for:

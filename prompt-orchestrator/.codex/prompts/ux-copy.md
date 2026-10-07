@@ -1,5 +1,5 @@
 ---
-description: Write or review UX copy — microcopy, error messages, empty states, CTAs.
+description: Write or review UX copy (microcopy, error messages, empty states, CTAs).
   Trigger with "write copy for", "what should this button say?", "review this error
   message", or when naming a CTA, wording a...
 argument-hint: <context or copy to review>

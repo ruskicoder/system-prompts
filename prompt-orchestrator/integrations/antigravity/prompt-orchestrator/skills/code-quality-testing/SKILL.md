@@ -20,11 +20,11 @@ Write clean, correct, well-tested code through systematic quality practices. _So
 - Code execution tools
 
 ## General Principles
-- Code must be immediately runnable — all imports, deps, endpoints included _Source: Qoder (Category E)_
-- Write minimal code — only what's needed for the task, nothing extra _Source: Cursor (Category E)_
+- Code must be immediately runnable: all imports, deps, endpoints included _Source: Qoder (Category E)_
+- Write minimal code: only what's needed for the task, nothing extra _Source: Cursor (Category E)_
 - Follow existing codebase conventions (style, patterns, libraries) _Source: Aider (Category E)_
-- Prefer simple solutions — don't overengineer _Source: Cursor (Category E)_
-- Verify before presenting — test your code _Source: Cursor (Category E)_
+- Prefer simple solutions: don't overengineer _Source: Cursor (Category E)_
+- Verify before presenting: test your code _Source: Cursor (Category E)_
 
 ## Immediately Runnable Code
 
@@ -78,7 +78,7 @@ Write clean, correct, well-tested code through systematic quality practices. _So
 ```
 
 ## Error Handling Philosophy
-- For prototypes/rapid dev: let errors bubble up (Lovable pattern) — they'll surface for AI to fix _Source: Lovable (Category G)_
+- For prototypes/rapid dev: let errors bubble up (Lovable pattern); they'll surface for AI to fix _Source: Lovable (Category G)_
 - For production: proper try/catch with meaningful error messages _Source: Amp (Category E)_
 - Never expose stack traces to end users _Source: Amp (Category G)_
 - Log errors for debugging without leaking sensitive data _Source: Warp (Category G)_

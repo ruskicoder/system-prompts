@@ -1,6 +1,6 @@
 # Prompt Orchestrator
 
-> A master AI agent orchestrator framework distilled from 73 leaked platform prompts. Extracts best practices from Anthropic, OpenAI, Gemini, Grok, Cursor, Windsurf, Cline, Kiro, Manus, and 65+ more platforms into reusable skills, workflows, and a central orchestrator system prompt — packaged so every major AI coding agent can discover and run them.
+> A master AI agent orchestrator framework distilled from 73 leaked platform prompts. Extracts best practices from Anthropic, OpenAI, Gemini, Grok, Cursor, Windsurf, Cline, Kiro, Manus, and 65+ more platforms into reusable skills, workflows, and a central orchestrator system prompt, packaged so every major AI coding agent can discover and run them.
 
 ## Works everywhere, out of the box
 
@@ -8,17 +8,17 @@ This repo ships **51 skills/workflows** as a single canonical source (`skills/*.
 
 | Tool | Auto-discovery | Explicit `/name` invocation |
 |---|---|---|
-| **Claude / Claude Code** | `.claude/skills/<name>/SKILL.md` — Claude loads it when your request matches its description | Same file — in Claude Code, skills *are* slash commands. Type `/agent-loop`, `/security-audit-codebase`, etc. |
-| **Codex** (CLI / IDE) | `.agents/skills/<name>/SKILL.md` — the open [Agent Skills standard](https://agentskills.io) | `.codex/prompts/<name>.md` → `/prompts:<name>` |
-| **Cursor** | `.cursor/rules/orchestrator.mdc` — always-on project context | `.cursor/commands/<name>.md` → `/<name>` |
-| **OpenCode** | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` — native `skill` tool discovers all three | `.opencode/commands/<name>.md` → `/<name>` |
-| **Gemini CLI** | `.agents/skills/<name>/SKILL.md` — Skills framework | `.gemini/commands/<name>.toml` → `/<name>` |
+| **Claude / Claude Code** | `.claude/skills/<name>/SKILL.md`: Claude loads it when your request matches its description | Same file. In Claude Code, skills *are* slash commands. Type `/agent-loop`, `/security-audit-codebase`, etc. |
+| **Codex** (CLI / IDE) | `.agents/skills/<name>/SKILL.md`: the open [Agent Skills standard](https://agentskills.io) | `.codex/prompts/<name>.md` → `/prompts:<name>` |
+| **Cursor** | `.cursor/rules/orchestrator.mdc`: always-on project context | `.cursor/commands/<name>.md` → `/<name>` |
+| **OpenCode** | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/`: native `skill` tool discovers all three | `.opencode/commands/<name>.md` → `/<name>` |
+| **Gemini CLI** | `.agents/skills/<name>/SKILL.md`: Skills framework | `.gemini/commands/<name>.toml` → `/<name>` |
 | **Antigravity** | Workspace: `.agents/skills/<name>/SKILL.md`; global: `~/.gemini/config/plugins/prompt-orchestrator/skills/<name>/SKILL.md` | Native skill invocation; browse `/` in a fresh session |
-| **Windsurf** | `.windsurf/rules/orchestrator.md` — always-on Cascade context | `.windsurf/workflows/<name>.md` → `/<name>` |
+| **Windsurf** | `.windsurf/rules/orchestrator.md`: always-on Cascade context | `.windsurf/workflows/<name>.md` → `/<name>` |
 | **Any other Agent-Skills-compliant tool** | `.agents/skills/<name>/SKILL.md` | — |
-| **Anything else** | `AGENTS.md` at the repo root — the plain-text fallback nearly every coding agent reads | — |
+| **Anything else** | `AGENTS.md` at the repo root: the plain-text fallback nearly every coding agent reads | — |
 
-See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full generated compatibility map (every one of the 51 skills/workflows, listed with its `/name`, argument hint, and description) — it's regenerated automatically, so it never drifts from the source.
+See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full generated compatibility map (every one of the 51 skills/workflows, listed with its `/name`, argument hint, and description): it's regenerated automatically, so it never drifts from the source.
 
 ## How it's built (single source of truth)
 
@@ -41,7 +41,7 @@ skills/*.md, workflows/*.md   (you edit these — 51 files, YAML frontmatter + i
 python3 tools/generate_integrations.py
 ```
 
-This keeps every tool-specific format (SKILL.md folders, slash-command wrappers, TOML commands, plugin manifests) perfectly in sync with the canonical content — there is exactly one place to update a skill's behavior.
+This keeps every tool-specific format (SKILL.md folders, slash-command wrappers, TOML commands, plugin manifests) perfectly in sync with the canonical content: there is exactly one place to update a skill's behavior.
 
 Validate everything (canonical files + all generated output) with:
 
@@ -53,12 +53,12 @@ python3 skills/validate_skills.py
 
 | Path | Description |
 |------|-------------|
-| `AGENT.md` | Central orchestrator — core values, pre-action protocol, power modes, routing, safety engine, and more (canonical source) |
+| `AGENT.md` | Central orchestrator: core values, pre-action protocol, power modes, routing, safety engine, and more (canonical source) |
 | `AGENTS.md` | Generated copy of `AGENT.md`, at the filename most agents (Codex, Gemini CLI, Cursor, Windsurf, OpenCode, Antigravity, Amp, Aider…) read natively |
-| `CLAUDE.md` | Claude Code project memory — imports `AGENTS.md` and documents the installed skills |
+| `CLAUDE.md` | Claude Code project memory: imports `AGENTS.md` and documents the installed skills |
 | `skills/` | 41 specialized skill modules (canonical source, flat `.md` files with YAML frontmatter). A sibling folder named after a skill (for example `skills/docs-scaffold/`) holds companion files that the generator copies next to every generated `SKILL.md` |
 | `workflows/` | 10 execution workflows (canonical source, same format as skills) |
-| `.agents/skills/` | **Generated.** Every skill/workflow as an Agent-Skills-standard folder (`<name>/SKILL.md`) — the universal format |
+| `.agents/skills/` | **Generated.** Every skill/workflow as an Agent-Skills-standard folder (`<name>/SKILL.md`): the universal format |
 | `.claude/skills/` | **Generated.** Same content, at Claude Code's discovery path |
 | `.opencode/skills/`, `.opencode/commands/` | **Generated.** OpenCode native skills + explicit slash commands |
 | `.cursor/commands/`, `.cursor/rules/` | **Generated.** Cursor slash commands + always-on rule |
@@ -67,7 +67,7 @@ python3 skills/validate_skills.py
 | `integrations/antigravity/prompt-orchestrator/` | **Generated.** Antigravity plugin manifest and all skills/workflows as native skill folders |
 | `.windsurf/workflows/`, `.windsurf/rules/` | **Generated.** Windsurf Cascade workflows + always-on rule |
 | `.claude-plugin/` | **Generated.** Claude Code plugin marketplace manifest (`/plugin marketplace add .` then `/plugin install prompt-orchestrator@prompt-orchestrator`) |
-| `tools/generate_integrations.py` | The generator — re-run after editing any skill/workflow |
+| `tools/generate_integrations.py` | The generator: re-run after editing any skill/workflow |
 | `tools/registry.json` | **Generated.** Machine-readable list of every skill/workflow |
 | `INTEGRATIONS.md` | **Generated.** Full human-readable compatibility map |
 | `.kiro/` | Steering configuration for Kiro, and change specs in `.kiro/specs/` |
@@ -200,8 +200,8 @@ is available; run the same suite on Windows to verify the native entrypoint.
 
 Every skill/workflow is invocable two ways, in every supported tool:
 
-1. **Automatically** — the agent reads each skill's `description` at session start and loads the full instructions when your request matches it. No action needed.
-2. **Explicitly** — type `/` followed by the skill or workflow name (e.g. `/agent-loop`, `/plan-execute`, `/security-audit-codebase`, `/docx`). Arguments after the name are passed straight through (`argument-hint` in each skill's frontmatter shows the expected shape).
+1. **Automatically**: the agent reads each skill's `description` at session start and loads the full instructions when your request matches it. No action needed.
+2. **Explicitly**: type `/` followed by the skill or workflow name (e.g. `/agent-loop`, `/plan-execute`, `/security-audit-codebase`, `/docx`). Arguments after the name are passed straight through (`argument-hint` in each skill's frontmatter shows the expected shape).
 
 See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full list of all 51 `/name` commands with descriptions, or inspect `tools/registry.json` for the machine-readable version.
 

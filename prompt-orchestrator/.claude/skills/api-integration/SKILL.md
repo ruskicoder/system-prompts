@@ -22,11 +22,11 @@ Integrate with external APIs, web services, libraries, and third-party tools. _S
 ## General Principles
 - Use best-suited external APIs and packages without asking permission _Source: Augment (Category E)_
 - Match API/package versions to existing dependency management files _Source: Amp (Category E)_
-- Never hardcode API keys — use environment variables _Source: Kiro (Category E)_
+- Never hardcode API keys: use environment variables _Source: Kiro (Category E)_
 - Point out when an external API requires a key _Source: Replit (Category G)_
 
 ## API Selection
-- Check if the project already uses a similar API/library — reuse it _Source: Amp (Category E)_
+- Check if the project already uses a similar API/library: reuse it _Source: Amp (Category E)_
 - Choose versions compatible with existing dependency manifests _Source: Amp (Category E)_
 - Prefer well-established, maintained libraries _Source: Amp (Category E)_
 - For new projects: use latest stable version _Source: Amp (Category E)_
@@ -105,7 +105,7 @@ data = response.json()
 - Rate limiting: respect Retry-After headers _Source: Amp (Category E)_
 - Auth errors: check credentials, don't retry blindly _Source: Amp (Category E)_
 - Server errors (5xx): retry, may be transient _Source: Amp (Category E)_
-- Client errors (4xx): don't retry — fix the request _Source: Amp (Category E)_
+- Client errors (4xx): don't retry, fix the request _Source: Amp (Category E)_
 
 ## Domain-Specific Knowledge
 When integrating with specific platforms, learn their domain model: _Source: Amp (Category H)_

@@ -18,7 +18,7 @@ Generate, edit, and process images and other media assets. _Source: Canva (Categ
 ## General Principles
 - Only generate images when they add significant value to the response _Source: Canva (Category B)_
 - If text alone is clear and sufficient, don't add images _Source: Canva (Category B)_
-- Prefer built-in vision capabilities over OCR — OCR is high-cost, high-risk, last-resort _Source: Gemini (Category T)_
+- Prefer built-in vision capabilities over OCR: OCR is high-cost, high-risk, last-resort _Source: Gemini (Category T)_
 - OCR libraries support English only _Source: Gemini (Category T)_
 
 ## Image Generation
@@ -44,7 +44,7 @@ Generate, edit, and process images and other media assets. _Source: Canva (Categ
 
 ### Layout Options
 - **carousel** (default): swipeable images in a row _Source: Canva (Category Q)_
-- **bento**: grid layout at top of response as cover — use for single entity deep-dives (person, place, sport team) _Source: Canva (Category Q)_
+- **bento**: grid layout at top of response as cover; use for single entity deep-dives (person, place, sport team) _Source: Canva (Category Q)_
 
 ### Image Parameters
 - Aspect ratio: `1:1` (default) or `16:9` _Source: Canva (Category Q)_

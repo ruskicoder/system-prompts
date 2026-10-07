@@ -116,6 +116,6 @@ If **~~knowledge base** is connected:
 
 ## Tips
 
-1. **Provide context** — "This is a hot path" or "This handles PII" helps me focus.
-2. **Specify concerns** — "Focus on security" narrows the review.
-3. **Include tests** — I'll check test coverage and quality too.
+1. **Provide context**: "This is a hot path" or "This handles PII" helps me focus.
+2. **Specify concerns**: "Focus on security" narrows the review.
+3. **Include tests**: I'll check test coverage and quality too.

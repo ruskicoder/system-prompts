@@ -80,7 +80,7 @@
     "id": "debug",
     "kind": "skill",
     "source": "skills/engineering-debug.md",
-    "description": "Structured debugging session \u2014 reproduce, isolate, diagnose, and fix. Trigger with an error message or stack trace, \"this works in staging but not prod\", \"something broke after the deploy\", or when behavior diverges from expected and the cause isn't obvious.",
+    "description": "Structured debugging session (reproduce, isolate, diagnose, and fix). Trigger with an error message or stack trace, \"this works in staging but not prod\", \"something broke after the deploy\", or when behavior diverges from expected and the cause isn't obvious.",
     "argument_hint": "<error message or problem description>"
   },
   {
@@ -150,7 +150,7 @@
     "id": "documentation",
     "kind": "skill",
     "source": "skills/engineering-documentation.md",
-    "description": "Write and maintain technical documentation. Trigger with \"write docs for\", \"document this\", \"create a README\", \"write a runbook\", \"onboarding guide\", or when the user needs help with any form of technical writing \u2014 API docs, architecture docs, or operational runbooks.",
+    "description": "Write and maintain technical documentation. Trigger with \"write docs for\", \"document this\", \"create a README\", \"write a runbook\", \"onboarding guide\", or when the user needs help with any form of technical writing (API docs, architecture docs, or operational runbooks).",
     "argument_hint": null
   },
   {
@@ -192,14 +192,14 @@
     "id": "incident-response",
     "kind": "skill",
     "source": "skills/engineering-incident-response.md",
-    "description": "Run an incident response workflow \u2014 triage, communicate, and write postmortem. Trigger with \"we have an incident\", \"production is down\", an alert that needs severity assessment, a status update mid-incident, or when writing a blameless postmortem after resolution.",
+    "description": "Run an incident response workflow (triage, communicate, and write postmortem). Trigger with \"we have an incident\", \"production is down\", an alert that needs severity assessment, a status update mid-incident, or when writing a blameless postmortem after resolution.",
     "argument_hint": "<incident description or alert>"
   },
   {
     "id": "learn",
     "kind": "skill",
     "source": "skills/learn.md",
-    "description": "Use this skill when the user wants intellectual understanding \u2014 learning how or why something works, not getting a task done or soliciting Claude's judgment.\n\nTrigger for:\n- Explicit learning requests: teach, explain, ELI5, walk me through, quiz me, flashcards, \"I'm rusty on\"; definitions (\"what is X\")\n- Terse concept names implying \"help me understand this\": \"Galois theory,\" \"transformers, from scratch\"\n- Confusion signals: \"won't stick,\" \"keep mixing these up,\" \"not getting it\"\n- Learning-path questions: prerequisites, sequencing, what to study before X\n- Conceptual questions about mechanisms, causes, or dynamics\n\nDon't trigger for:\n- Tasks: coding, writing, calculation, translation, factual lookup, news updates\n- Personal troubleshooting; resource/textbook recommendations\n- Claude's evaluative verdict: opinion prompts (\"do you think X\", \"settle this\", \"honest take\", \"is X dead / still taken seriously\") and interpretive takes (\"was X really as harsh as people say\")",
+    "description": "Use this skill when the user wants intellectual understanding (learning how or why something works), not getting a task done or soliciting Claude's judgment.\n\nTrigger for:\n- Explicit learning requests: teach, explain, ELI5, walk me through, quiz me, flashcards, \"I'm rusty on\"; definitions (\"what is X\")\n- Terse concept names implying \"help me understand this\": \"Galois theory,\" \"transformers, from scratch\"\n- Confusion signals: \"won't stick,\" \"keep mixing these up,\" \"not getting it\"\n- Learning-path questions: prerequisites, sequencing, what to study before X\n- Conceptual questions about mechanisms, causes, or dynamics\n\nDon't trigger for:\n- Tasks: coding, writing, calculation, translation, factual lookup, news updates\n- Personal troubleshooting; resource/textbook recommendations\n- Claude's evaluative verdict: opinion prompts (\"do you think X\", \"settle this\", \"honest take\", \"is X dead / still taken seriously\") and interpretive takes (\"was X really as harsh as people say\")",
     "argument_hint": null
   },
   {
@@ -339,7 +339,7 @@
     "id": "ux-copy",
     "kind": "skill",
     "source": "skills/design-ux-copy.md",
-    "description": "Write or review UX copy \u2014 microcopy, error messages, empty states, CTAs. Trigger with \"write copy for\", \"what should this button say?\", \"review this error message\", or when naming a CTA, wording a confirmation dialog, filling an empty state, or writing onboarding text.",
+    "description": "Write or review UX copy (microcopy, error messages, empty states, CTAs). Trigger with \"write copy for\", \"what should this button say?\", \"review this error message\", or when naming a CTA, wording a confirmation dialog, filling an empty state, or writing onboarding text.",
     "argument_hint": "<context or copy to review>"
   },
   {

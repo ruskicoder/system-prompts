@@ -57,10 +57,10 @@ If a Figma URL is provided, pull the design from Figma. Otherwise, work from the
 
 ## Principles
 
-1. **Don't assume** — If it's not specified, the developer will guess. Specify everything.
-2. **Use tokens, not values** — Reference `spacing-md` not `16px`.
-3. **Show all states** — Default, hover, active, disabled, loading, error, empty.
-4. **Describe the why** — "This collapses on mobile because users primarily use one-handed" helps developers make good judgment calls.
+1. **Don't assume**: If it's not specified, the developer will guess. Specify everything.
+2. **Use tokens, not values**: Reference `spacing-md` not `16px`.
+3. **Show all states**: Default, hover, active, disabled, loading, error, empty.
+4. **Describe the why**: "This collapses on mobile because users primarily use one-handed" helps developers make good judgment calls.
 
 ## Output
 
@@ -128,6 +128,6 @@ If **~~project tracker** is connected:
 
 ## Tips
 
-1. **Share the Figma link** — I can pull exact measurements, tokens, and component info.
-2. **Mention edge cases** — "What happens with 100 items?" helps me spec boundary conditions.
-3. **Specify the tech stack** — "We use React + Tailwind" helps me give relevant implementation notes.
+1. **Share the Figma link**: I can pull exact measurements, tokens, and component info.
+2. **Mention edge cases**: "What happens with 100 items?" helps me spec boundary conditions.
+3. **Specify the tech stack**: "We use React + Tailwind" helps me give relevant implementation notes.

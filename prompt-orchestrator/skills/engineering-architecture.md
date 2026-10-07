@@ -22,7 +22,7 @@ Create an Architecture Decision Record (ADR) or evaluate a system design.
 
 See the **system-design** skill for detailed frameworks on requirements gathering, scalability analysis, and trade-off evaluation.
 
-## Output — ADR Format
+## Output: ADR Format
 
 ```markdown
 # ADR-[number]: [Title]
@@ -78,6 +78,6 @@ If **~~project tracker** is connected:
 
 ## Tips
 
-1. **State constraints upfront** — "We need to ship in 2 weeks" or "Must handle 10K rps" shapes the answer.
-2. **Name your options** — Even if you're leaning one way, I'll give a more balanced analysis with explicit alternatives.
-3. **Include non-functional requirements** — Latency, cost, team expertise, and maintenance burden matter as much as features.
+1. **State constraints upfront**: "We need to ship in 2 weeks" or "Must handle 10K rps" shapes the answer.
+2. **Name your options**: Even if you're leaning one way, I'll give a more balanced analysis with explicit alternatives.
+3. **Include non-functional requirements**: Latency, cost, team expertise, and maintenance burden matter as much as features.

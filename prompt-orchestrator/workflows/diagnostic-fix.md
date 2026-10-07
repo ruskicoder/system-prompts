@@ -15,7 +15,7 @@ argument-hint: "<error symptom or stack trace>"
 | Clarity | symptom is known, cause is unknown |
 
 ## Required Skills
-- codebase-understanding (GitNexus) — HEAVY use
+- codebase-understanding (GitNexus): HEAVY use
 - file-operations
 - code-execution
 - code-quality-testing
@@ -27,7 +27,7 @@ argument-hint: "<error symptom or stack trace>"
 ### Phase 0: Thinking Stage (Pre-Action)
 - [ ] What is the exact symptom? Error message, wrong output, crash?
 - [ ] Have I gathered all available diagnostic context? (logs, stack traces, state)
-- [ ] Do NOT jump to fixing — root cause must be identified first
+- [ ] Do NOT jump to fixing: root cause must be identified first
 - [ ] Re-evaluate intent: is this diagnostic or fix? *(Factory)*
 
 ### Phase 1: Gather Symptoms
@@ -65,7 +65,7 @@ Before proposing any fix, complete all 4 fields of the Ariya-4 Problem Frame:
 
 ### Phase 4: Fix
 - Apply minimal targeted change addressing root cause
-- DO NOT fix symptoms — fix the root
+- DO NOT fix symptoms: fix the root
 - DO NOT refactor unrelated code
 
 ### Phase 5: Verify
@@ -90,12 +90,12 @@ Before proposing any fix, complete all 4 fields of the Ariya-4 Problem Frame:
 - **Max recommended**: 80K tokens
 - **Warning threshold**: >80K → consider session summarization
 
-## GitNexus Integration — Required
+## GitNexus Integration: Required
 This workflow depends on GitNexus for:
-- `query` — find code related to error
-- `context` — 360° view of suspect symbols
-- `trace` — call chain between entry point and error site
-- `detect_changes` — verify fix scope
+- `query`: find code related to error
+- `context`: 360° view of suspect symbols
+- `trace`: call chain between entry point and error site
+- `detect_changes`: verify fix scope
 
 If GitNexus index is stale, run `npx gitnexus analyze` first.
 

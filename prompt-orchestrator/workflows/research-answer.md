@@ -10,7 +10,7 @@ argument-hint: "<research question or topic>"
 | Criteria | Match |
 |----------|-------|
 | Intention | information_query, fact_check, research |
-| Complexity | varies — from simple FAQ to deep research |
+| Complexity | varies: from simple FAQ to deep research |
 | Power Mode | Eco (simple) or Balanced/Deep (complex) |
 | Clarity | user wants information, not code changes |
 
@@ -26,7 +26,7 @@ argument-hint: "<research question or topic>"
 - [ ] What exactly is the user asking? Factual question, comparison, deep research?
 - [ ] Is this time-sensitive? (current events, recent changes = MUST search)
 - [ ] What do I already know vs what do I need to verify?
-- [ ] Never fabricate citations or sources — if unsure, search
+- [ ] Never fabricate citations or sources: if unsure, search
 
 ### Step 1: Determine Research Depth
 - **Simple fact**: single search, direct answer
@@ -66,7 +66,7 @@ search_web("RingAttention vs sparse attention benchmarks")
 
 ### Step 5: Cite & Answer
 - Every factual claim gets a citation: `[source:N]`
-- Answer directly — don't start with "Great question!"
+- Answer directly: don't start with "Great question!"
 - Structure: summary first, then details
 - For complex topics: use headings to organize
 - Offer to go deeper if user wants more
@@ -77,11 +77,11 @@ search_web("RingAttention vs sparse attention benchmarks")
 - [ ] Did I search before answering if info may have changed?
 - [ ] Am I distinguishing confirmed facts from speculation or uncertainty?
 - [ ] Have I presented multiple viewpoints for contested topics? *(Anthropic evenhandedness)*
-- [ ] Never cite fabricated IDs — verify each citation exists
+- [ ] Never cite fabricated IDs: verify each citation exists
 
 ### Step 6: Final Answer
 - Wrap final answer in `<answer>` tags (Perplexity pattern)
-- NEVER include bibliography at end — citations are inline only
+- NEVER include bibliography at end: citations are inline only
 - NEVER cite fabricated information
 
 ## Token Budget
@@ -93,7 +93,7 @@ search_web("RingAttention vs sparse attention benchmarks")
 ## Hallucination Watchpoints
 - Fabricating citations (most dangerous error)
 - Overconfident claims from single source
-- Confirmation bias — only citing sources that agree
+- Confirmation bias: only citing sources that agree
 - Presenting speculation as fact
 - Not searching when info is time-sensitive
 - Relying on training data for current events
