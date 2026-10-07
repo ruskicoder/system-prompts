@@ -7,7 +7,7 @@
     {
       "name": "prompt-orchestrator",
       "source": "./",
-      "description": "Central AI Agent Orchestrator: routing, safety, and 50 specialized skills/workflows distilled from 73 leaked platform prompts."
+      "description": "Central AI Agent Orchestrator: routing, safety, and 51 specialized skills/workflows distilled from 73 leaked platform prompts."
     }
   ]
 }
