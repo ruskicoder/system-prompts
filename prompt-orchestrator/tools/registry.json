@@ -178,7 +178,7 @@
     "id": "human",
     "kind": "skill",
     "source": "skills/human.md",
-    "description": "Find and repair AI writing patterns in English prose while preserving facts, meaning and voice. Covers audit-only detection, a two-pass rewrite (diagnose, then repair only confirmed spans), reviewable co-writer suggestions, and teaching and mimicking a writer's voice from their own samples. Self-contained: the pattern catalog, rewrite contract, preservation rules, presets, rubric and a bundled standard-library Python tool (phrase, structure and silhouette scanners, preservation validator, readability, voice profiling and scoring, refine and structure-repair loops) all live in this one file. Use when asked to humanize, de-slop or unslop text, fix AI text, make a draft sound human, natural or less robotic, flag AI tells without changing anything, review a draft before publishing, or write in a specific person's voice. Also use when pasted text 'sounds like ChatGPT' or contains tells such as 'Here's the thing:', 'Let that sink in' or 'In today's fast-paced landscape'.",
+    "description": "Find and repair AI writing patterns in English prose while preserving facts, meaning and voice: audit-only detection, a two-pass rewrite that edits only confirmed spans, reviewable co-writer suggestions, and teaching and mimicking a writer's voice from their samples. Bundles standard-library scanners, a preservation validator and voice tools. Use to humanize, de-slop or unslop text, make a draft sound less robotic or less like ChatGPT, flag AI tells without changing anything, review a draft before publishing, or write in a specific person's voice.",
     "argument_hint": "[rewrite | audit | cleanup | teach | mimic | voice-check] [text, file path or stdin]"
   },
   {
