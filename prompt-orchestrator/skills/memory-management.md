@@ -7,31 +7,31 @@ argument-hint: "<memory action or context to save>"
 # Skill: Memory & Context Management
 
 ## Purpose
-Persist and retrieve important context across sessions, manage conversation state, and leverage memory systems efficiently. _Source: Anthropic (Category H)_
+Persist and retrieve important context across sessions, manage conversation state, and leverage memory systems efficiently.
 
 ## Tools Required
-- Memory CRUD tools (create/update/delete memory) _Source: Cursor (Category H)_
-- Todo list tools (todo_write) _Source: Perplexity (Category N)_
-- Persistent storage APIs (where available) _Source: Cursor (Category H)_
-- Steering/configuration file tools _Source: Kiro (Category H)_
+- Memory CRUD tools (create/update/delete memory)
+- Todo list tools (todo_write)
+- Persistent storage APIs (where available)
+- Steering/configuration file tools
 
 ## General Principles
-- Save context proactively: context windows are limited _Source: Amp (Category H)_
-- Save early, save often: don't wait until end of task _Source: Kiro (Category N)_
-- Prefer updating existing memories over creating duplicates _Source: Cursor (Category H)_
-- Tag memories for efficient retrieval _Source: Cursor (Category H)_
-- Prioritize: user preferences > project decisions > technical context > conversation state _Source: Notion (Category H)_
+- Save context proactively: context windows are limited
+- Save early, save often: don't wait until end of task
+- Prefer updating existing memories over creating duplicates
+- Tag memories for efficient retrieval
+- Prioritize: user preferences > project decisions > technical context > conversation state
 
-## Memory Creation (Windsurf pattern)
+## Memory Creation
 
 ### What to Save
-- User preferences (tone, formatting, tool usage preferences) _Source: OpenAI (Category H)_
-- Explicit user requests to remember something _Source: Anthropic (Category H)_
-- Important code snippets and project structure _Source: Amp (Category H)_
-- Technical stack decisions _Source: Cursor (Category H)_
-- Major milestones and feature decisions _Source: Cursor (Category H)_
-- Design patterns and architectural choices _Source: Cursor (Category H)_
-- Current task state for multi-session work _Source: Kiro (Category N)_
+- User preferences (tone, formatting, tool usage preferences)
+- Explicit user requests to remember something
+- Important code snippets and project structure
+- Technical stack decisions
+- Major milestones and feature decisions
+- Design patterns and architectural choices
+- Current task state for multi-session work
 
 ### How to Save
 ```python
@@ -58,20 +58,20 @@ create_memory(
     Id="incorrect_memory_id"
 )
 ```
-_Source: Windsurf (Category H)_
 
 ### When to NOT Save
-- Trivial temporary state _Source: Cursor (Category H)_
-- Information that will be irrelevant after current task _Source: Cursor (Category H)_
-- Content the user explicitly doesn't want saved _Source: Anthropic (Category H)_
-- Sensitive/PII data _Source: Kiro (Category G)_
+- Trivial temporary state
+- Information that will be irrelevant after current task
+- Content the user explicitly doesn't want saved
+- Sensitive/PII data
 
 ## Task Management (todo_write pattern)
-- Use for multi-step tasks to track progress _Source: Perplexity (Category N)_
-- Create at start of complex task _Source: Perplexity (Category N)_
-- Mark items complete as soon as done (don't batch) _Source: Perplexity (Category N)_
-- Keep exactly ONE item `in_progress` at a time _Source: Trae (Category N)_
-- Update status in real-time _Source: Trae (Category N)_
+- Use for multi-step tasks to track progress
+- Create at start of complex task
+- Mark items complete as soon as done (don't batch)
+- Keep exactly ONE item `in_progress` at a time
+- Update status in real-time
+- Interrupt stash: on a deviation, record the current workflow, step and next action as a todo item, resolve the interrupt, then resume from it (communication-tone section 5)
 
 ```python
 todo_write(
@@ -82,24 +82,23 @@ todo_write(
     ]
 )
 ```
-_Source: Perplexity (Category N)_
 
 ## Session Continuation
-- When ending a session, produce a structured summary _Source: Kiro (Category N)_
-- Include: what was discussed, decisions made, current state, next steps _Source: Kiro (Category N)_
-- The summary should be self-contained for next session to pick up _Source: Kiro (Category N)_
+- When ending a session, produce a structured summary
+- Include: what was discussed, decisions made, current state, next steps
+- The summary should be self-contained for next session to pick up
 
-## Steering Files (Kiro pattern)
-- For persistent behavioral instructions, use steering files _Source: Kiro (Category H)_
+## Steering Files
+- For persistent behavioral instructions, use steering files
 - Steering files can be:
-  - **Always included** (default): for universal instructions _Source: Kiro (Category O)_
-  - **Conditional** (fileMatch): triggered when specific files are read _Source: Kiro (Category O)_
-  - **Manual**: only when explicitly referenced _Source: Kiro (Category O)_
-- Use file references `#[[file:path]]` to include specs into context _Source: Kiro (Category H)_
+  - **Always included** (default): for universal instructions
+  - **Conditional** (fileMatch): triggered when specific files are read
+  - **Manual**: only when explicitly referenced
+- Use file references `#[[file:path]]` to include specs into context
 
 ## Conversation History Awareness
-- Be aware of context window limits _Source: OpenAI (Category I)_
-- If conversation is long, memory systems help preserve key facts _Source: Anthropic (Category H)_
-- Don't repeat information that was already established _Source: Phind (Category B)_
-- Refer back to earlier parts of conversation when relevant _Source: Poke (Category H)_
-- If context is lost (new session), ask for summary if one wasn't provided _Source: Kiro (Category N)_
+- Be aware of context window limits
+- If conversation is long, memory systems help preserve key facts
+- Don't repeat information that was already established
+- Refer back to earlier parts of conversation when relevant
+- If context is lost (new session), ask for summary if one wasn't provided

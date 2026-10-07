@@ -12,7 +12,7 @@ argument-hint: <test command or test target>
 # Skill: Code Quality & Testing
 
 ## Purpose
-Write clean, correct, well-tested code through systematic quality practices. _Source: Cursor (Category A)_
+Write clean, correct, well-tested code through systematic quality practices.
 
 ## Tools Required
 - Linter/analyzer tools
@@ -20,35 +20,35 @@ Write clean, correct, well-tested code through systematic quality practices. _So
 - Code execution tools
 
 ## General Principles
-- Code must be immediately runnable: all imports, deps, endpoints included _Source: Qoder (Category E)_
-- Write minimal code: only what's needed for the task, nothing extra _Source: Cursor (Category E)_
-- Follow existing codebase conventions (style, patterns, libraries) _Source: Aider (Category E)_
-- Prefer simple solutions: don't overengineer _Source: Cursor (Category E)_
-- Verify before presenting: test your code _Source: Cursor (Category E)_
+- Code must be immediately runnable: all imports, deps, endpoints included
+- Write minimal code: only what's needed for the task, nothing extra
+- Follow existing codebase conventions (style, patterns, libraries)
+- Prefer simple solutions: don't overengineer
+- Verify before presenting: test your code
 
 ## Immediately Runnable Code
 
 ### Checklist Before Presenting
-- [ ] All imports/requires are present _Source: Aider (Category Q)_
+- [ ] All imports/requires are present
 - [ ] All referenced variables/functions are defined
 - [ ] Dependencies listed in package manifest
-- [ ] No syntax errors (proper brackets, semicolons, indentation) _Source: Kiro (Category Q)_
-- [ ] Type definitions match usage _Source: Amp (Category E)_
-- [ ] API endpoints exist and match _Source: Cursor (Category E)_
+- [ ] No syntax errors (proper brackets, semicolons, indentation)
+- [ ] Type definitions match usage
+- [ ] API endpoints exist and match
 
 ### Web Apps
-- Give beautiful, modern UI (Windsurf rule) _Source: Windsurf (Category E)_
-- Use responsive design (Lovable rule) _Source: Lovable (Category E)_
-- shadcn/ui + Tailwind default stack (Lovable rule) _Source: Lovable (Category E)_
-- lucide-react for icons, recharts for charts _Source: Lovable (Category Q)_
+- Give beautiful, modern UI
+- Use responsive design
+- shadcn/ui + Tailwind default stack
+- lucide-react for icons, recharts for charts
 
 ## Testing Practices
 
 ### Unit Tests
-- Test core logic and edge cases _Source: Cursor (Category E)_
-- One test file per source module _Source: Cursor (Category E)_
-- Test both success and failure paths _Source: Augment (Category E)_
-- Mock external dependencies _Source: Cursor (Category E)_
+- Test core logic and edge cases
+- One test file per source module
+- Test both success and failure paths
+- Mock external dependencies
 
 ### Integration Tests
 - Test component interactions
@@ -56,16 +56,16 @@ Write clean, correct, well-tested code through systematic quality practices. _So
 - Test API endpoints end-to-end
 
 ### Running Tests
-- After making changes, run relevant tests _Source: Cursor (Category E)_
-- Don't commit if tests fail _Source: Cursor (Category E)_
-- Fix test failures before marking task complete _Source: Cursor (Category E)_
+- After making changes, run relevant tests
+- Don't commit if tests fail
+- Fix test failures before marking task complete
 
-## Debugging (Windsurf pattern)
-- Address root cause, not symptoms _Source: Codex (Category E)_
-- Add descriptive logging before trying fixes _Source: Windsurf (Category F)_
+## Debugging
+- Address root cause, not symptoms
+- Add descriptive logging before trying fixes
 - Use test functions to isolate problem
-- Only make changes when you're certain of the fix _Source: Windsurf (Category F)_
-- If uncertain, gather more data first _Source: Windsurf (Category F)_
+- Only make changes when you're certain of the fix
+- If uncertain, gather more data first
 
 ```python
 # Debugging workflow
@@ -78,28 +78,28 @@ Write clean, correct, well-tested code through systematic quality practices. _So
 ```
 
 ## Error Handling Philosophy
-- For prototypes/rapid dev: let errors bubble up (Lovable pattern); they'll surface for AI to fix _Source: Lovable (Category G)_
-- For production: proper try/catch with meaningful error messages _Source: Amp (Category E)_
-- Never expose stack traces to end users _Source: Amp (Category G)_
-- Log errors for debugging without leaking sensitive data _Source: Warp (Category G)_
+- For prototypes/rapid dev: let errors bubble up; they'll surface for AI to fix
+- For production: proper try/catch with meaningful error messages
+- Never expose stack traces to end users
+- Log errors for debugging without leaking sensitive data
 
-## Linter Integration (Cursor pattern)
-- After editing a file, check linter results _Source: Cursor (Category E)_
-- Fix introduced errors (max 3 cycles per file) _Source: Cursor (Category E)_
-- Don't make uneducated guesses to fix lint errors _Source: Cursor (Category E)_
-- If stuck after 3 cycles, present to user with what you know _Source: Cursor (Category E)_
+## Linter Integration
+- After editing a file, check linter results
+- Fix introduced errors (max 3 cycles per file)
+- Don't make uneducated guesses to fix lint errors
+- If stuck after 3 cycles, present to user with what you know
 
 ## Code Review Before Presenting
-- [ ] Does it match the requirement? _Source: Cursor (Category E)_
-- [ ] Is it the minimal implementation? _Source: Cursor (Category E)_
-- [ ] Are there edge cases not handled? _Source: Augment (Category E)_
-- [ ] Does it follow codebase conventions? _Source: Aider (Category E)_
-- [ ] Are there security concerns? _Source: Kiro (Category G)_
-- [ ] Is it readable and maintainable? _Source: Factory (Category A)_
+- [ ] Does it match the requirement?
+- [ ] Is it the minimal implementation?
+- [ ] Are there edge cases not handled?
+- [ ] Does it follow codebase conventions?
+- [ ] Are there security concerns?
+- [ ] Is it readable and maintainable?
 
 ## Refactoring
-- Small, focused commits _Source: Factory (Category E)_
-- One concern per change _Source: Factory (Category E)_
-- Don't mix refactoring with feature work _Source: Amp (Category E)_
-- Preserve existing behavior during refactoring _Source: Orchids (Category E)_
-- Add tests before refactoring if coverage is lacking _Source: Cursor (Category E)_
+- Small, focused commits
+- One concern per change
+- Don't mix refactoring with feature work
+- Preserve existing behavior during refactoring
+- Add tests before refactoring if coverage is lacking

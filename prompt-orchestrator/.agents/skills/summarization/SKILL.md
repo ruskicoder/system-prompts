@@ -77,6 +77,9 @@ The summary MUST include:
 - DO NOT output the summary to a file (do not write to `.kiro/session-summary.md` or any disk file).
 - Never echo or display the instruction prompt string itself in the response.
 
+## Offloading a Large Interrupt
+When an interrupt could consume the session (communication-tone section 5), use the same initialization-prompt structure to write a self-contained prompt for a separate session. Keep the interrupt open in the todo list and continue the main flow.
+
 ## Token Budget
 - **Summary itself**: 2K-5K tokens (maximize useful context within budget)
 - If budget is critically low: output the most essential information first (initialization prompt, current state, next steps) in that priority order

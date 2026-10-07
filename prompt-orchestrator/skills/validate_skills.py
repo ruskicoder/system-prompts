@@ -11,10 +11,20 @@ the directory name must match the SKILL.md `name` field, the name must be
 lowercase-hyphenated, and the description must be <= 1024 chars, per the
 open Agent Skills specification (https://agentskills.io).
 
+Third-party vetting fields (optional, canonical sources only):
+origin: in-house | third-party (absent means in-house), vetting: pending | passed |
+rejected, vetted: YYYY-MM-DD. third-party needs vetting; passed needs a valid vetted date
+not in the future; rejected and unknown values fail; pending prints a warning only.
+
 Run with no arguments to validate everything, or pass explicit paths.
 Pass --skip-generated to validate only skills/ and workflows/.
+Pass --vetting-report [--format md|json] [--out PATH] to also export the vetting status of
+every skill and workflow. Export is opt-in; a default run exports nothing.
 """
 
+import argparse
+import datetime
+import json
 import re
 import importlib.util
 import sys
@@ -23,6 +33,75 @@ from pathlib import Path
 
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 GENERATED_SKILL_DIRS = [".agents/skills", ".claude/skills", ".opencode/skills"]
+ORIGINS = {"in-house", "third-party"}
+VETTING = {"pending", "passed", "rejected"}
+WARNINGS = []
+
+
+def check_vetting(data: dict, name: str) -> list:
+    """Validate origin/vetting/vetted fields. Returns errors; appends warnings to WARNINGS."""
+    errors = []
+    origin = data.get("origin", "in-house")
+    vetting = data.get("vetting")
+    vetted = data.get("vetted")
+    if origin not in ORIGINS:
+        errors.append(f"'origin' must be one of {sorted(ORIGINS)}, got {origin!r}")
+    if vetting is not None and vetting not in VETTING:
+        errors.append(f"'vetting' must be one of {sorted(VETTING)}, got {vetting!r}")
+    if origin == "third-party" and vetting is None:
+        errors.append("origin 'third-party' requires a 'vetting' field")
+    if vetting == "rejected":
+        errors.append("vetting 'rejected': remove the file or re-author it in-house")
+    if vetting == "pending":
+        WARNINGS.append(f"{name}: vetting pending (run workflows/third-party-vetting.md)")
+    if vetting == "passed" or vetted is not None:
+        if vetted is None:
+            errors.append("vetting 'passed' requires a 'vetted: YYYY-MM-DD' date")
+        else:
+            try:
+                day = vetted if isinstance(vetted, datetime.date) else datetime.date.fromisoformat(str(vetted))
+                if day > datetime.date.today():
+                    errors.append(f"'vetted' date {day} is in the future")
+            except ValueError:
+                errors.append(f"'vetted' must be YYYY-MM-DD, got {vetted!r}")
+    return errors
+
+
+def read_frontmatter(filepath: Path) -> dict:
+    lines = filepath.read_text(encoding="utf-8").splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}
+    end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), -1)
+    if end == -1:
+        return {}
+    try:
+        data = yaml.safe_load("\n".join(lines[1:end]))
+    except yaml.YAMLError:
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def vetting_report(root_dir: Path, fmt: str, out=None) -> None:
+    rows = []
+    for sub in ("skills", "workflows"):
+        for f in sorted((root_dir / sub).glob("*.md")):
+            data = read_frontmatter(f)
+            rows.append({
+                "file": f"{sub}/{f.name}",
+                "origin": data.get("origin", "in-house"),
+                "vetting": data.get("vetting") or "",
+                "vetted": str(data.get("vetted") or ""),
+            })
+    if fmt == "json":
+        text = json.dumps(rows, indent=2) + "\n"
+    else:
+        text = "| File | Origin | Vetting | Vetted |\n|------|--------|---------|--------|\n"
+        text += "".join(f"| {r['file']} | {r['origin']} | {r['vetting']} | {r['vetted']} |\n" for r in rows)
+    if out:
+        Path(out).write_text(text, encoding="utf-8")
+        print(f"Vetting report written to {out}")
+    else:
+        print(text, end="")
 
 def validate_markdown_file(filepath: Path) -> list:
     errors = []
@@ -72,6 +151,8 @@ def validate_markdown_file(filepath: Path) -> list:
     # Optional fields check if present
     if "argument-hint" in data and data["argument-hint"] is not None and not isinstance(data["argument-hint"], str):
         errors.append("Frontmatter 'argument-hint' must be a string")
+
+    errors.extend(check_vetting(data, filepath.name))
 
     # 2. Markdown Body Check
     body_lines = lines[closing_idx + 1:]
@@ -197,7 +278,17 @@ def main():
     total_passed = 0
     total_failed = 0
 
-    positional_args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    parser = argparse.ArgumentParser(description="Validate skills and workflows.")
+    parser.add_argument("paths", nargs="*")
+    parser.add_argument("--skip-generated", action="store_true")
+    parser.add_argument("--vetting-report", action="store_true")
+    parser.add_argument("--format", choices=["md", "json"], default="md")
+    parser.add_argument("--out")
+    args = parser.parse_args()
+    positional_args = args.paths
+
+    if args.vetting_report:
+        vetting_report(root_dir, args.format, args.out)
 
     if positional_args:
         # Custom paths provided
@@ -218,7 +309,7 @@ def main():
                     total_passed += 1
                     print(f"✅ [PASS] {target.name}")
     else:
-        skip_generated = "--skip-generated" in sys.argv
+        skip_generated = args.skip_generated
 
         # Default: validate both skills and workflows directories
         if skills_dir.exists():
@@ -249,6 +340,11 @@ def main():
                     p, f = validate_generated_dir(generated_dir)
                     total_passed += p
                     total_failed += f
+
+    if WARNINGS:
+        print(f"\nWarnings ({len(WARNINGS)}):")
+        for warning in WARNINGS:
+            print(f"   - {warning}")
 
     print(f"\n==================================================")
     print(f"Overall Results: {total_passed} passed, {total_failed} failed out of {total_passed + total_failed} total.")

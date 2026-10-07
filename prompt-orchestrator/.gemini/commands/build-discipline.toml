@@ -1,0 +1,2 @@
+description = "Build discipline for every code change. Understand first, prefer reuse over new code, fix root causes, avoid speculative structure, never simplify away safety, add one runnable check, mark deliberate..."
+prompt = "This is the 'build-discipline' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/build-discipline/SKILL.md' (canonical source: 'skills/build-discipline.md') exactly, then apply them to: {{args}}"

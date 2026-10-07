@@ -16,7 +16,7 @@
   - *Does this change what folder1 does, how it's structured, or how it's invoked?*
   - **Answer**: No. `AGENT.md` remains the unified single master system prompt file. The structure, section lettering (A–O), and core power mode / intention classification workflows are 100% preserved. The additions are purely additive enhancements to Stage 1 of the Pre-Action protocol.
 - **Rule 5 Neutralization Check**:
-  - Strip all references to "FPCOS", "First Principle Codex OS", "L0 Layer", or author names ("Bunyawat Dechanon"). Use native prompt-orchestrator terminology ("Epistemic Reality Anchor").
+  - Strip all references to source framework names, layer labels and author names. Use native prompt-orchestrator terminology ("Epistemic Reality Anchor").
 
 ### 2. Finding 002 — Epistemic Status & Anti-Hallucination Guardrails (`AGENT.md`)
 - **Target File**: [AGENT.md](file:///mnt/DATA/DATA/Github/system-prompts/prompt-orchestrator/AGENT.md) Section H
@@ -59,7 +59,7 @@
   - *Does this change what folder1 does, how it's structured, or how it's invoked?*
   - **Answer**: No. Stage 1.5 retains its Blast Radius, Rollback Feasibility, and Pre-emptive Mitigation structure.
 - **Rule 5 Neutralization Check**:
-  - Technical operational self-thinking checks without FPCOS layer labels.
+  - Technical operational self-thinking checks without source framework layer labels.
 
 ### 6. Finding 006 — Skill Inheritance & Validation (`AGENT.md` & `skills/validate_skills.py`)
 - **Target Files**:

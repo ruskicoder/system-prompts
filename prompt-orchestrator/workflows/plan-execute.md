@@ -20,19 +20,20 @@ argument-hint: "<feature or refactoring goal>"
 - code-execution
 - code-quality-testing
 - communication-tone
+- build-discipline
 - project-scaffolding (if new files needed)
 - safety-profiles (default or strict)
 
 ## Flow
 
 ### Phase 0: Thinking Stage (Pre-Action)
-- [ ] Is the user's intent clear? Re-evaluate on EVERY new message *(Factory)*
+- [ ] Is the user's intent clear? Re-evaluate on EVERY new message
 - [ ] Have I read the relevant code areas? NEVER change what I haven't read
 - [ ] Do I understand the existing patterns and conventions?
 - [ ] What's the blast radius of my planned changes? (GitNexus impact analysis)
 - [ ] Verify: am I in PLAN mode or EXECUTE mode? Never mix the two
 
-### Phase 1: Intent Gate (Factory pattern)
+### Phase 1: Intent Gate
 Determine: **Am I in plan mode or execute mode?**
 
 - **Plan mode**: research, gather context, propose approach; NO file changes
@@ -76,7 +77,7 @@ Present to user:
 
 ### Phase 5b: Sanity Check
 - [ ] Does the implementation match the approved plan? Any deviations?
-- [ ] Have all planned files been created/modified? No orphaned code? *(Kiro)*
+- [ ] Have all planned files been created/modified? No orphaned code?
 - [ ] `detect_changes()`: is scope limited to what was planned?
 - [ ] Does the existing functionality still work? (regression check)
 - [ ] Are there linter errors or test failures?

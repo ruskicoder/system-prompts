@@ -20,7 +20,7 @@ argument-hint: <task goal or prompt>
 
 ## Required Skills
 - ALL skills may be needed (composed dynamically)
-- Minimum: file-operations + code-execution + codebase-understanding + communication-tone + safety-profiles
+- Minimum: file-operations + code-execution + codebase-understanding + communication-tone + build-discipline + safety-profiles
 
 ## Flow
 
@@ -40,11 +40,11 @@ while task_not_complete:
 
 ### Step 0: Thinking Stage (Pre-Action - Every Iteration)
 Before EVERY action in the loop:
-- [ ] What is the current state vs the goal? *(Manus planner)*
+- [ ] What is the current state vs the goal?
 - [ ] Have I read the relevant context? NEVER act on assumptions
 - [ ] What ONE thing should I do next to make progress?
 - [ ] Am I still working toward the original goal? (Scope check)
-- [ ] Do not assume the outcome of any tool use. Each step must be informed by the previous step's result. *(Cline)*
+- [ ] Do not assume the outcome of any tool use. Each step must be informed by the previous step's result.
 
 ### Step 1: Task Initialization
 - Read all provided context
@@ -76,7 +76,7 @@ Each iteration:
 - After every 3-5 tool calls: pause and give a brief checkpoint
 
 ### Step 4b: Sanity Check (Every 3-5 iterations)
-- [ ] Is the task actually complete? *(Cursor: "Only terminate when sure the problem is solved")*
+- [ ] Is the task actually complete? ("Only terminate when sure the problem is solved")
 - [ ] Have I introduced any regressions?
 - [ ] `detect_changes()`: verify scope
 - [ ] Are there lingering issues or partial implementations?
@@ -120,7 +120,7 @@ If any watchpoint triggers:
 
 ## Autonomy Principles
 - Be proactive: don't ask permission for research or context gathering
-- Be decisive: if unsure between two approaches, pick one and proceed
+- Be decisive: if unsure between two approaches, ask with options and a recommendation; pick and proceed only under an explicit auto-decide grant (communication-tone section 4)
 - Be thorough: don't leave partial implementations
 - Be safe: flag destructive operations for user approval
 - Be efficient: don't over-engineer, don't over-investigate

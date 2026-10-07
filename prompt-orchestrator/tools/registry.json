@@ -35,6 +35,13 @@
     "argument_hint": "<URL or browser task>"
   },
   {
+    "id": "build-discipline",
+    "kind": "skill",
+    "source": "skills/build-discipline.md",
+    "description": "Build discipline for every code change. Understand first, prefer reuse over new code, fix root causes, avoid speculative structure, never simplify away safety, add one runnable check, mark deliberate shortcuts, and follow per-task-type rules for investigation, feature, migration, refactor, bug fix and verification. Use when writing, changing or reviewing code.",
+    "argument_hint": null
+  },
+  {
     "id": "code-execution",
     "kind": "skill",
     "source": "skills/code-execution.md",
@@ -66,7 +73,7 @@
     "id": "communication-tone",
     "kind": "skill",
     "source": "skills/communication-tone.md",
-    "description": "Enforce anti-fluff communication, precise technical tone, zero sycophancy, minimal token consumption, and direct Markdown/code formatting. Use across all conversation turns to eliminate filler phrases, ungrounded speculation, and conversational preamble.",
+    "description": "The single communication rule for every reply. Mandatory four-part status (asked, done, state, next), ask-then-proceed authorization, self-improvement gates, explicit auto-decide grants, interrupt-and-resume, plain technical writing register, tone and formatting. Use on every conversation turn.",
     "argument_hint": null
   },
   {
@@ -320,6 +327,13 @@
     "source": "skills/engineering-testing-strategy.md",
     "description": "Design test strategies and test plans. Trigger with \"how should we test\", \"test strategy for\", \"write tests for\", \"test plan\", \"what tests do we need\", or when the user needs help with testing approaches, coverage, or test architecture.",
     "argument_hint": null
+  },
+  {
+    "id": "third-party-vetting",
+    "kind": "workflow",
+    "source": "workflows/third-party-vetting.md",
+    "description": "Vetting gate for any external skill, plugin, hook, MCP server, CLI or prompt pack, and for repo content copied or adapted from outside. Inventory, findings, user-approved decision (adopt, extract and re-author, or reject), apply plan, and origin/vetting front-matter record checked by the validator.",
+    "argument_hint": "<tool, package or file to vet>"
   },
   {
     "id": "turnaround-builder",

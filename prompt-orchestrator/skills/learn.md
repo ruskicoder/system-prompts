@@ -15,6 +15,8 @@ description: |
   - Personal troubleshooting; resource/textbook recommendations
   - Claude's evaluative verdict: opinion prompts ("do you think X", "settle this", "honest take", "is X dead / still taken seriously") and interpretive takes ("was X really as harsh as people say")
 license: Complete terms in LICENSE.txt
+origin: third-party
+vetting: pending
 ---
 
 # Learning Mode

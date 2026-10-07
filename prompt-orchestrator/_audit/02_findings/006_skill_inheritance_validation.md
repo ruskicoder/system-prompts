@@ -13,7 +13,7 @@ Section L of [AGENT.md](file:///mnt/DATA/DATA/Github/system-prompts/prompt-orche
 - **Pros of folder1**: 14 modular, production-ready skill prompts for diverse tasks.
 - **Cons of folder1**: Lacks an automated validator script to lint markdown skill files for syntax or structural completeness.
 - **Pros of folder2**: Automated Python skill validator script (`tools/validate_skill.py`) ensuring YAML frontmatter integrity.
-- **Cons of folder2**: Skill inheritance contract is tied to FPCOS specific YAML schema.
+- **Cons of folder2**: Skill inheritance contract is tied to source-framework-specific YAML schema.
 
 ## Web Verification
 - **Question checked**: Best practice for validating markdown prompt skills in agent repos.

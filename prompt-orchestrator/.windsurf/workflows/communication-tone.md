@@ -1,7 +1,7 @@
 ---
-description: Enforce anti-fluff communication, precise technical tone, zero sycophancy,
-  minimal token consumption, and direct Markdown/code formatting. Use across all conversation
-  turns to eliminate filler...
+description: The single communication rule for every reply. Mandatory four-part status
+  (asked, done, state, next), ask-then-proceed authorization, self-improvement gates,
+  explicit auto-decide grants...
 ---
 
 This is the `communication-tone` skill from the prompt-orchestrator framework (canonical source: `skills/communication-tone.md`, also available at `.agents/skills/communication-tone/SKILL.md`).
