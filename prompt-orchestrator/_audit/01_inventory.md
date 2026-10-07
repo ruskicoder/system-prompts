@@ -56,7 +56,7 @@ Generated: 2026-08-10
 ## Folder2 Inventory (`prompt-operator`) (15 files)
 
 ### Root Files
-- `SKILL.md` (12,586 bytes) - First-Principles Compound Operating System (FPCOS) prompt specification
+- `SKILL.md` (12,586 bytes) - first-principles operating framework prompt specification
 - `README.md` (6,788 bytes) - Overview manual
 - `CHANGELOG.md` (1,671 bytes)
 - `CITATION.cff` (706 bytes)

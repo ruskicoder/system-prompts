@@ -20,6 +20,7 @@ argument-hint: "<application concept or prototype description>"
 - code-execution
 - code-quality-testing
 - communication-tone
+- build-discipline
 - safety-profiles (default)
 
 ## Flow
@@ -27,8 +28,8 @@ argument-hint: "<application concept or prototype description>"
 ### Step 0: Thinking Stage (Pre-Action)
 - [ ] What technology stack best fits this project? Use defaults unless specified
 - [ ] What's the CORE functionality? Don't over-engineer: minimum viable
-- [ ] What files are truly needed? No unnecessary abstractions *(Kiro)*
-- [ ] Think HOLISTICALLY and COMPREHENSIVELY BEFORE creating an artifact *(Bolt)*
+- [ ] What files are truly needed? No unnecessary abstractions
+- [ ] Think HOLISTICALLY and COMPREHENSIVELY BEFORE creating an artifact
 - [ ] Consider ALL relevant files, dependencies, and potential impacts
 
 ### Step 1: Think Holistically
@@ -61,10 +62,10 @@ Generate all files in one comprehensive pass:
 
 ### Step 4b: Sanity Check
 - [ ] Does the project BUILD without errors? Run the build command
-- [ ] Are all imports valid and files exist? *(Lovable: "All imports MUST exist")*
+- [ ] Are all imports valid and files exist? ("All imports MUST exist")
 - [ ] Is the app functional at the basic level?
-- [ ] Have I only implemented what was asked? No over-engineering? *(Lovable)*
-- [ ] Is the UI responsive and modern? *(Windsurf)*
+- [ ] Have I only implemented what was asked? No over-engineering?
+- [ ] Is the UI responsive and modern?
 - [ ] Does it have proper error handling for the core flow?
 
 ### Step 5: Summary
@@ -73,16 +74,15 @@ Generate all files in one comprehensive pass:
 - Instructions to run the project
 
 ## Style Guidelines
-- **UI**: beautiful, modern, responsive (Windsurf rule)
+- **UI**: beautiful, modern, responsive
 - **Components**: shadcn/ui by default, lucide-react for icons
 - **Styling**: Tailwind CSS exclusively
 - **Code**: minimal, clean, production-quality
-- **Error handling**: let errors bubble up (Lovable rule); they'll be caught in dev
+- **Error handling**: let errors bubble up; they'll be caught in dev
 - **DO NOT overengineer**: minimum viable implementation
 
 ## What NOT to Do
-- Don't ask "what UI framework?"; use defaults
-- Don't ask permission for package choices
+- State the default stack and packages in one plan and get one confirmation; do not ask about each choice separately
 - Don't create placeholder files or stubs
 - Don't leave TODO comments
 - Don't implement features user didn't ask for

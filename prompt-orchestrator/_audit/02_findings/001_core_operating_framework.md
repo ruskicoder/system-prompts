@@ -7,7 +7,7 @@ matched
 [AGENT.md](file:///mnt/DATA/DATA/Github/system-prompts/prompt-orchestrator/AGENT.md) is a master AI agent orchestrator system prompt defining a 4-layer architecture (Perception -> Resource -> Routing -> Execution), Power Modes, Decision Hierarchy, Pre-Action Protocol, Token Budget Manager, Hallucination Engine, and Session Continuation Manager.
 
 ## Folder2 Content Summary
-`prompt-operator` specifies `SKILL.md` (First-Principles Compound Operating System / FPCOS), featuring a 6-layer cognitive pipeline:
+`prompt-operator` specifies `SKILL.md` (a first-principles operating framework), featuring a 6-layer cognitive pipeline:
 - L0: Reality Anchor (Known, Inferred, Unknown)
 - L1: Axiom Gate (Decomposition, Kalama10, Ariya4)
 - L2: System Thinking Lens (Feedback loops, Leverage points)
@@ -29,7 +29,7 @@ matched
 ## Verdict
 **Action**: compile new from both.
 **Rationale**: 
-1. Incorporate FPCOS's **L0 Reality Anchor** (Known / Inferred / Unknown categorization) into Stage 1 (Thinking Stage) of `AGENT.md` Section D.
+1. Incorporate the source framework's **L0 Reality Anchor** (Known / Inferred / Unknown categorization) into Stage 1 (Thinking Stage) of `AGENT.md` Section D.
 2. Add **Confidence Field** declaration to Stage 2 Sanity Check.
 
 **Confidence**: high

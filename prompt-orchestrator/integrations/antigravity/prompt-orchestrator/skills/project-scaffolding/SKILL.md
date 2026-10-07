@@ -11,18 +11,18 @@ argument-hint: <stack or project description>
 # Skill: Project Scaffolding
 
 ## Purpose
-Create new projects, scaffolds, and codebases from scratch with efficient, minimal structure. _Source: Kiro (Category O)_
+Create new projects, scaffolds, and codebases from scratch with efficient, minimal structure.
 
 ## Tools Required
-- File operations (write, mkdir) _Source: Kiro (Category D)_
-- Package managers (npm, pnpm, pip, cargo, etc.) _Source: Augment (Category E)_
-- Terminal commands (init, install) _Source: Kiro (Category C)_
+- File operations (write, mkdir)
+- Package managers (npm, pnpm, pip, cargo, etc.)
+- Terminal commands (init, install)
 
-## Minimal Skeleton First (Kiro pattern)
-- Start with the absolute minimum structure _Source: Lovable (Category E)_
-- Present project structure overview before creating files _Source: Kiro (Category O)_
-- Create skeleton implementations only _Source: Kiro (Category O)_
-- Focus on essential functionality _Source: Cursor (Category E)_
+## Minimal Skeleton First
+- Start with the absolute minimum structure
+- Present project structure overview before creating files
+- Create skeleton implementations only
+- Focus on essential functionality
 
 ```python
 # WORKFLOW for scaffolding:
@@ -32,25 +32,24 @@ Create new projects, scaffolds, and codebases from scratch with efficient, minim
 4. Fill in core functionality
 5. Add dependency management
 ```
-_Source: Kiro (Category O)_
 
-## Single Artifact Pattern (Bolt pattern)
-- For small-to-medium projects, create a single comprehensive response _Source: Bolt (Category Q)_
-- Include all shell commands, file contents, and dependency info in one flow _Source: Bolt (Category Q)_
-- Think holistically before writing any file _Source: Cursor (Category E)_
+## Single Artifact Pattern
+- For small-to-medium projects, create a single comprehensive response
+- Include all shell commands, file contents, and dependency info in one flow
+- Think holistically before writing any file
 
 ## Full-Stack App Defaults
-- **Frontend**: React + TypeScript + Vite + Tailwind CSS + shadcn/ui _Source: Canva (Category E)_
-- **Backend**: Node.js + Express / Python + FastAPI (match to user preference) _Source: Emergent (Category P)_
-- **Database**: SQLite for prototyping, PostgreSQL for production _Source: Kiro (Category O)_
-- **Icons**: lucide-react _Source: Bolt (Category Q)_
-- **Charts**: recharts _Source: Bolt (Category Q)_
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS + shadcn/ui
+- **Backend**: Node.js + Express / Python + FastAPI (match to user preference)
+- **Database**: SQLite for prototyping, PostgreSQL for production
+- **Icons**: lucide-react
+- **Charts**: recharts
 
 ## File Organization
-- Small, focused files (Lovable rule): aim for <50 lines per component _Source: Lovable (Category Q)_
-- One component per file, one hook per file _Source: Same-Dev (Category E)_
-- Group by feature, not by type _Source: Kiro (Category O)_
-- Flat is better than nested: avoid unnecessary subfolders _Source: Kiro (Category O)_
+- Small, focused files: aim for <50 lines per component
+- One component per file, one hook per file
+- Group by feature, not by type
+- Flat is better than nested: avoid unnecessary subfolders
 
 ```python
 # GOOD: feature-based structure
@@ -66,34 +65,33 @@ utils/
 components/users/profile/UserProfile.tsx
 components/users/list/UserList.tsx
 ```
-_Source: Kiro (Category O)_
 
 ## Dependency Management
-- Create `package.json` / `requirements.txt` / `Cargo.toml` with versioned deps _Source: Augment (Category E)_
-- Use known-compatible versions _Source: Bolt (Category Q)_
-- Prefer libraries that don't rely on native binaries (Bolt rule) _Source: Bolt (Category P)_
-- For Node.js: Vite over custom web server _Source: Bolt (Category Q)_
-- Include `.gitignore` _Source: Bolt (Category P)_
+- Create `package.json` / `requirements.txt` / `Cargo.toml` with versioned deps
+- Use known-compatible versions
+- Prefer libraries that don't rely on native binaries
+- For Node.js: Vite over custom web server
+- Include `.gitignore`
 
 ## What to Include in Every New Project
-- [ ] Dependency manifest (package.json, etc.) _Source: Augment (Category E)_
-- [ ] README with setup instructions _Source: Kiro (Category O)_
-- [ ] `.gitignore` _Source: Bolt (Category P)_
-- [ ] Entry point file _Source: Kiro (Category O)_
-- [ ] Basic project structure _Source: Kiro (Category O)_
-- [ ] Linter/formatter config if relevant _Source: Augment (Category E)_
+- [ ] Dependency manifest (package.json, etc.)
+- [ ] README with setup instructions
+- [ ] `.gitignore`
+- [ ] Entry point file
+- [ ] Basic project structure
+- [ ] Linter/formatter config if relevant
 
 ## Incremental Building
-- Don't create files that won't be used _Source: Lovable (Category E)_
-- Each additional file must be referenced/imported by existing code _Source: Amp (Category E)_
+- Don't create files that won't be used
+- Each additional file must be referenced/imported by existing code
 - If feature scope is large, do it in phases:
-  1. Core data model _Source: Kiro (Category O)_
-  2. Business logic _Source: Kiro (Category O)_
-  3. API/Interface layer _Source: Kiro (Category O)_
-  4. UI (if applicable) _Source: Kiro (Category O)_
+  1. Core data model
+  2. Business logic
+  3. API/Interface layer
+  4. UI (if applicable)
 
 ## No Dead Code
-- Never leave placeholder implementations _Source: Lovable (Category E)_
-- Don't include functions/classes that aren't called _Source: Same-Dev (Category E)_
-- Remove commented-out code _Source: Same-Dev (Category E)_
-- Don't over-abstract: wait for duplication to happen before extracting _Source: Amp (Category E)_
+- Never leave placeholder implementations
+- Don't include functions/classes that aren't called
+- Remove commented-out code
+- Don't over-abstract: wait for duplication to happen before extracting

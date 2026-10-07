@@ -24,6 +24,7 @@ argument-hint: <error symptom or stack trace>
 - code-execution
 - code-quality-testing
 - communication-tone
+- build-discipline
 - safety-profiles (default)
 
 ## Flow
@@ -32,7 +33,7 @@ argument-hint: <error symptom or stack trace>
 - [ ] What is the exact symptom? Error message, wrong output, crash?
 - [ ] Have I gathered all available diagnostic context? (logs, stack traces, state)
 - [ ] Do NOT jump to fixing: root cause must be identified first
-- [ ] Re-evaluate intent: is this diagnostic or fix? *(Factory)*
+- [ ] Re-evaluate intent: is this diagnostic or fix?
 
 ### Phase 1: Gather Symptoms
 - What is the exact error message / unexpected behavior?

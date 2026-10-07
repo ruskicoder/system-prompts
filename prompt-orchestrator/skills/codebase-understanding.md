@@ -7,7 +7,7 @@ argument-hint: "<symbol, flow, or query>"
 # Skill: Codebase Understanding (GitNexus)
 
 ## Purpose
-Leverage the GitNexus knowledge graph to understand codebase structure, trace execution flows, analyze impact, and safely navigate unfamiliar code. _Source: Cursor (Category A)_
+Leverage the GitNexus knowledge graph to understand codebase structure, trace execution flows, analyze impact, and safely navigate unfamiliar code.
 
 ## Prerequisites
 GitNexus must have analyzed the repo. If the index is stale or missing, run:
@@ -29,12 +29,12 @@ node .gitnexus/run.cjs status
 ### Quick Reference
 | Tool/Resource | What It Does | When to Use |
 |--------------|-------------|-------------|
-| `query({search_query})` | Find execution flows related to concept | Understanding how something works _Source: GitNexus (Category H)_ |
-| `context({name})` | 360° view: callers, callees, processes | Deep dive on a specific symbol _Source: GitNexus (Category H)_ |
-| `impact({target, direction, maxDepth})` | Blast radius analysis | Before changing code _Source: GitNexus (Category H)_ |
+| `query({search_query})` | Find execution flows related to concept | Understanding how something works |
+| `context({name})` | 360° view: callers, callees, processes | Deep dive on a specific symbol |
+| `impact({target, direction, maxDepth})` | Blast radius analysis | Before changing code |
 | `trace({from, to})` | Shortest call chain between two symbols | "How does A reach B?" |
 | `detect_changes()` | Map git diff to affected flows | Before commit, after changes |
-| `rename({symbol_name, new_name})` | Multi-file coordinated rename | Safe renaming _Source: GitNexus (Category E)_ |
+| `rename({symbol_name, new_name})` | Multi-file coordinated rename | Safe renaming |
 | `cypher({statement})` | Raw graph query | Custom analysis |
 | `explain({target?})` | Taint findings (needs `--pdg`) | Security analysis |
 | `check()` | Structural integrity checks | Validate refactoring |
@@ -48,16 +48,16 @@ node .gitnexus/run.cjs status
 ### Understanding New Code
 ```
 1. READ gitnexus://repo/{name}/context          → Overview, check staleness
-2. query({search_query: "<what you want>"})      → Find related flows & symbols _Source: GitNexus (Category H)_
-3. context({name: "<key_symbol>"})               → Deep dive on important symbols _Source: GitNexus (Category H)_
+2. query({search_query: "<what you want>"})      → Find related flows & symbols
+3. context({name: "<key_symbol>"})               → Deep dive on important symbols
 4. READ gitnexus://repo/{name}/process/{name}    → Trace full execution flow
 5. Read source files for implementation details  → Final confirmation
 ```
 
 ### Debugging a Bug
 ```
-1. query({search_query: "<error text or symptom>"})  → Find related code _Source: GitNexus (Category H)_
-2. context({name: "<suspect function>"})              → See callers & callees _Source: GitNexus (Category H)_
+1. query({search_query: "<error text or symptom>"})  → Find related code
+2. context({name: "<suspect function>"})              → See callers & callees
 3. trace({from: "<entry>", to: "<error_site>"})       → Find shortest path
 4. READ gitnexus://repo/{name}/process/{name}         → Trace execution flow
 5. Read source files at identified locations
@@ -65,29 +65,29 @@ node .gitnexus/run.cjs status
 
 ### Before Making Changes
 ```
-1. impact({target: "<symbol>", direction: "upstream", maxDepth: 3}) _Source: GitNexus (Category H)_
+1. impact({target: "<symbol>", direction: "upstream", maxDepth: 3})
    → d=1: WILL BREAK (direct callers)
    → d=2: LIKELY AFFECTED
    → d=3: MAY NEED TESTING
-2. context({name: "<symbol>"}) → Understand interfaces _Source: GitNexus (Category H)_
+2. context({name: "<symbol>"}) → Understand interfaces
 3. Plan edit order: interfaces → implementations → callers → tests
 ```
 
 ### After Making Changes
 ```
-1. detect_changes() → Verify only expected files changed _Source: GitNexus (Category H)_
-2. impact on changed symbols → Confirm no unexpected breakage _Source: GitNexus (Category H)_
-3. Run tests for affected execution flows _Source: Cursor (Category E)_
+1. detect_changes() → Verify only expected files changed
+2. impact on changed symbols → Confirm no unexpected breakage
+3. Run tests for affected execution flows
 ```
 
 ## Risk Assessment
 
 | Impact Result | Risk | Action |
 |--------------|------|--------|
-| <5 symbols, few processes | LOW | Proceed normally _Source: Amp (Category G)_ |
+| <5 symbols, few processes | LOW | Proceed normally |
 | 5-15 symbols, 2-5 processes | MEDIUM | Check each dependent |
-| >15 symbols or many processes | HIGH | Plan carefully, write tests _Source: Amp (Category E)_ |
-| Critical path (auth, payments) | CRITICAL | Full spec coverage _Source: Amp (Category E)_ |
+| >15 symbols or many processes | HIGH | Plan carefully, write tests |
+| Critical path (auth, payments) | CRITICAL | Full spec coverage |
 
 ## Cypher Query Examples
 ```cypher

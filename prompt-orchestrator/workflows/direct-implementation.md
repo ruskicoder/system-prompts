@@ -19,13 +19,14 @@ argument-hint: "<change description or target file>"
 - code-execution
 - code-quality-testing
 - communication-tone
+- build-discipline
 - safety-profiles (default)
 
 ## Flow
 
 ### Step 0: Thinking Stage (Pre-Action)
 Before any action, apply the Universal Pre-Action Protocol from AGENT.md §B:
-- [ ] Do I understand the user's actual intent? Re-evaluate on every message *(Factory)*
+- [ ] Do I understand the user's actual intent? Re-evaluate on every message
 - [ ] Have I read the relevant files? NEVER edit code you haven't read
 - [ ] Have I verified my assumptions? Search/grep/query to confirm before acting
 - [ ] Do I have enough context, or am I guessing?
@@ -56,8 +57,8 @@ Before any action, apply the Universal Pre-Action Protocol from AGENT.md §B:
 Before presenting, run the Sanity Check from AGENT.md §B Stage 2:
 - [ ] Is this the MINIMAL change needed? No scope creep?
 - [ ] Does the code have all necessary imports and dependencies?
-- [ ] Will it compile/build immediately? *(Windsurf)*
-- [ ] Have I checked for linter errors? *(Cursor: max 3 fix cycles)*
+- [ ] Will it compile/build immediately?
+- [ ] Have I checked for linter errors? (max 3 fix cycles)
 - [ ] Did I verify the change fixes the actual problem?
 
 If any check fails: STOP, fix, then proceed.

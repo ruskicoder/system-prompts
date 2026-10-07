@@ -72,15 +72,15 @@ search_web("RingAttention vs sparse attention benchmarks")
 - Offer to go deeper if user wants more
 
 ### Step 5b: Sanity Check
-- [ ] Is every factual claim supported by a real citation? *(Perplexity)*
+- [ ] Is every factual claim supported by a real citation?
 - [ ] Are citations inline (not a bibliography at end)?
 - [ ] Did I search before answering if info may have changed?
 - [ ] Am I distinguishing confirmed facts from speculation or uncertainty?
-- [ ] Have I presented multiple viewpoints for contested topics? *(Anthropic evenhandedness)*
+- [ ] Have I presented multiple viewpoints for contested topics?
 - [ ] Never cite fabricated IDs: verify each citation exists
 
 ### Step 6: Final Answer
-- Wrap final answer in `<answer>` tags (Perplexity pattern)
+- Wrap final answer in `<answer>` tags
 - NEVER include bibliography at end: citations are inline only
 - NEVER cite fabricated information
 

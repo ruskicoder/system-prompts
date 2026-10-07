@@ -62,8 +62,8 @@ argument-hint: <topic or code question>
 ### Step 4b: Sanity Check (Before Applying)
 - [ ] Was the user's request clear enough to act on?
 - [ ] Am I applying ONLY what was asked? No scope creep?
-- [ ] Have I read the file before editing? *(Cursor: MUST read before edit)*
-- [ ] Will the code be immediately runnable? *(Windsurf)*
+- [ ] Have I read the file before editing? (MUST read before edit)
+- [ ] Will the code be immediately runnable?
 
 ### Step 5: Iterate
 - User reviews changes

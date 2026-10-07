@@ -39,7 +39,7 @@ argument-hint: '[daily | audit | status]'
 
 ### Step 4: Security & Risk Scan
 - Detect unauthenticated public bindings or secret exposure.
-- Review pending skill audit approvals.
+- Review pending skill audit approvals (`validate_skills.py --vetting-report`; vet pending items with `workflows/third-party-vetting.md`).
 
 ### Step 5: Digest Generation
 - Produce daily system health digest at `_audit/digests/YYYY-MM-DD_digest.md`.
