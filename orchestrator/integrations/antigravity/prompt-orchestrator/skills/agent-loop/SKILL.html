@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">SKILL | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/agent-loop/SKILL"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="SKILL | Awesome System Prompts"><meta data-rh="true" name="description" content="Continuous autonomous agent execution loop for open-ended, complex, or emergent multi-step tasks. Iterates through assessment, single tool execution, observation, and state updating until the task goal is fully resolved."><meta data-rh="true" property="og:description" content="Continuous autonomous agent execution loop for open-ended, complex, or emergent multi-step tasks. Iterates through assessment, single tool execution, observation, and state updating until the task goal is fully resolved."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/agent-loop/SKILL"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/agent-loop/SKILL" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/agent-loop/SKILL" hreflang="x-default"><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.6b699611.js" defer="defer"></script>
-<script src="/system-prompts/assets/js/main.7519a067.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.9135b20f.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/main.f11af58c.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -42,7 +42,7 @@
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="required-skills">Required Skills<a href="#required-skills" class="hash-link" aria-label="Direct link to Required Skills" title="Direct link to Required Skills" translate="no">​</a></h2>
 <ul>
 <li>ALL skills may be needed (composed dynamically)</li>
-<li>Minimum: file-operations + code-execution + codebase-understanding + communication-tone + safety-profiles</li>
+<li>Minimum: file-operations + code-execution + codebase-understanding + communication-tone + build-discipline + safety-profiles</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="flow">Flow<a href="#flow" class="hash-link" aria-label="Direct link to Flow" title="Direct link to Flow" translate="no">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="loop-structure">Loop Structure<a href="#loop-structure" class="hash-link" aria-label="Direct link to Loop Structure" title="Direct link to Loop Structure" translate="no">​</a></h3>
@@ -51,11 +51,11 @@
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-0-thinking-stage-pre-action---every-iteration">Step 0: Thinking Stage (Pre-Action - Every Iteration)<a href="#step-0-thinking-stage-pre-action---every-iteration" class="hash-link" aria-label="Direct link to Step 0: Thinking Stage (Pre-Action - Every Iteration)" title="Direct link to Step 0: Thinking Stage (Pre-Action - Every Iteration)" translate="no">​</a></h3>
 <p>Before EVERY action in the loop:</p>
 <ul class="contains-task-list containsTaskList_YNuG">
-<li class="task-list-item"><input type="checkbox" disabled=""> What is the current state vs the goal? <em>(Manus planner)</em></li>
+<li class="task-list-item"><input type="checkbox" disabled=""> What is the current state vs the goal?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Have I read the relevant context? NEVER act on assumptions</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> What ONE thing should I do next to make progress?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Am I still working toward the original goal? (Scope check)</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> Do not assume the outcome of any tool use. Each step must be informed by the previous step&#x27;s result. <em>(Cline)</em></li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Do not assume the outcome of any tool use. Each step must be informed by the previous step&#x27;s result.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-1-task-initialization">Step 1: Task Initialization<a href="#step-1-task-initialization" class="hash-link" aria-label="Direct link to Step 1: Task Initialization" title="Direct link to Step 1: Task Initialization" translate="no">​</a></h3>
 <ul>
@@ -92,7 +92,7 @@
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-4b-sanity-check-every-3-5-iterations">Step 4b: Sanity Check (Every 3-5 iterations)<a href="#step-4b-sanity-check-every-3-5-iterations" class="hash-link" aria-label="Direct link to Step 4b: Sanity Check (Every 3-5 iterations)" title="Direct link to Step 4b: Sanity Check (Every 3-5 iterations)" translate="no">​</a></h3>
 <ul class="contains-task-list containsTaskList_YNuG">
-<li class="task-list-item"><input type="checkbox" disabled=""> Is the task actually complete? <em>(Cursor: &quot;Only terminate when sure the problem is solved&quot;)</em></li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Is the task actually complete? (&quot;Only terminate when sure the problem is solved&quot;)</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Have I introduced any regressions?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> <code>detect_changes()</code>: verify scope</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Are there lingering issues or partial implementations?</li>
@@ -142,7 +142,7 @@
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="autonomy-principles">Autonomy Principles<a href="#autonomy-principles" class="hash-link" aria-label="Direct link to Autonomy Principles" title="Direct link to Autonomy Principles" translate="no">​</a></h2>
 <ul>
 <li>Be proactive: don&#x27;t ask permission for research or context gathering</li>
-<li>Be decisive: if unsure between two approaches, pick one and proceed</li>
+<li>Be decisive: if unsure between two approaches, ask with options and a recommendation; pick and proceed only under an explicit auto-decide grant (communication-tone section 4)</li>
 <li>Be thorough: don&#x27;t leave partial implementations</li>
 <li>Be safe: flag destructive operations for user approval</li>
 <li>Be efficient: don&#x27;t over-engineer, don&#x27;t over-investigate</li>

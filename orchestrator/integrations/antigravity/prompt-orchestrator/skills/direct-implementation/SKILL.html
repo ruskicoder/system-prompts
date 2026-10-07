@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">SKILL | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/direct-implementation/SKILL"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="SKILL | Awesome System Prompts"><meta data-rh="true" name="description" content="Rapid single-turn direct implementation workflow for unambiguous, low-risk, single-file code changes and bug fixes with known root causes. Enforces pre-action checks and post-edit sanity verification."><meta data-rh="true" property="og:description" content="Rapid single-turn direct implementation workflow for unambiguous, low-risk, single-file code changes and bug fixes with known root causes. Enforces pre-action checks and post-edit sanity verification."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/direct-implementation/SKILL"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/direct-implementation/SKILL" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/direct-implementation/SKILL" hreflang="x-default"><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.6b699611.js" defer="defer"></script>
-<script src="/system-prompts/assets/js/main.7519a067.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.9135b20f.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/main.f11af58c.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -45,13 +45,14 @@
 <li>code-execution</li>
 <li>code-quality-testing</li>
 <li>communication-tone</li>
+<li>build-discipline</li>
 <li>safety-profiles (default)</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="flow">Flow<a href="#flow" class="hash-link" aria-label="Direct link to Flow" title="Direct link to Flow" translate="no">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="step-0-thinking-stage-pre-action">Step 0: Thinking Stage (Pre-Action)<a href="#step-0-thinking-stage-pre-action" class="hash-link" aria-label="Direct link to Step 0: Thinking Stage (Pre-Action)" title="Direct link to Step 0: Thinking Stage (Pre-Action)" translate="no">​</a></h3>
 <p>Before any action, apply the Universal Pre-Action Protocol from AGENT.md §B:</p>
 <ul class="contains-task-list containsTaskList_YNuG">
-<li class="task-list-item"><input type="checkbox" disabled=""> Do I understand the user&#x27;s actual intent? Re-evaluate on every message <em>(Factory)</em></li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Do I understand the user&#x27;s actual intent? Re-evaluate on every message</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Have I read the relevant files? NEVER edit code you haven&#x27;t read</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Have I verified my assumptions? Search/grep/query to confirm before acting</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Do I have enough context, or am I guessing?</li>
@@ -87,8 +88,8 @@
 <ul class="contains-task-list containsTaskList_YNuG">
 <li class="task-list-item"><input type="checkbox" disabled=""> Is this the MINIMAL change needed? No scope creep?</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Does the code have all necessary imports and dependencies?</li>
-<li class="task-list-item"><input type="checkbox" disabled=""> Will it compile/build immediately? <em>(Windsurf)</em></li>
-<li class="task-list-item"><input type="checkbox" disabled=""> Have I checked for linter errors? <em>(Cursor: max 3 fix cycles)</em></li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Will it compile/build immediately?</li>
+<li class="task-list-item"><input type="checkbox" disabled=""> Have I checked for linter errors? (max 3 fix cycles)</li>
 <li class="task-list-item"><input type="checkbox" disabled=""> Did I verify the change fixes the actual problem?</li>
 </ul>
 <p>If any check fails: STOP, fix, then proceed.</p>
