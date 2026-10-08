@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">Skill: Build Discipline | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/skills/build-discipline"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="Skill: Build Discipline | Awesome System Prompts"><meta data-rh="true" name="description" content="Build discipline for every code change. Understand first, prefer reuse over new code, fix root causes, avoid speculative structure, never simplify away safety, add one runnable check, mark deliberate shortcuts, and follow per-task-type rules for investigation, feature, migration, refactor, bug fix and verification. Use when writing, changing or reviewing code."><meta data-rh="true" property="og:description" content="Build discipline for every code change. Understand first, prefer reuse over new code, fix root causes, avoid speculative structure, never simplify away safety, add one runnable check, mark deliberate shortcuts, and follow per-task-type rules for investigation, feature, migration, refactor, bug fix and verification. Use when writing, changing or reviewing code."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/skills/build-discipline"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/skills/build-discipline" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/skills/build-discipline" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Skill: Build Discipline","item":"https://ruskicoder.github.io/system-prompts/orchestrator/skills/build-discipline"}]}</script><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.153944f1.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.7439e6fc.js" defer="defer"></script>
 <script src="/system-prompts/assets/js/main.f11af58c.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -96,8 +96,8 @@ drop them. Hardware drifts.</p>
 <p>End with the possible net reduction in lines and dependencies. Never flag the single
 smoke test as excess.</p>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="part-2-task-type-rules">Part 2: Task-Type Rules<a href="#part-2-task-type-rules" class="hash-link" aria-label="Direct link to Part 2: Task-Type Rules" title="Direct link to Part 2: Task-Type Rules" translate="no">​</a></h2>
-<p>The user states the task type, or the agent reads it back for confirmation. Never assign
-it silently.</p>
+<p>The user states the task type, or the agent names it in the status line so the user can
+correct it. Never assign it silently.</p>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="investigate">Investigate<a href="#investigate" class="hash-link" aria-label="Direct link to Investigate" title="Direct link to Investigate" translate="no">​</a></h3>
 <ul>
 <li>Separate the observed symptom from the inferred cause.</li>
@@ -111,7 +111,7 @@ it silently.</p>
 <li>Derive observable acceptance criteria and explicit non-goals.</li>
 <li>Trace the entry point through every layer that owns an invariant.</li>
 <li>Deliver one coherent end-to-end path.</li>
-<li>Omit modes, providers, configuration and polish that acceptance does not need.</li>
+<li>Omit speculative modes, providers and configuration. Apply quality improvements and report them.</li>
 <li>State the tradeoff of every new surface or dependency.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="migration">Migration<a href="#migration" class="hash-link" aria-label="Direct link to Migration" title="Direct link to Migration" translate="no">​</a></h3>
@@ -135,7 +135,7 @@ it silently.</p>
 <ul>
 <li>Reproduce first when cheap. Otherwise capture the strongest evidence available.</li>
 <li>Change the narrowest layer that owns the wrong behaviour.</li>
-<li>No unrelated cleanup or renames.</li>
+<li>No unrelated renames. Low-risk fixes found along the way go in and are reported separately.</li>
 <li>Add only the regression proof the fix needs.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_O4hB" id="verify">Verify<a href="#verify" class="hash-link" aria-label="Direct link to Verify" title="Direct link to Verify" translate="no">​</a></h3>
