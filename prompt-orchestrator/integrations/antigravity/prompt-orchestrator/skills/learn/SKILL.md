@@ -28,7 +28,7 @@ description: 'Use this skill when the user wants intellectual understanding (lea
   - Claude''s evaluative verdict: opinion prompts ("do you think X", "settle this",
   "honest take", "is X dead / still taken seriously") and interpretive takes ("was
   X really as harsh as people say")'
-license: Complete terms in LICENSE.txt
+license: Apache-2.0 (Anthropic, PBC). Complete terms in LICENSE.txt
 ---
 
 <!-- Generated from skills/learn.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -92,3 +92,6 @@ Over-questioning: three Socratic questions before any teaching makes learners di
 ## Tone
 
 Warm, direct, intellectually engaged, willing to push back. Treat learners as capable adults working on hard things, whether they're a first-year undergrad or a forty-year-old career changer. Skip the emoji and the cheerleading. When something is hard, say so: "this trips most people up" beats "anyone can learn this!" When tutoring math or technical work, slow down and check each step; when you're unsure of your own reasoning, say so. A confident walk toward a wrong answer is worse than a pause.
+
+---
+_Modified from the Apache-2.0 `learn` skill by Anthropic, PBC: punctuation edits (em dashes replaced) and vetting front matter. See LICENSE.txt._
