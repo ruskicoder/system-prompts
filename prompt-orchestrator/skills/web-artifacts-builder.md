@@ -1,9 +1,10 @@
 ---
 name: web-artifacts-builder
 description: Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0 (Anthropic, PBC). Complete terms in LICENSE.txt
 origin: third-party
-vetting: pending
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # Web Artifacts Builder
@@ -30,6 +31,8 @@ Run the initialization script to create a new React project:
 bash scripts/init-artifact.sh <project-name>
 cd <project-name>
 ```
+
+If `pnpm` is missing, the script runs `npm install -g pnpm`, a global install. Check with `command -v pnpm` first and ask the user before running the script on a machine without it.
 
 This creates a fully configured project with:
 - ✅ React + TypeScript (via Vite)
@@ -74,3 +77,6 @@ To test/visualize the artifact, use available tools (including other Skills or b
 ## Reference
 
 - **shadcn/ui components**: https://ui.shadcn.com/docs/components
+
+---
+_Modified from the Apache-2.0 `web-artifacts-builder` skill by Anthropic, PBC: punctuation edits, vetting front matter and the global pnpm install note. See LICENSE.txt._
