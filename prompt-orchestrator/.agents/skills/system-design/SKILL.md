@@ -3,6 +3,8 @@ name: system-design
 description: Design systems, services, and architectures. Trigger with "design a system
   for", "how should we architect", "system design for", "what's the right architecture
   for", or when the user needs help with API design, data modeling, or service boundaries.
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in
+  LICENSE.txt
 ---
 
 <!-- Generated from skills/engineering-system-design.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -44,3 +46,6 @@ Help design systems and evaluate architectural decisions.
 ## Output
 
 Produce clear, structured design documents with diagrams (ASCII or described), explicit assumptions, and trade-off analysis. Always identify what you'd revisit as the system grows.
+
+---
+_Modified from the Apache-2.0 `system-design` skill by Anthropic, PBC (engineering plugin v1.2.0): vetting front matter only; text otherwise verbatim. See LICENSE.txt._

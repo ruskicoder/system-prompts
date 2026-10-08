@@ -2,11 +2,17 @@
 name: architecture
 description: Create or evaluate an architecture decision record (ADR). Use when choosing between technologies (e.g., Kafka vs SQS), documenting a design decision with trade-offs and consequences, reviewing a system design proposal, or designing a new component from requirements and constraints.
 argument-hint: "<decision or system to design>"
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # /architecture
 
 Create an Architecture Decision Record (ADR) or evaluate a system design.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -81,3 +87,6 @@ If **~~project tracker** is connected:
 1. **State constraints upfront**: "We need to ship in 2 weeks" or "Must handle 10K rps" shapes the answer.
 2. **Name your options**: Even if you're leaning one way, I'll give a more balanced analysis with explicit alternatives.
 3. **Include non-functional requirements**: Latency, cost, team expertise, and maintenance burden matter as much as features.
+
+---
+_Modified from the Apache-2.0 `architecture` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

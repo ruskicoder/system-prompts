@@ -5,6 +5,8 @@ description: Generate a standup update from recent activity. Use when preparing 
   work into yesterday/today/blockers, or structuring a few rough notes into a shareable
   update.
 argument-hint: '[yesterday | today | blockers]'
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in
+  LICENSE.txt
 ---
 
 <!-- Generated from skills/engineering-standup.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +14,8 @@ argument-hint: '[yesterday | today | blockers]'
 # /standup
 
 Generate a standup update by pulling together recent activity across your tools.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## How It Works
 
@@ -76,3 +80,6 @@ If **~~chat** is connected:
 1. **Run it every morning**: Build a habit and never scramble for standup notes.
 2. **Add context**: After I generate, add any nuance about blockers or priorities.
 3. **Share format**: Ask me to format for Slack, email, or your team's standup tool.
+
+---
+_Modified from the Apache-2.0 `standup` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

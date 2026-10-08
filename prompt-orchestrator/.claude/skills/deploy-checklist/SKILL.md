@@ -5,6 +5,8 @@ description: Pre-deployment verification checklist. Use when about to ship a rel
   and approvals before going to production, or documenting rollback triggers ahead
   of time.
 argument-hint: '[service or release name]'
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in
+  LICENSE.txt
 ---
 
 <!-- Generated from skills/engineering-deploy-checklist.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +14,8 @@ argument-hint: '[service or release name]'
 # /deploy-checklist
 
 Generate a pre-deployment checklist to verify readiness before shipping.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -79,3 +83,6 @@ If **~~monitoring** is connected:
 1. **Run before every deploy**: Even routine ones. Checklists prevent "I forgot to..."
 2. **Customize once, reuse**: Tell me your stack and I'll remember your deploy process.
 3. **Include rollback criteria**: Decide when to roll back before you deploy, not during.
+
+---
+_Modified from the Apache-2.0 `deploy-checklist` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

@@ -2,11 +2,17 @@
 name: ux-copy
 description: Write or review UX copy (microcopy, error messages, empty states, CTAs). Trigger with "write copy for", "what should this button say?", "review this error message", or when naming a CTA, wording a confirmation dialog, filling an empty state, or writing onboarding text.
 argument-hint: "<context or copy to review>"
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # /ux-copy
 
 Write or review UX copy for any interface context.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -103,3 +109,6 @@ If **~~design tool** is connected:
 1. **Be specific about context**: "Error message when payment fails" is better than "error message."
 2. **Share your brand voice**: "We're professional but warm" helps me match your tone.
 3. **Consider the user's emotional state**: Error messages need empathy. Success messages can celebrate.
+
+---
+_Modified from the Apache-2.0 `ux-copy` skill by Anthropic, PBC (design plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

@@ -4,6 +4,7 @@ description: Create new skills, modify and improve existing skills, and measure 
   performance. Use when users want to create a skill from scratch, edit, or optimize
   an existing skill, run evals to test a skill, benchmark skill performance with variance
   analysis, or optimize a skill's description for better triggering accuracy.
+license: Apache-2.0 (Anthropic, PBC; anthropics/skills). Complete terms in LICENSE.txt
 ---
 
 <!-- Generated from skills/skill-creator.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -249,6 +250,8 @@ Put each with_skill version before its baseline counterpart.
    ```
    For iteration 2+, also pass `--previous-workspace <workspace>/iteration-<N-1>`.
 
+   **Before launching:** the script stops any process already listening on its port (default 3117; change it with `--port`). Check that the port is free or pick another. `run_eval.py` and `improve_description.py` start nested `claude -p` sessions that run on the user's account.
+
    **Cowork / headless environments:** If `webbrowser.open()` is not available or the environment has no display, use `--static <output_path>` to write a standalone HTML file instead of starting a server. Feedback will be downloaded as a `feedback.json` file when the user clicks "Submit All Reviews". After download, copy `feedback.json` into the workspace directory for the next iteration to pick up.
 
 Note: please use generate_review.py to create the viewer; there's no need to write custom HTML.
@@ -488,3 +491,6 @@ Repeating one more time the core loop here for emphasis:
 Please add steps to your TodoList, if you have such a thing, to make sure you don't forget. If you're in Cowork, please specifically put "Create evals JSON and run `eval-viewer/generate_review.py` so human can review test cases" in your TodoList to make sure it happens.
 
 Good luck!
+
+---
+_Modified from the Apache-2.0 `skill-creator` skill by Anthropic, PBC (anthropics/skills): punctuation edits, vetting front matter, viewer port and nested-session note. See LICENSE.txt._

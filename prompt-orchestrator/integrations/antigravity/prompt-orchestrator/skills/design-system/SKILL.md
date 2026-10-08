@@ -5,6 +5,7 @@ description: Audit, document, or extend your design system. Use when checking fo
   for a component's variants, states, and accessibility notes, or designing a new
   pattern that fits the existing system.
 argument-hint: '[audit | document | extend] <component or system>'
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
 ---
 
 <!-- Generated from skills/design-design-system.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +13,8 @@ argument-hint: '[audit | document | extend] <component or system>'
 # /design-system
 
 Manage your design system: audit for consistency, document components, or design new patterns.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -191,3 +194,6 @@ If **~~knowledge base** is connected:
 1. **Start with an audit**: Know where you are before deciding where to go.
 2. **Document as you build**: It's easier to document a component while designing it.
 3. **Prioritize coverage over perfection**: 80% of components documented beats 100% of 10 components.
+
+---
+_Modified from the Apache-2.0 `design-system` skill by Anthropic, PBC (design plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

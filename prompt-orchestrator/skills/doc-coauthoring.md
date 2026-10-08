@@ -1,6 +1,10 @@
 ---
 name: doc-coauthoring
 description: Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.
+license: Apache-2.0 (Anthropic, PBC; anthropics/skills; Apache-2.0 per that repo README, no per-skill license file upstream). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # Doc Co-Authoring Workflow
@@ -373,3 +377,6 @@ Announce document completion. Provide a few final tips:
 - Don't rush through stages
 - Each iteration should make meaningful improvements
 - The goal is a document that actually works for readers
+
+---
+_Modified from the Apache-2.0 `doc-coauthoring` skill by Anthropic, PBC (anthropics/skills): vetting front matter only; text otherwise verbatim. See LICENSE.txt._

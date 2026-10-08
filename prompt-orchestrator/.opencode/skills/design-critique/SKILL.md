@@ -5,6 +5,7 @@ description: Get structured design feedback on usability, hierarchy, and consist
   this screen?", or when sharing a Figma link or screenshot for feedback at any stage
   from exploration to final polish.
 argument-hint: <Figma URL, screenshot, or description>
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
 ---
 
 <!-- Generated from skills/design-design-critique.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +13,8 @@ argument-hint: <Figma URL, screenshot, or description>
 # /design-critique
 
 Get structured design feedback across multiple dimensions.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -119,3 +122,6 @@ If **~~user feedback** is connected:
 1. **Share the context**: "This is a checkout flow for a B2B SaaS" helps me give relevant feedback.
 2. **Specify your stage**: Early exploration gets different feedback than final polish.
 3. **Ask me to focus**: "Just look at the navigation" gives you more depth on one area.
+
+---
+_Modified from the Apache-2.0 `design-critique` skill by Anthropic, PBC (design plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

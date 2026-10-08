@@ -5,6 +5,7 @@ description: Synthesize user research into themes, insights, and recommendations
   tickets, or NPS responses that need to be distilled into patterns, user segments,
   and prioritized next steps.
 argument-hint: <research data, transcripts, or survey results>
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
 ---
 
 <!-- Generated from skills/design-research-synthesis.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +13,8 @@ argument-hint: <research data, transcripts, or survey results>
 # /research-synthesis
 
 Synthesize user research data into actionable insights. See the **user-research** skill for research methods, interview guides, and analysis frameworks.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -93,3 +96,6 @@ If **~~knowledge base** is connected:
 1. **Include raw quotes**: Direct participant quotes make insights credible and memorable.
 2. **Separate observations from interpretations**: "5 of 8 users clicked the wrong button" is an observation. "The button placement is confusing" is an interpretation.
 3. **Quantify where possible**: "Most users" is vague. "7 of 10 users" is specific.
+
+---
+_Modified from the Apache-2.0 `research-synthesis` skill by Anthropic, PBC (design plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

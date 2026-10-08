@@ -5,6 +5,8 @@ description: Structured debugging session (reproduce, isolate, diagnose, and fix
   "something broke after the deploy", or when behavior diverges from expected and
   the cause isn't obvious.
 argument-hint: <error message or problem description>
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in
+  LICENSE.txt
 ---
 
 <!-- Generated from skills/engineering-debug.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +14,8 @@ argument-hint: <error message or problem description>
 # /debug
 
 Run a structured debugging session to find and fix issues systematically.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -96,3 +100,6 @@ If **~~project tracker** is connected:
 1. **Share error messages exactly**: Don't paraphrase. The exact text matters.
 2. **Mention what changed**: Recent deploys, dependency updates, and config changes are top suspects.
 3. **Include context**: "This works in staging but not prod" or "Only affects large payloads" narrows things fast.
+
+---
+_Modified from the Apache-2.0 `debug` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

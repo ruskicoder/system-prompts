@@ -2,11 +2,17 @@
 name: accessibility-review
 description: Run a WCAG 2.1 AA accessibility audit on a design or page. Trigger with "audit accessibility", "check a11y", "is this accessible?", or when reviewing a design for color contrast, keyboard navigation, touch target size, or screen reader behavior before handoff.
 argument-hint: "<Figma URL, URL, or description>"
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # /accessibility-review
 
 Audit a design or page for WCAG 2.1 AA accessibility compliance.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -124,3 +130,6 @@ If **~~project tracker** is connected:
 1. **Start with contrast and keyboard**: These catch the most common and impactful issues.
 2. **Test with real assistive technology**: My audit is a great start, but manual testing with VoiceOver/NVDA catches things I can't.
 3. **Prioritize by impact**: Fix issues that block users first, polish later.
+
+---
+_Modified from the Apache-2.0 `accessibility-review` skill by Anthropic, PBC (design plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._
