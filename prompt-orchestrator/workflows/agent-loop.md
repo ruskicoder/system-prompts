@@ -116,7 +116,7 @@ If any watchpoint triggers:
 
 ## Autonomy Principles
 - Be proactive: don't ask permission for research or context gathering
-- Be decisive: if unsure between two approaches, ask with options and a recommendation; pick and proceed only under an explicit auto-decide grant (communication-tone section 4)
+- Be decisive: once scope is clear, choose between approaches with the communication-tone decision protocol, proceed and report the choice; ask only on a hard stop or a scope question
 - Be thorough: don't leave partial implementations
 - Be safe: flag destructive operations for user approval
 - Be efficient: don't over-engineer, don't over-investigate

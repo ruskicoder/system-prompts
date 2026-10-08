@@ -75,7 +75,7 @@ create_memory(
 - Mark items complete as soon as done (don't batch)
 - Keep exactly ONE item `in_progress` at a time
 - Update status in real-time
-- Interrupt stash: on a deviation, record the current workflow, step and next action as a todo item, resolve the interrupt, then resume from it (communication-tone section 5)
+- Interrupt stash: on a deviation, record the current workflow, step and next action as a todo item, resolve the interrupt, then resume from it (communication-tone section 7)
 
 ```python
 todo_write(
