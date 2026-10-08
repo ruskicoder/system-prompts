@@ -1,7 +1,7 @@
 ---
 description: The single communication rule for every reply. Mandatory four-part status
-  (asked, done, state, next), ask-then-proceed authorization, self-improvement gates,
-  explicit auto-decide grants...
+  (asked, done, state, next); settle scope first, then execute the whole task in one
+  pass without asking, including same-pass...
 argument-hint: '[context]'
 ---
 

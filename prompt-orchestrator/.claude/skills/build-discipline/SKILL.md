@@ -83,8 +83,8 @@ End with the possible net reduction in lines and dependencies. Never flag the si
 smoke test as excess.
 
 ## Part 2: Task-Type Rules
-The user states the task type, or the agent reads it back for confirmation. Never assign
-it silently.
+The user states the task type, or the agent names it in the status line so the user can
+correct it. Never assign it silently.
 
 ### Investigate
 - Separate the observed symptom from the inferred cause.

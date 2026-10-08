@@ -1,2 +1,2 @@
-description = "The single communication rule for every reply. Mandatory four-part status (asked, done, state, next), ask-then-proceed authorization, self-improvement gates, explicit auto-decide grants..."
+description = "The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass..."
 prompt = "This is the 'communication-tone' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/communication-tone/SKILL.md' (canonical source: 'skills/communication-tone.md') exactly, then apply them to: {{args}}"
