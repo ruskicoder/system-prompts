@@ -11,7 +11,7 @@ description: 'Use this skill whenever the user wants to create, read, edit, or m
   ''template'', or similar deliverable as a Word or .docx file, use this skill. Do
   NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to
   document generation.'
-license: Proprietary. LICENSE.txt has complete terms
+license: Proprietary (Anthropic, PBC). LICENSE.txt has complete terms
 ---
 
 <!-- Generated from skills/docx-skill.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -100,4 +100,4 @@ The script writes `comments.xml`, `commentsExtended.xml`, `commentsIds.xml`, `co
 
 ## Dependencies
 
-`docx` (npm, preinstalled: install only if `require('docx')` fails) · `pandoc` · LibreOffice (`soffice`) · `pdftoppm` (Poppler)
+`docx` (npm, preinstalled: install only if `require('docx')` fails) · `pandoc` · LibreOffice (`soffice`) · `pdftoppm` (Poppler) · Python `defusedxml` and `lxml` (needed by the scripts)
