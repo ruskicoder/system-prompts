@@ -5,6 +5,8 @@ description: Run an incident response workflow (triage, communicate, and write p
   assessment, a status update mid-incident, or when writing a blameless postmortem
   after resolution.
 argument-hint: <incident description or alert>
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in
+  LICENSE.txt
 ---
 
 <!-- Generated from skills/engineering-incident-response.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -12,6 +14,8 @@ argument-hint: <incident description or alert>
 # /incident-response
 
 Manage an incident from detection through postmortem.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -159,3 +163,6 @@ If **~~chat** is connected:
 1. **Start writing immediately**: Don't wait for complete information. Update as you learn more.
 2. **Keep updates factual**: What we know, what we've done, what's next. No speculation.
 3. **Postmortems are blameless**: Focus on systems and processes, not individuals.
+
+---
+_Modified from the Apache-2.0 `incident-response` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

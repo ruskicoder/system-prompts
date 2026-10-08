@@ -2,11 +2,17 @@
 name: code-review
 description: Review code changes for security, performance, and correctness. Trigger with a PR URL or diff, "review this before I merge", "is this code safe?", or when checking a change for N+1 queries, injection risks, missing edge cases, or error handling gaps.
 argument-hint: "<PR URL, diff, or file path>"
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # /code-review
 
 Review code changes with a structured lens on security, performance, correctness, and maintainability.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -114,3 +120,6 @@ If **~~knowledge base** is connected:
 1. **Provide context**: "This is a hot path" or "This handles PII" helps me focus.
 2. **Specify concerns**: "Focus on security" narrows the review.
 3. **Include tests**: I'll check test coverage and quality too.
+
+---
+_Modified from the Apache-2.0 `code-review` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

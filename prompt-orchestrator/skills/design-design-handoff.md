@@ -2,11 +2,17 @@
 name: design-handoff
 description: Generate developer handoff specs from a design. Use when a design is ready for engineering and needs a spec sheet covering layout, design tokens, component props, interaction states, responsive breakpoints, edge cases, and animation details.
 argument-hint: "<Figma URL or design description>"
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # /design-handoff
 
 Generate comprehensive developer handoff documentation from a design.
+
+> `~~category` placeholders (for example `~~source control`, `~~chat`) stand for whatever tool the user has connected in that category. Without one, work from what the user provides. Posting, paging, publishing or creating tickets through a connector is an outward action: ask first (communication-tone hard stops).
 
 ## Usage
 
@@ -127,3 +133,6 @@ If **~~project tracker** is connected:
 1. **Share the Figma link**: I can pull exact measurements, tokens, and component info.
 2. **Mention edge cases**: "What happens with 100 items?" helps me spec boundary conditions.
 3. **Specify the tech stack**: "We use React + Tailwind" helps me give relevant implementation notes.
+
+---
+_Modified from the Apache-2.0 `design-handoff` skill by Anthropic, PBC (design plugin v1.2.0): punctuation edits, vetting front matter, connector placeholder note. See LICENSE.txt._

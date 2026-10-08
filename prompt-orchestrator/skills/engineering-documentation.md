@@ -1,6 +1,10 @@
 ---
 name: documentation
 description: Write and maintain technical documentation. Trigger with "write docs for", "document this", "create a README", "write a runbook", "onboarding guide", or when the user needs help with any form of technical writing (API docs, architecture docs, or operational runbooks).
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # Technical Documentation
@@ -47,3 +51,6 @@ Write clear, maintainable technical documentation for different audiences and pu
 3. **Show, don't tell**: Code examples, commands, screenshots
 4. **Keep it current**: Outdated docs are worse than no docs
 5. **Link, don't duplicate**: Reference other docs instead of copying
+
+---
+_Modified from the Apache-2.0 `documentation` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter. See LICENSE.txt._

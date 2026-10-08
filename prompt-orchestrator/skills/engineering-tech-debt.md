@@ -1,6 +1,10 @@
 ---
 name: tech-debt
 description: Identify, categorize, and prioritize technical debt. Trigger with "tech debt", "technical debt audit", "what should we refactor", "code health", or when the user asks about code quality, refactoring priorities, or maintenance backlog.
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # Tech Debt Management
@@ -30,3 +34,6 @@ Priority = (Impact + Risk) x (6 - Effort)
 ## Output
 
 Produce a prioritized list with estimated effort, business justification for each item, and a phased remediation plan that can be done alongside feature work.
+
+---
+_Modified from the Apache-2.0 `tech-debt` skill by Anthropic, PBC (engineering plugin v1.2.0): punctuation edits, vetting front matter. See LICENSE.txt._

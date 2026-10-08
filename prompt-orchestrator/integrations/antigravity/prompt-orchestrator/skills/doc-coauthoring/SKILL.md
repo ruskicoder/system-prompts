@@ -6,6 +6,8 @@ description: Guide users through a structured workflow for co-authoring document
   context, refine content through iteration, and verify the doc works for readers.
   Trigger when user mentions writing docs, creating proposals, drafting specs, or
   similar documentation tasks.
+license: Apache-2.0 (Anthropic, PBC; anthropics/skills; Apache-2.0 per that repo README,
+  no per-skill license file upstream). Complete terms in LICENSE.txt
 ---
 
 <!-- Generated from skills/doc-coauthoring.md by tools/generate_integrations.py. Edit the source file, not this one. -->
@@ -380,3 +382,6 @@ Announce document completion. Provide a few final tips:
 - Don't rush through stages
 - Each iteration should make meaningful improvements
 - The goal is a document that actually works for readers
+
+---
+_Modified from the Apache-2.0 `doc-coauthoring` skill by Anthropic, PBC (anthropics/skills): vetting front matter only; text otherwise verbatim. See LICENSE.txt._

@@ -1,6 +1,10 @@
 ---
 name: user-research
 description: Plan, conduct, and synthesize user research. Trigger with "user research plan", "interview guide", "usability test", "survey design", "research questions", or when the user needs help with any aspect of understanding their users through research.
+license: Apache-2.0 (Anthropic, PBC; design plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # User Research
@@ -39,3 +43,6 @@ Help plan, execute, and synthesize user research studies.
 - Interview guide (questions, probes, activities)
 - Synthesis report (themes, insights, recommendations)
 - Highlight reel (key quotes and observations)
+
+---
+_Modified from the Apache-2.0 `user-research` skill by Anthropic, PBC (design plugin v1.2.0): vetting front matter only; text otherwise verbatim. See LICENSE.txt._

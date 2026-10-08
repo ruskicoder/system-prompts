@@ -1,6 +1,10 @@
 ---
 name: testing-strategy
 description: Design test strategies and test plans. Trigger with "how should we test", "test strategy for", "write tests for", "test plan", "what tests do we need", or when the user needs help with testing approaches, coverage, or test architecture.
+license: Apache-2.0 (Anthropic, PBC; engineering plugin v1.2.0). Complete terms in LICENSE.txt
+origin: third-party
+vetting: passed
+vetted: 2026-10-08
 ---
 
 # Testing Strategy
@@ -31,3 +35,6 @@ Skip: trivial getters/setters, framework code, one-off scripts.
 ## Output
 
 Produce a test plan with: what to test, test type for each area, coverage targets, and example test cases. Identify gaps in existing coverage.
+
+---
+_Modified from the Apache-2.0 `testing-strategy` skill by Anthropic, PBC (engineering plugin v1.2.0): vetting front matter only; text otherwise verbatim. See LICENSE.txt._
