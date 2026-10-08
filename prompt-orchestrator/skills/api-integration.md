@@ -15,7 +15,7 @@ Integrate with external APIs, web services, libraries, and third-party tools.
 - API key configuration tools
 
 ## General Principles
-- Propose the best-suited external API or package with the reason; adding a dependency needs user approval
+- Use best-suited external APIs and packages without asking permission; report each choice with the reason
 - Match API/package versions to existing dependency management files
 - Never hardcode API keys: use environment variables
 - Point out when an external API requires a key

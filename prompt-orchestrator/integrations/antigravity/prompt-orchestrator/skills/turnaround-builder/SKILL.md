@@ -86,7 +86,9 @@ Generate all files in one comprehensive pass:
 - **DO NOT overengineer**: minimum viable implementation
 
 ## What NOT to Do
-- State the default stack and packages in one plan and get one confirmation; do not ask about each choice separately
+- Don't ask "what UI framework?"; use defaults
+- Don't ask permission for package choices
+- Report the stack and packages chosen
 - Don't create placeholder files or stubs
 - Don't leave TODO comments
 - Don't implement features user didn't ask for

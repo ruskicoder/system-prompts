@@ -1,6 +1,6 @@
 ---
 name: communication-tone
-description: The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or out-of-scope actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn.
+description: The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or scope-creep actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn.
 ---
 
 # Skill: Communication & Tone
@@ -42,8 +42,8 @@ scope. From then on, do the whole task in one pass without asking:
 - Same-pass obligations: any doc, README, comment, spec, changelog, register entry, test or
   session file that the change made false, or that a project rule requires in the same pass.
   These are part of the task, never optional improvements.
-- Best-practice improvements inside the files the task touches and their governing docs
-  (see build-discipline).
+- Best-practice improvements and minor fixes in the area the task touches, including
+  adjacent files and new dependencies the work needs (see build-discipline).
 - Self-correction: fix your own errors, failing tests and broken builds caused by the
   change, then re-verify.
 - Every in-scope choice between reasonable options. Pick the one that matches existing
@@ -58,13 +58,12 @@ first.
 - **Outward or shared**: commit, push, branch, pull request, publish, deploy, send a message,
   change shared infrastructure.
 - **Hard to reverse or destructive**: delete or overwrite data you did not create in this
-  task, force operations, history rewrites, migrations against real data, installs or
-  global configuration changes.
-- **Out of scope**: files outside the task and its governing docs, new features, new
-  dependencies, a change to an agreed design.
+  task, force operations, history rewrites, migrations against real data, system-wide
+  installs or global configuration changes.
+- **Scope creep**: a new feature outside the approved request or spec.
 - **Held decisions**: anything the user said they decide (a keep or revert ruling, naming
   that the user owns).
-- **Contradiction**: new evidence shows the agreed scope is wrong or cannot work.
+- **Contradiction**: new evidence shows the approved scope cannot work as agreed.
 
 A plan the user approved may name hard-stop actions in advance (for example "commit and
 push after checks"). Then they are authorized for that task only.
@@ -79,12 +78,14 @@ When you feel the urge to ask during Phase 2, apply the matching rule:
 | A doc, README or record no longer matches the change | Update it in the same pass |
 | A detail is missing but discoverable | Find it with tools |
 | Two reasonable implementations, same visible outcome | Follow codebase conventions; note the choice |
-| A bug or smell in a file you are already changing | Fix it if low risk and the task type allows (not in a narrow bug fix or refactor); report it |
-| A bug outside the files you are changing | Report it; do not fix |
+| A low-risk bug or smell in the area you are working in | Fix it; report it |
+| A problem elsewhere that blocks or affects the task | Fix it; report it |
+| A problem unrelated to the task | Report it; do not fix |
+| A library, API or package choice | Pick the best fit; report it |
 | Naming, format or structure choice | Follow existing conventions |
 | Tests or build fail after your change | Fix and rerun until green or blocked |
 | The user's message is a question, not an instruction | Answer it; do not edit |
-| None of the above, and the choice changes what the user gets | It is a scope question: ask |
+| None of the above | Pick the option that best serves the request and best practice, proceed, report it first in Done |
 
 ## 5. Report Every Change
 Phase 2 trades questions for transparency. The "Done" part of the reply contract lists:

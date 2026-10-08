@@ -97,7 +97,7 @@ correct it. Never assign it silently.
 - Derive observable acceptance criteria and explicit non-goals.
 - Trace the entry point through every layer that owns an invariant.
 - Deliver one coherent end-to-end path.
-- Omit modes, providers, configuration and polish that acceptance does not need.
+- Omit speculative modes, providers and configuration. Apply quality improvements and report them.
 - State the tradeoff of every new surface or dependency.
 
 ### Migration
@@ -118,7 +118,7 @@ correct it. Never assign it silently.
 ### Bug Fix
 - Reproduce first when cheap. Otherwise capture the strongest evidence available.
 - Change the narrowest layer that owns the wrong behaviour.
-- No unrelated cleanup or renames.
+- No unrelated renames. Low-risk fixes found along the way go in and are reported separately.
 - Add only the regression proof the fix needs.
 
 ### Verify

@@ -73,7 +73,7 @@
     "id": "communication-tone",
     "kind": "skill",
     "source": "skills/communication-tone.md",
-    "description": "The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or out-of-scope actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn.",
+    "description": "The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or scope-creep actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn.",
     "argument_hint": null
   },
   {
