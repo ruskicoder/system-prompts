@@ -192,7 +192,7 @@ EARS (Easy Approach to Requirements Syntax) provides structured, testable requir
 
 ### Requirements Phase Workflow
 
-1. **Agent generates initial requirements**: Based on user's rough idea, create complete requirements.md WITHOUT asking sequential questions first
+1. **Agent generates initial requirements**: Based on user's rough idea, create complete requirements.md WITHOUT asking sequential questions first. If the idea leaves out decisions that would change the requirements, or the user asks for it, run the brainstorming skill first (its question rounds use grill-me) and draft from the agreed play-back
 2. **Agent requests review**: Use userInput tool with reason 'spec-requirements-review'
 3. **User reviews**: Examines requirements for completeness, accuracy, clarity
 4. **User provides feedback**: Either approves or requests changes

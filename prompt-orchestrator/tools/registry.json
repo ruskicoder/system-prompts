@@ -28,6 +28,13 @@
     "argument_hint": "<decision or system to design>"
   },
   {
+    "id": "brainstorming",
+    "kind": "skill",
+    "source": "skills/brainstorming.md",
+    "description": "Find out what the user actually wants before building something new. Runs when the user asks for it, or when a request asks for something new and leaves out a decision that would change the result; skips when the request is already complete. Sizes the work out loud, plays understanding back with guesses marked, states every default, offers throwaway spikes, splits multi-project requests, checks a written design with a fresh reader, and builds only after \"proceed\". Question rounds use the grill-me skill.",
+    "argument_hint": "[idea or request]"
+  },
+  {
     "id": "browser-automation",
     "kind": "skill",
     "source": "skills/browser-automation.md",
@@ -173,6 +180,13 @@
     "source": "skills/file-operations.md",
     "description": "Read, write, search, and edit files across the workspace. Enforces the READ-BEFORE-WRITE rule, batch file reads, atomic SEARCH/REPLACE blocks, and file discovery via grep and glob rather than terminal commands.",
     "argument_hint": "<file path or search pattern>"
+  },
+  {
+    "id": "grill-me",
+    "kind": "skill",
+    "source": "skills/grill-me.md",
+    "description": "Interview the user in rounds until every decision behind a plan, design or deliverable is settled. Numbered questions in dependency order, each explained when the topic may be unfamiliar, each with options and a recommended answer that \"yes\" accepts. Facts are looked up, never asked. Review mode checks a finished deliverable against what was agreed. Use when the user says \"grill me\", \"check everything\", or when the brainstorming skill hands over its question rounds.",
+    "argument_hint": "[plan, idea or deliverable to grill] [review]"
   },
   {
     "id": "heartbeat-monitoring",

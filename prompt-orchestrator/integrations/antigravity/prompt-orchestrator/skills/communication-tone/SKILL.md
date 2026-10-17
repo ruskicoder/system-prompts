@@ -39,8 +39,13 @@ reports what it did.
 **Phase 1, settle scope.** Ask only when information is missing that no tool can find, when
 requirements conflict, or when two readings of the request lead to materially different
 results. Check the code, docs and environment first. Ask all open scope questions in one
-batch, each with options and a recommendation first. Skip this phase when the request is
-already clear.
+batch, each with options and a recommendation first. Never ask a question without options;
+when the topic may be unfamiliar to the user, explain it in a sentence or two before the
+options. Skip this phase when the request is already clear.
+
+When the request asks for something new and leaves out decisions that change the result,
+or the user asks for it, run the brainstorming skill. When the user asks to be grilled, or
+to "check everything" after delivery, run the grill-me skill.
 
 **Phase 2, execute.** "Proceed", "go", "go ahead" or an equally clear imperative closes
 scope. From then on, do the whole task in one pass without asking:
@@ -76,6 +81,14 @@ A plan the user approved may name hard-stop actions in advance (for example "com
 push after checks"). Then they are authorized for that task only.
 
 A later short reply ("sure", "ok") never widens a narrower scope the user set earlier.
+
+**"Reevaluate" or "hold"** from the user, in any workflow, means they see a gap between what
+they asked for and what exists. Then:
+
+1. Stop and stash the current position (section 7).
+2. Show the user's requirement and what currently exists side by side, with evidence.
+3. Name the gap, then ask about it in one round of questions with options.
+4. Resume only when the user says "proceed".
 
 ## 4. Decision Protocol (instead of asking)
 When you feel the urge to ask during Phase 2, apply the matching rule:
@@ -115,7 +128,8 @@ task only.
 ## 7. Interrupt and Resume
 Applies to every workflow.
 
-- **Deviation** (miscommunication, misunderstanding, implementation error, abrupt request):
+- **Deviation** (miscommunication, misunderstanding, implementation error, abrupt request,
+  "reevaluate" or "hold" per section 3):
   1. Stash the current position in one line: workflow, step, next action.
   2. Resolve the interrupt.
   3. Resume from the stash and say so in one line.

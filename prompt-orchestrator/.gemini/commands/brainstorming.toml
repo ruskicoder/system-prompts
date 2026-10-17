@@ -1,0 +1,2 @@
+description = "Find out what the user actually wants before building something new. Runs when the user asks for it, or when a request asks for something new and leaves out a decision that would change the result..."
+prompt = "This is the 'brainstorming' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/brainstorming/SKILL.md' (canonical source: 'skills/brainstorming.md') exactly, then apply them to: {{args}}"

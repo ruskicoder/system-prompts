@@ -364,6 +364,7 @@ The classifier is a routing aid, not a verdict. Read back the chosen workflow an
 - **Validate Skill Contract**: All markdown skill files in `skills/` must have clear purpose descriptions, standardized operational headers, and be verifiable via `skills/validate_skills.py`.
 - **Always Loaded**: `skills/communication-tone.md` (every reply) and `skills/build-discipline.md` (every code change).
 - **Third-Party Content**: external skills, plugins, hooks and MCP servers pass `workflows/third-party-vetting.md` before use.
+- **Clarify Before Building**: `skills/brainstorming.md` for new work with missing decisions (size, play-back, defaults, proceed gate); `skills/grill-me.md` for question rounds on request and for review mode ("check everything").
 - **Review & Audit Capabilities**:
   - `skills/review-pull-request.md`: Diff-scoped PR inspection, commit triage, and severity-leveled review submission (`gh pr review`).
   - `skills/review-software-architecture.md`: System-level coupling, cohesion, SOLID, API contracts, and technical debt evaluation.

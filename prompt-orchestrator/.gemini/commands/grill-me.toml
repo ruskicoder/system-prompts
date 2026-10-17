@@ -1,0 +1,2 @@
+description = "Interview the user in rounds until every decision behind a plan, design or deliverable is settled. Numbered questions in dependency order, each explained when the topic may be unfamiliar, each with..."
+prompt = "This is the 'grill-me' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/grill-me/SKILL.md' (canonical source: 'skills/grill-me.md') exactly, then apply them to: {{args}}"
