@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.1">
 <title data-rh="true">SKILL | Awesome System Prompts</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/communication-tone/SKILL"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-orchestrator-current"><meta data-rh="true" property="og:title" content="SKILL | Awesome System Prompts"><meta data-rh="true" name="description" content="The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or scope-creep actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn."><meta data-rh="true" property="og:description" content="The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or scope-creep actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn."><link data-rh="true" rel="icon" href="/system-prompts/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/communication-tone/SKILL"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/communication-tone/SKILL" hreflang="en"><link data-rh="true" rel="alternate" href="https://ruskicoder.github.io/system-prompts/orchestrator/integrations/antigravity/prompt-orchestrator/skills/communication-tone/SKILL" hreflang="x-default"><link rel="stylesheet" href="/system-prompts/assets/css/styles.67c5e126.css">
-<script src="/system-prompts/assets/js/runtime~main.580a995a.js" defer="defer"></script>
-<script src="/system-prompts/assets/js/main.20efc711.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/runtime~main.c8a98a89.js" defer="defer"></script>
+<script src="/system-prompts/assets/js/main.97fab696.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -38,8 +38,12 @@ reports what it did.</p>
 <p><strong>Phase 1, settle scope.</strong> Ask only when information is missing that no tool can find, when
 requirements conflict, or when two readings of the request lead to materially different
 results. Check the code, docs and environment first. Ask all open scope questions in one
-batch, each with options and a recommendation first. Skip this phase when the request is
-already clear.</p>
+batch, each with options and a recommendation first. Never ask a question without options;
+when the topic may be unfamiliar to the user, explain it in a sentence or two before the
+options. Skip this phase when the request is already clear.</p>
+<p>When the request asks for something new and leaves out decisions that change the result,
+or the user asks for it, run the brainstorming skill. When the user asks to be grilled, or
+to &quot;check everything&quot; after delivery, run the grill-me skill.</p>
 <p><strong>Phase 2, execute.</strong> &quot;Proceed&quot;, &quot;go&quot;, &quot;go ahead&quot; or an equally clear imperative closes
 scope. From then on, do the whole task in one pass without asking:</p>
 <ul>
@@ -72,6 +76,14 @@ that the user owns).</li>
 <p>A plan the user approved may name hard-stop actions in advance (for example &quot;commit and
 push after checks&quot;). Then they are authorized for that task only.</p>
 <p>A later short reply (&quot;sure&quot;, &quot;ok&quot;) never widens a narrower scope the user set earlier.</p>
+<p><strong>&quot;Reevaluate&quot; or &quot;hold&quot;</strong> from the user, in any workflow, means they see a gap between what
+they asked for and what exists. Then:</p>
+<ol>
+<li>Stop and stash the current position (section 7).</li>
+<li>Show the user&#x27;s requirement and what currently exists side by side, with evidence.</li>
+<li>Name the gap, then ask about it in one round of questions with options.</li>
+<li>Resume only when the user says &quot;proceed&quot;.</li>
+</ol>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="4-decision-protocol-instead-of-asking">4. Decision Protocol (instead of asking)<a href="#4-decision-protocol-instead-of-asking" class="hash-link" aria-label="Direct link to 4. Decision Protocol (instead of asking)" title="Direct link to 4. Decision Protocol (instead of asking)" translate="no">​</a></h2>
 <p>When you feel the urge to ask during Phase 2, apply the matching rule:</p>
 
@@ -147,7 +159,8 @@ task only.</p>
 <h2 class="anchor anchorWithStickyNavbar_O4hB" id="7-interrupt-and-resume">7. Interrupt and Resume<a href="#7-interrupt-and-resume" class="hash-link" aria-label="Direct link to 7. Interrupt and Resume" title="Direct link to 7. Interrupt and Resume" translate="no">​</a></h2>
 <p>Applies to every workflow.</p>
 <ul>
-<li><strong>Deviation</strong> (miscommunication, misunderstanding, implementation error, abrupt request):
+<li><strong>Deviation</strong> (miscommunication, misunderstanding, implementation error, abrupt request,
+&quot;reevaluate&quot; or &quot;hold&quot; per section 3):
 <ol>
 <li>Stash the current position in one line: workflow, step, next action.</li>
 <li>Resolve the interrupt.</li>
