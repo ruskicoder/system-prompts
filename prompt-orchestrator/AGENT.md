@@ -354,7 +354,7 @@ The classifier is a routing aid, not a verdict. Read back the chosen workflow an
 - **Deduplicate**: Avoid loading a skill if its instructions are already in context.
 - **Pass Scoped Context**: When dispatching subagents, pass only the exact skills needed for their subtask.
 - **Validate Skill Contract**: All markdown skill files in `skills/` must have clear purpose descriptions, standardized operational headers, and be verifiable via `skills/validate_skills.py`.
-- **Always Loaded**: `skills/communication-tone.md` (every reply) and `skills/build-discipline.md` (every code change).
+- **Always Loaded**: `skills/communication-tone.md` (every reply), `skills/prose-and-wording.md` (every written output) and `skills/build-discipline.md` (every code change).
 - **Third-Party Content**: external skills, plugins, hooks and MCP servers pass `workflows/third-party-vetting.md` before use.
 - **Clarify Before Building**: `skills/brainstorming.md` for new work with missing decisions (size, play-back, defaults, proceed gate); `skills/grill-me.md` for question rounds on request and for review mode ("check everything").
 - **Review & Audit Capabilities**:

@@ -252,6 +252,13 @@
     "argument_hint": "<stack or project description>"
   },
   {
+    "id": "prose-and-wording",
+    "kind": "skill",
+    "source": "skills/prose-and-wording.md",
+    "description": "Wording rules for every document, comment, commit message, PR body and chat reply. Bans the em dash, banned openers, aphorism formulas, two-beat antithesis, unverified claims and fabricated precision. Always active. Use when writing or editing any prose, and when reviewing wording.",
+    "argument_hint": null
+  },
+  {
     "id": "research-answer",
     "kind": "workflow",
     "source": "workflows/research-answer.md",

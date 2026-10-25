@@ -1,0 +1,2 @@
+description = "Wording rules for every document, comment, commit message, PR body and chat reply. Bans the em dash, banned openers, aphorism formulas, two-beat antithesis, unverified claims and fabricated precision..."
+prompt = "This is the 'prose-and-wording' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/prose-and-wording/SKILL.md' (canonical source: 'skills/prose-and-wording.md') exactly, then apply them to: {{args}}"
