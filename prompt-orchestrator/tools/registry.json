@@ -231,6 +231,13 @@
     "argument_hint": "<memory action or context to save>"
   },
   {
+    "id": "no-ai-trailer",
+    "kind": "skill",
+    "source": "skills/no-ai-trailer.md",
+    "description": "Never credit an AI tool in a commit, tag, PR, issue or release. No Co-Authored-By line for an AI, no \"Generated with\" footer, no session link, no Assisted-by or AI-* trailer, in any repository and any tool; human co-authors stay. Always active. Ships enforcement that runs at install and at every Claude Code session start: attribution forced off in Claude Code, VS Code and Cursor CLI, a global git commit-msg hook that strips AI trailers, and a Claude Code guard that refuses a commit, tag, PR or release text carrying one. Use when writing any commit, tag, PR, issue or release text, and when checking or cleaning history.",
+    "argument_hint": null
+  },
+  {
     "id": "pair-programming",
     "kind": "workflow",
     "source": "workflows/pair-programming.md",

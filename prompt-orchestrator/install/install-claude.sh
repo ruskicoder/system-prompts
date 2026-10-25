@@ -34,6 +34,15 @@ else
     } >> "${CLAUDE_MD}"
 fi
 
+# Force AI attribution off (no-ai-trailer skill). It also registers itself to run at every
+# Claude Code session start.
+ENSURE="${TARGET_DIR}/skills/no-ai-trailer/scripts/ensure_attribution_off.py"
+if command -v python3 >/dev/null 2>&1 && [ -f "${ENSURE}" ]; then
+    python3 "${ENSURE}"
+else
+    echo "!! python3 or ${ENSURE} missing: AI attribution not forced off" >&2
+fi
+
 SKILL_COUNT=$(ls -d "${ORCHESTRATOR_DIR}/.claude/skills/"*/ 2>/dev/null | wc -l | tr -d ' ')
 echo "==> Done: ${SKILL_COUNT} skills installed as native Claude Code Skills."
 echo "    Each is usable automatically (description match) or explicitly via '/<name>'."

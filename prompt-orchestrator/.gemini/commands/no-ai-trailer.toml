@@ -1,0 +1,2 @@
+description = "Never credit an AI tool in a commit, tag, PR, issue or release. No Co-Authored-By line for an AI, no \"Generated with\" footer, no session link, no Assisted-by or AI-* trailer, in any repository and any..."
+prompt = "This is the 'no-ai-trailer' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/no-ai-trailer/SKILL.md' (canonical source: 'skills/no-ai-trailer.md') exactly, then apply them to: {{args}}"

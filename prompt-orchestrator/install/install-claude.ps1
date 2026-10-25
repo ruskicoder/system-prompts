@@ -39,5 +39,15 @@ if ($ExistingContent -and $ExistingContent.Contains($Marker)) {
 }
 
 Write-Host "    [OK] Skills and AGENTS.md deployed successfully." -ForegroundColor Green
+
+# Force AI attribution off (no-ai-trailer skill). It also registers itself to run at every
+# Claude Code session start.
+$Ensure = "$Target\skills\no-ai-trailer\scripts\ensure_attribution_off.py"
+$Python = @("python3", "python", "py") | Where-Object { Get-Command $_ -ErrorAction SilentlyContinue } | Select-Object -First 1
+if ($Python -and (Test-Path -Path $Ensure)) {
+    & $Python $Ensure
+} else {
+    Write-Host "    [WARN] Python or $Ensure missing: AI attribution not forced off." -ForegroundColor Yellow
+}
 Write-Host "`n[SUCCESS] Claude / Claude Code deployment complete.`n" -ForegroundColor Green
 Exit 0
