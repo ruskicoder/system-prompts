@@ -36,6 +36,7 @@
 | [50-operations/README.md](50-operations/README.md) | operations | section | draft | Build, deploy, configure, recover. |
 | [50-operations/configuration.md](50-operations/configuration.md) | operations.configuration | configuration | todo | Configuration and environment variables (templates live outside the docs root). |
 | [50-operations/deploy.md](50-operations/deploy.md) | operations.deploy | deploy | todo | How to build and deploy. |
+| [60-decisions/0001-platform-prompt-size-caps.md](60-decisions/0001-platform-prompt-size-caps.md) | decisions.platform-prompt-size-caps | adr | approved | Platform prompt-size caps are platform limits, not repo rules; never compact necessary prompts to fit them. |
 | [60-decisions/README.md](60-decisions/README.md) | decisions | readme | draft | Numbered decision records. |
 | [70-work/README.md](70-work/README.md) | work | readme | draft | Dated work records and the progress ledger. |
 | [70-work/STATUS.md](70-work/STATUS.md) | work.status | status | draft | Single living progress ledger. |
