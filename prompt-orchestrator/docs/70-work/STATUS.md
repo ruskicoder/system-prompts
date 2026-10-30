@@ -22,8 +22,8 @@ Harness v1 (optional layer) built per `.kiro/specs/harness/` and decisions 0002 
 ## Last sync
 
 <!-- docs-scaffold:sync:start -->
-- last_sync: 2026-10-04T16:13:25+07:00
-- head: 3a00f10
-- journal: 20261004-161156.md entry 005 hash 473ae194b4e85f2a
-- health: 0 error, 0 warn, 17 info
+- last_sync: 2026-10-30T13:49:04+07:00
+- head: da13a8d
+- journal: 20261029-190024.md entry 011 hash 7ee17f5af92a3f71
+- health: 0 error, 5 warn, 17 info
 <!-- docs-scaffold:sync:end -->
