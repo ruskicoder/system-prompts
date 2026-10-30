@@ -6,7 +6,7 @@ owner: unassigned
 summary: "Canonical skills and workflows."
 kind: module
 sources: [skills/*.md, workflows/*.md]
-verified: {commit: e740676, date: 2026-10-30}
+verified: {commit: eefac58, date: 2026-10-30}
 ---
 
 # catalog

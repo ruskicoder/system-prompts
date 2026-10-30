@@ -6,7 +6,7 @@ owner: unassigned
 summary: "Per-tool installers and the Antigravity plugin installer."
 kind: module
 sources: [install/**]
-verified: {commit: e740676, date: 2026-10-30}
+verified: {commit: eefac58, date: 2026-10-30}
 ---
 
 # installers

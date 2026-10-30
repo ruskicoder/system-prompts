@@ -6,7 +6,7 @@ owner: Do Dang Khoa
 summary: "Optional model-tier and plan-aware layer: tiered agents, plan profiles, power modes, frontier gate, verify gate."
 kind: module
 sources: [harness/**, install/install.py, install/install-tui.*, install/install-harness.*]
-verified: {commit: e740676, date: 2026-10-30}
+verified: {commit: eefac58, date: 2026-10-30}
 ---
 
 # harness
