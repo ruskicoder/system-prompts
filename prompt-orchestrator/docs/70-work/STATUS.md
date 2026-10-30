@@ -10,13 +10,14 @@ summary: "Single living progress ledger."
 
 ## Current focus
 
-docs-scaffold skill added (`skills/docs-scaffold.md`, CLI in `skills/docs-scaffold/scripts/`) and installed in this repository (embedded). Spec: `.kiro/specs/docs-scaffold/requirements.md`.
+Harness v1 (optional layer) built per `.kiro/specs/harness/` and decisions 0002 and 0003: 16 tiered agents, five plan profiles, power modes, frontier gate, verify gate, `/autosetup`, Codex bridge, `install.py` menu with native fallbacks, and `session archive` in docs-scaffold. Release v1.1.0.
 
 ## Next steps
 
-- Write the design.md and tests.md pages still marked `todo`, plus glossary, operations and verification docs.
-- Decide whether to add a Kiro steering pointer to `docs/README.md`.
-- Run the PowerShell installers on Windows; they were not executed here (no PowerShell).
+- Run the PowerShell installers on Windows; they were reviewed by reading only (no PowerShell on the build machine).
+- Re-check Antigravity, Codex agent and Copilot agent fields against live docs as those tools change.
+- Confirm Windsurf's product status before adding harness support for it.
+- Test whether subagent `effort` frontmatter applies on Agent-tool spawns (reported Claude Code bug).
 
 ## Last sync
 

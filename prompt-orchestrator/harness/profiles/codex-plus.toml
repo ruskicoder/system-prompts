@@ -1,0 +1,31 @@
+# ChatGPT Plus in Codex. The installer and /autosetup fill `available` from the app-server
+# `model/list` and keep every tier on the configured model until the user maps them.
+# Effort comes from each agent and is clamped to what the model supports.
+name = "codex-plus"
+provider = "codex"
+detect = ["plus"]
+description = "ChatGPT Plus in Codex: one configured model for all tiers until mapped"
+available = []
+
+[tiers]
+frontier = "gpt-5.6-sol"
+lead = "gpt-5.6-sol"
+worker = "gpt-5.6-sol"
+light = "gpt-5.6-sol"
+
+[fable]
+included = false
+
+[modes]
+surplus_pace = -15
+conserve_pace = 10
+conserve_five_hour = 75
+critical = 90
+fable_warn = 80
+stale_minutes = 15
+
+[fanout]
+surplus = 4
+normal = 3
+conserve = 1
+critical = 0

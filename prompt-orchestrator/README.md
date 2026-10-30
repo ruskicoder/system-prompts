@@ -73,7 +73,8 @@ python3 skills/validate_skills.py
 | `.kiro/` | Steering configuration for Kiro, and change specs in `.kiro/specs/` |
 | `docs/` | This repository's own documentation, maintained with the `docs-scaffold` skill (embedded layout). Start at `docs/README.md` |
 | `ignore/` | Git-ignored, local only: session journals and health reports written by `docs-scaffold` |
-| `install/` | Cross-platform installers (Bash + PowerShell) for every supported tool, plus universal project/global installers |
+| `install/` | Cross-platform installers: `install.py` menu (Python standard library), native Bash and PowerShell menus, per-tool scripts, project installers |
+| `harness/` | Optional layer: tiered agents, plan profiles (Claude Max, Pro, Codex Plus, API, free), power modes driven by live plan usage, frontier (Fable) gate, verify gate, `/autosetup`. See `docs/30-units/harness/README.md` |
 
 ## Install
 
@@ -101,8 +102,10 @@ powershell install\install-windsurf.ps1 -TargetDir C:\path\to\your\project
 Installs into each tool's home-directory config so the orchestrator is available in *every* project, not just one.
 
 ```bash
-# All tools that support a global/home-directory install
+# All tools that support a global/home-directory install: an interactive menu
+# (core and harness selected by default). --yes skips the menu, --core skips the harness.
 bash install/install-all.sh
+bash install/install-all.sh --core --yes
 
 # Or install to a specific tool
 bash install/install-claude.sh        # ~/.claude — Claude Code Skills + CLAUDE.md
@@ -188,6 +191,21 @@ python3 -B skills/docs-scaffold/scripts/docs_scaffold.py check
 
 The PowerShell entrypoint test is skipped when neither `pwsh` nor `powershell`
 is available; run the same suite on Windows to verify the native entrypoint.
+
+### Optional harness
+
+The harness adds model tiers and plan awareness on top of the core: an Opus 5.5 lead with Sonnet 5.5
+workers and Haiku 5.5 light agents on Claude, power modes paced against the 5-hour and weekly limits,
+Fable 5.1 only on your explicit command, and a test gate on finished work. It installs with
+`install-all` by default, or later with:
+
+```bash
+bash install/install-harness.sh claude codex
+```
+
+Then run `/autosetup` in a Claude Code or Codex session to set your plan. Remove it with
+`python3 install/install.py --uninstall-harness`. Hooks need Python 3.11+; without Python the native
+menus install the agents and overlay only. Details: `docs/30-units/harness/README.md`.
 
 ### No AI attribution
 

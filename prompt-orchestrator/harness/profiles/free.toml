@@ -1,0 +1,30 @@
+# Free-tier template. Set each tier's model; an empty tier inherits the session model.
+# Examples (check current limits before relying on them):
+#   OpenCode with OpenRouter free models: worker = "openrouter/<model>:free"
+#   Claude Code against a local Ollama server (ANTHROPIC_BASE_URL): worker = "<ollama model>"
+# Free tiers have small daily request caps, so fan-out stays low.
+name = "free"
+provider = "any"
+detect = ["free"]
+description = "Free-tier template: you set the models, fan-out kept small"
+
+[tiers]
+frontier = ""
+lead = ""
+worker = ""
+light = ""
+
+[opencode]
+frontier = ""
+lead = ""
+worker = ""
+light = ""
+
+[fable]
+included = false
+
+[fanout]
+surplus = 2
+normal = 2
+conserve = 1
+critical = 0

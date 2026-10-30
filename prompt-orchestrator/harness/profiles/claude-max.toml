@@ -1,0 +1,36 @@
+# Claude Max (5x or 20x). Tiers are Claude Code model aliases.
+name = "claude-max"
+provider = "claude"
+detect = ["max"]
+description = "Claude Max: Opus 5.5 lead, Sonnet 5.5 workers, Haiku 5.5 light, Fable 5.1 frontier on user command"
+
+[tiers]
+frontier = "fable"
+lead = "opus"
+worker = "sonnet"
+light = "haiku"
+
+[opencode]
+frontier = "anthropic/claude-fable-5-1"
+lead = "anthropic/claude-opus-5-5"
+worker = "anthropic/claude-sonnet-5-5"
+light = "anthropic/claude-haiku-5-5"
+
+[fable]
+included = true
+# Fable share of the weekly limit on Max, as stated by the user. Edit if the plan changes.
+weekly_share = 0.5
+
+[modes]
+surplus_pace = -15
+conserve_pace = 10
+conserve_five_hour = 75
+critical = 90
+fable_warn = 80
+stale_minutes = 15
+
+[fanout]
+surplus = 6
+normal = 4
+conserve = 2
+critical = 0

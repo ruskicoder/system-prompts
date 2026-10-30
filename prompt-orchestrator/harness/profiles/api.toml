@@ -1,0 +1,31 @@
+# Pay-per-token API key template. Set each tier's model for your provider; an empty tier
+# makes agents inherit the session model. Quota is not read; set the mode by hand with
+# `mode = "Normal"` in ~/.config/prompt-orchestrator/harness.toml if you want a fixed one.
+# Claude Code with an Anthropic API key, for example:
+#   frontier = "claude-fable-5-1"   lead = "claude-opus-5-5"
+#   worker = "claude-sonnet-5-5"    light = "claude-haiku-5-5"
+name = "api"
+provider = "any"
+detect = []
+description = "API key template: you set the models"
+
+[tiers]
+frontier = ""
+lead = ""
+worker = ""
+light = ""
+
+[opencode]
+frontier = ""
+lead = ""
+worker = ""
+light = ""
+
+[fable]
+included = false
+
+[fanout]
+surplus = 4
+normal = 4
+conserve = 2
+critical = 0

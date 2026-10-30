@@ -19,7 +19,7 @@ A section README lists `sources` (git pathspec globs, `repo:path` in standalone 
 `90-meta/locks.json` stores SHA-256 hashes of deprecated files, closed work records and approved decisions (ignoring `superseded_by` lines). `index` adds new locks; `check` reports changed or deleted locked files.
 
 ## Session journal
-Entries in `<ignore>/sessions/*.md` end with `<!-- chain prev=… hash=… -->`; each hash covers the previous hash and the entry text, across all session files in creation order. `session sync` records the latest hash in `70-work/STATUS.md`, so a truncated journal is detected.
+Entries in `<ignore>/sessions/*.md` end with `<!-- chain prev=… hash=… -->`; each hash covers the previous hash and the entry text, across all session files in creation order. `session sync` records the latest hash in `70-work/STATUS.md`, so a truncated journal is detected. `session archive --keep N` moves all but the newest N files byte-for-byte to `sessions/history/` and writes `history/digest.md`; the chain is read from `history/` and `sessions/` together, so archiving never breaks verification.
 
 ## Frontmatter
 Flat `key: value` lines with inline lists and maps; quoted strings use JSON escaping.

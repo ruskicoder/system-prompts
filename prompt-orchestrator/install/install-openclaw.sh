@@ -21,3 +21,8 @@ mkdir -p "${TARGET_DIR}/agents-skills"
 cp -r "${ORCHESTRATOR_DIR}/.agents/skills/"* "${TARGET_DIR}/agents-skills/"
 
 echo "==> OpenClaw installation complete."
+
+# Optional harness layer: bash install/install-openclaw.sh --with-harness
+if [[ " $* " == *" --with-harness "* ]]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/install-harness.sh" openclaw
+fi

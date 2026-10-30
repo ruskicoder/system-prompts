@@ -28,3 +28,8 @@ cp "${ORCHESTRATOR_DIR}/AGENT.md" "${TARGET_DIR}/GEMINI.md"
 CMD_COUNT=$(ls "${ORCHESTRATOR_DIR}/.gemini/commands/"*.toml 2>/dev/null | wc -l | tr -d ' ')
 echo "==> Done: ${CMD_COUNT} slash commands + shared skills + GEMINI.md deployed."
 echo "    Run '/commands reload' inside Gemini CLI, then type '/' to browse them."
+
+# Optional harness layer: bash install/install-gemini.sh --with-harness
+if [[ " $* " == *" --with-harness "* ]]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/install-harness.sh" gemini
+fi

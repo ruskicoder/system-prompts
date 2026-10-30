@@ -1,5 +1,5 @@
 # Install only the Antigravity plugin. Python 3 standard library is sufficient.
-param([string]$ConfigDir)
+param([string]$ConfigDir, [switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 $Python = $null
@@ -21,4 +21,6 @@ if (-not $Python) { throw "Python 3.8+ is required for the Antigravity installer
 $InstallerArgs = @((Join-Path $PSScriptRoot "antigravity_plugin.py"))
 if ($ConfigDir) { $InstallerArgs += @("--config-dir", $ConfigDir) }
 & $Python @Prefix @InstallerArgs
-exit $LASTEXITCODE
+$Code = $LASTEXITCODE
+if ($WithHarness -and $Code -eq 0) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools antigravity }
+exit $Code

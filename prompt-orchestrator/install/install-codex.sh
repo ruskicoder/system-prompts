@@ -32,3 +32,8 @@ CMD_COUNT=$(ls "${ORCHESTRATOR_DIR}/.codex/prompts/"*.md 2>/dev/null | wc -l | t
 echo "==> Done: ${SKILL_COUNT} skills installed to ${AGENTS_SKILLS_HOME} (Agent Skills standard)."
 echo "    ${CMD_COUNT} legacy prompts installed to ${CODEX_HOME}/prompts (use '/prompts:<name>')."
 echo "    AGENTS.md deployed to ${CODEX_HOME}/AGENTS.md."
+
+# Optional harness layer: bash install/install-codex.sh --with-harness
+if [[ " $* " == *" --with-harness "* ]]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/install-harness.sh" codex
+fi

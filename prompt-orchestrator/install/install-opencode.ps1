@@ -1,4 +1,5 @@
 # install-opencode.ps1 - OpenCode Installer
+param([switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 if (-not $PSScriptRoot) {
@@ -35,4 +36,5 @@ Copy-Item -Path "$OrchestratorDir\AGENTS.md" -Destination "$Target\AGENTS.md" -F
 
 Write-Host "    [OK] Skills, slash commands, and AGENTS.md deployed successfully." -ForegroundColor Green
 Write-Host "`n[SUCCESS] OpenCode deployment complete. Type '/' in the TUI to browse.`n" -ForegroundColor Green
+if ($WithHarness) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools opencode }
 Exit 0

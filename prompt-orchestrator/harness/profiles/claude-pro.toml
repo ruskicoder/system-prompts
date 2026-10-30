@@ -1,0 +1,37 @@
+# Claude Pro. Fable bills to usage credits on Pro, so the frontier tier runs Opus 5.5 at xhigh
+# unless the user says "Fable with credits".
+name = "claude-pro"
+provider = "claude"
+detect = ["pro"]
+description = "Claude Pro: Opus 5.5 lead and frontier, Sonnet 5.5 workers, Haiku 5.5 light"
+
+[tiers]
+frontier = "opus"
+lead = "opus"
+worker = "sonnet"
+light = "haiku"
+
+[opencode]
+frontier = "anthropic/claude-opus-5-5"
+lead = "anthropic/claude-opus-5-5"
+worker = "anthropic/claude-sonnet-5-5"
+light = "anthropic/claude-haiku-5-5"
+
+[fable]
+included = false
+credits_phrase = "fable with credits"
+credits_model = "fable"
+
+[modes]
+surplus_pace = -15
+conserve_pace = 10
+conserve_five_hour = 75
+critical = 90
+fable_warn = 80
+stale_minutes = 15
+
+[fanout]
+surplus = 4
+normal = 3
+conserve = 1
+critical = 0

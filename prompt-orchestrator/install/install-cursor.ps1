@@ -1,4 +1,5 @@
 # install-cursor.ps1 - Cursor Installer
+param([switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 if (-not $PSScriptRoot) {
@@ -32,4 +33,5 @@ Copy-Item -Path "$OrchestratorDir\AGENTS.md" -Destination "$Target\AGENTS.md" -F
 
 Write-Host "    [OK] Slash commands and orchestrator rule deployed successfully." -ForegroundColor Green
 Write-Host "`n[SUCCESS] Cursor deployment complete. Type '/' in chat to browse.`n" -ForegroundColor Green
+if ($WithHarness) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools cursor }
 Exit 0

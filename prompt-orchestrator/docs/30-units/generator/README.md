@@ -15,8 +15,8 @@ verified: {commit: 6df7f7d, date: 2026-10-26}
 Keeps every agent integration derived from one canonical source so copies cannot drift.
 
 ## Responsibilities
-- `tools/generate_integrations.py` deletes and rebuilds the generated folders, then writes `AGENTS.md`, `CLAUDE.md`, the Cursor and Windsurf rules, `.claude-plugin/`, `tools/registry.json` and `INTEGRATIONS.md`.
-- `skills/validate_skills.py` validates canonical files and the generated Agent Skills folders. It checks the vetting fields (pending warns, rejected or a bad date fails) and exports a status table with `--vetting-report [--format md|json] [--out PATH]`. The generator does not copy vetting fields into generated output.
+- `tools/generate_integrations.py` deletes and rebuilds the generated folders, then writes `AGENTS.md`, `CLAUDE.md`, the Cursor and Windsurf rules, `.claude-plugin/`, `tools/registry.json` and `INTEGRATIONS.md`. It also validates the harness agents and renders `harness/dist/<tool>/<profile>/` with `harness/scripts/render.py`.
+- `skills/validate_skills.py` validates canonical files and the generated Agent Skills folders. It checks the vetting fields (pending warns, rejected or a bad date fails) and exports a status table with `--vetting-report [--format md|json] [--out PATH]`. The generator does not copy vetting fields into generated output. Without path arguments it also checks harness agents (fields, tiers, efforts, description overlap), profiles and the `HARNESS.md` 160-line cap.
 
 ## Code
 `tools/generate_integrations.py`, `skills/validate_skills.py`

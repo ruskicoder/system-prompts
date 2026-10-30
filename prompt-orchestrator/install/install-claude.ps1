@@ -1,4 +1,5 @@
 # install-claude.ps1 - Claude / Claude Code Installer
+param([switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 if (-not $PSScriptRoot) {
@@ -50,4 +51,5 @@ if ($Python -and (Test-Path -Path $Ensure)) {
     Write-Host "    [WARN] Python or $Ensure missing: AI attribution not forced off." -ForegroundColor Yellow
 }
 Write-Host "`n[SUCCESS] Claude / Claude Code deployment complete.`n" -ForegroundColor Green
+if ($WithHarness) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools claude }
 Exit 0

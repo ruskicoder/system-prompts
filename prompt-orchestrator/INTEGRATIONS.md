@@ -90,3 +90,19 @@ Don't trigger for:
 - **`/summarization`** `[session wrap-up prompt]` — Comprehensive session wrap-up and continuity checkpointing workflow. Generates a standalone copy-pasteable initialization prompt, captures decisions, records current setup status, and lists next steps before session end.
 - **`/third-party-vetting`** `<tool, package or file to vet>` — Vetting gate for any external skill, plugin, hook, MCP server, CLI or prompt pack, and for repo content copied or adapted from outside. Inventory, findings, user-approved decision (adopt, extract and re-author, or reject), apply plan, and origin/vetting front-matter record checked by the validator.
 - **`/turnaround-builder`** `<application concept or prototype description>` — End-to-end prototyping and greenfield application turnaround builder. Generates complete project skeletons, manifests, UI components, backend routes, and verified builds in a single comprehensive pass.
+
+## Optional harness
+
+The harness (`harness/`, installed with `install/install.py` or `install-harness`) adds tiered
+agents, plan profiles and power modes. Agent files per tool:
+
+| Tool | Agents | Overlay | Hooks |
+|---|---|---|---|
+| Claude Code | `~/.claude/agents/<name>.md` | `~/.claude/HARNESS.md` imported from `CLAUDE.md` | mode tag, frontier gate, verify gate, status line |
+| Codex | `~/.codex/agents/<name>.toml` | block in `~/.codex/AGENTS.md` | mode tag, verify gate (`hooks.json`) |
+| OpenCode | `~/.config/opencode/agents/<name>.md` | block in `~/.config/opencode/AGENTS.md` | none |
+| Cursor | `~/.cursor/agents/<name>.md` (skipped when Claude agents exist) | `~/.cursor/rules/prompt-orchestrator-harness.mdc` | none |
+| GitHub Copilot | `~/.copilot/agents/<name>.agent.md` | none documented | none |
+| Gemini CLI | `~/.gemini/agents/<name>.md` | block in `~/.gemini/GEMINI.md` | none |
+| Antigravity | `~/.gemini/config/agents/<name>.md` | none | none |
+| Kiro | `~/.kiro/agents/<name>.md` | `~/.kiro/steering/prompt-orchestrator-harness.md` | none |

@@ -270,6 +270,58 @@ def validate_directory(dir_path: Path) -> tuple[int, int]:
 
     return passed, failed
 
+def validate_harness(root_dir: Path) -> tuple[int, int]:
+    """Check harness agents (fields, tiers, efforts, overlap) and plan profiles."""
+    harness = root_dir / "harness"
+    if not (harness / "scripts" / "render.py").exists():
+        return 0, 0
+    sys.path.insert(0, str(harness / "scripts"))
+    import render  # noqa: E402
+    import tomllib  # noqa: E402
+    passed = failed = 0
+    agents = render.load_agents()
+    for agent in agents:
+        errs = render.validate_agent(agent)
+        if errs:
+            failed += 1
+            print(f"❌ [FAIL] harness agent {agent['name']}")
+            for err in errs:
+                print(f"   - {err}")
+        else:
+            passed += 1
+    overlap = render.description_overlap(agents)
+    for problem in overlap:
+        print(f"❌ [FAIL] harness: {problem}")
+    failed += len(overlap)
+    for path in sorted((harness / "profiles").glob("*.toml")):
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+        errs = []
+        if data.get("name") != path.stem:
+            errs.append("name must match the file name")
+        tiers = data.get("tiers", {})
+        for tier in ("frontier", "lead", "worker", "light"):
+            if tier not in tiers:
+                errs.append(f"tier '{tier}' missing (use \"\" to inherit)")
+        if "included" not in data.get("fable", {}):
+            errs.append("fable.included missing")
+        if errs:
+            failed += 1
+            print(f"❌ [FAIL] harness profile {path.name}")
+            for err in errs:
+                print(f"   - {err}")
+        else:
+            passed += 1
+    overlay = harness / "HARNESS.md"
+    lines = overlay.read_text(encoding="utf-8").count("\n")
+    if lines > 160:
+        failed += 1
+        print(f"❌ [FAIL] harness/HARNESS.md has {lines} lines (cap 160)")
+    else:
+        passed += 1
+    print(f"✅ harness: {len(agents)} agents, {len(list((harness / 'profiles').glob('*.toml')))} profiles checked")
+    return passed, failed
+
+
 def main():
     root_dir = Path(__file__).resolve().parent.parent
     skills_dir = root_dir / "skills"
@@ -340,6 +392,11 @@ def main():
                     p, f = validate_generated_dir(generated_dir)
                     total_passed += p
                     total_failed += f
+
+    if not args.paths:
+        p, f = validate_harness(root_dir)
+        total_passed += p
+        total_failed += f
 
     if WARNINGS:
         print(f"\nWarnings ({len(WARNINGS)}):")

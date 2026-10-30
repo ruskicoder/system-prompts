@@ -48,3 +48,8 @@ echo "==> Done: ${SKILL_COUNT} skills installed as native Claude Code Skills."
 echo "    Each is usable automatically (description match) or explicitly via '/<name>'."
 echo "    For a project-scoped install instead of this global one, run:"
 echo "        bash install/install-project.sh /path/to/your/project"
+
+# Optional harness layer: bash install/install-claude.sh --with-harness
+if [[ " $* " == *" --with-harness "* ]]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/install-harness.sh" claude
+fi

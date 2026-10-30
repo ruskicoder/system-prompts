@@ -1,4 +1,5 @@
 # install-codex.ps1 - Codex Installer
+param([switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 if (-not $PSScriptRoot) {
@@ -36,4 +37,5 @@ Write-Host "    [OK] Skills deployed to $AgentsSkillsHome (Agent Skills standard
 Write-Host "    [OK] Legacy prompts deployed to $CodexHome\prompts (use '/prompts:<name>')." -ForegroundColor Green
 Write-Host "    [OK] AGENTS.md deployed." -ForegroundColor Green
 Write-Host "`n[SUCCESS] Codex deployment complete.`n" -ForegroundColor Green
+if ($WithHarness) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools codex }
 Exit 0

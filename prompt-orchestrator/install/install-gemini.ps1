@@ -1,4 +1,5 @@
 # install-gemini.ps1 - Gemini CLI Installer
+param([switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 if (-not $PSScriptRoot) {
@@ -33,4 +34,5 @@ Copy-Item -Path "$OrchestratorDir\AGENT.md" -Destination "$Target\GEMINI.md" -Fo
 
 Write-Host "    [OK] Slash commands, shared skills, and GEMINI.md deployed successfully." -ForegroundColor Green
 Write-Host "`n[SUCCESS] Gemini CLI deployment complete. Run '/commands reload', then type '/'.`n" -ForegroundColor Green
+if ($WithHarness) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools gemini }
 Exit 0

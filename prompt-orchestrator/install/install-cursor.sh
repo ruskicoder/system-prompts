@@ -28,3 +28,8 @@ echo "    Type '/' in Cursor's chat/agent input to browse them."
 echo "    Note: Cursor's global commands/rules directories are a recent feature;"
 echo "    if they are not picked up, run install/install-project.sh on your"
 echo "    specific project instead to install .cursor/ locally."
+
+# Optional harness layer: bash install/install-cursor.sh --with-harness
+if [[ " $* " == *" --with-harness "* ]]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/install-harness.sh" cursor
+fi

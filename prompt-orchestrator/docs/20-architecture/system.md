@@ -17,6 +17,7 @@ Maintainers edit canonical files; the generator derives every agent-specific for
 - [generator](../30-units/generator/README.md)
 - [installers](../30-units/installers/README.md)
 - [docs-scaffold](../30-units/docs-scaffold/README.md)
+- [harness](../30-units/harness/README.md) (optional layer, decision 0002)
 
 ## Flows
 ```mermaid
@@ -27,6 +28,9 @@ flowchart LR
     G --> O[".agents/ .claude/ .opencode/ .cursor/ .codex/ .gemini/ .windsurf/"]
     G --> P[integrations/antigravity/]
     G --> M[AGENTS.md CLAUDE.md INTEGRATIONS.md registry.json .claude-plugin/]
+    H[harness/ agents, profiles, HARNESS.md] --> G
+    G --> HD[harness/dist/]
     O --> I[install/*]
     P --> I
+    HD --> I
 ```

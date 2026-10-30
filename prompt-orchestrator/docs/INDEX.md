@@ -24,6 +24,9 @@
 | [30-units/generator/README.md](30-units/generator/README.md) | units.generator | section | draft | Build step that turns the catalog into every tool-specific format, plus its validator. |
 | [30-units/generator/design.md](30-units/generator/design.md) | units.generator.design | design | todo | Structure: components, classes, sequences, states. |
 | [30-units/generator/tests.md](30-units/generator/tests.md) | units.generator.tests | test | draft | How the generator and its output are checked. |
+| [30-units/harness/README.md](30-units/harness/README.md) | units.harness | section | draft | Optional model-tier and plan-aware layer: tiered agents, plan profiles, power modes, frontier gate, verify gate. |
+| [30-units/harness/design.md](30-units/harness/design.md) | units.harness.design | design | draft | Install layout, runtime state, hook contracts and session flow. |
+| [30-units/harness/tests.md](30-units/harness/tests.md) | units.harness.tests | test | draft | Harness self-tests and live checks. |
 | [30-units/installers/README.md](30-units/installers/README.md) | units.installers | section | draft | Per-tool installers and the Antigravity plugin installer. |
 | [30-units/installers/design.md](30-units/installers/design.md) | units.installers.design | design | todo | Structure: components, classes, sequences, states. |
 | [30-units/installers/tests.md](30-units/installers/tests.md) | units.installers.tests | test | draft | Installer test coverage. |
@@ -37,6 +40,8 @@
 | [50-operations/configuration.md](50-operations/configuration.md) | operations.configuration | configuration | todo | Configuration and environment variables (templates live outside the docs root). |
 | [50-operations/deploy.md](50-operations/deploy.md) | operations.deploy | deploy | todo | How to build and deploy. |
 | [60-decisions/0001-platform-prompt-size-caps.md](60-decisions/0001-platform-prompt-size-caps.md) | decisions.platform-prompt-size-caps | adr | approved | Platform prompt-size caps are platform limits, not repo rules; never compact necessary prompts to fit them. |
+| [60-decisions/0002-harness-as-overlay.md](60-decisions/0002-harness-as-overlay.md) | decisions.harness-as-overlay | adr | approved | The harness is an optional overlay that supersedes AGENT.md sections E, F and M while installed; the core text is unchanged. |
+| [60-decisions/0003-harness-toml-config.md](60-decisions/0003-harness-toml-config.md) | decisions.harness-toml-config | adr | approved | Harness config and profiles use TOML read with the standard library; harness scripts need Python 3.11+; the plan is set by /autosetup, never detected by hooks. |
 | [60-decisions/README.md](60-decisions/README.md) | decisions | readme | draft | Numbered decision records. |
 | [70-work/README.md](70-work/README.md) | work | readme | draft | Dated work records and the progress ledger. |
 | [70-work/STATUS.md](70-work/STATUS.md) | work.status | status | draft | Single living progress ledger. |

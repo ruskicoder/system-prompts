@@ -89,7 +89,7 @@ Then run `init --type <embedded|standalone> [--root <dir>] [--changes-dir <dir>]
 | `new change <slug>` | Change spec folder (`requirements.md`, `design.md`, `tasks.md`) in the changes dir. |
 | `verify <section-dir>...` | Stamp sections as verified at the current commit, after you have checked them against the code. |
 | `deprecate <path> --reason R [--superseded-by ID\|none] [--keep]` | Preserve a spec in `.deprecated/YYYY-MM-DD-<slug>/`. |
-| `session start\|log\|resync\|sync\|show` | Append-only session journal. |
+| `session start\|log\|resync\|sync\|show\|archive` | Append-only session journal; `archive --keep N` moves older files byte-for-byte to `sessions/history/` and writes `history/digest.md`. |
 
 ## Session journal
 
@@ -99,6 +99,7 @@ The journal in `<ignore>/sessions/` is the agent's memory of what it did. Entrie
 2. After every change to the codebase or docs: `session log --action "<what changed>" --result ok|fail|partial [--note "<why, errors, next>"]`. The CLI records HEAD and the changed files itself; describe intent and outcome, including failures.
 3. If work happened outside the session (other tools, other people, a pull): `session resync`.
 4. At milestones and before ending: update `70-work/STATUS.md` (Current focus, Next steps), then `session sync`. Sync records the journal position and health counts in STATUS.md, which detects a truncated journal later.
+5. When old session files pile up: `session archive --keep 1`. The chain check reads `sessions/history/` too, so archived files stay verifiable.
 5. To find what went wrong: `session show -n 20`, then compare the failing entry's HEAD and changed files with `git log` and `git diff`.
 
 ## Deprecation

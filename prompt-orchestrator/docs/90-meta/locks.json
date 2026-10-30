@@ -1,4 +1,6 @@
 {
   ".deprecated/2026-10-04-requirements/requirements.md": "0cd4a730a127e5c6dd1d0f3c04d76b9f2ad4bd94d21a1d64dd9f5c32487662d8",
-  "60-decisions/0001-platform-prompt-size-caps.md": "189e775db3576c99156feedb029b480f8bc3d6d4277e12768da5fd9d9427d736"
+  "60-decisions/0001-platform-prompt-size-caps.md": "189e775db3576c99156feedb029b480f8bc3d6d4277e12768da5fd9d9427d736",
+  "60-decisions/0002-harness-as-overlay.md": "693b47983a94c68268da69caf235aa61d6616b92a37ce3e2714b443887213cc6",
+  "60-decisions/0003-harness-toml-config.md": "d14789f3b95afb62bdaec4b0dca5ea3059c493b7d751c3e9a9b16fda2528b177"
 }

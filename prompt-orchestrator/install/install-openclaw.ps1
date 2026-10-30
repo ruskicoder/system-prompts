@@ -1,4 +1,5 @@
 # install-openclaw.ps1 - OpenClaw Installer
+param([switch]$WithHarness, [switch]$Core)
 $ErrorActionPreference = "Stop"
 
 if (-not $PSScriptRoot) {
@@ -35,4 +36,5 @@ Copy-Item -Path "$OrchestratorDir\.agents\skills\*" -Destination "$Target\agents
 
 Write-Host "    [OK] AGENT.md, AGENTS.md, skills, and workflows deployed successfully." -ForegroundColor Green
 Write-Host "`n[SUCCESS] OpenClaw deployment complete.`n" -ForegroundColor Green
+if ($WithHarness) { & (Join-Path $PSScriptRoot "install-harness.ps1") -Tools openclaw }
 Exit 0

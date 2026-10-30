@@ -29,3 +29,8 @@ SKILL_COUNT=$(ls -d "${ORCHESTRATOR_DIR}/.opencode/skills/"*/ 2>/dev/null | wc -
 CMD_COUNT=$(ls "${ORCHESTRATOR_DIR}/.opencode/commands/"*.md 2>/dev/null | wc -l | tr -d ' ')
 echo "==> Done: ${SKILL_COUNT} skills + ${CMD_COUNT} slash commands + AGENTS.md deployed."
 echo "    Type '/' in the OpenCode TUI to browse them."
+
+# Optional harness layer: bash install/install-opencode.sh --with-harness
+if [[ " $* " == *" --with-harness "* ]]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/install-harness.sh" opencode
+fi

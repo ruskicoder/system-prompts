@@ -1,0 +1,15 @@
+# Default critical areas. A task touching these makes the lead SUGGEST the frontier tier to the
+# user; it never spawns it without the user's command. Repos add entries in .harness.toml [critical].
+paths = [
+  "**/*.tf", "**/*.tfvars", "**/terraform/**", "**/pulumi/**", "**/k8s/**", "**/helm/**",
+  ".github/workflows/**", ".gitlab-ci.yml", "**/Jenkinsfile", "**/.circleci/**",
+  "**/auth/**", "**/secrets/**", "**/*.pem", "**/iam/**",
+  "**/migrations/**", "**/*migration*.sql",
+  "**/payments/**", "**/billing/**",
+  "**/security/**", "**/release/**", "**/scripts/release*",
+]
+keywords = [
+  "infrastructure as code", "terraform", "ci/cd", "pipeline", "authentication", "authorization",
+  "secret", "credential", "database migration", "schema migration", "payment", "billing",
+  "security config", "firewall", "release script", "production deploy",
+]

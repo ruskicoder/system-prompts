@@ -222,6 +222,28 @@ class ScaffoldTests(unittest.TestCase):
         first.write_text(text.split("### 002")[0])
         self.assertTrue(self.findings(proj, "journal", "error"))
 
+    def test_session_archive_keeps_chain(self):
+        proj = self.init()
+        self.run_cli("session", "start", "--goal", "first")
+        self.run_cli("session", "log", "--action", "did one")
+        first = ds.session_files(ds.sessions_dir(proj))[0]
+        original = first.read_bytes()
+        self.run_cli("session", "start", "--goal", "second")
+        code, out = self.run_cli("session", "archive", "--keep", "1")
+        self.assertEqual(0, code, out)
+        self.assertIn("archived 1 session file(s)", out)
+        self.assertIn("chain intact", out)
+        history = ds.history_dir(proj)
+        self.assertEqual(original, (history / first.name).read_bytes())
+        self.assertEqual(1, len(ds.session_files(ds.sessions_dir(proj))))
+        digest = (history / "digest.md").read_text()
+        self.assertIn("- goal: first", digest)
+        self.assertIn("- last action: did one", digest)
+        self.assertEqual(0, self.run_cli("session", "log", "--action", "after archive")[0])
+        self.assertEqual([], ds.verify_chain(ds.journal(proj)))
+        self.assertEqual(4, len(ds.journal(proj)))
+        self.assertEqual([], self.findings(proj, "journal"))
+
     def test_log_requires_session(self):
         self.init()
         self.assertEqual(2, self.run_cli("session", "log", "--action", "x")[0])
