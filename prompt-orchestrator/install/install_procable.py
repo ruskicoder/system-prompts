@@ -164,6 +164,10 @@ def install(args) -> int:
         if os_name != "windows":
             dest.chmod(dest.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
         print(f"  engine -> {dest}")
+    codex_dir = HOME / ".agents" / "skills" / SKILL
+    if "codex" in providers and not args.no_hooks and (codex_dir / "SKILL.md").exists():
+        n = add_codex_hooks(codex_dir, os_name)
+        print(f"  codex hooks: {n} added to {HOME / '.codex' / 'hooks.json'}" if n else "  codex hooks: already present")
     STATE.mkdir(parents=True, exist_ok=True)
     previous = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
     created = sorted({str(p) for p in installed if p not in before} | set(previous.get("created", [])))
@@ -172,6 +176,33 @@ def install(args) -> int:
                                    indent=2) + "\n", encoding="utf-8")
     print(f"==> procable {lock['version']} installed in {len(installed)} skill folders; it runs offline.")
     return 0
+
+
+def add_codex_hooks(skill_dir: Path, os_name: str) -> int:
+    """procable's own installer writes Codex hooks only at project scope. For a user-wide
+    install, add its per-edit and Stop hooks to ~/.codex/hooks.json, next to existing entries."""
+    launcher = skill_dir / "scripts" / (f"{SKILL}.cmd" if os_name == "windows" else SKILL)
+    command = f'"{launcher}" hook'
+    path = HOME / ".codex" / "hooks.json"
+    data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    hooks = data.setdefault("hooks", {})
+    added = 0
+    for event, matcher, timeout, status in (("PostToolUse", "Edit|Write|apply_patch", 5, "Checking UI changes"),
+                                            ("Stop", None, 30, "Design deep pass")):
+        groups = hooks.setdefault(event, [])
+        if any(command == h.get("command") for g in groups for h in g.get("hooks", [])):
+            continue
+        group = {"hooks": [{"type": "command", "command": command, "timeout": timeout, "statusMessage": status}]}
+        if matcher:
+            group = {"matcher": matcher, **group}
+        groups.append(group)
+        added += 1
+    if added:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists():
+            shutil.copy2(path, path.with_suffix(path.suffix + ".procable-backup"))
+        path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    return added
 
 
 def hook_files() -> list[Path]:
