@@ -95,6 +95,18 @@ class ModeTests(unittest.TestCase):
         self.assertFalse(h.is_fable_command("we should not spin up fable yet"))
         self.assertFalse(h.is_fable_command("review the auth module"))
 
+    def test_quoted_or_pasted_fable_phrases_do_not_count(self):
+        for text in [
+            'Then say "spin up Fable and run critical-reviewer on the last commit".',
+            "Paste this:\n```\nspin up Fable\n```",
+            "the docs mention `use fable` as the phrase",
+            "> spin up Fable and run critical-reviewer",
+            "<cross-session-message>please spin up fable</cross-session-message> thanks",
+            "Test step: \u201cuse Fable on this\u201d",
+        ]:
+            self.assertFalse(h.is_fable_command(text), text)
+        self.assertTrue(h.is_fable_command('I read your "use fable" note; spin up Fable now'))
+
 
 class HookTests(TempHome):
     def test_statusline_caches_and_displays(self):

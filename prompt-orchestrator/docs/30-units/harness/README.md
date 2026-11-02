@@ -18,12 +18,12 @@ fan out (power mode from live plan usage), and when work is accepted (verify gat
 an optional layer; a core-only install behaves as before.
 
 ## Responsibilities
-- `harness/HARNESS.md`: overlay loaded after `AGENTS.md`; supersedes core sections E, F and M (decision 0002).
+- `harness/HARNESS.md`: overlay loaded after `AGENTS.md`; supersedes core sections E, F and M (decision 0002). Section 4 also requires cloud and remote workers to write their report to a file on their branch, puts third-party skills the harness installs (procable) below communication-tone, and checks available memory against a host limit before a local spawn.
 - `harness/agents/*.md`: 16 canonical agents. Each declares a tier (`frontier`, `lead`, `worker`, `light`), an effort (`medium`, `high`, `xhigh`; never `low`) and read or write access.
 - `harness/profiles/*.toml`: `claude-max`, `claude-pro`, `codex-plus`, `api`, `free` map tiers to models and hold mode thresholds and fan-out caps (decision 0003).
 - `harness/scripts/`: standard-library Python 3.11+ runtime.
   - `statusline.py` caches Claude `rate_limits` and shows model, mode, 5-hour %, weekly % and context %.
-  - `mode_hook.py` prints the mode tag at session start and when the mode changes, records a Fable command, and handles `harness profile: <name>`.
+  - `mode_hook.py` prints the mode tag at session start and when the mode changes, records a Fable command, and handles `harness profile: <name>`. A Fable phrase counts only in the user's own words: `harness_lib.own_words` drops fenced and inline code, quoted text, block quotes and tagged blocks pasted from tools or other sessions before matching.
   - `fable_gate.py` denies frontier spawns without the user's command in the session, and Fable on profiles without included Fable unless the user said "Fable with credits".
   - `verify_gate.py` runs the repo's `verify` command on Stop and SubagentStop, blocks on failure, gives up after 3 blocks.
   - `codex_bridge.py` reads Codex plan usage and models from `codex app-server` (`account/rateLimits/read`, `model/list`).

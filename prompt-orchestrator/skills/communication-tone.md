@@ -36,6 +36,10 @@ batch, each with options and a recommendation first. Never ask a question withou
 when the topic may be unfamiliar to the user, explain it in a sentence or two before the
 options. Skip this phase when the request is already clear.
 
+When a verdict or a fix hinges on a word the user chose that has two readings ("release",
+"done", "messy", "clean up"), ask one line first: name both readings and recommend one. Do
+not pick a reading silently and build on it.
+
 When the request asks for something new and leaves out decisions that change the result,
 or the user asks for it, run the brainstorming skill. When the user asks to be grilled, or
 to "check everything" after delivery, run the grill-me skill.

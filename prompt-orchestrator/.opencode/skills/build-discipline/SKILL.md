@@ -99,6 +99,9 @@ correct it. Never assign it silently.
 - Deliver one coherent end-to-end path.
 - Omit speculative modes, providers and configuration. Apply quality improvements and report them.
 - State the tradeoff of every new surface or dependency.
+- A UI feature starts from the `ui-flow-and-layout` flow map (entity home, state machine,
+  primary action per state, every view state) and targets WCAG 2.2 AA. Derive actions from
+  the state machine, never from the list of endpoints a role may call.
 
 ### Migration
 - Map readers, writers, data shape, compatibility window and ownership.
@@ -126,3 +129,5 @@ correct it. Never assign it silently.
 - Reuse earlier results only if the repository state matches.
 - Run focused checks before wide gates.
 - Report pass, fail, unavailable and blocked as distinct outcomes.
+- Tests never hard-code a date in the future: it becomes a failure the day it passes. Compute
+  dates relative to now, or freeze the clock in the test.

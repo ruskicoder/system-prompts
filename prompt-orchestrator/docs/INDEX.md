@@ -42,6 +42,7 @@
 | [60-decisions/0001-platform-prompt-size-caps.md](60-decisions/0001-platform-prompt-size-caps.md) | decisions.platform-prompt-size-caps | adr | approved | Platform prompt-size caps are platform limits, not repo rules; never compact necessary prompts to fit them. |
 | [60-decisions/0002-harness-as-overlay.md](60-decisions/0002-harness-as-overlay.md) | decisions.harness-as-overlay | adr | approved | The harness is an optional overlay that supersedes AGENT.md sections E, F and M while installed; the core text is unchanged. |
 | [60-decisions/0003-harness-toml-config.md](60-decisions/0003-harness-toml-config.md) | decisions.harness-toml-config | adr | approved | Harness config and profiles use TOML read with the standard library; harness scripts need Python 3.11+; the plan is set by /autosetup, never detected by hooks. |
+| [60-decisions/0004-procable-fork.md](60-decisions/0004-procable-fork.md) | decisions.procable-fork | adr | approved | Adopt Impeccable's design skill and hooks as procable, an offline, renamed fork maintained in ruskicoder/procable and installed by prompt-orchestrator, with communication-tone above its directives. |
 | [60-decisions/README.md](60-decisions/README.md) | decisions | readme | draft | Numbered decision records. |
 | [70-work/README.md](70-work/README.md) | work | readme | draft | Dated work records and the progress ledger. |
 | [70-work/STATUS.md](70-work/STATUS.md) | work.status | status | draft | Single living progress ledger. |

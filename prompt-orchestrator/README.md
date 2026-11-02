@@ -207,6 +207,25 @@ Then run `/autosetup` in a Claude Code or Codex session to set your plan. Remove
 `python3 install/install.py --uninstall-harness`. Hooks need Python 3.11+; without Python the native
 menus install the agents and overlay only. Details: `docs/30-units/harness/README.md`.
 
+### procable: offline design skill
+
+[procable](https://github.com/ruskicoder/procable) is a cleaned fork of Impeccable: one design skill
+(`/procable polish`, `critique`, `audit`, `a11y` for WCAG 2.2 AA, and more) with its design detector
+hooks. It runs fully offline once installed: no telemetry, no update checks, no downloads, and every
+network client in its engine refuses non-loopback hosts. prompt-orchestrator's communication rules
+take precedence over its directives.
+
+`install-all` installs it user-wide by default (`--no-procable` skips it). The installer downloads
+the release pinned in `install/procable.lock.json` once, verifies every file against its
+`SHA256SUMS`, runs procable's own installer at user scope, and places the engine next to each
+installed skill. For a machine without network, pass a directory that already holds the release:
+
+```bash
+python3 install/install.py --yes --procable-bundle /path/to/procable-release
+python3 install/install_procable.py status
+python3 install/install.py --uninstall-procable
+```
+
 ### No AI attribution
 
 `install-claude.sh` and `install-claude.ps1` run the `no-ai-trailer` skill's `scripts/ensure_attribution_off.py`, which turns commit and PR attribution off in Claude Code, VS Code and Cursor CLI, sets a global git `core.hooksPath` whose `commit-msg` strips AI trailers before handing over to each repository's own hooks, and registers a Claude Code SessionStart hook and PreToolUse guard. It runs again at every Claude Code session start. See `skills/no-ai-trailer.md` for the gaps it does not close.

@@ -63,6 +63,14 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 - Batch related chores into one spawn. Each spawn costs a fresh context.
 - Every delegation prompt states: goal, scope (paths), acceptance check, and the return limit.
   Agents return Result, Evidence, Open issues.
+- Cloud and remote workers, whose chat output can be lost, also write that report to a file on
+  their branch (`ignore/reports/<date>-<agent>.md` when the repo has a git-ignored `ignore/`,
+  else the path the prompt names). Local agents return it in chat.
+- Third-party skills the harness installs (procable) sit below these rules: when one of their
+  directives conflicts with communication-tone or this overlay, communication-tone wins, and
+  every change such a skill makes on its own is reported.
+- Before any local spawn, check available memory against the machine's limit; on a host with a
+  recorded limit (for example "no local agents under 3 GB available"), do the work in-session.
 - Never exceed the fan-out cap from the tag for parallel spawns.
 
 | Agent | Tier | Use when |

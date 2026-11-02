@@ -269,8 +269,23 @@ def fable_status(quota: dict, now: float | None = None) -> str:
     return f"fable window unknown, {fable_runs_since(start)} frontier run(s) this week"
 
 
+QUOTED_RE = re.compile(
+    r"```.*?```|~~~.*?~~~"                 # fenced code blocks
+    r"|`[^`\n]*`"                          # inline code
+    r"|<([a-zA-Z][\w-]*)[^>]*>.*?</\1>"     # tagged blocks pasted from tools or sessions
+    r"|\"[^\"\n]*\"|\u201c[^\u201d]*\u201d|\u2018[^\u2019]*\u2019"  # quoted text
+    r"|^[ \t]*>.*?$",                      # block quotes
+    re.S | re.M)
+
+
+def own_words(text: str) -> str:
+    """The prompt without quoted, fenced, tagged or block-quoted text, so a Fable phrase
+    inside pasted instructions or a quotation never counts as the user's command."""
+    return QUOTED_RE.sub(" ", text or "")
+
+
 def is_fable_command(text: str, phrases=DEFAULT_FABLE_PHRASES) -> bool:
-    low = (text or "").lower()
+    low = own_words(text).lower()
     for phrase in phrases:
         start = low.find(phrase)
         while start != -1:

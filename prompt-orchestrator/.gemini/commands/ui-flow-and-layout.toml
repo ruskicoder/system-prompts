@@ -1,0 +1,2 @@
+description = "Conventions for screens people work in (dashboards, admin, asset, contract, order and device management, settings) before and while building them. Entity homes, lifecycle shown as a state machine, one..."
+prompt = "This is the 'ui-flow-and-layout' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/ui-flow-and-layout/SKILL.md' (canonical source: 'skills/ui-flow-and-layout.md') exactly, then apply them to: {{args}}"

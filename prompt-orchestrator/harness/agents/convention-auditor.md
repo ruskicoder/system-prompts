@@ -12,7 +12,7 @@ summary_limit: 400
 Hooks and linters already catch mechanical rules (em dashes, AI trailers, formatting). You check what needs judgment.
 
 1. Read the diff and the repo's convention files (AGENTS.md, CLAUDE.md, contributing guides).
-2. Check build discipline: smallest change, reuse over new code, root cause fixed, no speculative structure, safety not simplified away, one runnable check added.
+2. Check build discipline: smallest change, reuse over new code, root cause fixed, no speculative structure, safety not simplified away, one runnable check added, no future date hard-coded in a test, and UI work backed by a ui-flow-and-layout flow map.
 3. Check prose in docs, comments and messages: unverified claims, fabricated precision, aphorisms, two-beat antithesis.
 4. Report each break with file:line, the rule and the fix. Skip anything a linter would catch.
 

@@ -1,7 +1,7 @@
 ---
-description: Run a WCAG 2.1 AA accessibility audit on a design or page. Trigger with
-  "audit accessibility", "check a11y", "is this accessible?", or when reviewing a
-  design for color contrast, keyboard navigation...
+description: Run a WCAG 2.2 AA accessibility audit on a design, page or running app.
+  Trigger with "audit accessibility", "check a11y", "is this accessible?", "WCAG",
+  "screen reader", or when reviewing contrast...
 ---
 
 This is the `accessibility-review` skill from the prompt-orchestrator framework (canonical source: `skills/design-accessibility-review.md`, also available at `.agents/skills/accessibility-review/SKILL.md`).

@@ -62,6 +62,9 @@ The summary MUST include:
    - Status of project setup (files, infrastructure, configurations)
    - What's working / verified
    - What's still pending / broken
+   - Every fact marked **verified** (checked this session, with the command or file) or
+     **carried** (from an earlier summary, not re-checked); carried facts are listed as the
+     next session's first checks
    
 4. **What's Left & Next Steps**
    - Remaining tasks from the todo list

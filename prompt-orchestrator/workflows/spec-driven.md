@@ -231,6 +231,14 @@ Every design document MUST include:
 5. **Error Handling**: Error types, propagation strategy, user-facing messages, logging approach
 6. **Testing Strategy**: Unit testing, integration testing, TDD opportunities, edge cases
 
+A design that adds or changes UI also includes:
+
+7. **Flow Map**: the `ui-flow-and-layout` deliverable (screen inventory with entity home, one
+   question and primary action per state; state machine per entity; flow per task; state
+   coverage; open questions)
+8. **Accessibility Target**: WCAG 2.2 AA, with the criteria the design touches named
+   (`accessibility-review`)
+
 ### Research and Context Building
 
 - Research happens in-context during design (no separate research files)

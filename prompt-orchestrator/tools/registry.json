@@ -3,8 +3,8 @@
     "id": "accessibility-review",
     "kind": "skill",
     "source": "skills/design-accessibility-review.md",
-    "description": "Run a WCAG 2.1 AA accessibility audit on a design or page. Trigger with \"audit accessibility\", \"check a11y\", \"is this accessible?\", or when reviewing a design for color contrast, keyboard navigation, touch target size, or screen reader behavior before handoff.",
-    "argument_hint": "<Figma URL, URL, or description>"
+    "description": "Run a WCAG 2.2 AA accessibility audit on a design, page or running app. Trigger with \"audit accessibility\", \"check a11y\", \"is this accessible?\", \"WCAG\", \"screen reader\", or when reviewing contrast, keyboard access, focus, touch target size, forms, tables, dialogs or status messages before handoff or release.",
+    "argument_hint": "<Figma URL, URL, file or description>"
   },
   {
     "id": "agent-loop",
@@ -124,6 +124,13 @@
     "source": "skills/design-design-handoff.md",
     "description": "Generate developer handoff specs from a design. Use when a design is ready for engineering and needs a spec sheet covering layout, design tokens, component props, interaction states, responsive breakpoints, edge cases, and animation details.",
     "argument_hint": "<Figma URL or design description>"
+  },
+  {
+    "id": "design-heuristics-audit",
+    "kind": "skill",
+    "source": "skills/design-heuristics-audit.md",
+    "description": "Audit a UI against Nielsen's ten usability heuristics with a 0 to 4 severity scale, evidence per finding and a prove-then-vet step before reporting. Use for \"usability review\", \"heuristic evaluation\", \"UX audit\", or when a flow feels confusing but nothing is technically broken.",
+    "argument_hint": "<URL, screens, flow or description>"
   },
   {
     "id": "design-system",
@@ -369,6 +376,20 @@
     "source": "workflows/turnaround-builder.md",
     "description": "End-to-end prototyping and greenfield application turnaround builder. Generates complete project skeletons, manifests, UI components, backend routes, and verified builds in a single comprehensive pass.",
     "argument_hint": "<application concept or prototype description>"
+  },
+  {
+    "id": "ui-flow-and-layout",
+    "kind": "skill",
+    "source": "skills/ui-flow-and-layout.md",
+    "description": "Conventions for screens people work in (dashboards, admin, asset, contract, order and device management, settings) before and while building them. Entity homes, lifecycle shown as a state machine, one primary action per state, lists that answer most questions without opening a record, detail page anatomy with images and specs, settings that depend on a version, every view state, and a flow map deliverable. Use when designing, building, reviewing or fixing any multi-screen UI flow, or when a UI feature enters a spec.",
+    "argument_hint": "[feature, entity or flow]"
+  },
+  {
+    "id": "ui-review-loop",
+    "kind": "workflow",
+    "source": "workflows/ui-review-loop.md",
+    "description": "Inspect a running UI, list issues with evidence, fix them in source, re-verify at the sizes it ships at, and report. Loopback targets by default. Use for \"review my UI\", \"check the page and fix it\", or after a UI change before handoff.",
+    "argument_hint": "<local URL or route> [focus: layout | flow | a11y | all]"
   },
   {
     "id": "user-research",

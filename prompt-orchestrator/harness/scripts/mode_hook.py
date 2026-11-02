@@ -34,7 +34,7 @@ def plan_hint(profile: dict, source: str, quota: dict) -> str:
 
 def fable_line(profile: dict, mode: dict, quota: dict, prompt: str) -> str:
     fable = profile.get("fable", {})
-    credits = fable.get("credits_phrase") and fable["credits_phrase"] in prompt.lower()
+    credits = fable.get("credits_phrase") and fable["credits_phrase"] in h.own_words(prompt).lower()
     if fable.get("included") or credits:
         target = "Fable" + (" on usage credits" if credits else "")
     else:
@@ -89,7 +89,7 @@ def main() -> int:
     if action == "prompt" and h.is_fable_command(prompt, tuple(h.user_config().get("fable_phrases", h.DEFAULT_FABLE_PHRASES))):
         session["fable_authorized_at"] = time.time()
         session["fable_credits"] = bool(profile.get("fable", {}).get("credits_phrase")
-                                        and profile["fable"]["credits_phrase"] in prompt.lower())
+                                        and profile["fable"]["credits_phrase"] in h.own_words(prompt).lower())
         out.append(fable_line(profile, mode, quota, prompt))
 
     session["last_mode"] = mode["mode"]

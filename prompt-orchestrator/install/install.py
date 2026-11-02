@@ -6,6 +6,7 @@
     python3 install/install.py --core --yes          core skills and workflows only
     python3 install/install.py --tools claude,codex --profile-claude claude-max --yes
     python3 install/install.py --uninstall-harness [--tools claude]
+    python3 install/install.py --uninstall-procable
 
 Works on Windows, macOS and Linux with the Python standard library. The core installers are the
 existing per-tool scripts (bash, or PowerShell on Windows). The harness needs Python 3.11 or later.
@@ -22,6 +23,7 @@ from pathlib import Path
 INSTALL_DIR = Path(__file__).resolve().parent
 ROOT = INSTALL_DIR.parent
 HARNESS_INSTALLER = ROOT / "harness" / "scripts" / "install_harness.py"
+PROCABLE_INSTALLER = INSTALL_DIR / "install_procable.py"
 WINDOWS = os.name == "nt"
 
 # tool id: (label, core script stem or None when the harness is the only part)
@@ -63,6 +65,9 @@ def parse_args(argv=None):
         p.add_argument(f"--no-{item.replace('_', '-')}", action="store_true")
     p.add_argument("--no-regenerate", action="store_true", help="skip tools/generate_integrations.py")
     p.add_argument("--uninstall-harness", action="store_true")
+    p.add_argument("--no-procable", action="store_true", help="skip procable, the offline design skill")
+    p.add_argument("--procable-bundle", default=None, help="install procable from a local release directory")
+    p.add_argument("--uninstall-procable", action="store_true")
     p.add_argument("--dry-run", action="store_true", help="print the plan and exit")
     args = p.parse_args(argv)
     if args.tools:
@@ -81,6 +86,7 @@ def initial_plan(args) -> dict:
         "globals": {item: not getattr(args, f"no_{item}") for item in GLOBAL_ITEMS},
         "profile_claude": args.profile_claude or "",
         "profile_codex": args.profile_codex or "",
+        "procable": not args.no_procable,
     }
 
 
@@ -89,6 +95,7 @@ def show(plan: dict) -> None:
     print(f"  [c] core skills and workflows: {'yes' if plan['core'] else 'no'}")
     print(f"  [h] harness (model tiers, plan modes, agents): {'yes' if plan['harness'] else 'no'}"
           + ("" if harness_python_ok() else "  (needs Python 3.11+, will be skipped)"))
+    print(f"  [d] procable design skill, offline, user-wide with its hooks: {'yes' if plan['procable'] else 'no'}")
     print("\n  Tools:")
     for i, (tool, (label, _)) in enumerate(TOOLS.items(), 1):
         print(f"   {i}. [{'x' if tool in plan['tools'] else ' '}] {label}")
@@ -97,7 +104,7 @@ def show(plan: dict) -> None:
         print(f"   g{i}. [{'x' if plan['globals'][item] else ' '}] {label}")
     print(f"\n  [pc] Claude plan profile: {plan['profile_claude'] or 'not set (run /autosetup later)'}")
     print(f"  [px] Codex plan profile:  {plan['profile_codex'] or 'not set (discovered at install)'}")
-    print("\n  Number or g# toggles, a = all tools, n = no tools, c/h toggle parts, pc/px cycle profiles,")
+    print("\n  Number or g# toggles, a = all tools, n = no tools, c/h/d toggle parts, pc/px cycle profiles,")
     print("  Enter = install, q = quit")
 
 
@@ -122,6 +129,8 @@ def menu(plan: dict) -> dict | None:
             plan["core"] = not plan["core"]
         elif choice == "h":
             plan["harness"] = not plan["harness"]
+        elif choice == "d":
+            plan["procable"] = not plan["procable"]
         elif choice in ("pc", "px"):
             key, options = ("profile_claude", PROFILES["claude"]) if choice == "pc" else ("profile_codex", PROFILES["codex"])
             plan[key] = options[(options.index(plan[key]) + 1) % len(options)]
@@ -189,6 +198,15 @@ def execute(plan: dict, args) -> int:
                 continue
             if run(harness_args(plan, tool), args.dry_run) != 0:
                 failures.append(f"{tool} harness")
+    if plan.get("procable") and plan["tools"]:
+        print("\n=== procable")
+        cmd = [sys.executable, str(PROCABLE_INSTALLER), "install", "--tools", ",".join(plan["tools"])]
+        if getattr(args, "procable_bundle", None):
+            cmd += ["--bundle", args.procable_bundle]
+        if args.dry_run:
+            cmd.append("--dry-run")
+        if run(cmd, False) != 0:
+            failures.append("procable")
     print("\n==> " + ("done" if not failures else "finished with failures: " + ", ".join(failures)))
     if plan["harness"] and "claude" in plan["tools"] and not plan["profile_claude"]:
         print("    Claude plan profile not set: run /autosetup in a Claude Code session.")
@@ -198,6 +216,8 @@ def execute(plan: dict, args) -> int:
 
 def main(argv=None) -> int:
     args = parse_args(argv)
+    if args.uninstall_procable:
+        return run([sys.executable, str(PROCABLE_INSTALLER), "uninstall"] + (["--dry-run"] if args.dry_run else []), False)
     if args.uninstall_harness:
         cmd = [sys.executable, str(HARNESS_INSTALLER), "uninstall"]
         for tool in (args.tools.split(",") if args.tools else []):
