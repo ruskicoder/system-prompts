@@ -273,6 +273,13 @@
     "argument_hint": null
   },
   {
+    "id": "refactoring",
+    "kind": "skill",
+    "source": "skills/refactoring.md",
+    "description": "Behaviour-preserving restructuring of existing code. Pin behaviour with tests before touching anything, keep two hats (restructure or change behaviour, never both in one step), make the change easy before making the easy change, map smells to the smallest technique, move symbols with reference-aware tools, and choose between refactor, sprout and strangle instead of a rewrite. Use for \"refactor\", \"clean up\", \"untangle\", \"make this easier to change\", legacy code without tests, or before a feature that is awkward to add.",
+    "argument_hint": "[file, module or goal]"
+  },
+  {
     "id": "research-answer",
     "kind": "workflow",
     "source": "workflows/research-answer.md",

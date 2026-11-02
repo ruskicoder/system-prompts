@@ -1,0 +1,2 @@
+description = "Behaviour-preserving restructuring of existing code. Pin behaviour with tests before touching anything, keep two hats (restructure or change behaviour, never both in one step), make the change easy..."
+prompt = "This is the 'refactoring' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/refactoring/SKILL.md' (canonical source: 'skills/refactoring.md') exactly, then apply them to: {{args}}"

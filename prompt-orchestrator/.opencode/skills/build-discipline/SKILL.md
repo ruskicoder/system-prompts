@@ -117,6 +117,10 @@ correct it. Never assign it silently.
 - Move one ownership boundary at a time.
 - Preserve public interfaces, failure behaviour and ordering.
 - Every intermediate state builds and passes tests.
+- Pin behaviour before the first edit; untested code gets characterization tests first. A step
+  that changes a test expectation changed behaviour and is not a refactoring.
+- Never delete, skip or loosen a failing test to finish. Cross-file renames and moves use a
+  reference-aware tool. Method details: the `refactoring` skill.
 
 ### Bug Fix
 - Reproduce first when cheap. Otherwise capture the strongest evidence available.
