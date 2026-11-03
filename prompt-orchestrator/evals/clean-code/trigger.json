@@ -1,0 +1,20 @@
+[
+  {"query": "Is this function well designed? It feels hard to read", "should_trigger": true},
+  {"query": "Review this diff for readability and naming", "should_trigger": true},
+  {"query": "Does this class violate the single responsibility principle?", "should_trigger": true},
+  {"query": "These two functions look the same, should I DRY them up?", "should_trigger": true},
+  {"query": "Is this a Law of Demeter violation: order.customer.address.city?", "should_trigger": true},
+  {"query": "How should I name a boolean that tells whether a retry is allowed?", "should_trigger": true},
+  {"query": "Are these unit tests any good? They mostly assert on mocks", "should_trigger": true},
+  {"query": "What's wrong with catching Exception and passing here?", "should_trigger": true},
+  {"query": "Explain coupling and cohesion with an example from my code", "should_trigger": true},
+  {"query": "Is it OK to split this 200-line function just because it's long?", "should_trigger": true},
+  {"query": "Deploy the staging build to Vercel", "should_trigger": false},
+  {"query": "Generate a docx report from this CSV", "should_trigger": false},
+  {"query": "What is the capital of Australia?", "should_trigger": false},
+  {"query": "Set up a Kubernetes cluster on GKE", "should_trigger": false},
+  {"query": "Create a landing page with a hero section", "should_trigger": false},
+  {"query": "Run the test suite and tell me what fails", "should_trigger": false},
+  {"query": "Summarize yesterday's standup notes", "should_trigger": false},
+  {"query": "Audit our dependencies for known CVEs", "should_trigger": false}
+]

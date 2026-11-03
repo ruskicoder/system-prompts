@@ -82,7 +82,8 @@ behind. Reject a patch that mixes a large functional change with unrelated struc
 1. Name the smell in the code you need to change (`references/smells.md` maps each smell to
    candidate techniques; load it only when you need it).
 2. Pick the smallest technique that removes it. Prefer local moves (rename, extract, inline)
-   over new abstractions; introduce a pattern only when a second real case demands it.
+   over new abstractions; introduce a pattern only when a second real case demands it, and
+   then through the design-patterns skill (force, ladder, YAGNI gate).
 3. Apply it in small, reversible steps, running the net after each step.
 4. Stop when the change you came for is easy. Do not polish code nobody needs to touch.
 

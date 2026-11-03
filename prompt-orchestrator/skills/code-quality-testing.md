@@ -50,6 +50,8 @@ Write clean, correct, well-tested code through systematic quality practices.
 - Test data flow through layers
 - Test API endpoints end-to-end
 
+Test smells by severity, and the check that a test can fail: the clean-code skill's `references/test-smells.md`.
+
 ### Running Tests
 - After making changes, run relevant tests
 - Don't commit if tests fail

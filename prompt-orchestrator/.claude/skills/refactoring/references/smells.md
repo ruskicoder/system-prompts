@@ -2,7 +2,10 @@
 
 Load this when Part 4 of the refactoring skill needs a technique. Each row names a smell, how to
 spot it, and the smallest moves that usually remove it. Start with the first technique listed;
-reach for the later ones only if it does not fit.
+reach for the later ones only if it does not fit. Design red flags such as information leakage
+and shallow modules are described in the clean-code skill's `references/principles.md`, test smells in
+the clean-code skill's `references/test-smells.md`, and judging existing patterns in the
+design-patterns skill (review mode).
 
 ## Bloaters
 
@@ -20,6 +23,7 @@ reach for the later ones only if it does not fit.
 |-------|-------|------------|
 | Divergent change | One module changes for unrelated reasons | Split phase; extract class per reason |
 | Shotgun surgery | One change touches many modules | Move function and move field to gather the logic; inline class that only forwards |
+| Information leakage | One design decision (a format, a rule) encoded in several modules | Gather the knowledge into one module; merge the modules if no small interface can hold it |
 | Parallel hierarchies | Adding a subtype here forces one there | Move behaviour so one hierarchy refers to the other, then collapse |
 
 ## Conditionals and control flow
@@ -40,6 +44,7 @@ reach for the later ones only if it does not fit.
 | Speculative generality | Hooks, parameters and abstractions nobody uses | Collapse hierarchy; inline function or class; remove parameter |
 | Comments that explain unclear code | Comment restates what the code should say | Rename; extract function with the comment's meaning as its name |
 | Lazy element | A class or function that adds a name and nothing else | Inline it |
+| Pattern with one variant | An interface with one implementation and no test seam, a factory for one product, a strategy with one strategy | Inline the abstraction back to direct code; record when it would return (design-patterns skill, Part 7) |
 
 ## Couplers
 

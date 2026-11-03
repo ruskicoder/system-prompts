@@ -1,0 +1,22 @@
+[
+  {"query": "Which pattern fits here: I have three payment gateways behind a big switch and a fourth one coming next quarter", "should_trigger": true},
+  {"query": "Is a factory overkill for creating our one Mailer class?", "should_trigger": true},
+  {"query": "MVVM or MVI for a new Jetpack Compose app?", "should_trigger": true},
+  {"query": "How should I structure state in SwiftUI, do I need a view model per screen?", "should_trigger": true},
+  {"query": "Should our three-person team start with microservices or a monolith?", "should_trigger": true},
+  {"query": "What's the difference between Adapter, Facade and Proxy?", "should_trigger": true},
+  {"query": "Make this notification module extensible so we can add channels later", "should_trigger": true},
+  {"query": "Review the abstractions this PR adds: an interface, a factory and a registry for one exporter", "should_trigger": true},
+  {"query": "How do I avoid the dual write problem when saving an order and publishing an event?", "should_trigger": true},
+  {"query": "Best practices for idempotent AWS Lambda handlers triggered by SQS", "should_trigger": true},
+  {"query": "What's the idiomatic Go replacement for the builder pattern?", "should_trigger": true},
+  {"query": "Design the pagination and error format for our public REST API", "should_trigger": true},
+  {"query": "Rename the variable usr to user across this file", "should_trigger": false},
+  {"query": "Fix the failing unit test in test_parser.py", "should_trigger": false},
+  {"query": "Our checkout page has bad color contrast, can you check accessibility?", "should_trigger": false},
+  {"query": "Write a commit message for these changes", "should_trigger": false},
+  {"query": "Why is this SQL query slow? Here is the EXPLAIN output", "should_trigger": false},
+  {"query": "Add pytest to the project and set up CI", "should_trigger": false},
+  {"query": "Translate this paragraph to Spanish", "should_trigger": false},
+  {"query": "The app crashes on startup with a NullPointerException, here is the stack trace", "should_trigger": false}
+]

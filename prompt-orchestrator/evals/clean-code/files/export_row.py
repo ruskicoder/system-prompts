@@ -1,0 +1,28 @@
+def to_export_row(user: dict) -> dict:
+    """Map an internal user record to the partner export format (spec v3, field order matters)."""
+    return {
+        "PartnerUserId": user["id"],
+        "GivenName": user["first_name"],
+        "FamilyName": user["last_name"],
+        "Email": user["email"].lower(),
+        "Phone": user.get("phone") or "",
+        "Street": user["address"]["street"],
+        "City": user["address"]["city"],
+        "PostalCode": user["address"]["postal_code"],
+        "Country": user["address"]["country"].upper(),
+        "BirthDate": user["birth_date"].isoformat() if user.get("birth_date") else "",
+        "SignupDate": user["created_at"].date().isoformat(),
+        "LastLogin": user["last_login_at"].isoformat() if user.get("last_login_at") else "",
+        "Plan": user["plan"]["code"],
+        "PlanSeats": user["plan"]["seats"],
+        "MonthlyFeeCents": user["plan"]["monthly_fee_cents"],
+        "Currency": user["plan"]["currency"],
+        "MarketingOptIn": "Y" if user["consents"]["marketing"] else "N",
+        "AnalyticsOptIn": "Y" if user["consents"]["analytics"] else "N",
+        "Locale": user.get("locale", "en-US"),
+        "Timezone": user.get("timezone", "UTC"),
+        "ReferralCode": user.get("referral_code") or "",
+        "AccountManager": user["account_manager"]["email"] if user.get("account_manager") else "",
+        "Status": user["status"].upper(),
+        "Tags": ";".join(sorted(user.get("tags", []))),
+    }

@@ -1,0 +1,88 @@
+{
+  "skill_name": "clean-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review evals/clean-code/files/invoice.py.",
+      "expected_output": "Behaviour first: swallowed exception hides failed saves while the email still says the total; then mixed responsibilities (pricing, tax, persistence, notification), boolean flag parameter, vague names (process, data, i), comment restating code, magic tax rate and country, float money. Each finding with line, principle and smallest fix.",
+      "files": [
+        "evals/clean-code/files/invoice.py"
+      ],
+      "expectations": [
+        "Flags the bare except-pass around db.save as the first or highest-severity finding",
+        "Identifies that the function mixes calculation, tax, persistence and notification",
+        "Flags the send_email boolean parameter as a flag argument",
+        "Flags the vague names process, data or i",
+        "Flags the comment that restates the loop",
+        "Flags the hard-coded tax rate or money held as floating point",
+        "Gives line references and a concrete smallest fix per finding"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "evals/clean-code/files/export_row.py is too long. Split it into smaller functions.",
+      "expected_output": "Does not split on length alone: the function is one flat mapping at a single level of abstraction, ordered by an external spec; splitting into per-section helpers would scatter the spec order and add pass-through functions. May suggest naming repeated small rules (Y/N flags, optional ISO dates) as tiny helpers, and says why.",
+      "files": [
+        "evals/clean-code/files/export_row.py"
+      ],
+      "expectations": [
+        "States that length alone is not a reason to split",
+        "Notes that the function works at one level of abstraction (a flat field mapping)",
+        "Warns that splitting into section helpers would scatter the spec's field order or add pass-through functions",
+        "Any extraction proposed removes real repetition (such as the Y/N flags or optional date formatting) rather than splitting by size"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "late_fee and parking_fee in evals/clean-code/files/rates.py are duplicated. DRY them up.",
+      "expected_output": "Applies the DRY test: the two functions encode different policies owned by different rules that will change independently; similar text is not shared knowledge; recommends keeping them separate (maybe naming constants), and explains.",
+      "files": [
+        "evals/clean-code/files/rates.py"
+      ],
+      "expectations": [
+        "Recognises that the two functions encode different business rules that change independently",
+        "Recommends not merging them into one shared function",
+        "Explains that duplication of text is not duplication of knowledge, or applies the change-together test"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review the tests in evals/clean-code/files/test_cart.py.",
+      "expected_output": "Tier 1 first: test_discount passes whether or not an exception is raised (swallowed exception, no assertion); test_cart verifies only mock calls, not outcomes; then tier 2: sleep, over-mocking of owned types, vague names.",
+      "files": [
+        "evals/clean-code/files/test_cart.py"
+      ],
+      "expectations": [
+        "Flags test_discount as unable to fail because the exception is swallowed and nothing is asserted",
+        "Flags test_cart for asserting only on mock calls instead of the checkout outcome",
+        "Flags time.sleep as a flakiness or speed problem",
+        "Flags over-mocking of types the code owns, suggesting fakes or real objects",
+        "Orders false-confidence findings before maintainability findings"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "In evals/clean-code/files/dateutil_repo, make report_header in app/report.py print the date as YYYY-MM-DD.",
+      "expected_output": "Finds and reuses format_iso_date from app/formatting.py instead of writing a new helper or inline formatting duplicate.",
+      "files": [
+        "evals/clean-code/files/dateutil_repo/app/report.py",
+        "evals/clean-code/files/dateutil_repo/app/formatting.py"
+      ],
+      "expectations": [
+        "Uses the existing format_iso_date helper",
+        "Does not add a new date-formatting helper"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Our domain code calls the Stripe SDK directly in twelve places and passes Stripe objects around. Is that a problem?",
+      "expected_output": "Boundary rule: vendor types leak into domain code; wrap in a thin adapter exposing only what the code needs in its own vocabulary; mention testing benefit and that the adapter should not grow into an abstraction for imaginary providers.",
+      "files": [],
+      "expectations": [
+        "Identifies vendor SDK types spreading through domain code as a boundary problem",
+        "Recommends a thin local adapter in the code's own vocabulary",
+        "Does not recommend a multi-provider abstraction without a second real provider"
+      ]
+    }
+  ]
+}

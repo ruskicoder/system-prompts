@@ -1,0 +1,2 @@
+description = "Use this skill whenever code is written, changed, split, reviewed or judged for quality, including one-line edits and small fixes, even if the user never says clean code: reviewing a file or diff for..."
+prompt = "This is the 'clean-code' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/clean-code/SKILL.md' (canonical source: 'skills/clean-code.md') exactly, then apply them to: {{args}}"

@@ -106,6 +106,7 @@ Evaluate whether each component has a clear, focused responsibility:
 - **Liskov Substitution (LSP)**: Derived implementations fulfill base contracts without breaking consumers.
 - **Interface Segregation (ISP)**: Clients are not forced to depend on methods they do not use.
 - **Dependency Inversion (DIP)**: High-level business logic depends on abstractions, not concrete database/network drivers.
+- Check over-application as well as violation for every letter (one-method classes, plugin points for absent variation, interfaces with one permanent implementation): see the clean-code skill's `references/principles.md`. Give each pattern in the system a verdict with the design-patterns skill's review mode.
 
 ### Step 4: API & Data Model Design Review
 1. **Contract Consistency**: Predictable HTTP status codes, error payload schemas, and serialization formats.

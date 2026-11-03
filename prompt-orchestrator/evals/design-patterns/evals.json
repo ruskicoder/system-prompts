@@ -1,0 +1,154 @@
+{
+  "skill_name": "design-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Refactor evals/design-patterns/files/payment.py to use the Strategy pattern so we can support more payment providers.",
+      "expected_output": "Counter-signal stop: one provider today, no named second provider. Names the force question, sketches the lighter seam, asks which form; no edit before the answer.",
+      "files": ["evals/design-patterns/files/payment.py"],
+      "expectations": [
+        "Does not edit the file in this turn",
+        "States that only one payment provider exists today (counter-signal or failed rule of three)",
+        "Asks for or names the concrete second provider as the trigger for the full pattern",
+        "Sketches a lighter option such as passing the client or a charge function in as a parameter",
+        "Shows options with a cost before any full pattern is applied"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The shipping methods keep growing; we are adding 'drone' and 'locker' next month. Clean up evals/design-patterns/files/shipping.py.",
+      "expected_output": "Targeted mode with a one-row Refactor Map: repeated switch on the same type code in two functions, force named (methods vary, two more planned), Python idiom (dict of method to record or functions) as the recommended lighter option, full Strategy classes as option A with cost, leave-it as C; waits for a choice.",
+      "files": ["evals/design-patterns/files/shipping.py"],
+      "expectations": [
+        "Names the repeated conditional on order.method across both functions as the signal",
+        "States the force: shipping methods vary and two more are planned",
+        "Offers options A (full pattern), B (lighter) and C (leave it) with costs",
+        "Option B or the recommendation uses a Python-native form such as a dict or table of per-method data or functions, not one class per method by default",
+        "Ends the turn waiting for a choice instead of editing"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Should I use Proxy or Decorator to add retries to our HTTP client wrapper?",
+      "expected_output": "Answer mode: Decorator (keeps the interface and adds behaviour); Proxy is about controlling access or lifecycle; lighter form is middleware or a higher-order function; mention retry only for idempotent calls with backoff and a bound.",
+      "files": [],
+      "expectations": [
+        "Recommends Decorator and explains that it keeps the interface while adding behaviour",
+        "Distinguishes Proxy as controlling access, lifecycle or location",
+        "Names a lighter form such as client middleware, an interceptor or a wrapping function",
+        "Warns that retries apply to idempotent operations with backoff and a bounded number of attempts",
+        "Does not produce a Refactor Map or edit files"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I'm building a new Jetpack Compose orders screen. How should I structure it, and should my ViewModel emit a one-off event to show a snackbar after saving?",
+      "expected_output": "Follows Google's architecture recommendations: UI layer plus data layer with a repository, ViewModel exposes a single uiState StateFlow, UDF, lifecycle-aware collection; no one-off events from ViewModel to UI, model the result as state; plain ViewModel not AndroidViewModel; constructor injection.",
+      "files": [],
+      "expectations": [
+        "Recommends a repository in a data layer even with a single data source",
+        "ViewModel exposes UI state as a StateFlow collected with lifecycle awareness",
+        "Advises against sending one-off events from the ViewModel and models the snackbar as state the UI consumes",
+        "Does not recommend AndroidViewModel or passing Context into the ViewModel",
+        "Treats a domain layer as optional for a single screen"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "For our new SwiftUI app targeting iOS 17, create a ViewModel class for every view, using ObservableObject and @Published.",
+      "expected_output": "Notes Apple's guidance: @Observable models, @State for the owning view, environment for sharing; a view model per view is optional and not prescribed; recommends @Observable over ObservableObject for iOS 17+; asks or proposes the lighter structure rather than mandating VMs everywhere.",
+      "files": [],
+      "expectations": [
+        "Recommends the @Observable macro instead of ObservableObject and @Published for iOS 17 and later",
+        "States that Apple does not prescribe a view model per view",
+        "Mentions @State ownership of the source of truth and sharing through the environment or @Bindable",
+        "Suggests adding a view model only where a screen has logic worth testing separately"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review evals/design-patterns/files/charge_handler.py. It is an AWS Lambda triggered by SQS that charges customers.",
+      "expected_output": "Serverless and messaging review: non-idempotent charge under at-least-once delivery, user card data cached in module scope across invocations, client created per invocation, no partial batch response, no DLQ or retry policy, visibility timeout relation; behaviour findings first.",
+      "files": ["evals/design-patterns/files/charge_handler.py"],
+      "expectations": [
+        "Flags that charges are not idempotent although SQS and Lambda deliver at least once, and proposes an idempotency key",
+        "Flags storing card data in the module-level cache as a data-leak risk across invocations",
+        "Recommends creating the client outside the handler for reuse",
+        "Recommends partial batch responses so one failed record does not retry the whole batch",
+        "Mentions a dead-letter queue or redrive policy with an owner",
+        "Puts these behaviour and security findings before design or style points"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Review evals/design-patterns/files/order_service.ts for reliability.",
+      "expected_output": "Dual write between database insert and broker publish; transactional outbox; consumer not idempotent (points added twice on redelivery); idempotent receiver keyed by message or order id.",
+      "files": ["evals/design-patterns/files/order_service.ts"],
+      "expectations": [
+        "Identifies the database insert followed by publish as a dual write that can lose or orphan events",
+        "Recommends a transactional outbox or equivalent",
+        "Identifies onOrderPlaced as non-idempotent under redelivery",
+        "Recommends deduplication keyed by an event or order id"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "We're a team of three starting a new SaaS product. Should we go with microservices from day one so we can scale later?",
+      "expected_output": "Recommends a modular monolith; explains microservices costs (distributed failures, consistency, operations) and that splitting fits proven boundaries and concrete forces; names the triggers to split; uses reversibility.",
+      "files": [],
+      "expectations": [
+        "Recommends a modular monolith (or monolith with enforced module boundaries) as the starting point",
+        "Names concrete costs of microservices such as network failure modes, data consistency or operational load",
+        "Names concrete conditions under which a module should become a service",
+        "Does not recommend microservices for the stated team size without such a force"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "I want to unit test code that uses evals/design-patterns/files/userstore.go. Is this interface set up right?",
+      "expected_output": "Go idiom: accept interfaces, return structs; define interfaces in the consuming package, small, when needed; the interface next to its only implementation is a smell; suggest moving a narrow interface to the consumer or test.",
+      "files": ["evals/design-patterns/files/userstore.go"],
+      "expectations": [
+        "States the Go convention that interfaces belong in the consuming package rather than next to the implementation",
+        "Suggests a smaller interface containing only the methods the consumer uses",
+        "Mentions returning concrete types from constructors (accept interfaces, return structs)"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Review the design of evals/design-patterns/files/ReportExporter.java.",
+      "expected_output": "Review mode verdicts: interface with one implementation and a factory for one product is over-engineered; field initialised via static factory hides the dependency; smaller shape sketched with size; mention when it would become a pattern.",
+      "files": ["evals/design-patterns/files/ReportExporter.java"],
+      "expectations": [
+        "Gives a verdict of over-engineered (or equivalent) for the interface plus single implementation plus factory",
+        "Sketches the smaller direct shape and sizes it in files or lines",
+        "Notes the dependency is created inside ReportService instead of injected",
+        "States the trigger that would justify the abstraction, such as a second real export format"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Design the HTTP endpoint for listing a customer's invoices in our public API.",
+      "expected_output": "Resource-oriented path, cursor pagination with page_size and opaque page_token and next_page_token, maximum page size, stable ordering, filtering, problem-details errors, versioning.",
+      "files": [],
+      "expectations": [
+        "Uses a resource-style path such as /customers/{id}/invoices with GET",
+        "Paginates from the first version with an opaque cursor token and a capped page size",
+        "Specifies a stable default ordering",
+        "Specifies a consistent error format such as RFC 9457 problem details"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Refactor evals/design-patterns/files/shipping.py; apply your recommendations, I don't want to be asked.",
+      "expected_output": "Scope already closed: applies the recommended lighter refactor without stopping, pins behaviour first, and includes the map and decision in the report.",
+      "files": ["evals/design-patterns/files/shipping.py"],
+      "expectations": [
+        "Does not stop to ask for a choice",
+        "Pins current behaviour with tests or an equivalent check before or alongside the change",
+        "Applies a lighter form rather than a full class hierarchy",
+        "Reports the options considered and the decision"
+      ]
+    }
+  ]
+}

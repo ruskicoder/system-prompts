@@ -32,7 +32,8 @@ one guard in each caller.
 
 ### No Speculative Structure
 No interface with one implementation, no factory with one product, no configuration for a
-value that never changes, no scaffolding for later.
+value that never changes, no scaffolding for later. Before adding any pattern, run the
+design-patterns skill's ladder and YAGNI gate; for code-level design rules, see clean-code.
 
 ### Clarity Over Smallest Diff
 A coherent wider change beats a cramped patch in the wrong place. Total system clarity is
