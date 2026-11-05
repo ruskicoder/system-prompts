@@ -1,0 +1,6 @@
+.row-actions { opacity: 0; }
+tr:hover .row-actions { opacity: 1; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; cursor: pointer; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.banner { padding: 12px 16px; }
+/* IconButton shows its tooltip on :hover and :focus-visible, role="tooltip", closes on Escape. */

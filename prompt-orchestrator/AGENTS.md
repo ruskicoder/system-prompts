@@ -365,6 +365,7 @@ The classifier is a routing aid, not a verdict. Read back the chosen workflow an
 - **Always Loaded**: `skills/communication-tone.md` (every reply), `skills/prose-and-wording.md` (every written output), `skills/no-ai-trailer.md` (every commit, tag, PR, issue and release text) and `skills/build-discipline.md` (every code change).
 - **Third-Party Content**: external skills, plugins, hooks and MCP servers pass `workflows/third-party-vetting.md` before use.
 - **Clarify Before Building**: `skills/brainstorming.md` for new work with missing decisions (size, play-back, defaults, proceed gate); `skills/grill-me.md` for question rounds on request and for review mode ("check everything").
+- **UI Work**: `skills/ui-ux-philosophy.md` (22 philosophies as numbered rules: interaction cost, learned layout and position stability, interactive hints, feedback, stability, undo, recognition, placement, content space, hierarchy, forms, tables, navigation, dialogs, modes, copy, accelerators, accessibility, honesty, endings; working-screen rules and the visual check) loads with `skills/ui-flow-and-layout.md` for every UI design, build or review.
 - **Review & Audit Capabilities**:
   - `skills/review-pull-request.md`: Diff-scoped PR inspection, commit triage, and severity-leveled review submission (`gh pr review`).
   - `skills/issue-checker.md`: Open-issue sweep beside every PR review: answer the unanswered, close the resolved on checked evidence, ask the one closing question, hold leader-only questions, report counts. Posts and closes only under a standing grant.

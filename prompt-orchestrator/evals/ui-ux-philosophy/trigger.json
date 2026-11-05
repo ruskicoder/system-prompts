@@ -1,0 +1,20 @@
+[
+  {"query": "Review this screen for UX problems before I ship it", "should_trigger": true},
+  {"query": "Why does our admin dashboard feel hard to use? Nothing is technically broken", "should_trigger": true},
+  {"query": "Should row actions be hidden until hover to keep the table clean?", "should_trigger": true},
+  {"query": "Is it OK to reorder the tabs by how often people use them?", "should_trigger": true},
+  {"query": "Where should the primary button go on our list pages?", "should_trigger": true},
+  {"query": "Should we add a confirm dialog before every save?", "should_trigger": true},
+  {"query": "Make the status badge clickable so users can change the state from the table", "should_trigger": true},
+  {"query": "Design the empty state and error messages for the device list", "should_trigger": true},
+  {"query": "What UI/UX rules should every screen in this app follow?", "should_trigger": true},
+  {"query": "Our table columns sort weirdly, how should header sorting work?", "should_trigger": true},
+  {"query": "Deploy the staging build to Vercel", "should_trigger": false},
+  {"query": "Write a SQL migration that adds a status column", "should_trigger": false},
+  {"query": "What is the capital of Australia?", "should_trigger": false},
+  {"query": "Set up a Kubernetes cluster on GKE", "should_trigger": false},
+  {"query": "Fix the failing unit test in the payment service", "should_trigger": false},
+  {"query": "Summarize yesterday's standup notes", "should_trigger": false},
+  {"query": "Audit our dependencies for known CVEs", "should_trigger": false},
+  {"query": "Explain how JWT refresh tokens work", "should_trigger": false}
+]

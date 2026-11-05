@@ -420,6 +420,13 @@
     "argument_hint": "<local URL or route> [focus: layout | flow | a11y | all]"
   },
   {
+    "id": "ui-ux-philosophy",
+    "kind": "skill",
+    "source": "skills/ui-ux-philosophy.md",
+    "description": "The philosophies experienced UI and UX designers work by, written as numbered, descriptive, self-contained rules. Covers interaction cost, learned layout and position stability, interactive hints, feedback and response times, layout stability, preserving work and place, undo and confirmation, error messages, recognition over recall, control placement, content space, visual hierarchy, forms, tables, navigation and tabs, dialogs and notifications, modes, labels and icons, accelerators, accessibility at the edges, honest design, and empty states and endings. Adds conflict resolution, working-screen rules (scroll ownership, sorting, state control, action slots) and the visual check. Use when designing, building, changing or reviewing any UI or UI control (status badges, row actions, tabs, table sorting, forms, dialogs, empty states), or when a rule is missing or two rules collide.",
+    "argument_hint": "[screen, flow, component or question]"
+  },
+  {
     "id": "user-research",
     "kind": "skill",
     "source": "skills/design-user-research.md",

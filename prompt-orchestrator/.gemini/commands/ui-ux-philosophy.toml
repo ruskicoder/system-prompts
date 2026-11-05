@@ -1,0 +1,2 @@
+description = "The philosophies experienced UI and UX designers work by, written as numbered, descriptive, self-contained rules. Covers interaction cost, learned layout and position stability, interactive hints..."
+prompt = "This is the 'ui-ux-philosophy' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/ui-ux-philosophy/SKILL.md' (canonical source: 'skills/ui-ux-philosophy.md') exactly, then apply them to: {{args}}"

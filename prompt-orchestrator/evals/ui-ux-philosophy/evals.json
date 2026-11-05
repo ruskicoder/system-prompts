@@ -1,0 +1,44 @@
+{
+  "skill_name": "ui-ux-philosophy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the Devices screen in this folder for UI and UX problems. Read DevicesPage.tsx, devices.css and notes.md. For each problem give the element, what is wrong, and the fix. Do not edit files.",
+      "expected_output": "A findings list covering the planted violations, with fixes, and no findings against the two components notes.md marks as correct.",
+      "files": [
+        "evals/ui-ux-philosophy/files/devices/DevicesPage.tsx",
+        "evals/ui-ux-philosophy/files/devices/devices.css",
+        "evals/ui-ux-philosophy/files/devices/notes.md"
+      ],
+      "expectations": [
+        "Flags that row actions are hidden until hover (opacity 0) and so are not discoverable on touch or before hover; fix keeps them visible at rest",
+        "Flags that the Edit button is omitted for retired rows so the Delete button shifts position between rows; fix keeps a fixed slot (Edit shown disabled with a reason, or a reserved slot)",
+        "Flags that the tabs reorder by click count; fix keeps a fixed tab order",
+        "Flags the search input that uses a placeholder as its only label; fix adds a visible label",
+        "Flags the status shown as a colour-only dot (no text)",
+        "Flags the clickable status dot as an unrecognisable, non-keyboard control that retires the device at once; fix is a real menu button (status text plus a chevron or similar hint) listing allowed transitions, with confirmation or undo for retiring",
+        "Flags the 'Are you sure?' confirmation on a routine edit; fix removes it or, where a confirmation stays, names the action and object with outcome-named buttons instead of OK/Cancel",
+        "Flags that Delete is permanent with neither confirmation nor undo",
+        "Flags the 'Error 500' toast as unhelpful; fix states the problem in plain language with the next step, shown persistently or in context",
+        "Flags that 'No devices.' shows while data is still loading; fix shows a loading state and a real empty state with a next step",
+        "Flags the three stacked banners (including a promo) taking space above the content; fix merges or removes them",
+        "Flags two primary buttons in the header; fix keeps one primary action",
+        "Flags the sortable Tag header built as a clickable div (not a button, no aria-sort, no visible direction)",
+        "Flags window.scrollTo(0, 0) after saving as losing the user's place",
+        "Does not report the IconButton tooltips or accessible names, or the pagination, as problems"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our product owner wants four changes to the Devices table: (1) hide row actions that are unavailable for a row, to save space; (2) order the tabs by how often each user clicks them; (3) add an 'Are you sure?' dialog to every Save; (4) make the table denser with 18 px rows and 16 px icon buttons. Give a recommendation for each.",
+      "expected_output": "One recommendation per request, resolving each against the rules with a concrete alternative.",
+      "files": [],
+      "expectations": [
+        "(1) Advises against hiding per-row unavailable actions because buttons would shift; recommends keeping the slot with the action disabled and its reason, hiding only actions the role can never use",
+        "(2) Advises against usage-ordered tabs because users rely on fixed positions; recommends a fixed order (the most used tab first and selected by default is acceptable)",
+        "(3) Advises against a confirmation on every Save; recommends undo for reversible changes and confirmation only for irreversible ones",
+        "(4) Accepts denser rows only above the accessibility floor: icon button targets at least 24 by 24 CSS px (WCAG 2.5.8), recovering space by removing chrome first"
+      ]
+    }
+  ]
+}

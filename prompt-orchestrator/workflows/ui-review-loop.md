@@ -14,6 +14,7 @@ argument-hint: "<local URL or route> [focus: layout | flow | a11y | all]"
 | Power Mode | Balanced |
 
 ## Required Skills
+- ui-ux-philosophy (rules, working-screen rules, visual check sizes)
 - ui-flow-and-layout (structure, states)
 - accessibility-review (WCAG 2.2 AA)
 - design-heuristics-audit (usability)
@@ -30,8 +31,8 @@ argument-hint: "<local URL or route> [focus: layout | flow | a11y | all]"
 ## Flow
 
 ### Step 1: Inspect
-Open the target at the widths it ships at (mobile, tablet, desktop at minimum). Walk the main
-task, including empty, error and permission states. Capture each issue with screen, state,
+Open the target at the sizes of the ui-ux-philosophy visual check (the project's widths plus the
+400 percent zoom case) in every theme. Walk the main task, including empty, error and permission states. Capture each issue with screen, state,
 element, rule (layout rule, heuristic or SC) and a screenshot or DOM excerpt.
 
 ### Step 2: Rank

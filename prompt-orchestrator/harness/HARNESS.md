@@ -108,6 +108,9 @@ harness. Prefer the named agents above when one fits.
   subagent changed files, and blocks finishing until it passes (at most 3 blocks, then you must
   report the failure).
 - Without `verify`, run the repo's checks yourself before reporting done.
+- A change to a user interface is done only after the visual check of `ui-ux-philosophy`: every
+  touched screen at the project's widths and the 400 percent zoom case, in every theme, looked at,
+  with axe and a focus walk. Report what was checked per screen and size.
 - Use `claim-verifier` after any delegated fix whose success you cannot see in tool output.
 - `refactor` work lands only after `reviewer` and `claim-verifier` pass; merging is a hard stop
   that needs the user's approval.

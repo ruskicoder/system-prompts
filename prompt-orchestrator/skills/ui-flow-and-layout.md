@@ -159,7 +159,8 @@ For a spec or a non-trivial UI change, produce before code:
 - [ ] Flow map delivered for specs; WCAG 2.2 AA target recorded
 
 ## Related
-- `accessibility-review` (WCAG 2.2 AA), `design-heuristics-audit` (usability heuristics),
+- `ui-ux-philosophy` (the rules behind good interfaces, working-screen rules, visual check),
+  `accessibility-review` (WCAG 2.2 AA), `design-heuristics-audit` (usability heuristics),
   `ui-review-loop` workflow (inspect, fix, re-verify on the running app).
 - `spec-driven` design phase and `build-discipline` Feature rules require the flow map for UI
   work.
