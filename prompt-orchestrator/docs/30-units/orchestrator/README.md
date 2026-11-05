@@ -6,7 +6,7 @@ owner: unassigned
 summary: "Central orchestrator system prompt and the files that load it."
 kind: module
 sources: [AGENT.md, .kiro/steering/**]
-verified: {commit: 2eae438, date: 2026-10-26}
+verified: {commit: 3798e1c, date: 2026-11-05}
 ---
 
 # orchestrator

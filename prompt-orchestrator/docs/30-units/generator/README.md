@@ -6,7 +6,7 @@ owner: unassigned
 summary: "Build step that turns the catalog into every tool-specific format, plus its validator."
 kind: module
 sources: [tools/generate_integrations.py, skills/validate_skills.py]
-verified: {commit: ea2e332, date: 2026-11-03}
+verified: {commit: 3798e1c, date: 2026-11-05}
 ---
 
 # generator
