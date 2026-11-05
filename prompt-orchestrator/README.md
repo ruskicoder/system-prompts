@@ -4,7 +4,7 @@
 
 ## Works everywhere, out of the box
 
-This repo ships **57 skills/workflows** as a single canonical source (`skills/*.md`, `workflows/*.md`) plus **generated, ready-to-use integrations** for every major agent/IDE. Clone this repo as your project (or run one install command) and you get:
+This repo ships **64 skills/workflows** as a single canonical source (`skills/*.md`, `workflows/*.md`) plus **generated, ready-to-use integrations** for every major agent/IDE. Clone this repo as your project (or run one install command) and you get:
 
 | Tool | Auto-discovery | Explicit `/name` invocation |
 |---|---|---|
@@ -18,12 +18,12 @@ This repo ships **57 skills/workflows** as a single canonical source (`skills/*.
 | **Any other Agent-Skills-compliant tool** | `.agents/skills/<name>/SKILL.md` | — |
 | **Anything else** | `AGENTS.md` at the repo root: the plain-text fallback nearly every coding agent reads | — |
 
-See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full generated compatibility map (every one of the 57 skills/workflows, listed with its `/name`, argument hint, and description): it's regenerated automatically, so it never drifts from the source.
+See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full generated compatibility map (every one of the 64 skills/workflows, listed with its `/name`, argument hint, and description): it's regenerated automatically, so it never drifts from the source.
 
 ## How it's built (single source of truth)
 
 ```
-skills/*.md, workflows/*.md   (you edit these — 57 files, YAML frontmatter + instructions)
+skills/*.md, workflows/*.md   (you edit these — 64 files, YAML frontmatter + instructions)
             │
             ▼   tools/generate_integrations.py
             │
@@ -56,8 +56,8 @@ python3 skills/validate_skills.py
 | `AGENT.md` | Central orchestrator: core values, pre-action protocol, power modes, routing, safety engine, and more (canonical source) |
 | `AGENTS.md` | Generated copy of `AGENT.md`, at the filename most agents (Codex, Gemini CLI, Cursor, Windsurf, OpenCode, Antigravity, Amp, Aider…) read natively |
 | `CLAUDE.md` | Claude Code project memory: imports `AGENTS.md` and documents the installed skills |
-| `skills/` | 46 specialized skill modules (canonical source, flat `.md` files with YAML frontmatter). A sibling folder named after a skill (for example `skills/docs-scaffold/`) holds companion files that the generator copies next to every generated `SKILL.md` |
-| `workflows/` | 10 execution workflows (canonical source, same format as skills) |
+| `skills/` | 52 specialized skill modules (canonical source, flat `.md` files with YAML frontmatter). A sibling folder named after a skill (for example `skills/docs-scaffold/`) holds companion files that the generator copies next to every generated `SKILL.md` |
+| `workflows/` | 12 execution workflows (canonical source, same format as skills) |
 | `.agents/skills/` | **Generated.** Every skill/workflow as an Agent-Skills-standard folder (`<name>/SKILL.md`): the universal format |
 | `.claude/skills/` | **Generated.** Same content, at Claude Code's discovery path |
 | `.opencode/skills/`, `.opencode/commands/` | **Generated.** OpenCode native skills + explicit slash commands |
@@ -146,8 +146,8 @@ The Antigravity installer requires **Python 3.8+**, using only its standard libr
 PowerShell searches for `python3`, `python`, then the Windows `py -3` launcher.
 Generating and validating repository content additionally requires PyYAML, as before.
 
-The generated package contains `plugin.json` and 57 `skills/<name>/SKILL.md` files
-(46 skills and 11 workflows), plus any companion files such as the `docs-scaffold` CLI. Both installers validate exact registry membership and
+The generated package contains `plugin.json` and 64 `skills/<name>/SKILL.md` files
+(52 skills and 12 workflows), plus any companion files such as the `docs-scaffold` CLI. Both installers validate exact registry membership and
 compare every skill with its generated source before writing the destination.
 Installation stages a complete package, then replaces only `prompt-orchestrator`.
 
@@ -244,7 +244,7 @@ Every skill/workflow is invocable two ways, in every supported tool:
 1. **Automatically**: the agent reads each skill's `description` at session start and loads the full instructions when your request matches it. No action needed.
 2. **Explicitly**: type `/` followed by the skill or workflow name (e.g. `/agent-loop`, `/plan-execute`, `/security-audit-codebase`, `/docx`). Arguments after the name are passed straight through (`argument-hint` in each skill's frontmatter shows the expected shape).
 
-See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full list of all 57 `/name` commands with descriptions, or inspect `tools/registry.json` for the machine-readable version.
+See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full list of all 64 `/name` commands with descriptions, or inspect `tools/registry.json` for the machine-readable version.
 
 ## Architecture
 
@@ -264,7 +264,7 @@ AGENT.md (canonical) → AGENTS.md (generated copy, universal fallback)
 ├── Dynamic Safety Engine
 └── Session Continuation Manager
 
-skills/ (46, canonical)              workflows/ (10, canonical)
+skills/ (52, canonical)              workflows/ (12, canonical)
 ├── file-operations.md               ├── direct-implementation.md
 ├── codebase-understanding.md        ├── diagnostic-fix.md
 ├── code-execution.md                ├── plan-execute.md

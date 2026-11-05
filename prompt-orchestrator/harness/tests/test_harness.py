@@ -190,12 +190,12 @@ class HookTests(TempHome):
 class RenderTests(unittest.TestCase):
     def test_every_tool_renders_with_marker(self):
         agents = render.load_agents()
-        self.assertEqual(16, len(agents))
+        self.assertEqual(17, len(agents))
         with tempfile.TemporaryDirectory() as tmp:
             for tool, profiles in render.TOOL_PROFILES.items():
                 for name in profiles:
                     files = render.render_tool(tool, name, Path(tmp) / tool / name, agents)
-                    self.assertEqual(16, len(files))
+                    self.assertEqual(17, len(files))
                     for path in files:
                         self.assertIn(h.MARKER, path.read_text())
 

@@ -10,7 +10,11 @@ argument-hint: "<symbol, flow, or query>"
 Leverage the GitNexus knowledge graph to understand codebase structure, trace execution flows, analyze impact, and safely navigate unfamiliar code.
 
 ## Prerequisites
-GitNexus must have analyzed the repo. If the index is stale or missing, run:
+GitNexus must have analyzed the repo. If the index is stale or missing, run the commands below.
+In a repository you do not own, or one other people share, add `--index-only`: without it
+`analyze` writes an AGENTS.md section and skills into the repository. Add `--branch <name>` to
+index the branch the task is about (for example the done branch an issue fix lands on).
+`list_repos` and `context` can show git remotes; never paste a remote URL that carries a token.
 ```bash
 npx gitnexus analyze
 # or for force re-index:

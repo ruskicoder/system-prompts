@@ -71,6 +71,12 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
   every change such a skill makes on its own is reported.
 - Before any local spawn, check available memory against the machine's limit; on a host with a
   recorded limit (for example "no local agents under 3 GB available"), do the work in-session.
+- Issues ride the PR review tick: whenever a tick, loop or sweep reviews PRs with `reviewer`, run
+  `issue-checker` in the same tick over the same repos, beside the reviewers. Pass the repos,
+  answerer logins, leader login and queue, windows and mode. It runs in `act` mode (comments and
+  closes) only under the user's written standing grant for those repos; otherwise in `draft` mode,
+  and you show the drafts. Log its counts (answered, closed, waiting, held) in the session file and
+  record its leader queue entries.
 - Never exceed the fan-out cap from the tag for parallel spawns.
 
 | Agent | Tier | Use when |
@@ -80,6 +86,7 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 | `chore` | worker | bounded mechanical edits: format, rename, bump, doc sync |
 | `test-runner` | light | run tests or builds and get only the failures |
 | `reviewer` | worker | a diff or PR needs a fresh-context review |
+| `issue-checker` | worker | a review tick runs, or open issues need answering, closing or a holding reply |
 | `refactor` | worker | long multi-file restructuring; runs in its own worktree |
 | `debugger` | worker | a bug needs reproduction and root cause before fixing |
 | `security-auditor` | worker | dependency or secret scans are needed |

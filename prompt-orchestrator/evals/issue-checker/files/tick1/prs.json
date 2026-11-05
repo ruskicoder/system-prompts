@@ -1,0 +1,39 @@
+[
+ {
+  "number": 210,
+  "title": "fix(devices): empty device list",
+  "body": "Closes #102\n\nGuards the device tab against contracts without devices.",
+  "state": "MERGED",
+  "baseRefName": "dev",
+  "mergedAt": "2026-11-03T08:00:00Z",
+  "url": "https://github.com/acme-team/web/pull/210"
+ },
+ {
+  "number": 211,
+  "title": "fix(export): Safari download",
+  "body": "Fixes #103",
+  "state": "CLOSED",
+  "baseRefName": "dev",
+  "mergedAt": null,
+  "closedAt": "2026-11-03T09:00:00Z",
+  "url": "https://github.com/acme-team/web/pull/211"
+ },
+ {
+  "number": 212,
+  "title": "fix(share): drop session token from share links",
+  "body": "Closes #112",
+  "state": "MERGED",
+  "baseRefName": "dev",
+  "mergedAt": "2026-11-01T01:00:00Z",
+  "url": "https://github.com/acme-team/web/pull/212"
+ },
+ {
+  "number": 213,
+  "title": "fix(assets): enable release for rented assets",
+  "body": "Fixes #114",
+  "state": "OPEN",
+  "baseRefName": "dev",
+  "mergedAt": null,
+  "url": "https://github.com/acme-team/web/pull/213"
+ }
+]

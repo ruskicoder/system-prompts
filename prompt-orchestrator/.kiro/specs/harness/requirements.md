@@ -59,9 +59,9 @@ The harness saves tokens moderately without starving work: it spends unused quot
 #### Acceptance Criteria
 
 1. The harness SHALL ship one canonical file per agent in `harness/agents/`, declaring `name`, `description`, `tier`, `effort`, `access` (`read` or `write`) and an instruction body.
-2. The roster SHALL contain: `ingest`, `researcher`, `chore`, `test-runner`, `reviewer`, `refactor`, `critical-architect`, `critical-reviewer`, `convention-auditor`, `claim-verifier`, `debugger`, `security-auditor`, `commit-pr-writer`, `handoff-writer`, `session-logger`, `session-syncer`.
+2. The roster SHALL contain: `ingest`, `researcher`, `chore`, `test-runner`, `reviewer`, `issue-checker`, `refactor`, `critical-architect`, `critical-reviewer`, `convention-auditor`, `claim-verifier`, `debugger`, `security-auditor`, `commit-pr-writer`, `handoff-writer`, `session-logger`, `session-syncer`.
 3. Tiers SHALL be: `frontier` for `critical-architect` and `critical-reviewer`; `light` for `test-runner`, `commit-pr-writer`, `handoff-writer`, `session-logger`, `session-syncer`; `worker` for all others.
-4. Effort SHALL be `xhigh` for the two critical agents; `high` for `researcher`, `refactor`, `reviewer`, `convention-auditor`, `claim-verifier`, `debugger`; `medium` for all others. No agent SHALL use `low`.
+4. Effort SHALL be `xhigh` for the two critical agents; `high` for `researcher`, `refactor`, `reviewer`, `issue-checker`, `convention-auditor`, `claim-verifier`, `debugger`; `medium` for all others. No agent SHALL use `low`.
 5. No two agent descriptions SHALL claim the same job; the validator SHALL flag description overlap above a set threshold.
 6. Read-only agents SHALL NOT have write or edit tools.
 7. `refactor` SHALL run in an isolated worktree, commit only on its own branch, and SHALL NOT merge.

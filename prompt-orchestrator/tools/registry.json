@@ -238,6 +238,13 @@
     "argument_hint": "<incident description or alert>"
   },
   {
+    "id": "issue-checker",
+    "kind": "skill",
+    "source": "skills/issue-checker.md",
+    "description": "Sweep the open GitHub issues of one or more repositories and leave none unanswered or answered-but-open. Reads every thread to its last real comment, checks the code and merged PRs on the project's done branch, sorts each issue into resolved, stale report, leader-only, unanswered, waiting or nothing to do, then answers from the code, closes with checked evidence, asks the one closing question or posts a holding reply, and returns per-repo counts. Acts only under a standing grant; drafts otherwise. Use on every PR review tick beside the reviewer, or when asked to check, answer, triage or clean up issues.",
+    "argument_hint": "[owner/repo ...] [act|draft]"
+  },
+  {
     "id": "learn",
     "kind": "skill",
     "source": "skills/learn.md",

@@ -359,6 +359,7 @@ The classifier is a routing aid, not a verdict. Read back the chosen workflow an
 - **Clarify Before Building**: `skills/brainstorming.md` for new work with missing decisions (size, play-back, defaults, proceed gate); `skills/grill-me.md` for question rounds on request and for review mode ("check everything").
 - **Review & Audit Capabilities**:
   - `skills/review-pull-request.md`: Diff-scoped PR inspection, commit triage, and severity-leveled review submission (`gh pr review`).
+  - `skills/issue-checker.md`: Open-issue sweep beside every PR review: answer the unanswered, close the resolved on checked evidence, ask the one closing question, hold leader-only questions, report counts. Posts and closes only under a standing grant.
   - `skills/review-software-architecture.md`: System-level coupling, cohesion, SOLID, API contracts, and technical debt evaluation.
   - `skills/security-audit-codebase.md`: Source security audit, secret scanning, dependency CVE checks, and OWASP Top 10 mitigation.
 

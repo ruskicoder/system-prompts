@@ -61,7 +61,7 @@ Flow of one Claude Code session:
 ```
 harness/
   HARNESS.md                 overlay, 160 lines max
-  agents/<name>.md           16 canonical agents
+  agents/<name>.md           17 canonical agents
   profiles/<name>.toml       claude-max, claude-pro, codex-plus, api, free
   critical.toml              default critical paths and keywords
   skills/autosetup.md       /autosetup skill (rendered with the agents)
