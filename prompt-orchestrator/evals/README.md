@@ -47,3 +47,9 @@ to disable) and fails the run after an hour of waiting. Run only the skill under
 changes mean editing the source skill, regenerating, then running again.
 
 Unit tests for the SKILL.md parser: `python3 -B -m unittest discover -s skills/skill-creator/scripts -v`.
+
+Isolated results on 2026-11-05 (Sonnet, one run per query): `ui-ux-philosophy` 18 of 18,
+`design-patterns` 19 of 20 (the Adapter, Facade and Proxy comparison did not trigger), `clean-code`
+14 of 18 (four short code-review questions did not trigger). A control run of the
+`ui-ux-philosophy` set with an unrelated description (SQL migrations) triggered on none of the 10
+UI queries and on the SQL query, so the mode measures the description.

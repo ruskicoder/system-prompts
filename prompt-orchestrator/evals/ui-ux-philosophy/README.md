@@ -32,6 +32,6 @@ Round 1 missed the confirmation or undo for a status transition (now rule "The s
 state control" 4) and once reported a component the fixture marks as reviewed (now the review
 line in the skill's opening). Trigger: `trigger.json` with only this skill installed and user
 settings off, 3 runs per query: 10 of 10 positives triggered 3 of 3, 8 of 8 negatives 0 of 3.
-The stock `run_eval.py` reports 0 triggers here (use `--isolated`, see `evals/README.md`), because it runs with user settings (the real
-skill and global skills compete with its temporary copy) and stops at the first tool call that is
-not Skill or Read.
+The stock `run_eval.py` reports 0 triggers here (use `--isolated`, see `evals/README.md`),
+because it runs with user settings (the real skill and global skills compete with its temporary
+copy) and stops at the first tool call that is not Skill or Read.
