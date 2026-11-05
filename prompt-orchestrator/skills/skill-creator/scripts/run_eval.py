@@ -3,20 +3,32 @@
 
 Tests whether a skill's description causes Claude to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
+
+Default mode writes a temporary command into the project's .claude/commands/ and
+runs claude -p with the user's settings. --isolated runs each query in a throwaway
+project that holds only the skill under test, with user settings off.
 """
 
 import argparse
 import json
 import os
 import select
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from scripts.utils import parse_skill_md
+from scripts.utils import parse_skill_md, set_skill_description
+
+ISOLATED_TOOLS = ["Skill", "Read", "Glob", "Grep"]
+DEFAULT_TIMEOUT = 30
+DEFAULT_ISOLATED_TIMEOUT = 120
+DEFAULT_MIN_AVAILABLE_MB = 3072
+MEMORY_POLL_SECONDS = 5
 
 
 def find_project_root() -> Path:
@@ -181,6 +193,118 @@ def run_single_query(
             command_file.unlink()
 
 
+def available_memory_mb() -> int | None:
+    """MemAvailable from /proc/meminfo in MB, or None where it is not readable."""
+    try:
+        for line in Path("/proc/meminfo").read_text().splitlines():
+            if line.startswith("MemAvailable:"):
+                return int(line.split()[1]) // 1024
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def wait_for_memory(min_available_mb: int, max_wait: int) -> None:
+    """Block until MemAvailable reaches the floor; raise after max_wait seconds."""
+    deadline = time.time() + max_wait
+    while True:
+        available = available_memory_mb()
+        if available is None or available >= min_available_mb:
+            return
+        if time.time() >= deadline:
+            raise RuntimeError(
+                f"available memory {available} MB stayed under {min_available_mb} MB for {max_wait}s"
+            )
+        time.sleep(MEMORY_POLL_SECONDS)
+
+
+def run_single_query_isolated(
+    query: str,
+    skill_name: str,
+    snapshot_dir: str,
+    timeout: int,
+    model: str | None = None,
+    min_available_mb: int = DEFAULT_MIN_AVAILABLE_MB,
+    memory_max_wait: int = 3600,
+) -> bool:
+    """Run one query in a throwaway project holding only the skill under test.
+
+    The project has just `.claude/skills/<skill>/`, user settings are off
+    (`--setting-sources project`) and the tool set is limited, so always-on user
+    skills cannot answer the query before the skill under test is considered.
+    A hit is any assistant Skill tool_use whose input names the skill.
+    """
+    wait_for_memory(min_available_mb, memory_max_wait)
+    workspace = tempfile.mkdtemp(prefix="skilltrig-")
+    process = None
+    try:
+        skills_dir = Path(workspace) / ".claude" / "skills"
+        skills_dir.mkdir(parents=True)
+        shutil.copytree(snapshot_dir, skills_dir / skill_name)
+
+        cmd = [
+            "claude",
+            "-p", query,
+            "--output-format", "stream-json",
+            "--verbose",
+            "--setting-sources", "project",
+        ]
+        if model:
+            cmd.extend(["--model", model])
+        cmd.extend(["--tools", *ISOLATED_TOOLS])
+
+        env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            cwd=workspace,
+            env=env,
+            text=True,
+        )
+
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            ready, _, _ = select.select([process.stdout], [], [], 1.0)
+            if not ready:
+                if process.poll() is not None:
+                    return False
+                continue
+            line = process.stdout.readline()
+            if not line:
+                return False
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if event.get("type") == "assistant":
+                for item in event.get("message", {}).get("content", []):
+                    if (
+                        item.get("type") == "tool_use"
+                        and item.get("name") == "Skill"
+                        and skill_name in json.dumps(item.get("input", {}))
+                    ):
+                        return True
+            elif event.get("type") == "result":
+                return False
+        return False
+    finally:
+        if process is not None and process.poll() is None:
+            process.kill()
+            process.wait()
+        shutil.rmtree(workspace, ignore_errors=True)
+
+
+def make_snapshot(skill_path: Path, skill_name: str, description: str, original_description: str) -> str:
+    """Copy the skill folder once so later runs do not depend on a folder that is rewritten."""
+    snapshot = Path(tempfile.mkdtemp(prefix="skillsnap-")) / skill_name
+    shutil.copytree(skill_path, snapshot)
+    if description != original_description:
+        skill_md = snapshot / "SKILL.md"
+        skill_md.write_text(set_skill_description(skill_md.read_text(), description))
+    return str(snapshot)
+
+
 def run_eval(
     eval_set: list[dict],
     skill_name: str,
@@ -191,38 +315,64 @@ def run_eval(
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    isolated: bool = False,
+    skill_path: Path | None = None,
+    original_description: str | None = None,
+    min_available_mb: int = DEFAULT_MIN_AVAILABLE_MB,
 ) -> dict:
-    """Run the full eval set and return results."""
+    """Run the full eval set and return results.
+
+    With isolated=True each run uses a throwaway project that holds only
+    `skill_path` (see run_single_query_isolated); project_root is unused.
+    """
     results = []
+    snapshot = None
+    if isolated:
+        snapshot = make_snapshot(skill_path, skill_name, description, original_description or description)
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        future_to_info = {}
-        for item in eval_set:
-            for run_idx in range(runs_per_query):
-                future = executor.submit(
-                    run_single_query,
-                    item["query"],
-                    skill_name,
-                    description,
-                    timeout,
-                    str(project_root),
-                    model,
-                )
-                future_to_info[future] = (item, run_idx)
+    query_triggers: dict[str, list[bool]] = {}
+    query_items: dict[str, dict] = {}
+    try:
+        with ProcessPoolExecutor(max_workers=num_workers) as executor:
+            future_to_info = {}
+            for item in eval_set:
+                for run_idx in range(runs_per_query):
+                    if isolated:
+                        future = executor.submit(
+                            run_single_query_isolated,
+                            item["query"],
+                            skill_name,
+                            snapshot,
+                            timeout,
+                            model,
+                            min_available_mb,
+                        )
+                    else:
+                        future = executor.submit(
+                            run_single_query,
+                            item["query"],
+                            skill_name,
+                            description,
+                            timeout,
+                            str(project_root),
+                            model,
+                        )
+                    future_to_info[future] = (item, run_idx)
 
-        query_triggers: dict[str, list[bool]] = {}
-        query_items: dict[str, dict] = {}
-        for future in as_completed(future_to_info):
-            item, _ = future_to_info[future]
-            query = item["query"]
-            query_items[query] = item
-            if query not in query_triggers:
-                query_triggers[query] = []
-            try:
-                query_triggers[query].append(future.result())
-            except Exception as e:
-                print(f"Warning: query failed: {e}", file=sys.stderr)
-                query_triggers[query].append(False)
+            for future in as_completed(future_to_info):
+                item, _ = future_to_info[future]
+                query = item["query"]
+                query_items[query] = item
+                if query not in query_triggers:
+                    query_triggers[query] = []
+                try:
+                    query_triggers[query].append(future.result())
+                except Exception as e:
+                    print(f"Warning: query failed: {e}", file=sys.stderr)
+                    query_triggers[query].append(False)
+    finally:
+        if snapshot:
+            shutil.rmtree(Path(snapshot).parent, ignore_errors=True)
 
     for query, triggers in query_triggers.items():
         item = query_items[query]
@@ -262,10 +412,16 @@ def main():
     parser.add_argument("--skill-path", required=True, help="Path to skill directory")
     parser.add_argument("--description", default=None, help="Override description to test")
     parser.add_argument("--num-workers", type=int, default=10, help="Number of parallel workers")
-    parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
+    parser.add_argument("--timeout", type=int, default=None,
+                        help=f"Timeout per query in seconds (default {DEFAULT_TIMEOUT}, {DEFAULT_ISOLATED_TIMEOUT} with --isolated)")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
+    parser.add_argument("--isolated", action="store_true",
+                        help="Run each query in a throwaway project holding only the skill, with user settings off "
+                             "and tools limited to Skill, Read, Glob, Grep")
+    parser.add_argument("--min-available-mb", type=int, default=DEFAULT_MIN_AVAILABLE_MB,
+                        help="--isolated: wait before each run until this much memory is available (0 disables)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
@@ -288,11 +444,15 @@ def main():
         skill_name=name,
         description=description,
         num_workers=args.num_workers,
-        timeout=args.timeout,
+        timeout=args.timeout or (DEFAULT_ISOLATED_TIMEOUT if args.isolated else DEFAULT_TIMEOUT),
         project_root=project_root,
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
         model=args.model,
+        isolated=args.isolated,
+        skill_path=skill_path,
+        original_description=original_description,
+        min_available_mb=args.min_available_mb,
     )
 
     if args.verbose:
