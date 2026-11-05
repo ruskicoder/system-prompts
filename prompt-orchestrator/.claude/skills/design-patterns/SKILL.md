@@ -1,17 +1,18 @@
 ---
 name: design-patterns
-description: 'Use this skill whenever a structural design decision comes up, even
-  if no pattern is named: choosing or questioning a design pattern, making code extensible,
-  reviewing the abstractions a diff adds, picking a UI architecture (MVC, MVP, MVVM,
-  MVI, MVU, Redux, VIPER, TCA, BLoC; Jetpack Compose, SwiftUI, Flutter or React state),
-  monolith versus microservices, event-driven or serverless design (Lambda, Functions,
-  queues), messaging reliability (outbox, idempotent consumers, sagas), designing
-  a network API (resources, pagination, errors, versioning), DDD and data-access patterns,
-  concurrency, or the idiomatic form of a pattern in Java, Kotlin, Swift, Go, Rust,
-  Python, TypeScript, C#, C++, Dart, Ruby or PHP. It names the force before any pattern,
-  climbs a ladder from no change to a full pattern, applies a YAGNI gate, shows full,
-  lighter and leave-it options with cost before editing, records the decision, and
-  gives existing patterns a verdict.'
+description: 'Use this skill whenever a design pattern is explained or compared, or
+  a structural design decision comes up, even if no pattern is named: the difference
+  between patterns (Adapter, Facade and Proxy; Strategy and State; Factory and Builder),
+  choosing or questioning a design pattern, making code extensible, reviewing the
+  abstractions a diff adds, picking a UI architecture (MVC, MVP, MVVM, MVI, MVU, Redux,
+  VIPER, TCA, BLoC; Jetpack Compose, SwiftUI, Flutter or React state), monolith versus
+  microservices, event-driven or serverless design (Lambda, Functions, queues), messaging
+  reliability (outbox, idempotent consumers, sagas), designing a network API (resources,
+  pagination, errors, versioning), DDD and data-access patterns, concurrency, or the
+  idiomatic form of a pattern in Java, Kotlin, Swift, Go, Rust, Python, TypeScript,
+  C#, C++, Dart, Ruby or PHP. It names the force first, climbs a ladder from no change
+  to a full pattern behind a YAGNI gate, shows options with cost before editing, and
+  records the decision.'
 argument-hint: '[file, module, pattern name or question]'
 ---
 

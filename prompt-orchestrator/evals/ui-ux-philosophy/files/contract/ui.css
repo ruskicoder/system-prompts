@@ -1,0 +1,5 @@
+/* Tabs render items and links in one flex row that wraps; at 1280 px the 10 entries take two rows. */
+.tabs { display: flex; flex-wrap: wrap; }
+.btn-danger { background: var(--danger); color: var(--on-danger); }
+.btn-lg { padding: 14px 28px; font-size: 1.125rem; }
+.urgency { color: var(--danger); font-weight: 700; }

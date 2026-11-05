@@ -48,8 +48,9 @@ changes mean editing the source skill, regenerating, then running again.
 
 Unit tests for the SKILL.md parser: `python3 -B -m unittest discover -s skills/skill-creator/scripts -v`.
 
-Isolated results on 2026-11-05 (Sonnet, one run per query): `ui-ux-philosophy` 18 of 18,
-`design-patterns` 19 of 20 (the Adapter, Facade and Proxy comparison did not trigger), `clean-code`
-14 of 18 (four short code-review questions did not trigger). A control run of the
-`ui-ux-philosophy` set with an unrelated description (SQL migrations) triggered on none of the 10
-UI queries and on the SQL query, so the mode measures the description.
+Isolated results on 2026-11-05 (Sonnet): before tuning, one run per query, `ui-ux-philosophy` 18 of
+18, `design-patterns` 19 of 20 and `clean-code` 14 of 18. After the v1.6.1 description changes, three
+runs per query: `clean-code` 18 of 18 and `design-patterns` 20 of 20, every positive triggering 3 of 3
+and every negative 0 of 3. A control run of the `ui-ux-philosophy` set with an unrelated description
+(SQL migrations) triggered on none of the 10 UI queries and on the SQL query, so the mode measures
+the description.

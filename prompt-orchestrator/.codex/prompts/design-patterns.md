@@ -1,7 +1,7 @@
 ---
-description: 'Use this skill whenever a structural design decision comes up, even
-  if no pattern is named: choosing or questioning a design pattern, making code extensible,
-  reviewing the abstractions a diff adds...'
+description: 'Use this skill whenever a design pattern is explained or compared, or
+  a structural design decision comes up, even if no pattern is named: the difference
+  between patterns (Adapter, Facade and Proxy...'
 argument-hint: '[file, module, pattern name or question]'
 ---
 

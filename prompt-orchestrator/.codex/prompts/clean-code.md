@@ -1,7 +1,7 @@
 ---
-description: 'Use this skill whenever code is written, changed, split, reviewed or
-  judged for quality, including one-line edits and small fixes, even if the user never
-  says clean code: reviewing a file or diff for...'
+description: 'Use this skill for any question about code quality, readability or design,
+  including short questions with no code attached: is this function or class well
+  designed or hard to read, does it violate the...'
 argument-hint: '[file, diff or question]'
 ---
 

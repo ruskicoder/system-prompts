@@ -1,15 +1,17 @@
 ---
 name: clean-code
-description: 'Use this skill whenever code is written, changed, split, reviewed or
-  judged for quality, including one-line edits and small fixes, even if the user never
-  says clean code: reviewing a file or diff for readability, naming things, deciding
-  whether to split a long function or DRY up look-alike code, judging a function or
-  class design, SOLID, KISS, YAGNI, Law of Demeter, coupling or cohesion questions,
-  error handling and swallowed exceptions, comments, and whether tests are any good.
-  It sets the code-level bar: names that carry intent, functions split by responsibility
-  and abstraction level rather than length, explicit side effects, errors as design,
-  vendor details kept at the boundaries, comments for rationale, tests that can fail,
-  and rules for agent-written code. Principles and test smells load on demand.'
+description: 'Use this skill for any question about code quality, readability or design,
+  including short questions with no code attached: is this function or class well
+  designed or hard to read, does it violate the single responsibility principle or
+  another SOLID principle, how to name a variable, boolean, function or class, what
+  is wrong with catching Exception and passing or another swallowed error, whether
+  to split a long function or DRY up look-alike code, KISS, YAGNI, Law of Demeter,
+  coupling and cohesion, comments, and whether tests are any good. Also use it whenever
+  code is written, changed, split or reviewed, including one-line edits and small
+  fixes, even if the user never says clean code. It sets the bar: intent-revealing
+  names, functions split by responsibility, explicit side effects, errors as design,
+  boundaries, comments for rationale, tests that can fail. Designing pages, layouts
+  or visual style belongs to the UI skills.'
 argument-hint: '[file, diff or question]'
 ---
 

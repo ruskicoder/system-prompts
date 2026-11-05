@@ -25,7 +25,8 @@
         "Flags two primary buttons in the header; fix keeps one primary action",
         "Flags the sortable Tag header built as a clickable div (not a button, no aria-sort, no visible direction)",
         "Flags window.scrollTo(0, 0) after saving as losing the user's place",
-        "Does not report the IconButton tooltips or accessible names, or the pagination, as problems"
+        "Does not report the IconButton tooltips or accessible names, or the pagination, as problems",
+        "States each business rule it assumes (for example whether retiring or deleting can be undone, or who may delete) as an assumption, including inside any dialog or message text it proposes, and invents no rule the files do not state"
       ]
     },
     {
@@ -38,6 +39,34 @@
         "(2) Advises against usage-ordered tabs because users rely on fixed positions; recommends a fixed order (the most used tab first and selected by default is acceptable)",
         "(3) Advises against a confirmation on every Save; recommends undo for reversible changes and confirmation only for irreversible ones",
         "(4) Accepts denser rows only above the accessibility floor: icon button targets at least 24 by 24 CSS px (WCAG 2.5.8), recovering space by removing chrome first"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review the contract request wizard and the contract record view in this folder for UI and UX problems. Read ContractRequestPage.tsx, ui.css and notes.md. For each problem give the element, what is wrong, and the fix. Do not edit files.",
+      "expected_output": "A findings list covering the planted violations, with fixes, and no findings against the components notes.md marks as reviewed.",
+      "files": [
+        "evals/ui-ux-philosophy/files/contract/ContractRequestPage.tsx",
+        "evals/ui-ux-philosophy/files/contract/ui.css",
+        "evals/ui-ux-philosophy/files/contract/notes.md"
+      ],
+      "expectations": [
+        "Flags the two-column grid for unrelated form fields; fix is a single column",
+        "Flags that optional fields (Notes) are not marked and required fields carry no indication",
+        "Flags the Reset form button as a data-loss risk; fix removes it",
+        "Flags that Back resets the whole form (setForm(initial)); fix keeps the entered values",
+        "Flags that the organization is asked again for billing on step 3; fix prefills or offers the step 1 value",
+        "Flags the submit button disabled with no reason; fix explains what is missing (or keeps it enabled and validates)",
+        "Flags the submit label 'OK'; fix names the result (for example 'Submit request')",
+        "Flags the window.alert('Invalid input') error; fix shows errors next to each field, naming the field and the fix (an error summary is acceptable)",
+        "Flags the static 'Loading...' for a quote that takes 15 to 40 seconds; fix shows progress or a time estimate with text, and a way to keep working or cancel",
+        "Flags the large red Cancel request button being more prominent than the primary action; fix makes it quieter",
+        "Flags the preselected marketing and data-sharing checkbox; fix leaves it unchecked",
+        "Flags the 'Offer ends in' countdown that restarts as fake urgency; fix removes it",
+        "Flags that edit mode in the record view looks the same as view mode (double-click, no visible cue or way to leave); fix makes the mode visible with save and cancel",
+        "Flags that saving is possible only with Ctrl+S; fix adds a visible Save button and keeps the shortcut as an accelerator",
+        "Flags the tabs that wrap into two rows and mix in-page tabs with navigation links; fix keeps one row and separates the links",
+        "Does not report the DatePicker or the Stepper as problems"
       ]
     }
   ]

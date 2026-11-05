@@ -1,2 +1,2 @@
-description = "Use this skill whenever a structural design decision comes up, even if no pattern is named: choosing or questioning a design pattern, making code extensible, reviewing the abstractions a diff adds..."
+description = "Use this skill whenever a design pattern is explained or compared, or a structural design decision comes up, even if no pattern is named: the difference between patterns (Adapter, Facade and Proxy..."
 prompt = "This is the 'design-patterns' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/design-patterns/SKILL.md' (canonical source: 'skills/design-patterns.md') exactly, then apply them to: {{args}}"

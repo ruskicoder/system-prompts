@@ -7,14 +7,31 @@ argument-hint: "[screen, flow, component or question]"
 # Skill: UI and UX Philosophy
 
 Apply these rules to every UI. A project's own UI rules take precedence; when one strains a rule
-here, follow the project rule and raise the strain with its owner. In a review, a component or
-decision the project marks as reviewed or approved counts as correct: do not re-review it or list
-it as a finding, and mention it only for a concrete defect that breaks a named rule here. State any
-business rule you assume (which transitions are reversible, who may delete) as an assumption.
-Related skills:
+here, follow the project rule and raise the strain with its owner. Related skills:
 `ui-flow-and-layout` (structure and flow), `accessibility-review` (WCAG 2.2 AA audit),
 `design-heuristics-audit` (scored heuristic review), `procable` (visual craft), `ui-review-loop`
 (inspect, fix, re-verify).
+
+## Findings Evidence
+
+In a review, every finding has to stand on the material in front of you.
+
+1. Each finding names the element and the file and line (or the screen and state) it rests on, and
+   the rule in this skill it breaks.
+2. A component or decision the project marks as reviewed or approved counts as correct: do not
+   re-review it or list it as a finding; mention it only for a concrete defect that breaks a named
+   rule here.
+3. Raise a new requirement (a column, a feature, bulk actions, an export option) only when it serves
+   a task the material names. Otherwise put it under "Questions for the owner", never as a defect.
+4. Do not state a size, contrast ratio, count, height or duration you did not measure or read in
+   the material. Write what to check and how ("check the banner stack height at 360 px").
+5. Before calling a target too small under WCAG 2.5.8, name its nearest neighbouring target and say
+   whether a 24 px circle centred on it would reach that neighbour. When the layout does not show
+   this, write "check the 2.5.8 spacing exception" in place of a verdict.
+6. State any business rule you assume (which transitions are reversible, who may delete) as an
+   assumption, also inside dialog or message text you propose, and invent no rule the material does
+   not state. A rule the code enforces (an action hidden in some state) is material, not an
+   assumption.
 
 ## 1. Interaction cost
 
@@ -64,9 +81,10 @@ Related skills:
    click the static one.
 4. A chevron-down marks a control that opens a list, on every such control, and appears on
    nothing else. Items that open submenus carry a caret, so users can tell them from direct links.
-5. Icon-only buttons have an accessible name and a tooltip. Frequent, navigation or ambiguous
-   icons get a visible text label as well, because only a few icons (home, print, search) are
-   understood alone.
+5. Icon-only buttons have an accessible name and a tooltip; together they meet the minimum.
+   Frequent, navigation or ambiguous icons also get a visible text label, because only a few icons
+   (home, print, search) are understood alone. When asking for one, say "visible label", since the
+   accessible name may already exist.
 6. Tooltips appear on hover and on keyboard focus, stay while the pointer moves onto them, close
    on Escape, and hold only supplementary information. Anything needed to finish the task stays
    visible on the screen.
@@ -125,9 +143,10 @@ Related skills:
    undo protects them where a warning does not.
 2. Confirm only actions that destroy work, spend significant money or cannot be undone. Routine
    confirmations teach users to click through without reading.
-3. A confirmation restates the request and names the affected items and the consequence ("Retire
-   device TL-0042? It leaves the fleet and cannot be rented.") in place of a generic "Are you
-   sure?".
+3. A confirmation restates the request and names the affected items and the consequence, in place
+   of a generic "Are you sure?". Take the consequence from the product's rules ("Retire device
+   TL-0042? <what retiring does, as the product defines it>"); where the rules are unknown, write
+   the placeholder and mark it as an assumption to confirm.
 4. Confirmation buttons name the outcomes ("Retire device", "Keep device") in place of Yes, No or
    OK. The affirmative option is not preselected; initial focus goes to the safe choice.
 5. For rare, severe operations, require an unusual step such as typing the record name, and keep
@@ -186,7 +205,10 @@ Related skills:
 5. Show the frequently needed options first and move advanced ones one obvious step away, at
    most two disclosure levels deep.
 6. Density stays above the accessibility floor: target sizes, contrast and text size do not shrink
-   to fit more rows.
+   to fit more rows. WCAG 2.5.8 asks for pointer targets of at least 24 by 24 CSS px. A smaller
+   target passes when a 24 px circle centred on it intersects no other target and no other small
+   target's circle, or when an equivalent control meets the size, the target sits inline in text,
+   its size is set by the browser, or the size is essential (see Findings Evidence rule 5).
 
 ## 12. Visual hierarchy and emphasis
 
@@ -371,8 +393,9 @@ then the learned layout and the user's place, then convention, then density and 
 1. Where the user may change an item's state, the status badge is a menu button with a visible
    edge and a chevron; with no allowed change it stays a static badge without a chevron.
 2. It behaves as a menu button: Enter, Space or Down Arrow opens it and focuses the first item,
-   Up and Down Arrow move, Home and End jump, Escape closes it and returns focus. Its accessible name starts with the visible status
-   ("Active, change status of TL-0042"), and its target is at least 24 by 24 CSS px.
+   Up and Down Arrow move, Home and End jump, Escape closes it and returns focus. Its accessible
+   name starts with the visible status ("Active, change status of TL-0042"), and its target meets
+   WCAG 2.5.8 (section 11 rule 6).
 3. The menu lists only the transitions allowed now, destructive ones last after a separator, and
    the same component appears in the table, the details pane and the phone layout.
 4. Choosing a transition that cannot be undone (retire, cancel, delete) opens a confirmation that

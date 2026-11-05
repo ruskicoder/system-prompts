@@ -111,6 +111,12 @@ harness. Prefer the named agents above when one fits.
 - A change to a user interface is done only after the visual check of `ui-ux-philosophy`: every
   touched screen at the project's widths and the 400 percent zoom case, in every theme, looked at,
   with axe and a focus walk. Report what was checked per screen and size.
+- A release ships with no known gaps. Before tagging, run every eval and check the change touches or
+  measures (behaviour and trigger evals of each affected skill), fix every gap found and test again.
+  A gap that cannot be fixed now goes to the user before publishing; release notes carry no
+  known-gaps list. For LLM evals a gap is a failure that repeats across runs, an expectation met in
+  fewer than 2 of 3 runs, or a wrong trigger result; a single-run slip is reported as run noise, and
+  runs are not repeated until one comes out clean.
 - Use `claim-verifier` after any delegated fix whose success you cannot see in tool output.
 - `refactor` work lands only after `reviewer` and `claim-verifier` pass; merging is a hard stop
   that needs the user's approval.
