@@ -6,7 +6,7 @@ owner: Do Dang Khoa
 summary: "Optional model-tier and plan-aware layer: tiered agents, plan profiles, power modes, frontier gate, verify gate."
 kind: module
 sources: [harness/**, install/install.py, install/install-tui.*, install/install-harness.*]
-verified: {commit: 92d7282, date: 2026-11-07}
+verified: {commit: 9e695a7, date: 2026-11-07}
 ---
 
 # harness
@@ -18,7 +18,7 @@ fan out (power mode from live plan usage), and when work is accepted (verify gat
 an optional layer; a core-only install behaves as before.
 
 ## Responsibilities
-- `harness/HARNESS.md`: overlay loaded after `AGENTS.md`; supersedes core sections E, F and M (decision 0002). Section 4 also requires cloud and remote workers to write their report to a file on their branch, puts third-party skills the harness installs (procable) below communication-tone, checks available memory against a host limit before a local spawn, and runs `issue-checker` in the same tick as `reviewer`, posting and closing only under the user's standing grant. Section 5 makes the `ui-ux-philosophy` visual check part of done for every UI change and the `diagram-check-loop` workflow part of done for every figure change, and lets a release ship only with no known gaps (for LLM evals: no failure that repeats across runs, every expectation in at least 2 of 3 runs, every trigger result right).
+- `harness/HARNESS.md`: overlay loaded after `AGENTS.md`; supersedes core sections E, F and M (decision 0002). Section 4 also requires cloud and remote workers to write their report to a file on their branch, puts third-party skills the harness installs (procable) below communication-tone, checks available memory against a host limit before a local spawn, and runs `issue-checker` in the same tick as `reviewer`, posting and closing only under the user's standing grant. Section 5 makes a graded, submitted or sent document done only after its genre skill, `concision-and-logic` and a `human` audit with `draft_scan.py` (and `check_refs.py` when it has references), makes the `ui-ux-philosophy` visual check part of done for every UI change and the `diagram-check-loop` workflow part of done for every figure change, and lets a release ship only with no known gaps (for LLM evals: no failure that repeats across runs, every expectation in at least 2 of 3 runs, every trigger result right).
 - `harness/agents/*.md`: 17 canonical agents. Each declares a tier (`frontier`, `lead`, `worker`, `light`), an effort (`medium`, `high`, `xhigh`; never `low`) and read or write access.
 - `harness/profiles/*.toml`: `claude-max`, `claude-pro`, `codex-plus`, `api`, `free` map tiers to models and hold mode thresholds and fan-out caps (decision 0003).
 - `harness/scripts/`: standard-library Python 3.11+ runtime.
