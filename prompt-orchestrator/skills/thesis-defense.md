@@ -78,7 +78,8 @@ Generate questions from the documents, section by section. For each section ask:
 | Process | How did the team split work, review code, track tasks? How was AI used? |
 
 For each question record: the question, the source (document and section), the member who
-answers, the evidence they cite (table, test, commit, file), and a model answer. Every member
+answers, the evidence they cite (table, test, commit, file), and a model answer that has passed
+the anti-AI check in section 4. Every member
 needs questions on their own part; a committee often asks a member about code they did not write.
 Prepare for that with a one-minute overview of every part.
 
@@ -87,9 +88,9 @@ editing or code assistance, say so, and show that the member can explain the res
 
 ## 4. Answer shape
 
-1. The direct answer in the first sentence: "Yes", "No", "Three nodes", "LoRa, because...".
+1. The direct answer in the first sentence: "Yes", "No", "[n] nodes", "LoRa, because...".
 2. The evidence: the table, test or code that shows it.
-3. The limit, if there is one: "We tested up to 400 m; beyond that is untested."
+3. The limit, if there is one: "We tested up to [d] m. Range beyond that is untested."
 
 Stop there. No restating the question, no "that's a great question", no tour of related
 features. If the answer is unknown: "We did not measure that. We would test it by...". Under 45
@@ -97,16 +98,25 @@ seconds for most answers.
 
 | Weak answer | Strong answer |
 |---|---|
-| "That's a great question. Our system is designed with reliability in mind, leveraging a robust mesh architecture that ensures messages are delivered in a variety of conditions..." | "In our field test, 47 of 50 messages arrived at the base within 10 s over three hops. The three failures were when the middle node was behind a ridge. Table 6 in Report 4." |
+| "That's a great question. Our system is designed with reliability in mind, leveraging a robust mesh architecture that ensures messages are delivered in a variety of conditions..." | "In our field test, [k] of [n] messages arrived at the base within [t] s over [h] hops. The failed messages were sent when [cause from the test log]. Table [x] in Report [y]." |
 
-(The numbers in the strong answer are illustrative; use the team's measured values.)
+Fill every bracket from the team's own test log, report or code before rehearsal. A bracket the
+documents cannot fill stays open and becomes "We did not measure that", never an estimate.
+
+Every written answer goes through the anti-AI check before the team rehearses it: model answers
+in the question bank, the one-minute overviews, review notes from the mock defence, the AI-use
+answer and the slides. The check is `draft_scan.py` from `concision-and-logic` with
+`--genre professional`, the logic table in that skill, and the tells table in
+`academic-writing`. An answer with a tell or an unsupported claim is rewritten before anyone
+learns it.
 
 ## 5. Mock defence
 
 Ask one question at a time from the bank, starting with the highest-risk ones (contradictions,
 untested limits, ownership). After each answer, review it against the answer shape: did the first
 sentence answer, was evidence cited, was the length under 45 seconds of speech (about 110 words).
-Record weak answers for another round.
+Run the anti-AI check on every written review note and revised answer. Record weak answers for
+another round.
 
 ## Checklist before the defence
 
@@ -116,7 +126,8 @@ Record weak answers for another round.
 - [ ] Every number in the slides is in a report, and every number in a report has its test.
 - [ ] Fallback recordings exist and are dated.
 - [ ] The AI-use answer matches the team's written statement.
-- [ ] Slides pass `academic-writing` and `concision-and-logic` (no tells, no unsupported claims).
+- [ ] Every written answer, every overview and every slide passed the anti-AI check in section 4:
+      no tells, no unsupported claims, no bracket left filled with a guess.
 
 ## Related skills
 
