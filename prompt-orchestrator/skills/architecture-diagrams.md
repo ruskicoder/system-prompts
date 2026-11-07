@@ -1,6 +1,6 @@
 ---
 name: architecture-diagrams
-description: "Rules and workflow for drawing legible architecture, deployment, context and integration diagrams by hand placement in draw.io, for an agent that lays out a figure from code. Covers what goes in one figure, reading direction, tiers, nesting depth, fixed orthogonal routing, request and response pairs, label placement, print-size font arithmetic, colour and icons, and a geometry lint plus a crop-by-crop visual check before anyone sees the figure. Use when drawing, redrawing, fixing or reviewing a system architecture, deployment, context or integration diagram, any boxes-and-arrows figure bound for a report or slide, or a question about how such a figure should be laid out."
+description: "Rules and workflow for drawing legible architecture, deployment, context and integration diagrams by hand placement in draw.io, for an agent that lays out a figure from code. Covers what goes in one figure, reading direction, tiers, nesting depth, fixed orthogonal routing, request and response pairs, label placement, print-size font arithmetic, colour and icons, and a geometry lint plus a crop-by-crop visual check before anyone sees the figure. Use when drawing, redrawing, fixing or reviewing a system architecture, deployment, context or integration diagram, any boxes-and-arrows figure bound for a report or slide, draw.io arrows that reroute themselves, cross boxes or tangle, or a question about how such a figure should be laid out."
 argument-hint: "[figure, .drawio file or question]"
 ---
 
@@ -79,7 +79,10 @@ the `diagram-check-loop` workflow before showing it.
 ## 5. Labels and text
 
 26. Every arrow is labelled with what travels on it (a noun, plus the protocol between deliverables,
-    for example "telemetry, MQTT/TLS"), never a bare "uses" or "calls".
+    for example "telemetry, MQTT/TLS"), never a bare "uses" or "calls". Stores count as deliverables:
+    an edge to a database or cache names its protocol ("queries, PostgreSQL protocol", "jobs, Redis
+    protocol"), and a library such as an ORM or queue client is not a protocol. An edge from a person
+    names the task ("monitors devices"), never "uses" or "X use".
 27. Labels are their own text cells, placed beside their segment on the side away from its partner
     (request label above, response label below), with clear space all round. A label is never on a
     line, never touching another label, and never further from its line than from any other line.
@@ -112,6 +115,8 @@ the `diagram-check-loop` workflow before showing it.
 1. **Inventory**: list blocks, paths, protocols and third parties from the code (section 1). Settle
    the level of detail with the owner when unsure.
 2. **Sketch**: a text sketch of tiers, columns and flows; get the owner's yes before writing XML.
+   When you show a sketch or plan, also name the steps still ahead before anyone sees the figure:
+   lint to zero, headless render, full-size crops, print check (steps 4 to 7).
 3. **Generator**: write the figure as a small script that emits draw.io XML from coordinates on a
    10 px grid: groups as parent cells, edges as fixed polylines, labels as text cells. Keep the script
    beside the `.drawio` file; every change goes through it.

@@ -74,6 +74,10 @@ class Lint(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertIn("AUTO", codes(out))
 
+    def test_router_edge_also_reports_its_label(self):
+        xml = doc(box("a", 0, 0), box("b", 300, 0), edge("e1", "a", "b", v="uses", es="orthogonalEdgeStyle"))
+        self.assertEqual({"AUTO", "LABEL"}, set(codes(run(xml)[1])) & {"AUTO", "LABEL"})
+
     def test_diagonal(self):
         rc, out = run(doc(box("a", 0, 0), box("b", 300, 200), edge("e1", "a", "b")))
         self.assertIn("DIAG", codes(out))

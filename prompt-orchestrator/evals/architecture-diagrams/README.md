@@ -21,3 +21,22 @@ Grade each run against `expectations`; a partial counts as a fail. Release bar (
 section 5): no failure repeats across runs, every expectation passes in at least 2 of 3 runs.
 
 `trigger.json`: 18 queries for `skills/skill-creator/scripts/run_eval.py --isolated`.
+
+## Results on 2026-11-07 (Sonnet, user settings off, 3 runs per case)
+
+| Round | Case 1: plan (11) | Case 2: review (11) | Isolated triggers |
+|---|---|---|---|
+| First | 9, 9, 9 | 10, 10, 9 | 17 of 18 |
+| After fixes | 11, 11, 10 | 11, 11, 11 | 18 of 18 |
+| No skill, one run | 5 | 5 | not run |
+
+- First-round gaps, each missed in every run: store edges labelled without a protocol and actor edges
+  labelled "X use" (rule 26 now covers stores, libraries and people); plans that asked for the
+  sketch approval but never named the lint, render and crop steps (workflow step 2 now asks for
+  them); reviews that missed the label carried on `e1`, because the lint stopped at AUTO before its
+  label check (fixed, with a self-test); and one positive query about arrows that reroute themselves,
+  which triggered 1 of 3 (the description now names it).
+- The case 2 expectation on 9 px text now also accepts removing the box as module detail: two
+  runs flagged the size and removed the box under rule 1, which expectation 8 also asks for.
+- The one remaining miss is a single-run slip: one case 1 run listed blocks without their protocols
+  in the inventory table, though its edge table gave them.

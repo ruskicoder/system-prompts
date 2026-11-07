@@ -298,13 +298,13 @@ def lint(path, a):
             labels[i] = lb
     paths = {}
     for e in edges:
+        if e["value"].strip():
+            add("LABEL", e["id"], "label carried on the edge; place it as its own text cell so it can be checked")
         p = path_of(e, boxes)
         if p is None:
             add("AUTO", e["id"], "edge is not a fixed polyline (edgeStyle=none, exitX/exitY, entryX/entryY, waypoints)")
             continue
         paths[e["id"]] = p
-        if e["value"].strip():
-            add("LABEL", e["id"], "label carried on the edge; place it as its own text cell so it can be checked")
     emap = {e["id"]: e for e in edges}
 
     for eid, p in paths.items():

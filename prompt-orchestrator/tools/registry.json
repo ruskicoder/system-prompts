@@ -31,7 +31,7 @@
     "id": "architecture-diagrams",
     "kind": "skill",
     "source": "skills/architecture-diagrams.md",
-    "description": "Rules and workflow for drawing legible architecture, deployment, context and integration diagrams by hand placement in draw.io, for an agent that lays out a figure from code. Covers what goes in one figure, reading direction, tiers, nesting depth, fixed orthogonal routing, request and response pairs, label placement, print-size font arithmetic, colour and icons, and a geometry lint plus a crop-by-crop visual check before anyone sees the figure. Use when drawing, redrawing, fixing or reviewing a system architecture, deployment, context or integration diagram, any boxes-and-arrows figure bound for a report or slide, or a question about how such a figure should be laid out.",
+    "description": "Rules and workflow for drawing legible architecture, deployment, context and integration diagrams by hand placement in draw.io, for an agent that lays out a figure from code. Covers what goes in one figure, reading direction, tiers, nesting depth, fixed orthogonal routing, request and response pairs, label placement, print-size font arithmetic, colour and icons, and a geometry lint plus a crop-by-crop visual check before anyone sees the figure. Use when drawing, redrawing, fixing or reviewing a system architecture, deployment, context or integration diagram, any boxes-and-arrows figure bound for a report or slide, draw.io arrows that reroute themselves, cross boxes or tangle, or a question about how such a figure should be laid out.",
     "argument_hint": "[figure, .drawio file or question]"
   },
   {

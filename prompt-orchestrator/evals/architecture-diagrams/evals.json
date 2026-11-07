@@ -34,7 +34,7 @@
         "Flags e4 passing through the VPS, stack and Backend frames and the Backend title; fix reroutes it outside or moves OpenStreetMap",
         "Flags the SePay payment API placed on the far left; fix moves third parties to the side where flows end, with the other third party",
         "Flags the three nesting levels (VPS > Docker Compose stack > Backend); fix flattens one level",
-        "Flags the 9 px text that prints below 7 pt; fix raises it to print at about 8 pt",
+        "Flags the 9 px text that prints below 7 pt; fix raises it to print at about 8 pt, or removes the box as module-level detail (rule 1)",
         "Flags the text that does not fit its box (SePay, OpenStreetMap)",
         "Does not call the figure ready; says it must lint to zero, then be rendered and read in crops before it is shown"
       ]

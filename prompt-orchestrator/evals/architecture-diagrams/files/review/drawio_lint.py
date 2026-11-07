@@ -20,29 +20,52 @@ must be its own text cell, so the lint sees what the renderer draws. Checks, by 
   SIZE     text smaller than --min-pt once the canvas is scaled to --print-width-cm
   EXIT     two edges share one attachment point on a box
 
-Exit code 1 when any finding is reported, 0 when clean. Text is measured with Arial from the
-msttcorefonts package (Liberation Sans as fallback), which is what draw.io's export uses here.
+Exit code 1 when any finding is reported, 0 when clean, 2 when Pillow or a font is missing. Text is
+measured with Arial, or the metric-compatible Liberation Sans, looked up in DRAWIO_LINT_FONT_DIR and
+then in the usual Linux, macOS and Windows font folders.
 """
 import argparse
 import html
 import math
 import re
 import sys
+import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from PIL import ImageFont
+try:
+    from PIL import ImageFont
+except ImportError:  # reported when a font is first needed
+    ImageFont = None
 
-FONTS = {False: ["/usr/share/fonts/truetype/msttcorefonts/arial.ttf", "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"],
-         True: ["/usr/share/fonts/truetype/msttcorefonts/arialbd.ttf", "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"]}
+FONT_FILES = {False: ["arial.ttf", "Arial.ttf", "LiberationSans-Regular.ttf"],
+              True: ["arialbd.ttf", "Arial Bold.ttf", "LiberationSans-Bold.ttf"]}
+FONT_DIRS = ["/usr/share/fonts/truetype/msttcorefonts", "/usr/share/fonts/truetype/liberation",
+             "/usr/share/fonts/liberation-sans", "/usr/share/fonts/TTF",
+             "/Library/Fonts", "/System/Library/Fonts/Supplemental",
+             str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts")]
 _font_cache = {}
 
 
+class SetupError(Exception):
+    """Pillow or a measuring font is missing."""
+
+
+def font_path(bold):
+    dirs = ([os.environ["DRAWIO_LINT_FONT_DIR"]] if os.environ.get("DRAWIO_LINT_FONT_DIR") else []) + FONT_DIRS
+    for d in dirs:
+        for name in FONT_FILES[bold]:
+            if (Path(d) / name).is_file():
+                return str(Path(d) / name)
+    raise SetupError("no Arial or Liberation Sans font found; install one or set DRAWIO_LINT_FONT_DIR")
+
+
 def font(size, bold):
+    if ImageFont is None:
+        raise SetupError("Pillow is not installed (python3 -m pip install pillow)")
     key = (round(size), bold)
     if key not in _font_cache:
-        path = next(p for p in FONTS[bold] if Path(p).exists())
-        _font_cache[key] = ImageFont.truetype(path, key[0])
+        _font_cache[key] = ImageFont.truetype(font_path(bold), key[0])
     return _font_cache[key]
 
 
@@ -275,13 +298,13 @@ def lint(path, a):
             labels[i] = lb
     paths = {}
     for e in edges:
+        if e["value"].strip():
+            add("LABEL", e["id"], "label carried on the edge; place it as its own text cell so it can be checked")
         p = path_of(e, boxes)
         if p is None:
             add("AUTO", e["id"], "edge is not a fixed polyline (edgeStyle=none, exitX/exitY, entryX/entryY, waypoints)")
             continue
         paths[e["id"]] = p
-        if e["value"].strip():
-            add("LABEL", e["id"], "label carried on the edge; place it as its own text cell so it can be checked")
     emap = {e["id"]: e for e in edges}
 
     for eid, p in paths.items():
@@ -380,7 +403,11 @@ def main():
     a = ap.parse_args()
     bad = 0
     for f in a.files:
-        out, k = lint(f, a)
+        try:
+            out, k = lint(f, a)
+        except SetupError as err:
+            print(f"drawio_lint: {err}", file=sys.stderr)
+            sys.exit(2)
         print(f"{f}: {len(out)} finding(s); 1 px prints at {k:.2f} pt")
         for line in out:
             print("  " + line)
