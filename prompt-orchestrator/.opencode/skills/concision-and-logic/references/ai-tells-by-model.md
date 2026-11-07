@@ -4,6 +4,10 @@ Research notes for `concision-and-logic`, `academic-writing` and `professional-w
 were retrieved on 2026-11-07; each entry carries its own publication date. Model styles change
 with every release, so treat a date older than six months as a lead to re-check.
 
+Parts of this file are adapted from Wikipedia and are licensed under CC BY-SA 4.0. The
+attribution, the list of adapted parts and the changes made are in the last section,
+"Licence of adapted material".
+
 ## How to use this file
 
 - A tell is a rate, not a proof. Graphite counts a phrase as a tell when a model uses it at least
@@ -101,3 +105,27 @@ Style guides and community references:
 - [C5] My Writing Twin, "Gemini 3 Pro writing style analysis." https://www.mywritingtwin.com/profile/gemini-3-pro
 - [C6] Wondering About AI, "I prompted ChatGPT, Claude, and Gemini to generate over 300,000 words." https://wonderingaboutai.substack.com/p/i-prompted-chatgpt-claude-and-gemini
 - G. D. Gopen and J. A. Swan, "The science of scientific writing," *American Scientist*, vol. 78, no. 6, pp. 550-558, 1990. https://www.americanscientist.org/blog/the-long-view/the-science-of-scientific-writing (reader-expectation principles used in the logic check)
+
+## Licence of adapted material
+
+Source: "Wikipedia:Signs of AI writing" by Wikipedia contributors, WikiProject AI Cleanup,
+https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing, revision 1384165696, retrieved
+2026-11-07. The authors are listed in the page history:
+https://en.wikipedia.org/w/index.php?title=Wikipedia:Signs_of_AI_writing&action=history.
+The source is licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+licence (CC BY-SA 4.0): https://creativecommons.org/licenses/by-sa/4.0/.
+
+Adapted parts: every sentence and table row that cites [W1]. These are the advice to fix the
+sentence and not the word; the shared-tells rows on copula avoidance, significance padding,
+rule of three, negative parallelism, vague attribution, unasked conclusions and uniform sentence
+length; the GPT-family rows on era vocabulary, dated corrective framing and the em dash; the
+Claude em dash row; the Gemini copula row; and the [W1] entry under Sources.
+
+Changes made: a subset of the page's categories and word lists was selected, reworded,
+condensed and regrouped by model family and era. The examples and fixes are new, written from
+the TrekLink capstone documents. Figures from the other sources listed above were added beside
+the adapted text. The source page was not copied verbatim.
+
+The adapted parts are released under CC BY-SA 4.0. Creative Commons lists GPLv3, the licence
+of this repository, as a compatible licence for adaptations of CC BY-SA 4.0 material:
+https://creativecommons.org/compatiblelicenses/. Keep this section with every copy of the file.
