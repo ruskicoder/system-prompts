@@ -1,7 +1,7 @@
 ---
 description: 'Write and revise scientific, thesis and capstone documents in plain,
-  precise English: university capstone reports (FPT SEP490 register or registration
-  form, Reports 1 to 6, SRS, SDD, final thesis)...'
+  precise English: capstone reports (FPT SEP490 register or registration form, Reports
+  1 to 6, SRS, SDD, final thesis), papers...'
 argument-hint: '[document or section] [--style ieee|apa]'
 ---
 

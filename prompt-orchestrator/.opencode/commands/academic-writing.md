@@ -1,7 +1,7 @@
 ---
 description: 'Write and revise scientific, thesis and capstone documents in plain,
-  precise English: university capstone reports (FPT SEP490 register or registration
-  form, Reports 1 to 6, SRS, SDD, final thesis)...'
+  precise English: capstone reports (FPT SEP490 register or registration form, Reports
+  1 to 6, SRS, SDD, final thesis), papers...'
 ---
 
 This is the `academic-writing` skill from the prompt-orchestrator framework (canonical source: `skills/academic-writing.md`, also available at `.agents/skills/academic-writing/SKILL.md`).

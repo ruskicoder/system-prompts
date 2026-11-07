@@ -1,2 +1,2 @@
-description = "Write and revise scientific, thesis and capstone documents in plain, precise English: university capstone reports (FPT SEP490 register or registration form, Reports 1 to 6, SRS, SDD, final thesis)..."
+description = "Write and revise scientific, thesis and capstone documents in plain, precise English: capstone reports (FPT SEP490 register or registration form, Reports 1 to 6, SRS, SDD, final thesis), papers..."
 prompt = "This is the 'academic-writing' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/academic-writing/SKILL.md' (canonical source: 'skills/academic-writing.md') exactly, then apply them to: {{args}}"
