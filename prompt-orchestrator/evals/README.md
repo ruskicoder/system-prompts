@@ -111,4 +111,16 @@ No gap remains. The first runs found these, each fixed and its case run again:
 - thesis-defense: fallbacks without a date, evidence left out of the spoken answer, the anti-AI
   scan skipped, and an AI-use answer that opened with a count (sections 2 and 4).
 
-Cases not run again were measured before the later skill edits; those edits only add rules.
+Every `professional-writing` and `thesis-defense` case was run again on 2026-11-07 after the last
+skill edits (49d9f55, 0f60004), 3 runs each, Sonnet, in a throwaway project holding the same six
+skills, with skills enabled (the run records each `Skill` call; `--disable-slash-commands` turns
+skills off and must not be passed). Graded by hand per expectation, em dashes by script:
+
+| Skill | Case 1 | Case 2 | Case 3 | Case 4 | Total |
+|---|---|---|---|---|---|
+| professional-writing | 8, 8, 8 | 5, 5, 5 | 6, 6, 6 | 6, 6, 6 | 75 of 75 |
+| thesis-defense | 6, 6, 6 | 6, 6, 5 | 6, 6, 6 | 5, 4, 5 | 67 of 69 |
+
+The two misses are single-run slips: one demo map gave undated recordings as fallbacks for F2, F4
+and F5, and one AI-use answer offered to walk through "the backend code I wrote", which the
+statement does not support.
