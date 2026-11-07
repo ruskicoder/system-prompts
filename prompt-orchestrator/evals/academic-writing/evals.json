@@ -13,7 +13,7 @@
         "Deletes or relocates the 'Note that ... sample values' and 'This means' meta-notes, for example as a Default column",
         "Rewrites the 'This matters because ... highlighting ... dependable' sentence without the importance flag, the participle tail and the era word, and does not invent a statistic to support it",
         "Reports that reference [1] could not be verified (DOI does not resolve or the checker fails) and removes it together with the 40 % claim, or marks the claim unverified, without inventing a replacement reference",
-        "Keeps reference [2] and the values 15 min and 45 min unchanged",
+        "Keeps reference [2], which the excerpt cites and which is real, and the values 15 min and 45 min unchanged",
         "Contains no em dash in the revised prose"
       ]
     },

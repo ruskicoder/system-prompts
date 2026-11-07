@@ -13,6 +13,8 @@ Note that the thresholds below are sample values. This means the organiser can c
 
 This matters because hikers in remote terrain frequently lose signal, highlighting the need for a dependable offline solution. Prior work has shown that mesh networks reduce search time by 40 % [1].
 
+The team does not run AI-text detectors on hiker reports, because such detectors misclassify writing by non-native English speakers [2].
+
 ## References
 
 [1] T. Nguyen and L. Pham, "Mesh networking for trekking safety in Vietnam," IEEE Access, vol. 12, pp. 1021-1033, 2024, doi: 10.1109/ACCESS.2024.9999999.
