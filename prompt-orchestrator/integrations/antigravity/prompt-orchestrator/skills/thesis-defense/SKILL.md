@@ -97,6 +97,10 @@ Prepare for that with a one-minute overview of every part.
 
 On AI use: answer what the team's AI-use statement says, plainly. If tools were used for language
 editing or code assistance, say so, and show that the member can explain the result without them.
+The first sentence names each tool with its use, in the statement's terms: "We used [tool] for
+[use] and [tool] for [use]." Never open with a count such as "We used two tools". Add no use and
+no denial the statement does not make: "we used AI for nothing else" is a claim too, and needs
+the statement behind it.
 
 ## 4. Answer shape
 
