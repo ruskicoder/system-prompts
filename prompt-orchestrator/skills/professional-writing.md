@@ -10,8 +10,8 @@ Work messages are read on a phone, between other tasks, by someone deciding what
 They succeed when the reader knows within two lines what happened and what is asked of them.
 The tone is polite and plain; politeness comes from naming the reader's need, not from filler.
 
-Pipeline before sending: this skill, then `concision-and-logic` (scanner with
-`--genre professional`), then a `human` audit. Commit, PR, tag and issue text also follows
+Pipeline before sending: this skill, then `concision-and-logic` with its scanner run as
+`--genre professional`, then a `human` audit. Commit, PR, tag and issue text also follows
 `no-ai-trailer`. Sending is the writer's action; draft, do not send without their word.
 
 ## Rules
@@ -25,10 +25,10 @@ Pipeline before sending: this skill, then `concision-and-logic` (scanner with
    find below", "As per my last email", "I hope this finds you well", "Just a quick note",
    "Feel free to reach out", "Let me know if you have any questions".
 5. **Concrete over general.** Files by name, sections by number, versions, dates, counts.
-   "Section 3.2 now lists 14 use cases (was 11)" instead of "the document has been improved".
+   "Section 3.2 now lists 14 use cases, up from 11" instead of "the document has been improved".
 6. **No AI tells.** No "delve", "leverage", "robust", "seamless", "dependable", no "this matters",
-   no "not only X but Y", no verdict pairs ("X is done, and Y is not": list both), no
-   parenthetical asides, no em dash.
+   no "not only X but Y", no parenthetical asides, no em dash. No verdict pairs such as "X is
+   done, and Y is not"; list each item on its own line instead.
 7. **Bad news plainly.** What went wrong, the effect, what is being done and by when. No
    apology paragraph; one "sorry" if it is owed.
 8. **Address and close as the relationship expects.** "Dear Mr Hung," or "Dear Ms Lan," for a
@@ -42,20 +42,20 @@ Pipeline before sending: this skill, then `concision-and-logic` (scanner with
 |---|---|---|
 | Platform note or submission comment (FAP, LMS) | What was submitted, what changed since the last version, anything the grader must know | 1 to 3 sentences |
 | Email to a supervisor | Subject with the topic and the ask; first line the ask or news; facts; the deadline | Under 150 words |
-| Status update | Done, in progress, blocked (with what unblocks it), next | One line per item |
+| Status update | Done, in progress, blocked and what unblocks it, next | One line per item |
 | PR description | What changed; why; how it was tested; risks or follow-ups | One short paragraph or list each |
-| Issue report | Expected, actual, steps to reproduce, environment, evidence (log, screenshot) | As long as the steps need |
-| Issue or review reply | The answer or the decision first, then the evidence (commit, file, line) | Usually 1 to 4 sentences |
+| Issue report | Expected, actual, steps to reproduce, environment, evidence such as a log or screenshot | As long as the steps need |
+| Issue or review reply | The answer or the decision first, then the evidence: commit, file and line | Usually 1 to 4 sentences |
 | Report to a supervisor | Results against the plan, problems with their impact, decisions needed | Set by the template |
 
 ## Before and after
 
 | Before | After |
 |---|---|
-| Dear Sir, I hope this email finds you well. I am writing to inform you that our team has successfully completed and submitted Report 2, which now comprehensively covers all aspects of the system requirements. Please feel free to reach out if you have any questions. | Dear Mr Hung, Report 2 is on FAP. Since Report 1 we added 3 use cases (UC-12 to UC-14) and the non-functional requirements in Section 5. Could you confirm by Thursday that the offline sync scope in 4.3 is acceptable? Best regards, Khoa |
+| Dear Sir, I hope this email finds you well. I am writing to inform you that our team has successfully completed and submitted Report 2, which now comprehensively covers all aspects of the system requirements. Please feel free to reach out if you have any questions. | Dear Mr Hung, Report 2 is on FAP. It adds use cases UC-12 to UC-14. Section 5 now lists the non-functional requirements. Could you confirm by Thursday that the offline sync scope in Section 4.3 is acceptable? Best regards, Khoa |
 | FAP note: This submission includes the updated register, which reflects the latest discussions with our supervisor and ensures alignment with the project scope. Note that some figures are sample values. | FAP note: Updated register. Scope in Section 3 now matches the supervisor meeting of 6 November. Default values are marked in Table 4. |
-| PR: This PR introduces a robust and seamless enhancement to the check-in flow, ensuring a more dependable user experience. | PR: Check-ins made without signal are queued on the phone and sent when the mesh reaches a gateway. Tested on two phones in airplane mode (steps in the PR). Follow-up: retry limit is hard-coded at 5, tracked in #142. |
-| Status: Great progress this week! The backend is mostly done, and the firmware is not. | Done: backend check-in API. In progress: firmware relay timing, blocked on the second node (arrives 10 Nov). Next: integration test on 12 Nov. |
+| PR: This PR introduces a robust and seamless enhancement to the check-in flow, ensuring a more dependable user experience. | PR: The phone now queues check-ins made without signal. It sends them when the mesh reaches a gateway. Tested on two phones in airplane mode. The test steps are below. Follow-up: #142 tracks the hard-coded retry limit of 5. |
+| Status: Great progress this week! The backend is mostly done, and the firmware is not. | Done: backend check-in API. In progress: firmware relay timing. Blocked: relay timing needs the second node. The node arrives on 10 Nov. Next: integration test on 12 Nov. |
 
 ## Review checklist
 
@@ -69,5 +69,5 @@ Pipeline before sending: this skill, then `concision-and-logic` (scanner with
 
 ## Output
 
-The ready-to-send text, then one line listing any fact the writer must confirm before sending
-(a date, a number, a name you could not verify).
+The ready-to-send text, then one line listing any fact the writer must confirm before sending:
+a date, a number or a name you could not verify.
