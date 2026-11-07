@@ -64,8 +64,10 @@ repeat a fact. Shortening every sentence evenly produces staccato, not concision
 
 ## Logic check
 
-Run this on every paragraph that argues, compares, scopes or concludes. Write each claim on its
-own line, then fill the table:
+Run this on every paragraph that argues, compares, scopes or concludes. It is a manual check:
+the scanner below does not test logic. It cannot find a non sequitur, a scope shift, a restated
+premise, a mixed-level list or any other fault in the table below; only reading the claims in
+order finds them. Write each claim on its own line, then fill the table:
 
 | Claim | Support (where) | Follows from the previous claim? | Fault |
 |---|---|---|---|
@@ -102,12 +104,17 @@ python3 <skill-dir>/scripts/draft_scan.py draft.md --genre academic
 python3 <skill-dir>/scripts/draft_scan.py - --genre professional < note.txt
 ```
 
-It prints JSON (`metrics`, `counts`, `notes`, `findings` with line, category, match, sentence and
-advice) and exits 1 when it flags anything. Categories: `universal`, `verdict`, `meta`,
-`importance`, `summary`, `hedge`, `copula`, `participle-tail`, `ai-vocab`, `dash`,
-`parenthesis`, `long-sentence`. Code fences, inline code and block quotes are skipped. Every
-finding is a candidate: a quoted requirement, a definition that really is universal, or a
-citation in parentheses stays. Self-tests:
+It prints JSON (`metrics`, `counts`, `notes`, `findings` with line, category, severity, match,
+sentence and advice) and exits 1 when it flags anything. Categories: `universal`, `verdict`,
+`meta`, `importance`, `summary`, `hedge`, `copula`, `participle-tail`, `ai-vocab`, `dash`,
+`parenthesis`, `long-sentence`. Severity is `normal`, or `low` for a parenthesis under four words
+that is not a citation, number or abbreviation. Code fences, inline code and block quotes are
+skipped. Every finding is a candidate: a quoted requirement, a definition that really is
+universal, or a citation in parentheses stays.
+
+The scanner tests wording, not reasoning. A draft it passes can still hold a non sequitur, a
+scope shift, a restated premise or a mixed-level list. Run the logic check above on every draft
+that argues or concludes, whatever the scanner reports. Self-tests:
 
 ```bash
 python3 -B -m unittest discover -s <skill-dir>/scripts -v
@@ -123,7 +130,7 @@ team's own figures.
 | Every figure is a configurable parameter. | The check-in interval and the overdue threshold are set per event by the organiser. Table 4 gives the defaults. |
 | Any rented node can serve as a temporary relay checkpoint. | A rented node relays messages while it is powered and within [range] of another node. |
 | Targeted firmware enhancements made during the capstone are in scope and credited, and re-architecting the mesh stack is not. | In scope: the firmware changes listed in Section 4.2. Out of scope: replacing the mesh protocol stack. |
-| Note that the thresholds below are sample values. This means that the organiser can change them. | (Delete both sentences. Add a "Default" column header to the table.) |
+| Note that the thresholds below are sample values. This means that the organiser can change them. | The organiser sets these thresholds per event. Table 4 lists the defaults. |
 | This matters because hikers frequently lose signal in mountainous terrain, highlighting the need for a dependable offline solution. | On the [route] survey, [n] of [m] hikers lost phone signal for more than [t] minutes. The app therefore queues check-ins offline. |
 | Here is a breakdown of the key benefits: offline support, Firebase, safety. | The app works without phone signal. Check-ins sync to Firebase when the mesh reaches a gateway. |
 

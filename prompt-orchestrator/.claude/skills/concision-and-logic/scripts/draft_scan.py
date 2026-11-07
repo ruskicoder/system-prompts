@@ -2,7 +2,11 @@
 """Flag shape-level AI tells and verbosity in an English draft.
 
 Standard library only. Prints JSON. Exits 1 when it flags anything, 0 when clean.
-Every finding is a candidate: confirm it in context before editing.
+Every finding is a candidate: confirm it in context before editing. Each finding has a severity:
+"normal", or "low" for a short parenthesis that is not a citation, unit or abbreviation.
+
+The scanner tests wording only. It does not test logic: non sequiturs, scope shifts, restated
+premises, mixed-level lists and the other faults in the skill's logic table are a manual check.
 
 Usage:
     python3 draft_scan.py FILE [--genre academic|professional|any] [--max-findings N]
@@ -121,10 +125,10 @@ def scan(text: str, genre: str = "any") -> dict:
             else:
                 m = pattern.search(sent)
             if m:
-                findings.append({"line": lineno, "category": category, "match": m.group(0).strip(),
-                                 "sentence": sent[:240], "advice": advice})
+                findings.append({"line": lineno, "category": category, "severity": "normal",
+                                 "match": m.group(0).strip(), "sentence": sent[:240], "advice": advice})
         if DASH.search(sent):
-            findings.append({"line": lineno, "category": "dash", "match": "em or en dash",
+            findings.append({"line": lineno, "category": "dash", "severity": "normal", "match": "em or en dash",
                              "sentence": sent[:240],
                              "advice": "Use a comma, a colon or two sentences (prose-and-wording)."})
         for inner in PAREN.findall(sent):
@@ -132,15 +136,22 @@ def scan(text: str, genre: str = "any") -> dict:
                 continue
             paren_asides += 1
             if len(inner.split()) >= 4:
-                findings.append({"line": lineno, "category": "parenthesis", "match": f"({inner[:60]})",
-                                 "sentence": sent[:240],
+                findings.append({"line": lineno, "category": "parenthesis", "severity": "normal",
+                                 "match": f"({inner[:60]})", "sentence": sent[:240],
                                  "advice": "Parenthetical aside. Make it its own sentence, a table column, or cut it."})
+            else:
+                findings.append({"line": lineno, "category": "parenthesis", "severity": "low",
+                                 "match": f"({inner[:60]})", "sentence": sent[:240],
+                                 "advice": "Short parenthesis. Keep it for a reference, unit, abbreviation or code; "
+                                           "otherwise fold it into the sentence or cut it."})
         if genre == "professional" and len(words) > 30:
-            findings.append({"line": lineno, "category": "long-sentence", "match": f"{len(words)} words",
-                             "sentence": sent[:240], "advice": "Split: one fact or one request per sentence."})
+            findings.append({"line": lineno, "category": "long-sentence", "severity": "normal",
+                             "match": f"{len(words)} words", "sentence": sent[:240],
+                             "advice": "Split: one fact or one request per sentence."})
         elif len(words) > 40:
-            findings.append({"line": lineno, "category": "long-sentence", "match": f"{len(words)} words",
-                             "sentence": sent[:240], "advice": "Split at the main verb boundary."})
+            findings.append({"line": lineno, "category": "long-sentence", "severity": "normal",
+                             "match": f"{len(words)} words", "sentence": sent[:240],
+                             "advice": "Split at the main verb boundary."})
 
     metrics = {
         "words": words_total,
@@ -158,6 +169,7 @@ def scan(text: str, genre: str = "any") -> dict:
     counts: dict[str, int] = {}
     for f in findings:
         counts[f["category"]] = counts.get(f["category"], 0) + 1
+    counts["low_severity"] = sum(1 for f in findings if f["severity"] == "low")
     return {"metrics": metrics, "counts": counts, "notes": notes, "findings": findings}
 
 

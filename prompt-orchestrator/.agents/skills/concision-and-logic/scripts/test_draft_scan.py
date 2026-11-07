@@ -34,6 +34,21 @@ class DraftScanTests(unittest.TestCase):
         self.assertNotIn("parenthesis", categories("Detectors are unreliable (Weber-Wulff et al., 2023)."))
         self.assertNotIn("parenthesis", categories("The Software Requirements Specification (SRS) lists them."))
 
+    def test_short_parenthesis_reported_as_low(self):
+        found = [f for f in scan("A loss is reported (by the hiker) from any of six states.")["findings"]
+                 if f["category"] == "parenthesis"]
+        self.assertEqual([(f["match"], f["severity"]) for f in found], [("(by the hiker)", "low")])
+        long = [f for f in scan("A loss can be reported (by the hiker or the organiser) today.")["findings"]
+                if f["category"] == "parenthesis"]
+        self.assertEqual([f["severity"] for f in long], ["normal"])
+        self.assertEqual(scan("Latency is 2 s (Table 4).")["counts"].get("low_severity"), 1)
+        self.assertEqual(scan("Latency is 2 s [3].")["counts"].get("low_severity"), 0)
+
+    def test_every_finding_has_severity(self):
+        text = "Every node is a relay. This matters because signal drops \u2014 often (sample values here)."
+        for f in scan(text)["findings"]:
+            self.assertIn(f["severity"], ("normal", "low"))
+
     def test_clean_sentence(self):
         self.assertEqual(categories("The gateway uploads each packet within 2 s of receipt [3]."), set())
 
