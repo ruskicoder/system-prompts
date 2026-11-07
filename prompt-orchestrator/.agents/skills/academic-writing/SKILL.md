@@ -9,7 +9,8 @@ description: 'Write and revise scientific, thesis and capstone documents in plai
   of the AI tells graders notice (universal claims, verdict sentences, parenthetical
   asides, meta-notes, importance flags, era vocabulary of GPT, Claude and Gemini).
   Use when drafting, rewriting, reviewing or grading any academic or capstone document,
-  adding references, or when a report reads as AI-generated.'
+  when adding, checking, formatting or converting references, citations or a reference
+  list to IEEE or APA style, or when a report reads as AI-generated.'
 argument-hint: '[document or section] [--style ieee|apa]'
 ---
 

@@ -9,7 +9,9 @@ description: 'Cut verbosity and check the reasoning of any English draft, whiche
   and hedge stacks, plus a dated research reference of tells per model family. Use
   when a draft is too long, rambles, yaps, reads as AI-written, ''sounds like Gemini
   or ChatGPT'', or when asked to tighten, shorten, check the logic or argument, or
-  review a report, email or form before it is sent.'
+  review a report, email or form before it is sent. Use it on the request alone, before
+  the draft is pasted or opened: ''this draft'', ''this answer'' or ''this paragraph''
+  with no text attached yet still needs it.'
 argument-hint: '[file path or text] [--genre academic|professional]'
 ---
 

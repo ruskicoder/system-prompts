@@ -5,9 +5,11 @@ description: 'Write short, concrete work messages that read as written by the se
   and notes on a school or work platform (FPT FAP, LMS, Jira, Slack), PR descriptions,
   issue reports and replies, status updates and progress reports. The point or the
   request first, one fact per sentence, dates and owners named, no meta-commentary,
-  no openers or sign-off filler, no AI tells. Use when drafting, shortening or reviewing
-  any work or professional message, platform note, PR or issue text, or a report to
-  a supervisor, or when a message sounds like ChatGPT.'
+  no openers or sign-off filler, no AI tells. Use when drafting, shortening, replying
+  to or reviewing any work or professional message, client message, platform note,
+  Slack or chat update, PR or issue text, or a report to a supervisor, or when a message
+  sounds like ChatGPT. Use it on the request alone: ''this message'', ''this issue''
+  or ''this update'' with no text attached yet still needs it.'
 argument-hint: '[message type] [draft or facts to send]'
 ---
 
