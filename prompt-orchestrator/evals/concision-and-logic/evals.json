@@ -39,7 +39,7 @@
     {
       "id": 3,
       "prompt": "Run the concision-and-logic scanner on evals/concision-and-logic/files/srs-paragraph.md and fix what it finds.",
-      "expected_output": "Runs draft_scan.py, reports the long aside, the low-severity '(configurable)' and the universal 'Every alert', fixes each without new facts, and leaves the abbreviation and the citation in parentheses as they are.",
+      "expected_output": "Runs draft_scan.py, reports the long aside, the low-severity '(configurable)' and the universal 'Every alert', fixes each without new facts, and keeps the abbreviation and the citation in parentheses.",
       "files": [
         "evals/concision-and-logic/files/srs-paragraph.md"
       ],
@@ -48,7 +48,7 @@
         "Rewrites the aside '(which the organiser can silence from the dashboard while a group is resting)' as its own sentence",
         "Reports '(configurable)' as a short or low-severity parenthesis and folds it into the sentence, without adding a range or default the paragraph does not give",
         "Flags 'Every alert is delivered to the organiser within 5 s' as an unsupported universal and narrows it or marks it unverified, without inventing a test result",
-        "Leaves '(SRS)' and '(Weber-Wulff et al., 2023)' unchanged",
+        "Keeps the abbreviation '(MQTT)' and the citation '(Augustin et al., 2016)' in place",
         "Keeps 15 min and 5 s unchanged"
       ]
     },
