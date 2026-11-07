@@ -1,0 +1,2 @@
+description = "Rules and workflow for drawing legible architecture, deployment, context and integration diagrams by hand placement in draw.io, for an agent that lays out a figure from code. Covers what goes in one..."
+prompt = "This is the 'architecture-diagrams' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/architecture-diagrams/SKILL.md' (canonical source: 'skills/architecture-diagrams.md') exactly, then apply them to: {{args}}"

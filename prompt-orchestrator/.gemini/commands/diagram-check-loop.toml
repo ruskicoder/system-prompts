@@ -1,0 +1,2 @@
+description = "Check a boxes-and-arrows figure before anyone sees it. Runs the architecture-diagrams geometry lint to zero findings, renders the figure headless, reads the render whole and in full-size crops, checks..."
+prompt = "This is the 'diagram-check-loop' workflow from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/diagram-check-loop/SKILL.md' (canonical source: 'workflows/diagram-check-loop.md') exactly, then apply them to: {{args}}"

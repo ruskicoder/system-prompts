@@ -1,0 +1,20 @@
+[
+  {"query": "Draw the system architecture diagram for our report from the codebase", "should_trigger": true},
+  {"query": "This draw.io deployment diagram is messy, lines cross everywhere. Fix it", "should_trigger": true},
+  {"query": "Review this architecture figure before it goes into the slides", "should_trigger": true},
+  {"query": "Make a context diagram showing our app and the third-party APIs it calls", "should_trigger": true},
+  {"query": "How big should the font be in a diagram that prints 24 cm wide?", "should_trigger": true},
+  {"query": "Should two-way traffic in an architecture diagram be one double-headed arrow or two arrows?", "should_trigger": true},
+  {"query": "Redraw the integration diagram so it reads left to right", "should_trigger": true},
+  {"query": "The arrows in my draw.io file keep rerouting themselves through boxes, why?", "should_trigger": true},
+  {"query": "Create a deployment diagram of the Docker Compose stack on our VPS", "should_trigger": true},
+  {"query": "What should go into a high-level system overview figure and what should not?", "should_trigger": true},
+  {"query": "Design the landing page hero section", "should_trigger": false},
+  {"query": "Make a bar chart of monthly revenue", "should_trigger": false},
+  {"query": "Should our team start with microservices or a monolith?", "should_trigger": false},
+  {"query": "Review this React component for accessibility", "should_trigger": false},
+  {"query": "Write a SQL migration that adds a status column", "should_trigger": false},
+  {"query": "Fix the failing unit test in the payment service", "should_trigger": false},
+  {"query": "Summarize yesterday's standup notes", "should_trigger": false},
+  {"query": "Convert this Word document to PDF", "should_trigger": false}
+]

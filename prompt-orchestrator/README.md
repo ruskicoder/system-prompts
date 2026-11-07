@@ -4,7 +4,7 @@
 
 ## Works everywhere, out of the box
 
-This repo ships **65 skills/workflows** as a single canonical source (`skills/*.md`, `workflows/*.md`) plus **generated, ready-to-use integrations** for every major agent/IDE. Clone this repo as your project (or run one install command) and you get:
+This repo ships **67 skills/workflows** as a single canonical source (`skills/*.md`, `workflows/*.md`) plus **generated, ready-to-use integrations** for every major agent/IDE. Clone this repo as your project (or run one install command) and you get:
 
 | Tool | Auto-discovery | Explicit `/name` invocation |
 |---|---|---|
@@ -18,12 +18,12 @@ This repo ships **65 skills/workflows** as a single canonical source (`skills/*.
 | **Any other Agent-Skills-compliant tool** | `.agents/skills/<name>/SKILL.md` | — |
 | **Anything else** | `AGENTS.md` at the repo root: the plain-text fallback nearly every coding agent reads | — |
 
-See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full generated compatibility map (every one of the 65 skills/workflows, listed with its `/name`, argument hint, and description): it's regenerated automatically, so it never drifts from the source.
+See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full generated compatibility map (every one of the 67 skills/workflows, listed with its `/name`, argument hint, and description): it's regenerated automatically, so it never drifts from the source.
 
 ## How it's built (single source of truth)
 
 ```
-skills/*.md, workflows/*.md   (you edit these — 65 files, YAML frontmatter + instructions)
+skills/*.md, workflows/*.md   (you edit these — 67 files, YAML frontmatter + instructions)
             │
             ▼   tools/generate_integrations.py
             │
@@ -146,8 +146,8 @@ The Antigravity installer requires **Python 3.8+**, using only its standard libr
 PowerShell searches for `python3`, `python`, then the Windows `py -3` launcher.
 Generating and validating repository content additionally requires PyYAML, as before.
 
-The generated package contains `plugin.json` and 65 `skills/<name>/SKILL.md` files
-(52 skills and 12 workflows), plus any companion files such as the `docs-scaffold` CLI. Both installers validate exact registry membership and
+The generated package contains `plugin.json` and 67 `skills/<name>/SKILL.md` files
+(54 skills and 13 workflows), plus any companion files such as the `docs-scaffold` CLI. Both installers validate exact registry membership and
 compare every skill with its generated source before writing the destination.
 Installation stages a complete package, then replaces only `prompt-orchestrator`.
 
@@ -244,7 +244,7 @@ Every skill/workflow is invocable two ways, in every supported tool:
 1. **Automatically**: the agent reads each skill's `description` at session start and loads the full instructions when your request matches it. No action needed.
 2. **Explicitly**: type `/` followed by the skill or workflow name (e.g. `/agent-loop`, `/plan-execute`, `/security-audit-codebase`, `/docx`). Arguments after the name are passed straight through (`argument-hint` in each skill's frontmatter shows the expected shape).
 
-See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full list of all 65 `/name` commands with descriptions, or inspect `tools/registry.json` for the machine-readable version.
+See [`INTEGRATIONS.md`](./INTEGRATIONS.md) for the full list of all 67 `/name` commands with descriptions, or inspect `tools/registry.json` for the machine-readable version.
 
 ## Architecture
 

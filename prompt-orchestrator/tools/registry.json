@@ -28,6 +28,13 @@
     "argument_hint": "<decision or system to design>"
   },
   {
+    "id": "architecture-diagrams",
+    "kind": "skill",
+    "source": "skills/architecture-diagrams.md",
+    "description": "Rules and workflow for drawing legible architecture, deployment, context and integration diagrams by hand placement in draw.io, for an agent that lays out a figure from code. Covers what goes in one figure, reading direction, tiers, nesting depth, fixed orthogonal routing, request and response pairs, label placement, print-size font arithmetic, colour and icons, and a geometry lint plus a crop-by-crop visual check before anyone sees the figure. Use when drawing, redrawing, fixing or reviewing a system architecture, deployment, context or integration diagram, any boxes-and-arrows figure bound for a report or slide, or a question about how such a figure should be laid out.",
+    "argument_hint": "[figure, .drawio file or question]"
+  },
+  {
     "id": "brainstorming",
     "kind": "skill",
     "source": "skills/brainstorming.md",
@@ -159,6 +166,13 @@
     "source": "workflows/diagnostic-fix.md",
     "description": "Structured diagnostic-then-fix workflow using GitNexus knowledge graph and Ariya-4 problem framing. Gathers symptoms, isolates root causes, formulates hypotheses, verifies via reproduction, and applies targeted fixes.",
     "argument_hint": "<error symptom or stack trace>"
+  },
+  {
+    "id": "diagram-check-loop",
+    "kind": "workflow",
+    "source": "workflows/diagram-check-loop.md",
+    "description": "Check a boxes-and-arrows figure before anyone sees it. Runs the architecture-diagrams geometry lint to zero findings, renders the figure headless, reads the render whole and in full-size crops, checks it at print width, and cross-checks names against the code and the other figures. Use for \"draw the architecture diagram\", \"fix this figure\", after any change to a draw.io file, and before a figure goes into a report or slide.",
+    "argument_hint": "<.drawio file or figure> [print width in cm]"
   },
   {
     "id": "direct-implementation",

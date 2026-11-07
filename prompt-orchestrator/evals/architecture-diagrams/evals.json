@@ -1,0 +1,43 @@
+{
+  "skill_name": "architecture-diagrams",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Plan the system overview figure described in system.md. Give the inventory, a text sketch of the layout, the font size you will use and how you got it, and the list of edges with their labels. Do not write draw.io XML yet.",
+      "expected_output": "An overview-level plan built from the code paths, laid out left to right, with labelled request and response pairs and a computed font size.",
+      "files": ["evals/architecture-diagrams/files/plan/system.md"],
+      "expectations": [
+        "Keeps the figure at the overview level: deliverables (apps, backend, broker, stores, gateway, tracker, third parties), with the backend modules left out or deferred to a separate figure",
+        "The inventory gives each block with its code path and the protocol it uses, taken from system.md",
+        "Uses one reading direction (left to right or top to bottom) with people and devices at the start and stores and third parties at the end",
+        "Places the third parties (SePay, Resend, OpenStreetMap) together in one column or row at the side where flows end",
+        "Connects OpenStreetMap to the web app (tiles load in the browser), not to the backend",
+        "Draws Prisma and the BullMQ queue inside the backend (Redis may sit outside as the store), not as separate top-level blocks",
+        "Shows two-way exchanges as separate request and response arrows (for example solid and dashed), not double-headed arrows",
+        "Labels every edge with what travels and the protocol (for example 'REST over HTTPS', 'MQTT/TLS telemetry'), with no bare 'uses' or 'calls'",
+        "Computes the font size from the 24 cm print width and the canvas width so body text prints at about 8 pt or more (for example about 14 to 16 px on a 1200 px canvas)",
+        "Keeps nesting to at most two levels under the outer boundary (for example VPS > Compose stack, with the host named in titles rather than a third level)",
+        "Says the sketch needs the owner's agreement before XML, and that the figure is linted, rendered and checked in crops before it is shown"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review fig.drawio before it goes into the report (it prints 24 cm wide). The geometry lint drawio_lint.py is in this folder. Report every problem with its fix. Do not edit fig.drawio.",
+      "expected_output": "A review that runs the lint, reports its findings, adds the rule violations the lint cannot see, and does not call the figure ready.",
+      "files": ["evals/architecture-diagrams/files/review/fig.drawio", "evals/architecture-diagrams/files/review/drawio_lint.py"],
+      "expectations": [
+        "Runs drawio_lint.py on fig.drawio with a print width of 24 cm and reports its findings",
+        "Flags edge e1 as left to the editor's router (orthogonalEdgeStyle); fix is a fixed polyline with pinned exit and entry points and explicit waypoints",
+        "Flags the label 'uses' on e1 as uninformative; fix names what travels and the protocol",
+        "Flags the edge labels carried on the edges (e1, e3); fix places them as their own text cells beside the line",
+        "Flags the double-headed arrow e2; fix is two one-way arrows, request and response",
+        "Flags e4 passing through the VPS, stack and Backend frames and the Backend title; fix reroutes it outside or moves OpenStreetMap",
+        "Flags the SePay payment API placed on the far left; fix moves third parties to the side where flows end, with the other third party",
+        "Flags the three nesting levels (VPS > Docker Compose stack > Backend); fix flattens one level",
+        "Flags the 9 px text that prints below 7 pt; fix raises it to print at about 8 pt",
+        "Flags the text that does not fit its box (SePay, OpenStreetMap)",
+        "Does not call the figure ready; says it must lint to zero, then be rendered and read in crops before it is shown"
+      ]
+    }
+  ]
+}
