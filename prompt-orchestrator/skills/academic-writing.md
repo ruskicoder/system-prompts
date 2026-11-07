@@ -52,7 +52,7 @@ TrekLink register (2026-11-07):
 | Universal capability | Any rented node can serve as a temporary relay checkpoint. | A rented node relays messages while it is powered and within range of another node. |
 | Two-clause verdict | Targeted firmware enhancements made during the capstone are in scope and credited, and re-architecting the mesh stack is not. | In scope: the firmware changes listed in Section 4.2. Out of scope: replacing the mesh protocol stack. |
 | Parenthetical aside | A loss can be reported (by the hiker or, where applicable, by the organiser) from any working state (see Table 2). | A loss can be reported from any of the six working states. The hiker or the organiser reports it. |
-| Meta-note | Note that the values below are sample values. This means that they can be changed. | Delete. Label the column "Default". |
+| Meta-note | Note that the values below are sample values. This means that they can be changed. | The organiser sets these values per event. Table 4 lists the defaults. |
 | Importance flag | This matters because safety is crucial in remote areas. | Give the fact that makes it matter, with its source. |
 | Corrective frame | A successful demo does not by itself establish field readiness. | The demo covered [n] nodes over [d] m. Range above [d] m is untested. |
 | Era vocabulary | The system leverages a robust, multifaceted architecture. | Name the components and what each does. |
@@ -111,7 +111,12 @@ importance claims, no notes about the form itself.
 Run before handing the draft back:
 
 - [ ] Every factual sentence has its evidence, or is marked `(unverified)`.
-- [ ] `check_refs.py` reports no `fail`, `mismatch` or `unchecked` reference; every URL was opened.
+- [ ] `check_refs.py` ran on the reference list and reports every line `ok`. It checks every DOI
+      and URL on a line. A line with neither is reported `unchecked, no identifier`: verify that
+      source by hand, by ISBN or standard number, and record how. A `network` error is not a
+      pass: run the check again where Crossref is reachable.
+- [ ] Every source was opened and contains the passage the citing sentence relies on. A DOI
+      that resolves and a URL that answers do not show this.
 - [ ] One citation style, applied to every entry; every in-text citation has an entry and every
       entry is cited.
 - [ ] Each term and abbreviation defined once, then used without synonyms.
@@ -134,5 +139,5 @@ the text, its reference list, and the checker's summary line.
 | File | Read when |
 |---|---|
 | `references/citations.md` | Adding, checking or formatting references (IEEE, APA 7) |
-| `scripts/check_refs.py` | Verifying a reference list: `python3 <skill-dir>/scripts/check_refs.py refs.md` (needs network) |
+| `scripts/check_refs.py` | Verifying a reference list: `python3 <skill-dir>/scripts/check_refs.py refs.md`. Needs network. Self-tests: `python3 -B -m unittest discover -s <skill-dir>/scripts -v` |
 | `<skills-dir>/concision-and-logic/references/ai-tells-by-model.md` | Diagnosing tells per model family, with sources |

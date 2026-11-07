@@ -39,7 +39,7 @@ The single source of every skill (`skills/*.md`) and workflow (`workflows/*.md`)
 | `skills/clean-code.md` | Companion folder `skills/clean-code/references/` (principles, test smells), loaded on demand | Not applicable |
 | `skills/design-patterns.md` | Companion folder `skills/design-patterns/references/` (pattern families and `languages/`), loaded on demand | Not applicable |
 | `skills/concision-and-logic.md` | Companion folder `skills/concision-and-logic/scripts/` (`draft_scan.py` scanner, self-tests) and `references/ai-tells-by-model.md` | `python3 -B -m unittest discover -s skills/concision-and-logic/scripts -v` |
-| `skills/academic-writing.md` | Companion folder `skills/academic-writing/scripts/check_refs.py` (Crossref DOI and URL checker, needs network) and `references/citations.md` | `python3 skills/academic-writing/scripts/check_refs.py <refs.md>` on a list with one known-bad DOI |
+| `skills/academic-writing.md` | Companion folder `skills/academic-writing/scripts/` (`check_refs.py` Crossref DOI and URL checker, needs network; offline self-tests) and `references/citations.md` | `python3 -B -m unittest discover -s skills/academic-writing/scripts -v`; live: `python3 skills/academic-writing/scripts/check_refs.py <refs.md>` on a list with one known-bad DOI |
 | `skills/prose-and-wording.md` | Companion folder `skills/prose-and-wording/references/` (source convention, print rules removed) | Not applicable |
 | `skills/human.md` | Companion folder `skills/human/`: `scripts/human_tool.py` dispatcher over the scanner, preservation, suggestion, harvest, voice and loop modules, plus `references/*.md` (contract, catalog, structure, workflows, voice, style, tools) | `python3 -B -m unittest discover -s skills/human/scripts -v` |
 

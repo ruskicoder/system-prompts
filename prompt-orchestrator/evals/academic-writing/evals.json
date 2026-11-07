@@ -20,14 +20,14 @@
     {
       "id": 2,
       "prompt": "Add two references to the related-work paragraph of our SRS that support the claim that AI text detectors are unreliable. Use IEEE style.",
-      "expected_output": "Cites only real, checked sources (for example Weber-Wulff et al. 2023, doi:10.1007/s40979-023-00146-z, and Liang et al. 2023, doi:10.1016/j.patter.2023.100779) in correct IEEE format, states the claim at the strength the sources support, and says the DOIs were checked or must be checked.",
+      "expected_output": "Cites only real, checked sources (for example Weber-Wulff et al. 2023, doi:10.1007/s40979-023-00146-z, and Liang et al. 2023, doi:10.1016/j.patter.2023.100779) in correct IEEE format, states the claim at the strength the sources support, runs check_refs.py on them and reports the result per reference.",
       "files": [],
       "expectations": [
         "Every reference given exists, with a DOI or URL that resolves to the cited title",
         "Formats references in IEEE style with author initials first, quoted title, italic or abbreviated venue, volume, year and doi",
         "Uses numbered in-text citations such as [1] and [2]",
         "Words the claim no stronger than the sources (unreliable or biased against non-native writers, not 'cannot detect AI at all')",
-        "States that the references were verified with the checker or by opening them, or tells the user to run check_refs.py"
+        "Runs check_refs.py on the references it gives, or opens each DOI itself, and reports the result per reference; if the network blocks the check it reports the references as unchecked, not as verified. Telling the user to run the checker instead of running it does not meet this expectation"
       ]
     }
   ]

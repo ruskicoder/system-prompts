@@ -7,10 +7,14 @@ A reference enters the list only after all of these hold:
 1. You or the agent opened the source itself (the paper, the standard, the page), not a summary
    of it, and found the passage that supports the sentence citing it.
 2. Its DOI resolves to the same title, first author and year. Run
-   `scripts/check_refs.py references.md`; a `fail` means the DOI is not registered, a
-   `mismatch` means the DOI belongs to a different work. Both block submission.
+   `scripts/check_refs.py references.md` yourself and read every line of its output. It checks
+   every DOI and URL on each reference line. `fail` means a DOI is not registered or a URL does
+   not answer, even after a retry with a browser User-Agent. `mismatch` means the DOI belongs to
+   a different work. `unchecked` means the line has no DOI or URL, or the network failed. All
+   three block submission until resolved.
 3. A source without a DOI (a standard, a web page, documentation, a book) has a URL that opens,
-   or an ISBN you checked in a library catalogue. Record the access date for web pages.
+   or an ISBN you checked in a library catalogue. The checker reports a line with neither as
+   `unchecked, no identifier`; check it by hand and say how. Record the access date for web pages.
 4. The claim in your sentence matches the source's claim in scope and strength. "Detectors
    misclassified non-native writers' TOEFL essays" is what Liang et al. found; "detectors cannot
    detect AI" is not.
