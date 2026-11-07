@@ -34,7 +34,8 @@ Pipeline before sending: this skill, then `concision-and-logic` with its scanner
 3. **One fact per sentence.** No sentence over 30 words.
 4. **No talk about the message.** Cut "I am writing to inform you", "This email is to", "Please
    find below", "As per my last email", "I hope this finds you well", "Just a quick note",
-   "Feel free to reach out", "Let me know if you have any questions".
+   "Feel free to reach out", "Let me know if you have any questions". A status update carries
+   no cheer or thanks line either: "Great week, team!" and "Thanks all for the hard work" go.
 5. **Concrete over general.** Files by name, sections by number, versions, dates, counts.
    "Section 3.2 now lists 14 use cases, up from 11" instead of "the document has been improved".
 6. **No AI tells.** No "delve", "leverage", "robust", "seamless", "dependable", no "this matters",

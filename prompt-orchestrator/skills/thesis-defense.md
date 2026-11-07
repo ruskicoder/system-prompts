@@ -59,7 +59,9 @@ Rules:
 - Use the register's names on screen and in speech. If the app says "Trip" and the register says
   "Event", the committee hears two features.
 - A fallback for every step that depends on hardware, network or a third-party service: a
-  recording made on the real system, with its date, and a statement that it is a recording.
+  recording made on the real system. The Fallback cell of each such row gives the recording's
+  date and says it is shown as a recording. A screenshot does not replace a live step, and no
+  such cell stays empty or reads "TBD".
 - Rehearse on the defence room's network and power conditions, with the devices charged and the
   accounts logged in.
 
@@ -88,8 +90,11 @@ editing or code assistance, say so, and show that the member can explain the res
 
 ## 4. Answer shape
 
-1. The direct answer in the first sentence: "Yes", "No", "[n] nodes", "LoRa, because...".
-2. The evidence: the table, test or code that shows it.
+1. The direct answer in the first sentence: "Yes", "No", "[n] nodes", "LoRa, because...". The
+   first sentence carries the content, not a count or a heading: "We chose LoRa for its range
+   at low power", not "We considered two options".
+2. The evidence, named inside the answer the member speaks, with its source and date: "In the
+   [date] field test...", "Table [x] in Report [y]". A separate evidence note does not count.
 3. The limit, if there is one: "We tested up to [d] m. Range beyond that is untested."
 
 Stop there. No restating the question, no "that's a great question", no tour of related
@@ -98,17 +103,24 @@ seconds for most answers.
 
 | Weak answer | Strong answer |
 |---|---|
-| "That's a great question. Our system is designed with reliability in mind, leveraging a robust mesh architecture that ensures messages are delivered in a variety of conditions..." | "In our field test, [k] of [n] messages arrived at the base within [t] s over [h] hops. The failed messages were sent when [cause from the test log]. Table [x] in Report [y]." |
+| "That's a great question. Our system is designed with reliability in mind, leveraging a robust mesh architecture that ensures messages are delivered in a variety of conditions..." | "In our field test on [date], [k] of [n] messages arrived at the base within [t] s over [h] hops. The failed messages were sent when [cause from the test log]. Table [x] in Report [y]." |
 
 Fill every bracket from the team's own test log, report or code before rehearsal. A bracket the
 documents cannot fill stays open and becomes "We did not measure that", never an estimate.
 
-Every written answer goes through the anti-AI check before the team rehearses it: model answers
-in the question bank, the one-minute overviews, review notes from the mock defence, the AI-use
-answer and the slides. The check is `draft_scan.py` from `concision-and-logic` with
-`--genre professional`, the logic table in that skill, and the tells table in
-`academic-writing`. An answer with a tell or an unsupported claim is rewritten before anyone
-learns it.
+Every written answer goes through the anti-AI check before it is returned or rehearsed: model
+answers in the question bank, the one-minute overviews, review notes from the mock defence, the
+AI-use answer and the slides. The check has three parts, and the first is a command, not a
+reading:
+
+1. Save the answers to a file and run
+   `python3 <skills-dir>/concision-and-logic/scripts/draft_scan.py answers.md --genre professional`.
+2. Check each claim against the logic table in `concision-and-logic`.
+3. Check the wording against the tells table in `academic-writing`.
+
+Rewrite every answer with a tell or an unsupported claim, then return the answers with one
+line on the scan: findings fixed, and findings kept with the reason. Do not return answers the
+scan has not seen.
 
 ## 5. Mock defence
 
