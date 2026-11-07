@@ -1,0 +1,34 @@
+{
+  "skill_name": "academic-writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review and fix evals/academic-writing/files/register-excerpt.md before we submit the register.",
+      "expected_output": "Finds the planted tells and the fabricated reference: universal claims (every figure, any rented node), the two-clause scope verdict, the parenthetical aside, the meta-notes (note that, sample values, this means), the importance flag with a participle tail and era vocabulary, and reference [1] whose DOI does not resolve; removes [1] together with the 40 % claim instead of repairing it, keeps [2], and keeps the table values and the 15 and 45 minute figures unchanged.",
+      "files": ["evals/academic-writing/files/register-excerpt.md"],
+      "expectations": [
+        "Flags 'Every figure in this section is a configurable parameter' as an unsupported universal and rewrites it to name the parameters or the condition",
+        "Flags 'Any rented node can serve as a temporary relay checkpoint' and rewrites it without 'serve as' and without the universal",
+        "Rewrites the in-scope and not-in-scope verdict sentence as a separate In scope / Out of scope statement or list",
+        "Deletes or relocates the 'Note that ... sample values' and 'This means' meta-notes, for example as a Default column",
+        "Rewrites the 'This matters because ... highlighting ... dependable' sentence without the importance flag, the participle tail and the era word, and does not invent a statistic to support it",
+        "Reports that reference [1] could not be verified (DOI does not resolve or the checker fails) and removes it together with the 40 % claim, or marks the claim unverified, without inventing a replacement reference",
+        "Keeps reference [2], which the excerpt cites and which is real, and the values 15 min and 45 min unchanged",
+        "Contains no em dash in the revised prose"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add two references to the related-work paragraph of our SRS that support the claim that AI text detectors are unreliable. Use IEEE style.",
+      "expected_output": "Cites only real, checked sources (for example Weber-Wulff et al. 2023, doi:10.1007/s40979-023-00146-z, and Liang et al. 2023, doi:10.1016/j.patter.2023.100779) in correct IEEE format, states the claim at the strength the sources support, runs check_refs.py on them and reports the result per reference.",
+      "files": [],
+      "expectations": [
+        "Every reference given exists, with a DOI or URL that resolves to the cited title",
+        "Formats references in IEEE style with author initials first, quoted title, italic or abbreviated venue, volume, year and doi",
+        "Uses numbered in-text citations such as [1] and [2]",
+        "Words the claim no stronger than the sources (unreliable or biased against non-native writers, not 'cannot detect AI at all')",
+        "Runs check_refs.py on the references it gives, or opens each DOI itself, and reports the result per reference; if the network blocks the check it reports the references as unchecked, not as verified. Telling the user to run the checker instead of running it does not meet this expectation"
+      ]
+    }
+  ]
+}

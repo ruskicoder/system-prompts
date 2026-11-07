@@ -1,0 +1,72 @@
+{
+  "skill_name": "thesis-defense",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run the thesis-defense consistency check on evals/thesis-defense/files/register.md, evals/thesis-defense/files/report2.md, evals/thesis-defense/files/slides.md and evals/thesis-defense/files/test-log.md.",
+      "expected_output": "A table of contradictions: node count and coverage (3 nodes, 400 m in the register and test log against 5 nodes, 1 km in Report 2 and the slides), check-in interval (10 min in Report 2 against 15 min elsewhere), Event against Trip, and the roles of An and Chau; 3 nodes and 400 m marked verified by the test log; the role question left to the team.",
+      "files": [
+        "evals/thesis-defense/files/register.md",
+        "evals/thesis-defense/files/report2.md",
+        "evals/thesis-defense/files/slides.md",
+        "evals/thesis-defense/files/test-log.md"
+      ],
+      "expectations": [
+        "Reports the node and coverage contradiction (3 nodes and 400 m against 5 nodes and 1 km) and names 3 nodes and 400 m as the verified value because the test log supports it",
+        "Reports the check-in interval contradiction: 10 min in Report 2 against 15 min in the register, slides and test log",
+        "Reports the term contradiction: Event in the register against Trip in Report 2",
+        "Reports the role contradiction for Le Minh Chau (dashboard against testing) and Nguyen Van An, and leaves the decision to the team because no test log or decision record settles it",
+        "Presents a table with the fact, the value in each document, a verdict and a fix",
+        "Invents no value, test or document that is not in the files"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Map our registered functions to the demo with thesis-defense, using evals/thesis-defense/files/register.md and evals/thesis-defense/files/demo-plan.md.",
+      "expected_output": "A function-to-demo table in register order that flags the missing F3 overdue alert, moves the weather widget to the end as an extra, uses Event instead of Trip, and gives a dated recording as the fallback for every hardware or network step.",
+      "files": [
+        "evals/thesis-defense/files/register.md",
+        "evals/thesis-defense/files/demo-plan.md"
+      ],
+      "expectations": [
+        "Flags that F3, the overdue alert 45 min after a missed check-in, has no demo step, and adds one or a written reason with where the evidence is",
+        "Moves the weather widget after the registered functions and labels it as an extra",
+        "Flags 'Trip' in the demo plan and uses the register's term 'Event'",
+        "Gives a fallback for every step that depends on the tag, the mesh or the network: a dated recording of the real system, stated as a recording",
+        "Produces a table with the register wording, a demo step, who drives it and a fallback",
+        "Assigns drivers from the register roles or leaves them to the team, and invents no role"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write model answers with thesis-defense for two committee questions, using our test log at evals/thesis-defense/files/test-log.md: (1) How reliable is message delivery over the mesh? (2) How long do the relay node batteries last?",
+      "expected_output": "Answer 1: 47 of 50 messages within 10 s in the 2 November test, the 3 failures behind a ridge, only 3 nodes over 400 m tested. Answer 2: not measured, and how the team would test it. Both short, with the anti-AI check run.",
+      "files": [
+        "evals/thesis-defense/files/test-log.md"
+      ],
+      "expectations": [
+        "Answer 1 opens with the result: 47 of 50 messages reached the base within 10 s, citing the 2 November test log",
+        "Answer 1 states the limits: the 3 failures happened while Node 2 was behind a ridge, and only 3 nodes over 400 m were tested",
+        "Answer 2 says battery life was not measured and how the team would measure it, with no invented hours, days or percentages",
+        "Each answer is under about 110 words, does not restate the question, and has no 'great question', robust, seamless or leverage",
+        "Runs the anti-AI check on the written answers (draft_scan.py or the tells check) and reports the result",
+        "Contains no em dash"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A committee member will ask Khoa: 'How did your team use AI tools?' Write his model answer with thesis-defense. Our AI-use statement is in evals/thesis-defense/files/ai-use-statement.md.",
+      "expected_output": "A short first-person answer that matches the statement exactly: ChatGPT for English language editing of Reports 1 to 3, Copilot for backend code completion, every claim and line reviewed by the team; no tool or use added or denied.",
+      "files": [
+        "evals/thesis-defense/files/ai-use-statement.md"
+      ],
+      "expectations": [
+        "The first sentence answers directly with the tools and their uses from the statement",
+        "Names ChatGPT for English language editing of Reports 1 to 3 and GitHub Copilot for backend code completion, and adds or denies no tool or use",
+        "Says the team reviewed every claim and line of code, and offers to explain the result without the tools, without claiming anything the statement does not",
+        "The answer is under about 110 words and has no 'great question' and no era vocabulary",
+        "Contains no em dash"
+      ]
+    }
+  ]
+}

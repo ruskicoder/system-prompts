@@ -1,0 +1,11 @@
+[
+  {"query": "Gemini wrote this answer and it's way too long, tighten it", "should_trigger": true},
+  {"query": "Check the logic of this argument, does the conclusion follow?", "should_trigger": true},
+  {"query": "This draft rambles, cut it to the point", "should_trigger": true},
+  {"query": "Shorten this 600-word explanation to what the reader needs", "should_trigger": true},
+  {"query": "Is this paragraph making unsupported claims or non sequiturs?", "should_trigger": true},
+  {"query": "This report reads as AI-written, which sentences give it away?", "should_trigger": true},
+  {"query": "Fix the failing unit test in test_gateway.py", "should_trigger": false},
+  {"query": "Design the database schema for events and check-ins", "should_trigger": false},
+  {"query": "Translate this paragraph into Vietnamese", "should_trigger": false}
+]

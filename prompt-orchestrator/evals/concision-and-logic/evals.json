@@ -1,0 +1,73 @@
+{
+  "skill_name": "concision-and-logic",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review evals/concision-and-logic/files/progress-note.md with the concision-and-logic skill before I send it to my supervisor.",
+      "expected_output": "Finds the logic faults the scanner cannot see (the scope shift from 3 nodes over 400 m to the 12 km route, the non sequitur from upload speed to hiker trust, the mixed-level list, the conclusion that restates the premise) and the wording tells it can (the breakdown preview, the hedge stack); returns a findings table and a revised note that claims only what was tested and keeps 3 nodes, 400 m and 2 s.",
+      "files": [
+        "evals/concision-and-logic/files/progress-note.md"
+      ],
+      "expectations": [
+        "Flags 'Therefore the TrekLink mesh is ready for the 12 km Ta Xua route' as a scope shift or non sequitur and rewrites it to claim only what the 3-node, 400 m test showed",
+        "Flags 'so hikers will trust the app more' as unsupported and cuts it or marks it unverified, without inventing a survey, user count or figure to support it",
+        "Flags the Key outcomes list as mixing levels (a feature, a tool, a risk and a goal) and splits or regroups it",
+        "Cuts or replaces the closing 'In conclusion' sentence as a restated premise or recap, and removes the 'may potentially provide' hedge stack",
+        "Deletes the 'Here is a breakdown' line",
+        "Keeps 3 nodes, 400 m and 2 s unchanged and adds no new number",
+        "Returns a findings table followed by the revised text",
+        "Contains no em dash in the revised text"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Shorten evals/concision-and-logic/files/supervisor-email.md with the concision-and-logic skill. It goes to my supervisor today.",
+      "expected_output": "A revised email under 150 words whose first line after the greeting asks for the Report 3 extension from 14 to 21 November, with the late relay node (arrived 5 November) as the reason, no filler, and no invented detail about the robustness work.",
+      "files": [
+        "evals/concision-and-logic/files/supervisor-email.md"
+      ],
+      "expectations": [
+        "The first sentence after the greeting asks for the one-week Report 3 extension from 14 November to 21 November",
+        "The revised email body, from greeting to sign-off, is under 150 words",
+        "Keeps the dates 5 November, 14 November and 21 November and the reason that the second relay node arrived late",
+        "Removes 'I hope this email finds you well', 'Please feel free to reach out' and the thank-you filler",
+        "Cuts 'improving the overall robustness of the system' and 'steady progress', or asks the writer for the specific change, without inventing what was improved",
+        "The subject line names Report 3 and the extension request",
+        "Contains no em dash"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Run the concision-and-logic scanner on evals/concision-and-logic/files/srs-paragraph.md and fix what it finds.",
+      "expected_output": "Runs draft_scan.py, reports the long aside, the low-severity '(configurable)' and the universal 'Every alert', fixes each without new facts, and keeps the abbreviation and the citation in parentheses.",
+      "files": [
+        "evals/concision-and-logic/files/srs-paragraph.md"
+      ],
+      "expectations": [
+        "Runs scripts/draft_scan.py on the file and reports its findings",
+        "Rewrites the aside '(which the organiser can silence from the dashboard while a group is resting)' as its own sentence",
+        "Reports '(configurable)' as a scanner finding and removes the brackets, by folding it into the sentence or giving it its own sentence, without adding a range, default value or owner the paragraph does not give",
+        "Flags 'Every alert is delivered to the organiser within 5 s' as an unsupported universal and narrows it or marks it unverified, without inventing a test result",
+        "Keeps the abbreviation '(MQTT)' and the citation '(Augustin et al., 2016)' in place",
+        "Keeps 15 min and 5 s unchanged"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "My teammate pasted the Gemini answer in evals/concision-and-logic/files/gemini-answer.md to the question 'Which LoRa spreading factor did we choose for the relay nodes, and why?'. Tighten it with concision-and-logic so I can paste it in our team chat.",
+      "expected_output": "One to three sentences: SF9, because SF7 did not cover the 1.2 km gap between Node 3 and Node 4 in the 2 November range test. No options list, no preview line, no importance flag.",
+      "files": [
+        "evals/concision-and-logic/files/gemini-answer.md"
+      ],
+      "expectations": [
+        "The first sentence gives the answer: SF9",
+        "Gives the reason with its evidence: SF7 did not cover the 1.2 km gap between Node 3 and Node 4 in the range test on 2 November",
+        "Removes the three unrequested options and the 'Here is a breakdown' line",
+        "Removes 'Great question', 'plays a crucial role', 'robust' and 'seamless'",
+        "The answer is 1 to 3 sentences long",
+        "Adds no fact that is not in the draft",
+        "Contains no em dash"
+      ]
+    }
+  ]
+}

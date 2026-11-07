@@ -1,0 +1,2 @@
+description = "Write short, concrete work messages that read as written by the sender: emails and messages to a supervisor, lecturer, client or teammate, submission comments and notes on a school or work platform..."
+prompt = "This is the 'professional-writing' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/professional-writing/SKILL.md' (canonical source: 'skills/professional-writing.md') exactly, then apply them to: {{args}}"

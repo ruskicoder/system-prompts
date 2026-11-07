@@ -1,5 +1,12 @@
 [
   {
+    "id": "academic-writing",
+    "kind": "skill",
+    "source": "skills/academic-writing.md",
+    "description": "Write and revise scientific, thesis and capstone documents in plain, precise English: capstone reports (FPT SEP490 register or registration form, Reports 1 to 6, SRS, SDD, final thesis), papers, related-work sections and abstracts. Claims backed by evidence, real citations only with every DOI and URL checked (bundled Crossref checker), IEEE or APA reference lists, terms defined once, testable requirement wording, related-work comparison, and removal of the AI tells graders notice (universal claims, verdict sentences, parenthetical asides, meta-notes, importance flags, model-era vocabulary). Use when drafting, rewriting, reviewing or grading any academic or capstone document; when adding, checking, formatting or converting references or a reference list to IEEE or APA; when making SRS requirements testable; or when a report reads as AI-generated. Use it on the request alone: 'this reference list' or 'these requirements' with no text attached yet still needs it.",
+    "argument_hint": "[document or section] [--style ieee|apa]"
+  },
+  {
     "id": "accessibility-review",
     "kind": "skill",
     "source": "skills/design-accessibility-review.md",
@@ -96,6 +103,13 @@
     "source": "skills/communication-tone.md",
     "description": "The single communication rule for every reply. Mandatory four-part status (asked, done, state, next); settle scope first, then execute the whole task in one pass without asking, including same-pass doc obligations and self-correction; hard stops only for outward, destructive or scope-creep actions; report every change made; interrupt-and-resume; plain technical writing register, tone and formatting. Use on every conversation turn.",
     "argument_hint": null
+  },
+  {
+    "id": "concision-and-logic",
+    "kind": "skill",
+    "source": "skills/concision-and-logic.md",
+    "description": "Cut verbosity and check the reasoning of any English draft, whichever model or person wrote it: answer first, a length budget, a claim-by-claim support check, the logic faults fluent drafts hide (unsupported universals, non sequiturs, scope shifts, restated premises, mixed-level lists, unrequested options), and the shape-level AI tells of GPT, Claude and Gemini drafts. Bundles a standard-library scanner for universals, verdict sentences, meta-notes, parentheses, importance flags and hedge stacks, plus a dated research reference of tells per model family. Use when a draft is too long, rambles, yaps, reads as AI-written, 'sounds like Gemini or ChatGPT', or when asked to tighten, shorten, check the logic or argument, or review a report, email or form before it is sent. Use it on the request alone, before the draft is pasted or opened: 'this draft', 'this answer' or 'this paragraph' with no text attached yet still needs it.",
+    "argument_hint": "[file path or text] [--genre academic|professional]"
   },
   {
     "id": "data-analysis",
@@ -294,6 +308,13 @@
     "argument_hint": "<feature or refactoring goal>"
   },
   {
+    "id": "professional-writing",
+    "kind": "skill",
+    "source": "skills/professional-writing.md",
+    "description": "Write short, concrete work messages that read as written by the sender: emails and messages to a supervisor, lecturer, client or teammate, submission comments and notes on a school or work platform (FPT FAP, LMS, Jira, Slack), PR descriptions, issue reports and replies, status updates and progress reports. The point or the request first, one fact per sentence, dates and owners named, no meta-commentary, no openers or sign-off filler, no AI tells. Use when drafting, shortening, replying to or reviewing any work or professional message, client message, platform note, Slack or chat update, PR or issue text, or a report to a supervisor, or when a message sounds like ChatGPT. Use it on the request alone: 'this message', 'this issue' or 'this update' with no text attached yet still needs it.",
+    "argument_hint": "[message type] [draft or facts to send]"
+  },
+  {
     "id": "project-scaffolding",
     "kind": "skill",
     "source": "skills/project-scaffolding.md",
@@ -404,6 +425,13 @@
     "source": "skills/engineering-testing-strategy.md",
     "description": "Design test strategies and test plans. Trigger with \"how should we test\", \"test strategy for\", \"write tests for\", \"test plan\", \"what tests do we need\", or when the user needs help with testing approaches, coverage, or test architecture.",
     "argument_hint": null
+  },
+  {
+    "id": "thesis-defense",
+    "kind": "skill",
+    "source": "skills/thesis-defense.md",
+    "description": "Prepare a team for a capstone or thesis defence: build a question bank from the team's own documents (register, Reports 1 to 6, SRS, SDD, slides), run a consistency check that the register, reports, slides and demo agree on scope, features, numbers, names and roles, map every registered function to a demo step ('demo exactly what you registered'), assign each question to the member who built that part, and rehearse answers in a short, evidence-first shape. Use when preparing for a defence, review or committee presentation, generating likely examiner questions, checking documents against each other or against the demo, planning a demo script, or running a mock defence.",
+    "argument_hint": "[documents folder or files] [questions | consistency | demo | mock]"
   },
   {
     "id": "third-party-vetting",

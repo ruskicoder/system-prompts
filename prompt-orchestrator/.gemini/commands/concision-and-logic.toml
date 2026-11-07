@@ -1,0 +1,2 @@
+description = "Cut verbosity and check the reasoning of any English draft, whichever model or person wrote it: answer first, a length budget, a claim-by-claim support check, the logic faults fluent drafts hide..."
+prompt = "This is the 'concision-and-logic' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/concision-and-logic/SKILL.md' (canonical source: 'skills/concision-and-logic.md') exactly, then apply them to: {{args}}"

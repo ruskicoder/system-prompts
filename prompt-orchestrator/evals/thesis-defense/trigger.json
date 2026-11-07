@@ -1,0 +1,11 @@
+[
+  {"query": "Our capstone defence is next week, generate the questions the committee will likely ask", "should_trigger": true},
+  {"query": "Check that our register, Report 4 and the demo agree on the feature list", "should_trigger": true},
+  {"query": "Plan a demo script that shows every function we registered", "should_trigger": true},
+  {"query": "Run a mock defence with me on the firmware part", "should_trigger": true},
+  {"query": "Which numbers in our slides contradict the reports?", "should_trigger": true},
+  {"query": "How should each team member answer questions about code they didn't write at the thesis defense?", "should_trigger": true},
+  {"query": "Write the abstract of our thesis", "should_trigger": false},
+  {"query": "Email the lecturer that the report is uploaded", "should_trigger": false},
+  {"query": "Set up the CI pipeline for the backend", "should_trigger": false}
+]

@@ -1,0 +1,2 @@
+description = "Prepare a team for a capstone or thesis defence: build a question bank from the team's own documents (register, Reports 1 to 6, SRS, SDD, slides), run a consistency check that the register, reports..."
+prompt = "This is the 'thesis-defense' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/thesis-defense/SKILL.md' (canonical source: 'skills/thesis-defense.md') exactly, then apply them to: {{args}}"
