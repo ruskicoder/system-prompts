@@ -45,7 +45,10 @@ Pipeline before sending: this skill, then `concision-and-logic` with its scanner
 8. **Address and close as the relationship expects.** "Dear Mr Hung," or "Dear Ms Lan," for a
    lecturer or supervisor unless they use first names; "Best regards," and the name. Teammates:
    first name and no sign-off in chat.
-9. **Keep the writer's facts.** Add no promise, date or commitment the writer did not make.
+9. **Keep the writer's facts at their scope.** Add no promise, date or commitment the writer did
+   not make. A paraphrase must not widen a fact: "we added two use cases to Section 3" does not
+   become "Section 3 is new". Keep relative dates as given ("today", "next week") unless the
+   writer supplies the calendar date.
 
 ## Formats
 
