@@ -108,6 +108,10 @@ harness. Prefer the named agents above when one fits.
   subagent changed files, and blocks finishing until it passes (at most 3 blocks, then you must
   report the failure).
 - Without `verify`, run the repo's checks yourself before reporting done.
+- A document that will be graded, submitted or sent is done only after its genre skill
+  (`academic-writing` or `professional-writing`), `concision-and-logic` and a `human` audit. Run
+  `draft_scan.py`, and `check_refs.py` when the document has references; report each finding
+  left in place and why, and every reference removed.
 - A change to a user interface is done only after the visual check of `ui-ux-philosophy`: every
   touched screen at the project's widths and the 400 percent zoom case, in every theme, looked at,
   with axe and a focus walk. Report what was checked per screen and size.

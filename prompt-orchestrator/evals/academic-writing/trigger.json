@@ -1,0 +1,14 @@
+[
+  {"query": "Rewrite section 2 of our capstone register so it doesn't read like ChatGPT wrote it", "should_trigger": true},
+  {"query": "Check the references in my SRS, are these DOIs real?", "should_trigger": true},
+  {"query": "Write the related work section for our thesis comparing our app with three existing trekking apps", "should_trigger": true},
+  {"query": "Convert this reference list to IEEE format", "should_trigger": true},
+  {"query": "Review Report 3 of our SEP490 project for unsupported claims", "should_trigger": true},
+  {"query": "Make these functional requirements testable for the SRS", "should_trigger": true},
+  {"query": "Write the abstract for our final capstone report", "should_trigger": true},
+  {"query": "Our lecturer says the SDD sounds AI-generated, fix the wording", "should_trigger": true},
+  {"query": "Write an email to my supervisor asking to move our meeting", "should_trigger": false},
+  {"query": "Fix the null pointer exception in CheckinService.java", "should_trigger": false},
+  {"query": "Draft a PR description for the offline queue change", "should_trigger": false},
+  {"query": "Generate likely committee questions for our defence next week", "should_trigger": false}
+]

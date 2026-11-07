@@ -54,3 +54,16 @@ runs per query: `clean-code` 18 of 18 and `design-patterns` 20 of 20, every posi
 and every negative 0 of 3. A control run of the `ui-ux-philosophy` set with an unrelated description
 (SQL migrations) triggered on none of the 10 UI queries and on the SQL query, so the mode measures
 the description.
+
+## Writing skills (2026-11-07)
+
+`academic-writing/evals.json` reviews a register excerpt with ten planted tells (two universals, a
+scope verdict, a parenthetical aside, two meta-notes, an importance flag with a participle tail and
+an era word) and a reference whose DOI does not resolve, plus a request for real IEEE references.
+`academic-writing`, `professional-writing`, `thesis-defense` and `concision-and-logic` each have a
+`trigger.json`.
+
+Deterministic checks on the fixture: `draft_scan.py --genre academic` flags all ten tells;
+`check_refs.py` passes the real DOI and fails the fabricated one (Crossref 404). The LLM behaviour
+and trigger runs were not made on 2026-11-07: available memory was 1.1 GB, under the 3 GB limit for
+local agents. Run them with `--isolated` before the next release tag.

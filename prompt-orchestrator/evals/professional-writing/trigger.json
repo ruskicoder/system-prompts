@@ -1,0 +1,12 @@
+[
+  {"query": "Write an email to my supervisor asking to move Friday's review to 2pm", "should_trigger": true},
+  {"query": "Draft the FAP submission comment for Report 2", "should_trigger": true},
+  {"query": "Write a PR description for the check-in retry fix", "should_trigger": true},
+  {"query": "This Slack status update sounds too much like ChatGPT, make it plain", "should_trigger": true},
+  {"query": "Reply to this issue explaining the bug is fixed in the last release", "should_trigger": true},
+  {"query": "Write a weekly progress report to our supervisor", "should_trigger": true},
+  {"query": "Shorten this message to the client about the delayed delivery", "should_trigger": true},
+  {"query": "Add IEEE references to the literature review of our thesis", "should_trigger": false},
+  {"query": "Refactor the gateway uploader into smaller functions", "should_trigger": false},
+  {"query": "Plan the demo script for our capstone defence", "should_trigger": false}
+]
