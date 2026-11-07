@@ -78,7 +78,37 @@ Behaviour cases added on 2026-11-07, each with a planted defect and checkable ex
   check-in interval, a term and two roles; a demo plan that skips F3 and shows an extra first; a
   test log that has no battery figure; an AI-use answer that must match the written statement.
 
-Deterministic checks on the fixture: `draft_scan.py --genre academic` flags all ten tells;
-`check_refs.py` passes the real DOI and fails the fabricated one (Crossref 404). The LLM behaviour
-and trigger runs were not made on 2026-11-07: available memory was 1.1 GB, under the 3 GB limit for
-local agents. Run them with `--isolated` before the next release tag.
+Deterministic checks on the fixture: `draft_scan.py --genre academic` flags all ten tells.
+`check_refs.py` has 11 offline self-tests (fake Crossref and HTTP); on 2026-11-07 Crossref and
+doi.org were blocked by the session's network policy, so live runs reported both references
+`unchecked`, not `fail`.
+
+### Results, 2026-11-07 (Sonnet, 3 runs per query or case)
+
+Trigger runs used `--isolated`. Behaviour runs used `claude -p` in a throwaway project holding
+the four writing skills plus `human` and `prose-and-wording`, with Skill, Read, Glob, Grep,
+Bash, Write and Edit allowed. A separate Opus call graded each expectation against the
+transcript, the final reply and the files written. The em-dash expectations were checked by
+script. A gap is an expectation met in fewer than 2 of 3 runs.
+
+| Skill | Trigger (queries correct) | Behaviour (expectation-runs met) |
+|---|---|---|
+| academic-writing | 12 of 12 | 39 of 39 |
+| concision-and-logic | 9 of 9 | 82 of 84 |
+| professional-writing | 10 of 10 | 71 of 75 |
+| thesis-defense | 9 of 9 | 67 of 69 |
+
+No gap remains. The first runs found these, each fixed and its case run again:
+
+- Trigger: concision-and-logic 0 of 6 positives, professional-writing 4 of 7, academic-writing
+  6 of 8 at worst. The model asked for the missing text instead of loading the skill. Each
+  description now says to load it on the request alone.
+- academic-writing case 1 and concision-and-logic case 3: fixture defects. An uncited
+  reference and an off-topic citation were rightly removed. The fixtures were corrected.
+- concision-and-logic case 3: an expectation narrower than rule 7 of the skill; aligned.
+- professional-writing: paraphrases widened a fact and a status update kept its thank-you line
+  (rules 4 and 9).
+- thesis-defense: fallbacks without a date, evidence left out of the spoken answer, the anti-AI
+  scan skipped, and an AI-use answer that opened with a count (sections 2 and 4).
+
+Cases not run again were measured before the later skill edits; those edits only add rules.
