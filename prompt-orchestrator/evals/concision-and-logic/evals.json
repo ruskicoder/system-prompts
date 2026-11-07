@@ -46,7 +46,7 @@
       "expectations": [
         "Runs scripts/draft_scan.py on the file and reports its findings",
         "Rewrites the aside '(which the organiser can silence from the dashboard while a group is resting)' as its own sentence",
-        "Reports '(configurable)' as a short or low-severity parenthesis and folds it into the sentence, without adding a range or default the paragraph does not give",
+        "Reports '(configurable)' as a scanner finding and removes the brackets, by folding it into the sentence or giving it its own sentence, without adding a range, default value or owner the paragraph does not give",
         "Flags 'Every alert is delivered to the organiser within 5 s' as an unsupported universal and narrows it or marks it unverified, without inventing a test result",
         "Keeps the abbreviation '(MQTT)' and the citation '(Augustin et al., 2016)' in place",
         "Keeps 15 min and 5 s unchanged"
