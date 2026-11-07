@@ -1,0 +1,66 @@
+{
+  "skill_name": "professional-writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Clean up evals/professional-writing/files/email-draft.md before I send it to my supervisor, Mr Hung. Use the professional-writing skill.",
+      "expected_output": "An email that opens with the request to drop the SMS fallback from scope, gives the reason in separate sentences, names no date the writer did not give, and ends with a line asking the writer to confirm the review date.",
+      "files": [
+        "evals/professional-writing/files/email-draft.md"
+      ],
+      "expectations": [
+        "The first sentence after the greeting asks Mr Hung to approve, or decide on, dropping the SMS fallback from the project scope",
+        "Does not invent a deadline or a review date; it leaves a placeholder or asks the writer for the date",
+        "Moves the parenthetical content into its own sentences: the GSM module keeps failing in tests and the team cannot fix it before Report 4",
+        "Removes 'I hope this email finds you well', 'I am writing to inform you', 'leverage' and 'Let us know your thoughts'",
+        "Opens with 'Dear Mr Hung,' and closes with 'Best regards,' and the name Khoa",
+        "The subject line names the SMS fallback or the scope change",
+        "Ends with a line listing facts the writer must confirm before sending, including the date",
+        "Contains no em dash and no sentence over 30 words"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write the FAP submission note for Report 3 with the professional-writing skill. Facts: Report 3 is uploaded today. Since Report 2 we added the test plan in Section 6 with test cases TC-01 to TC-09. Section 4.3 on offline sync now matches the meeting with Mr Hung on 6 November. The latency values in Table 7 are targets; we have not measured them yet.",
+      "expected_output": "Two to four short sentences: what changed since Report 2, the Section 4.3 alignment with the 6 November meeting, and that Table 7 holds targets, not measurements.",
+      "files": [],
+      "expectations": [
+        "The note is 1 to 4 sentences long",
+        "States in plain words that the Table 7 latency values are targets that have not been measured, without 'Note that' or 'sample values'",
+        "Keeps Section 6, TC-01 to TC-09, Section 4.3 and 6 November",
+        "Has no opener, no sign-off filler, no parenthetical aside and none of delve, leverage, robust, seamless or ensure",
+        "Adds no claim the writer did not give, such as tests passing or the report being complete"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write the PR description from evals/professional-writing/files/pr-notes.md. Make it sound impressive for the reviewers.",
+      "expected_output": "A title and body that say what changed, why, how it was tested (two Android phones, 10 min airplane mode, 6 of 6 in order) and what is open (iOS untested, retry limit 5 hard-coded in #142), with no inflated wording.",
+      "files": [
+        "evals/professional-writing/files/pr-notes.md"
+      ],
+      "expectations": [
+        "Covers what changed, why, how it was tested, and risks or follow-ups",
+        "States the test as given: two Android phones, 10 min in airplane mode, all 6 queued check-ins arrived in order",
+        "States that iOS was not tested and that the retry limit of 5 is hard-coded and tracked in #142",
+        "Title and body contain none of robust, seamless, enhance, leverage or dependable, and claim nothing beyond the notes such as iOS support or full reliability",
+        "Contains no AI attribution: no Co-Authored-By line for an AI and no 'Generated with' footer",
+        "Contains no em dash"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Turn this into my weekly status update for the team channel, using professional-writing: 'Great progress this week! The backend is done, and the firmware is not. Firmware relay timing is stuck because Node 2's antenna broke on 3 Nov, replacement ordered, arrives 10 Nov. Next week we will hopefully do the integration test. Huge thanks to everyone for their amazing effort!'",
+      "expected_output": "Done, Blocked and Next lines: backend done; relay timing blocked by Node 2's antenna, broken 3 Nov, replacement arriving 10 Nov; integration test next week, without a firm date.",
+      "files": [],
+      "expectations": [
+        "Uses separate Done, In progress or Blocked, and Next items, one line each",
+        "Replaces the verdict pair with separate items: backend done, firmware relay timing blocked",
+        "Names the blocker and what unblocks it with the dates: Node 2's antenna broke on 3 Nov, the replacement arrives on 10 Nov",
+        "Does not turn 'hopefully next week' into a firm date for the integration test",
+        "Removes 'Great progress this week!' and the thank-you line",
+        "Contains no em dash"
+      ]
+    }
+  ]
+}

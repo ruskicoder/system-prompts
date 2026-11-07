@@ -63,6 +63,21 @@ an era word) and a reference whose DOI does not resolve, plus a request for real
 `academic-writing`, `professional-writing`, `thesis-defense` and `concision-and-logic` each have a
 `trigger.json`.
 
+Behaviour cases added on 2026-11-07, each with a planted defect and checkable expectations:
+
+- `concision-and-logic/evals.json` (4 cases): a progress note with a scope shift, a non sequitur,
+  a mixed-level list and a restated conclusion, which the scanner cannot find; an email over the
+  150-word budget with its request at the end; a paragraph with a long aside, a short
+  `(configurable)`, an unsupported universal and two parentheses that must stay; a Gemini answer
+  with unrequested options.
+- `professional-writing/evals.json` (4 cases): an email with a parenthetical aside and a request
+  with no date, where the date must not be invented; a FAP note whose table holds targets, not
+  measurements; a PR description requested to "sound impressive"; a status update with a verdict
+  pair and a hedged next step.
+- `thesis-defense/evals.json` (4 cases): four documents that disagree on node count, coverage,
+  check-in interval, a term and two roles; a demo plan that skips F3 and shows an extra first; a
+  test log that has no battery figure; an AI-use answer that must match the written statement.
+
 Deterministic checks on the fixture: `draft_scan.py --genre academic` flags all ten tells;
 `check_refs.py` passes the real DOI and fails the fabricated one (Crossref 404). The LLM behaviour
 and trigger runs were not made on 2026-11-07: available memory was 1.1 GB, under the 3 GB limit for
