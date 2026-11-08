@@ -1,0 +1,10 @@
+# Template for .github/ci-enforcement/identities.txt, read by `check.py commits` from the BASE
+# commit. One identity per line:
+#   author: Name <email>      may author commits
+#   committer: Name <email>   may commit (rebase, cherry-pick, merge)
+#   both: Name <email>        either role
+#   <email> alone matches any name with that address.
+
+both: Do Dang Khoa <149188141+ruskicoder@users.noreply.github.com>
+# Merges and squashes made in the GitHub web interface are committed by GitHub.
+committer: GitHub <noreply@github.com>

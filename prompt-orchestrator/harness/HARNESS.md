@@ -69,6 +69,13 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 - Third-party skills the harness installs (procable) sit below these rules: when one of their
   directives conflicts with communication-tone or this overlay, communication-tone wins, and
   every change such a skill makes on its own is reported.
+- Delegating to another agent CLI runs it headless with limits: `claude -p "<task>" --allowedTools
+  "<list>" --max-turns <n>`, or `codex exec --sandbox workspace-write "<task>"`. Read progress from
+  `--output-format stream-json --verbose` (Claude) or `--json` (Codex), not from a terminal screen.
+  Never send a blind Enter or `y` to approve a prompt: read it, or rerun with the tools it needed.
+  Never pass `--dangerously-skip-permissions` or `--dangerously-bypass-approvals-and-sandbox`.
+  A missing `OPENAI_API_KEY` is not missing auth: check `~/.codex/auth.json` (a ChatGPT sign-in)
+  or `codex login status` first.
 - Before any local spawn, check available memory against the machine's limit; on a host with a
   recorded limit (for example "no local agents under 3 GB available"), do the work in-session.
 - Issues ride the PR review tick: whenever a tick, loop or sweep reviews PRs with `reviewer`, run

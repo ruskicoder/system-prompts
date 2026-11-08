@@ -1,0 +1,25 @@
+# Model ids that plan profiles, agents and workflows may name. One per line.
+# Edit this list in a reviewed pull request; CI reads it from the base commit, so a pull request
+# cannot allow its own new model.
+
+# Claude Code aliases
+fable
+opus
+sonnet
+haiku
+inherit
+
+# Anthropic API ids
+claude-fable-5-1
+claude-opus-5-5
+claude-sonnet-5-5
+claude-haiku-5-5
+
+# OpenCode provider-qualified ids
+anthropic/claude-fable-5-1
+anthropic/claude-opus-5-5
+anthropic/claude-sonnet-5-5
+anthropic/claude-haiku-5-5
+
+# Codex
+gpt-5.6-sol

@@ -1,0 +1,2 @@
+description = "Turn the repository's written rules into checks a pull request cannot skip. One rule registry (rules.yaml) lists every enforceable rule with its source skill, checker, scope and gate or advisory..."
+prompt = "This is the 'ci-enforcement' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/ci-enforcement/SKILL.md' (canonical source: 'skills/ci-enforcement.md') exactly, then apply them to: {{args}}"
