@@ -64,7 +64,8 @@ fails the job; it never passes silently.
 `prose` reads only files the pull request changed (`git diff base...head`), only prose files
 (`.md`, `.mdx`, `.markdown`, `.txt`, `.rst`). Exempt: code files, code fences and spans, block
 quotes, HTML comments, a table cell holding only a dash, generated integration folders, test
-fixtures, and files marked `origin: third-party` (vendored text stays as written).
+fixtures, files marked `origin: third-party` (vendored text stays as written), and files that
+state in their first lines that they are generated (checked at their source instead).
 
 `ui` runs `ui_probe.cjs` (Playwright and axe-core) at each project width, at 320 by 256 CSS px with
 device scale 4 (1280 by 1024 at 400 percent zoom), and in each colour scheme from the config

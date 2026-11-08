@@ -114,8 +114,8 @@ class ProseTests(unittest.TestCase):
         self.assertEqual(set(gates(out)), {"prose.em-dash", "prose.en-dash-separator",
                                            "prose.banned-opener", "prose.banned-phrase"}, out)
 
-    def test_third_party_and_code_are_exempt(self):
-        code, out = self.prose("third_party.md", "code.py")
+    def test_third_party_generated_and_code_are_exempt(self):
+        code, out = self.prose("third_party.md", "code.py", "generated.md")
         self.assertEqual((code, gates(out)), (0, []), out)
 
     def test_changed_files_only(self):

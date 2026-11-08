@@ -211,8 +211,12 @@ OPENER_RE = re.compile(
 PLACEHOLDER_CELL = re.compile(r"\|\s*[—–]\s*(?=\|)")
 
 
+GENERATED = re.compile(r"(?i)this file is (auto-?)?generated|<!--\s*generated (from|by)\b|\bdo not hand-edit\b")
+
+
 def prose_findings(path: str, text: str) -> list[Finding]:
-    if front_matter(text).get("origin") == "third-party":
+    # Vendored text stays as written; generated files are checked at their source.
+    if front_matter(text).get("origin") == "third-party" or GENERATED.search(text[:800]):
         return []
     findings = []
     masked = mask_prose(text)

@@ -74,8 +74,8 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
   `--output-format stream-json --verbose` (Claude) or `--json` (Codex), not from a terminal screen.
   Never send a blind Enter or `y` to approve a prompt: read it, or rerun with the tools it needed.
   Never pass `--dangerously-skip-permissions` or `--dangerously-bypass-approvals-and-sandbox`.
-  A missing `OPENAI_API_KEY` is not missing auth: check `~/.codex/auth.json` (a ChatGPT sign-in)
-  or `codex login status` first.
+  A missing `OPENAI_API_KEY` is not missing auth: check `~/.codex/auth.json` (or `$CODEX_HOME/auth.json`,
+  a ChatGPT sign-in) or `codex login status` first.
 - Before any local spawn, check available memory against the machine's limit; on a host with a
   recorded limit (for example "no local agents under 3 GB available"), do the work in-session.
 - Issues ride the PR review tick: whenever a tick, loop or sweep reviews PRs with `reviewer`, run
