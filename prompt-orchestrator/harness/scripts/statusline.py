@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Claude Code status line for the harness.
 
-Reads the status JSON on stdin, caches `rate_limits` for the mode hook and the context percentage for
-the canary hook, and prints one line: model, mode, 5-hour %, weekly %, context %, canary health. When
-the user config names `statusline_wrap`, that command runs first with the same input and its output is
-kept in front of the harness segment.
+Reads the status JSON on stdin, caches `rate_limits` for the mode hook, and prints one line:
+model, mode, 5-hour %, weekly %, context %. When the user config names `statusline_wrap`, that
+command runs first with the same input and its output is kept in front of the harness segment.
 """
 from __future__ import annotations
 
@@ -52,17 +51,8 @@ def main() -> int:
     mode = h.compute_mode(quota, profile["modes"])
     model = (data.get("model") or {}).get("display_name") or "?"
     ctx = (data.get("context_window") or {}).get("used_percentage")
-    sid = data.get("session_id") or "session"
-    if ctx is not None:
-        h.save_session(f"ctx-{sid}", {"ctx": float(ctx)})
     segment = (f"{model} | {profile.get('name', '?')} {mode['mode']} | 5h {h.fmt_pct(mode['five_hour'])}"
                f" | wk {h.fmt_pct(mode['weekly'])} | ctx {h.fmt_pct(ctx)}")
-    canary = h.load_session(f"canary-{sid}")
-    if canary.get("off"):
-        segment += " | canary off"
-    elif canary.get("probe"):
-        misses = int(canary.get("misses", 0))
-        segment += " | canary ok" if not misses else f" | canary {misses} miss"
     prefix = wrapped(raw)
     print(f"{prefix} | {segment}" if prefix else segment)
     return 0

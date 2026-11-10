@@ -7,9 +7,9 @@ description: >
   openers and phrases), AI attribution in commits and PR text, commit identities, model ids, and UI
   (axe-core, 24 px targets, reflow at 320 px and 400 percent zoom). Ships a pull_request workflow
   template, CODEOWNERS and branch protection templates, and a Claude Code guard that refuses admin
-  merges, skipped hooks, force pushes to protected branches and branch protection changes. Use when
-  adding or changing CI checks, a rule, branch protection or required checks, or when asked which
-  rules are enforced and how.
+  merges, skipped hooks, force pushes to protected branches and branch protection changes. On demand
+  only: enforces nothing until the user picks the rules. Use when the user asks to add or change CI
+  checks, a rule, branch protection or required checks, or asks which rules are enforced and how.
 argument-hint: "[rules | prose | attribution | commits | models | ui | secrets | unicode | install <repo>]"
 ---
 
@@ -128,14 +128,17 @@ The agent commits and pushes as `ruskicoder`, which is a repository admin. State
 
 ## Installing in a repository
 
-Only on the user's command, from inside the repository:
+Only on the user's command, from inside the repository, with the rules the user picked. No rule
+is enforced in CI until the user names it.
 
 ```bash
-python3 ~/.local/share/prompt-orchestrator/harness/scripts/harnessctl.py ci-install --dry-run
+python3 ~/.local/share/prompt-orchestrator/harness/scripts/harnessctl.py ci-install --rules commits.ai-attribution,secrets --dry-run
 ```
 
-`ci-install` vendors the checker and its scanners into `.harness/ci/` with a registry for the
-repository's profile, then adds the host's job. Nothing is committed or pushed.
+`--rules` is required: `all`, or rule ids and id prefixes from `rules.yaml`, comma separated.
+Every gate rule left out is installed as advisory: it reports and never fails a check.
+`ci-install` vendors the checker and its scanners into `.harness/ci/` with that registry, applies
+the repository's profile on top, then adds the host's job. Nothing is committed or pushed.
 
 | Remote | Writes |
 |---|---|

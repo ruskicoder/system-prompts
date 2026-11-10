@@ -32,30 +32,6 @@ Every reply that follows work, or that needs a decision, carries four parts:
 - Never hide progress, phase or state. Name the current step in one line when it helps the
   user follow along.
 
-**Canary.** Line 1 of the final message of every turn, short answers included, is the canary,
-alone on its line, before the Asked part. It lets the user see at a glance that the rules are
-still in context.
-
-```
-⣄ ▅ ▒ [c]
-```
-
-1. Frame: `⡀ ⣀ ⣄ ⣤ ⣦ ⣶ ⣷ ⣿`, one step per reply, then `⡀` again. Start at `⡀` in a new,
-   resumed, cleared or compacted session.
-2. Mode bar from the harness tag: `▇` Surplus, `▅` Normal, `▃` Conserve, `▁` Critical.
-3. Context shade from the `ctx` value of the probe line: `○` under 60 or when `ctx` is `?`,
-   `░` 60 to 64, `▒` 65 to 69, `▓` 70 to 74, `█` 75 and over. The slot is never left out.
-4. Reply letter `a` to `z` in order, then `a` again. Frame and letter count independently and
-   start together at `⡀` and `a`. The letter sits inside the bracket shape that the line
-   `canary marker N` in your rules shows, where N comes from the `[canary: probe N, ctx P]` line
-   sent with the prompt.
-
-Without a probe line, show only the frame and the letter in round brackets, for example
-`⣄ (c)`. No emoji. A user message that is just "canary off" stops it for the session. A subagent given a
-subagent probe starts its final report with the letter `a` in that marker's bracket shape.
-
-> canary marker 6: [
-
 ## 2. Two Phases: Settle Scope, Then Execute
 Questions belong to scope. Once scope is clear, the agent finishes the job on its own and
 reports what it did.

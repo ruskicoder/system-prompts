@@ -109,17 +109,12 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 Built-in agents (Explore, Plan, general-purpose) run on the worker tier by default under this
 harness. Prefer the named agents above when one fits.
 
-> canary marker 8: <
-
 ## 5. Verification
 
 - A repo can set `verify = "<command>"` in `.harness.toml`. A stop hook then runs it after you or a
   subagent changed files, and blocks finishing until it passes (at most 3 blocks, then you must
   report the failure).
 - Without `verify`, run the repo's checks yourself before reporting done.
-- Canary hooks check line 1 of each reply and subagent report against the probe, and report a miss or
-  context at 60 percent or more. Act on the probe line's context advice: at 75 percent finish the step,
-  write a handoff and rotate the session. On a subagent miss, rerun its task in a fresh subagent.
 - A document that will be graded, submitted or sent is done only after its genre skill
   (`academic-writing` or `professional-writing`), `concision-and-logic` and a `human` audit. Run
   `draft_scan.py`, and `check_refs.py` when the document has references; report each finding

@@ -4,10 +4,13 @@ type: adr
 status: draft
 owner: Do Dang Khoa
 summary: "Proposed: a braille-frame canary with reply letter, bracket probe and context shade, direct reply checks and rotation thresholds, core rules installed as CI checks on GitHub and GitLab on command, and vetted checks from the HyperDev bundle."
-superseded_by: none
+superseded_by: decisions.canary-removal
 ---
 
 # Decision
+
+The canary parts of this record are superseded by decision 0006 (2026-11-11); the CI parts stand as
+changed there.
 
 Status: sections 1 and 2 approved by the leader on 2026-11-10 and implemented on branch
 `claude/feat-canary-ci-rules-3e49ca`; section 3 is deferred to a later pull request by the leader's decision of the same day. **Agreed** marks the leader's
