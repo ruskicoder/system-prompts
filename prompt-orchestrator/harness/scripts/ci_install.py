@@ -9,6 +9,10 @@ registry for the repository's profile:
 - own (the remote owner is the account the agent signs in as): every gate rule gates.
 - external: prose style rules become advisory; attribution, secrets and invisible characters still gate.
 
+`--rules` is required and names what gates: `all`, or rule ids and prefixes such as
+`commits.ai-attribution,secrets`. Every gate rule not named is installed as advisory, so it reports but
+never fails a check.
+
 Files are written and left uncommitted; committing and pushing stay the user's call.
 """
 from __future__ import annotations
@@ -121,15 +125,38 @@ def skills_source() -> Path:
     raise SystemExit("ci-install: the ci-enforcement skill is not installed; run the installer first")
 
 
+def make_advisory(text: str, rule_id: str) -> str:
+    text, count = re.subn(rf'(- id: "{re.escape(rule_id)}"\n(?:    [a-z]+: "[^"]*"\n)*?    enforcement: )"gate"',
+                          r'\1"advisory"', text)
+    if count != 1:  # never install a registry that still gates a rule the user left out
+        raise SystemExit(f"ci-install: could not make {rule_id} advisory; rules.yaml format changed")
+    return text
+
+
 def profiled_registry(text: str, profile: str) -> str:
     if profile == "own":
         return text
     for rule_id in STYLE_RULES:
-        text, count = re.subn(rf'(- id: "{re.escape(rule_id)}"\n(?:    [a-z]+: "[^"]*"\n)*?    enforcement: )"gate"',
-                              r'\1"advisory"', text)
-        if count != 1:  # never install an "external" registry that still gates style by accident
-            raise SystemExit(f"ci-install: could not make {rule_id} advisory; rules.yaml format changed")
+        text = make_advisory(text, rule_id)
     return text
+
+
+def selected_registry(text: str, rules: str) -> tuple[str, list[str]]:
+    """Keep gating only the rules the user named; return the registry and the gate rules kept."""
+    gates = re.findall(r'- id: "([^"]+)"\n(?:    [a-z]+: "[^"]*"\n)*?    enforcement: "gate"', text)
+    picks = [p.strip() for p in rules.split(",") if p.strip()]
+    if picks == ["all"]:
+        return text, gates
+    every = re.findall(r'- id: "([^"]+)"', text)
+    unknown = [p for p in picks if not any(r == p or r.startswith(p + ".") for r in every)]
+    if not picks or unknown:
+        raise SystemExit(f"ci-install: unknown rule {', '.join(unknown) or '(none given)'}; "
+                         f"pick `all` or from: {', '.join(every)}")
+    kept = [r for r in gates if any(r == p or r.startswith(p + ".") for p in picks)]
+    for rule_id in gates:
+        if rule_id not in kept:
+            text = make_advisory(text, rule_id)
+    return text, kept
 
 
 def run(args) -> int:
@@ -148,7 +175,9 @@ def run(args) -> int:
     plan: list[tuple[Path, str, bool]] = []  # (path, content, executable)
     for rel_src, rel_dst in BUNDLE.items():
         plan.append((repo / ".harness" / "ci" / rel_dst, (src / rel_src).read_text(encoding="utf-8"), False))
-    registry = profiled_registry((src / "ci-enforcement" / "rules.yaml").read_text(encoding="utf-8"), profile)
+    registry, kept = selected_registry((src / "ci-enforcement" / "rules.yaml").read_text(encoding="utf-8"),
+                                       args.rules)
+    registry = profiled_registry(registry, profile)
     plan.append((repo / ".harness" / "ci" / "ci-enforcement" / "rules.yaml", registry, False))
     notes = []
     if kind == "github":
@@ -180,6 +209,7 @@ def run(args) -> int:
 
     print(f"ci-install: {repo}")
     print(f"  host: {kind}{' (' + host + ')' if host else ''}; profile: {profile} ({why})")
+    print(f"  gating: {', '.join(kept) or 'nothing (every rule advisory)'}")
     written = []
     for path, content, executable in plan:
         try:

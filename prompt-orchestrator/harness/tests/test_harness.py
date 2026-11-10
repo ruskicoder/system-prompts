@@ -187,159 +187,6 @@ class HookTests(TempHome):
         self.assertEqual("", self.hook("verify_gate.py", {"session_id": "s8", "cwd": str(self.home)}))
 
 
-class CanaryTests(TempHome):
-    """Canary hooks: probe injection, line-1 checks, reply scan, context levels, subagents, off switch."""
-
-    def setUp(self):
-        super().setUp()
-        import canary_gate
-        self.cg = canary_gate
-        self.marks = canary_gate.markers()
-
-    def prompt(self, sid, text="next step", **extra):
-        return self.hook("canary_gate.py", {"session_id": sid, "prompt": text, **extra}, "prompt")
-
-    def stop(self, sid, reply, **extra):
-        out = self.hook("canary_gate.py", {"session_id": sid, "last_assistant_message": reply, **extra}, "stop")
-        return json.loads(out)["systemMessage"] if out else ""
-
-    def line(self, sid, frame, letter, bar="\u2585", shade="\u25cb"):
-        shape = self.marks[h.load_session(f"canary-{sid}")["probe"]]["shape"]
-        return f"{frame} {bar} {shade} {shape}{letter}{self.cg.CLOSE[shape]}"
-
-    def test_markers_load(self):
-        self.assertEqual(8, len(self.marks))
-        self.assertTrue(all(m["shape"] in self.cg.CLOSE for m in self.marks.values()))
-
-    def test_good_sequence_is_silent_and_skips_are_reported(self):
-        self.hook("canary_gate.py", {"session_id": "c1"}, "start")
-        self.assertRegex(self.prompt("c1"), r"^\[canary: probe [1-8], ctx \?\]$")
-        self.assertEqual("", self.stop("c1", self.line("c1", "\u2840", "a") + "\nPlain answer."))
-        self.prompt("c1")
-        self.assertEqual("", self.stop("c1", self.line("c1", "\u28c0", "b") + "\nPlain answer."))
-        self.prompt("c1")
-        msg = self.stop("c1", self.line("c1", "\u28e4", "e") + "\nPlain answer.")
-        self.assertIn("frame skipped", msg)
-        self.assertIn("letter out of order", msg)
-        self.assertIn("consider rotating", msg)
-        self.assertEqual(1, h.load_session("canary-c1")["misses"])
-        self.prompt("c1")  # the next reply continues from what was shown
-        self.assertEqual("", self.stop("c1", self.line("c1", "\u28e6", "f") + "\nPlain answer."))
-
-    def test_wrong_probe_mode_and_missing_line(self):
-        self.prompt("c2")
-        probe = h.load_session("canary-c2")["probe"]
-        wrong = next(s for s in self.cg.CLOSE if s != self.marks[probe]["shape"])
-        msg = self.stop("c2", f"\u2840 \u2581 \u25cb {wrong}a{self.cg.CLOSE[wrong]}\nText.")
-        self.assertIn(f"probe {probe} answered wrong", msg)
-        self.assertIn("mode bar", msg)
-        self.prompt("c2")
-        self.assertIn("line 1 is not a canary", self.stop("c2", "Just an answer."))
-
-    def test_reply_scan_finds_rule_breaks(self):
-        self.prompt("c3")
-        reply = (self.line("c3", "\u2840", "a") + "\nLet's start. The value \u2014 shown here.\n"
-                 "**Asked:** x\n**Done:** y\n`code \u2014 ok`")
-        msg = self.stop("c3", reply)
-        for fault in ("em dash in prose", "banned opener 'Let's'", "reply contract missing State, Next"):
-            self.assertIn(fault, msg)
-        self.assertEqual([], self.cg.scan_reply("Text with `a \u2014 b` in code.", worked=False))
-        self.assertIn("emoji in the reply", self.cg.scan_reply("Done \u2705", worked=False))
-        self.assertEqual([], self.cg.scan_reply("Glyphs \u2840 \u2585 \u2592 [c] are fine.", worked=False))
-
-    def test_context_levels_advise_once(self):
-        h.save_session("ctx-c4", {"ctx": 76.0})
-        self.assertIn("rotation is mandatory", self.prompt("c4"))
-        msg = self.stop("c4", self.line("c4", "\u2840", "a", shade="\u2588") + "\nText.")
-        self.assertIn("context 76 percent: rotation is mandatory now", msg)
-        self.prompt("c4")
-        self.assertEqual("", self.stop("c4", self.line("c4", "\u28c0", "b", shade="\u2588") + "\nText."))
-        h.save_session("ctx-c4", {"ctx": 61.0})
-        self.prompt("c4")
-        self.assertIn("context shade", self.stop("c4", self.line("c4", "\u28c4", "c", shade="\u2588") + "\nText."))
-
-    def test_off_switch_session_project_and_global(self):
-        self.prompt("c5", "why is the canary off by one here?")
-        self.assertFalse(h.load_session("canary-c5").get("off"))
-        self.assertIn("off for this session", self.prompt("c5", "canary off"))
-        self.assertEqual("", self.prompt("c5"))
-        self.assertEqual("", self.stop("c5", "No canary here."))
-        status = self.hook("statusline.py", {"session_id": "c5", "context_window": {"used_percentage": 10}})
-        self.assertIn("canary off", status)
-        self.prompt("c5", "canary on")
-        self.assertTrue(h.load_session("canary-c5").get("probe"))
-        repo = self.home / "repo"
-        repo.mkdir()
-        (repo / ".harness.toml").write_text("canary = false\n")
-        self.assertEqual("", self.prompt("c6", cwd=str(repo)))
-        import contextlib
-        import io
-        with contextlib.redirect_stdout(io.StringIO()):
-            self.assertEqual(0, harnessctl.main(["canary", "off"]))
-        self.assertEqual("", self.prompt("c7"))
-
-    def test_continuation_after_a_block_tracks_without_faults(self):
-        self.prompt("c10")
-        self.assertEqual("", self.stop("c10", self.line("c10", "\u2840", "a") + "\nText."))
-        out = self.hook("canary_gate.py", {"session_id": "c10", "stop_hook_active": True,
-                                           "last_assistant_message": self.line("c10", "\u28c0", "b") + "\nMore."}, "stop")
-        self.assertEqual("", out)
-        self.prompt("c10")
-        self.assertEqual("", self.stop("c10", self.line("c10", "\u28c4", "c") + "\nText."))
-
-    def test_context_is_shown_and_judged_as_a_whole_number(self):
-        h.save_session("ctx-c11", {"ctx": 59.6})
-        self.assertIn("ctx 59]", self.prompt("c11"))
-        self.assertEqual("", self.stop("c11", self.line("c11", "\u2840", "a", shade="\u25cb") + "\nText."))
-
-    def test_project_switch_lands_before_tables(self):
-        repo = self.home / "r2"
-        repo.mkdir()
-        (repo / ".harness.toml").write_text('verify = "true"\n\n[critical]\npaths = ["x"]\n')
-        import contextlib
-        import io
-        with contextlib.redirect_stdout(io.StringIO()):
-            harnessctl.main(["canary", "off", "--project", str(repo)])
-        self.assertIs(False, h.read_toml(repo / ".harness.toml").get("canary"))
-        self.assertEqual(["x"], h.read_toml(repo / ".harness.toml")["critical"]["paths"])
-
-    def test_quoted_canary_off_is_ignored(self):
-        self.prompt("c8", 'the doc says "canary off" stops it')
-        self.assertFalse(h.load_session("canary-c8").get("off"))
-
-    def test_subagent_miss_reaches_the_lead(self):
-        out = json.loads(self.hook("canary_gate.py", {"session_id": "c9", "agent_id": "ag1",
-                                                      "agent_type": "reviewer"}, "subagent-start"))
-        self.assertIn("subagent probe", out["hookSpecificOutput"]["additionalContext"])
-        probe = h.load_session("canary-c9")["sub"]["ag1"]
-        shape = self.marks[probe]["shape"]
-        self.hook("canary_gate.py", {"session_id": "c9", "agent_id": "ag1", "agent_type": "reviewer",
-                                     "last_assistant_message": f"{shape}a{self.cg.CLOSE[shape]}\nReport."},
-                  "subagent-stop")
-        self.assertEqual("", self.hook("canary_gate.py", {"session_id": "c9"}, "agent-done"))
-        self.hook("canary_gate.py", {"session_id": "c9", "agent_id": "ag2", "agent_type": "ingest"}, "subagent-start")
-        self.hook("canary_gate.py", {"session_id": "c9", "agent_id": "ag2", "agent_type": "ingest",
-                                     "last_assistant_message": "Report without canary."}, "subagent-stop")
-        done = json.loads(self.hook("canary_gate.py", {"session_id": "c9"}, "agent-done"))
-        self.assertIn("subagent ingest answered without its canary probe",
-                      done["hookSpecificOutput"]["additionalContext"])
-
-    def test_place_markers_is_idempotent(self):
-        root = self.home / "src"
-        (root / "skills").mkdir(parents=True)
-        (root / "AGENT.md").write_text("# T\n## A\ntext\n")
-        marks = {1: {"file": "AGENT.md", "before": "## A", "shape": "["},
-                 2: {"file": "AGENT.md", "before": "END", "shape": "("}}
-        self.assertEqual(["AGENT.md"], self.cg.place_markers(root, marks))
-        self.assertEqual([], self.cg.place_markers(root, marks))
-        self.assertEqual([], self.cg.read_markers_in(root, marks))
-        marks[1]["shape"] = "<"
-        self.cg.place_markers(root, marks)
-        self.assertEqual("# T\n> canary marker 1: <\n\n## A\ntext\n\n> canary marker 2: (\n",
-                         (root / "AGENT.md").read_text())
-
-
-@unittest.skipUnless(GIT, "git unavailable")
 class CiInstallTests(TempHome):
     def repo(self, remote):
         repo = self.home / "proj"
@@ -354,7 +201,7 @@ class CiInstallTests(TempHome):
         import io
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
-            code = harnessctl.main(["ci-install", "--repo", str(repo), *extra])
+            code = harnessctl.main(["ci-install", "--repo", str(repo), *extra, *([] if "--rules" in extra else ["--rules", "all"])])
         return code, out.getvalue()
 
     def test_parse_remote(self):
@@ -366,6 +213,16 @@ class CiInstallTests(TempHome):
         self.assertEqual("other", ci_install.parse_remote("ssh://git@bitbucket.org/a/b.git")[0])
         self.assertEqual(("gitlab", "gitlab.com", "group"), ci_install.parse_remote("https://gitlab.com/group/sub/app.git"))
         self.assertEqual("team", ci_install.parse_remote("ssh://git@gitlab.example.com:2222/team/app.git")[2])
+
+    def test_rules_pick_what_gates(self):
+        repo = self.repo("git@github.com:me/app.git")
+        code, out = self.run_install(repo, "--profile", "own", "--rules", "commits.ai-attribution,secrets")
+        self.assertEqual(0, code, out)
+        self.assertIn("gating: commits.ai-attribution, secrets.pattern", out)
+        rules = (repo / ".harness" / "ci" / "ci-enforcement" / "rules.yaml").read_text()
+        self.assertRegex(rules, r'id: "prose.em-dash"\n(?:    [a-z]+: "[^"]*"\n)*?    enforcement: "advisory"')
+        with self.assertRaises(SystemExit):
+            self.run_install(repo, "--profile", "own", "--rules", "nope")
 
     def test_registry_change_that_breaks_profiling_refuses(self):
         import ci_install
@@ -516,12 +373,7 @@ class InstallerTests(TempHome):
         self.assertFalse(legacy.exists())
         self.assertEqual("claude-max", h.user_config()["profiles"]["claude"])
         self.assertTrue((ih.data_home() / "scripts" / "mode_hook.py").exists())
-        self.assertTrue((ih.data_home() / "canary.toml").exists())
-        canary_events = {event for event, groups in settings["hooks"].items()
-                         for g in groups for x in g["hooks"] if "canary_gate.py" in x["command"]}
-        self.assertEqual({"SessionStart", "UserPromptSubmit", "PostToolUse", "Stop", "SubagentStart",
-                          "SubagentStop"}, canary_events)
-        self.assertEqual(2, len(settings["hooks"]["Stop"]))
+        self.assertEqual(1, len(settings["hooks"]["Stop"]))
 
         ih.uninstall_tool("claude")
         self.assertEqual(original, json.loads((claude / "settings.json").read_text()))

@@ -91,8 +91,6 @@ Do not quote a line count, a duration, a hash or a percentage that was not
 measured. An unverified figure is worse than no figure, because it survives
 into a decision.
 
-> canary marker 7: {
-
 ## Structure
 
 Headings name a feature or a fault. A heading that could sit on any document is

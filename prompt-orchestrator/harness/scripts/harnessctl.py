@@ -6,9 +6,7 @@
     harnessctl.py usage --provider claude --json '<desktop usage tool output>'
     harnessctl.py codex-discover        fill codex-plus from the live model list
     harnessctl.py profiles              list installed profiles
-    harnessctl.py canary check|rotate [--root DIR]      marker lines in the source files
-    harnessctl.py canary on|off [--project DIR]         default on; off for one repo or for all
-    harnessctl.py ci-install [--repo DIR] [--profile own|external] [--dry-run]
+    harnessctl.py ci-install --rules all|ID[,ID...] [--repo DIR] [--profile own|external] [--dry-run]
 
 `set-profile` re-renders the installed Claude or Codex agents for the new profile, so agent
 model fields always match the active plan.
@@ -18,7 +16,6 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -139,56 +136,6 @@ def list_profiles() -> list[str]:
     return sorted(p.stem for p in h.profiles_dir().glob("*.toml"))
 
 
-def cmd_canary(args) -> int:
-    import random
-    import canary_gate as cg
-    if args.action in ("on", "off"):
-        value = args.action == "on"
-        if args.project:
-            path = Path(args.project).expanduser().resolve() / ".harness.toml"
-            text = path.read_text(encoding="utf-8") if path.exists() else ""
-            line = f"canary = {'true' if value else 'false'}"
-            if re.search(r"(?m)^canary\s*=", text):
-                text = re.sub(r"(?m)^canary\s*=.*$", line, text)
-            else:  # top-level keys must come before the first [table]
-                table = re.search(r"(?m)^\[", text)
-                at = table.start() if table else len(text.rstrip("\n"))
-                text = text[:at] + ("\n" if at and not table and text.strip() else "") + line + "\n" + text[at:]
-            path.write_text(text, encoding="utf-8")
-            print(f"canary {args.action} for {path.parent}")
-        else:
-            cfg = h.user_config()
-            cfg["canary"] = value
-            print(f"canary {args.action} for every session: {h.write_user_config(cfg)}")
-        return 0
-    root = Path(args.root).expanduser().resolve() if args.root else h.HARNESS_HOME.parent
-    toml_path = root / "harness" / "canary.toml"
-    marks = cg.markers(toml_path)
-    if not marks:
-        print(f"no markers in {toml_path}", file=sys.stderr)
-        return 2
-    if args.action == "rotate":
-        old = [marks[n]["shape"] for n in sorted(marks)]
-        shapes = list(old)
-        while shapes == old:
-            shapes = [list(cg.CLOSE)[i % len(cg.CLOSE)] for i in range(len(old))]
-            random.shuffle(shapes)
-        text = toml_path.read_text(encoding="utf-8")
-        for n, shape in zip(sorted(marks), shapes):
-            marks[n]["shape"] = shape
-            text = re.sub(rf'(\[markers\.{n}\][^\[]*?shape = ")[^"]*(")', rf"\g<1>{shape}\g<2>", text, flags=re.S)
-        toml_path.write_text(text, encoding="utf-8")
-        changed = cg.place_markers(root, marks)
-        print("rotated; changed: " + ", ".join(["harness/canary.toml", *changed]))
-        print("next: python3 tools/generate_integrations.py, then reinstall the harness")
-    problems = cg.read_markers_in(root, marks)
-    for problem in problems:
-        print(problem, file=sys.stderr)
-    if not problems:
-        print(f"{len(marks)} canary markers match {toml_path}")
-    return 1 if problems else 0
-
-
 def cmd_ci_install(args) -> int:
     import ci_install
     return ci_install.run(args)
@@ -211,13 +158,9 @@ def main(argv=None) -> int:
     p.set_defaults(func=cmd_usage)
     sub.add_parser("codex-discover").set_defaults(func=cmd_codex_discover)
     sub.add_parser("profiles").set_defaults(func=lambda a: print("\n".join(list_profiles())) or 0)
-    p = sub.add_parser("canary")
-    p.add_argument("action", choices=("check", "rotate", "on", "off"))
-    p.add_argument("--root", help="prompt-orchestrator source folder (check, rotate)")
-    p.add_argument("--project", help="repository for on/off; without it the setting is global")
-    p.set_defaults(func=cmd_canary)
     p = sub.add_parser("ci-install")
     p.add_argument("--repo", default=".")
+    p.add_argument("--rules", required=True, help="rules that gate: all, or rule ids and prefixes, comma separated")
     p.add_argument("--profile", choices=("own", "external"), help="override the ownership check")
     p.add_argument("--dry-run", action="store_true")
     p.set_defaults(func=cmd_ci_install)
