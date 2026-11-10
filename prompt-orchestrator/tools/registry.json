@@ -56,11 +56,25 @@
     "argument_hint": "<URL or browser task>"
   },
   {
+    "id": "browser-use",
+    "kind": "skill",
+    "source": "skills/browser-use.md",
+    "description": "Direct browser control via CDP for web interaction: automation, scraping, testing, screenshots, and site/app work. Also covers hosted cloud browsers for AI agents: the browser-use Python library (Browser(use_cloud=True)), Playwright, Puppeteer or any CDP client.",
+    "argument_hint": null
+  },
+  {
     "id": "build-discipline",
     "kind": "skill",
     "source": "skills/build-discipline.md",
     "description": "Build discipline for every code change. Understand first, prefer reuse over new code, fix root causes, avoid speculative structure, never simplify away safety, add one runnable check, mark deliberate shortcuts, and follow per-task-type rules for investigation, feature, migration, refactor, bug fix and verification. Use when writing, changing or reviewing code.",
     "argument_hint": null
+  },
+  {
+    "id": "ci-enforcement",
+    "kind": "skill",
+    "source": "skills/ci-enforcement.md",
+    "description": "Turn the repository's written rules into checks a pull request cannot skip. One rule registry (rules.yaml) lists every enforceable rule with its source skill, checker, scope and gate or advisory status. A standard-library checker gates prose (em dash, en dash separator, banned openers and phrases), AI attribution in commits and PR text, commit identities, model ids, and UI (axe-core, 24 px targets, reflow at 320 px and 400 percent zoom). Ships a pull_request workflow template, CODEOWNERS and branch protection templates, and a Claude Code guard that refuses admin merges, skipped hooks, force pushes to protected branches and branch protection changes. Use when adding or changing CI checks, a rule, branch protection or required checks, or when asked which rules are enforced and how.",
+    "argument_hint": "[rules | prose | attribution | commits | models | ui | secrets | unicode | install <repo>]"
   },
   {
     "id": "clean-code",

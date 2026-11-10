@@ -1,0 +1,140 @@
+# GitHub Actions template for skills/ci-enforcement. Copy to .github/workflows/ci-enforcement.yml.
+#
+# Safety properties, keep them when editing:
+#   - Trigger is pull_request, never pull_request_target: fork code never runs with a write token.
+#   - The token is read-only (permissions: contents: read) and no secret is referenced.
+#   - Every action is pinned by full commit SHA; the tag is a comment for humans.
+#   - The checker and its allowlists come from the BASE commit, so a pull request cannot weaken them.
+#     It can still edit this workflow file: CODEOWNERS on .github/ and a required check carry that part.
+#     A change to the checker takes effect after it is merged; a check the base checker lacks is skipped
+#     with a warning.
+#   - Pull request text reaches the checker only as the event file ($GITHUB_EVENT_PATH), never
+#     through ${{ }} interpolation into a shell line.
+#
+# Set CHECKER_DIR to where skills/ci-enforcement lives in the base checkout. For a repository that
+# does not carry the skill, check out ruskicoder/system-prompts at a pinned SHA instead (see the
+# commented step) and point CHECKER_DIR into it.
+
+name: ci-enforcement
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-enforcement-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: ci-enforcement-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      CHECKER_DIR: base/prompt-orchestrator/skills/ci-enforcement
+      IDENTITIES: base/.github/ci-enforcement/identities.txt
+      MODELS_ROOT: pr/prompt-orchestrator
+    steps:
+      - name: Check out the pull request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out the base commit (checker and allowlists)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+
+      # For a repository without the skill, replace the step above with:
+      # - name: Check out the pinned checker
+      #   uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      #   with:
+      #     repository: ruskicoder/system-prompts
+      #     ref: <full commit SHA>
+      #     path: checker
+      #     persist-credentials: false
+      # and set CHECKER_DIR: checker/prompt-orchestrator/skills/ci-enforcement
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Checks the base checker supports
+        run: echo "SUBCMDS=,$(python3 -B "$CHECKER_DIR/check.py" --help | grep -o '{rules,[a-z,]*}' | head -1 | tr -d '{}')," >> "$GITHUB_ENV"
+
+      - name: Rule registry
+        run: python3 -B "$CHECKER_DIR/check.py" rules
+
+      - name: Prose in changed files
+        run: python3 -B "$CHECKER_DIR/check.py" --format github prose --repo pr --base "$BASE_SHA" --head "$HEAD_SHA"
+
+      - name: AI attribution in commits and the pull request text
+        run: python3 -B "$CHECKER_DIR/check.py" --format github attribution --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" --event "$GITHUB_EVENT_PATH"
+
+      - name: Credentials in changed files
+        run: |
+          case "$SUBCMDS" in
+            *,secrets,*) python3 -B "$CHECKER_DIR/check.py" --format github secrets --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" ;;
+            *) echo "::warning::The base checker has no secrets check yet; skipped until it is merged." ;;
+          esac
+
+      - name: Invisible characters in agent rule files
+        run: |
+          case "$SUBCMDS" in
+            *,unicode,*) python3 -B "$CHECKER_DIR/check.py" --format github unicode --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" ;;
+            *) echo "::warning::The base checker has no unicode check yet; skipped until it is merged." ;;
+          esac
+
+      - name: Commit identities
+        run: python3 -B "$CHECKER_DIR/check.py" --format github commits --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" --allow-file "$IDENTITIES"
+
+      - name: Model ids
+        if: ${{ hashFiles('pr/prompt-orchestrator/harness/**') != '' }}
+        run: python3 -B "$CHECKER_DIR/check.py" --format github models --root "$MODELS_ROOT" --allow-file "$CHECKER_DIR/allowed-models.txt"
+
+  ui:
+    name: ci-enforcement-ui
+    # Runs only when the repository variable CI_ENFORCEMENT_UI_CONFIG names a JSON config
+    # (urls, widths, color_schemes). Variables are not secrets and are safe on pull_request.
+    if: ${{ vars.CI_ENFORCEMENT_UI_CONFIG != '' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CHECKER_DIR: base/prompt-orchestrator/skills/ci-enforcement
+      UI_CONFIG: pr/${{ vars.CI_ENFORCEMENT_UI_CONFIG }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Install the pinned probe tools
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.63.0 axe-core@4.14.0
+          npx playwright install --with-deps chromium
+      # Project step: build and start the app so the URLs in the config answer, for example
+      # (cd pr && npm ci --ignore-scripts && npm run build && (npm run preview &) && npx wait-on http://localhost:4173)
+      - name: Accessibility, target size and reflow
+        run: python3 -B "$CHECKER_DIR/check.py" --format github ui --config "$UI_CONFIG"

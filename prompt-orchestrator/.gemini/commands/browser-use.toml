@@ -1,0 +1,2 @@
+description = "Direct browser control via CDP for web interaction: automation, scraping, testing, screenshots, and site/app work. Also covers hosted cloud browsers for AI agents: the browser-use Python library..."
+prompt = "This is the 'browser-use' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/browser-use/SKILL.md' (canonical source: 'skills/browser-use.md') exactly, then apply them to: {{args}}"

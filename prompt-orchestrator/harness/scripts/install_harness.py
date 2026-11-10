@@ -181,7 +181,7 @@ def install_home(rec: Recorder) -> None:
                         and "available = [\"" in dest.read_text(encoding="utf-8"):
                     continue
                 shutil.copy2(src, dest)
-    for name in ("critical.toml", "HARNESS.md"):
+    for name in ("critical.toml", "canary.toml", "HARNESS.md"):
         shutil.copy2(SRC / name, home / name)
     rec.manifest["harness_home"] = str(home)
 
@@ -219,12 +219,13 @@ def merge_hooks(settings: dict, entries: dict) -> None:
             hooks[event] = kept
         else:
             del hooks[event]
-    for event, (matcher, command, timeout, label) in entries.items():
-        group = {"hooks": [{"type": "command", "command": command, "timeout": timeout,
-                            "statusMessage": f"{HOOK_TAG} {label}"}]}
-        if matcher:
-            group["matcher"] = matcher
-        hooks.setdefault(event, []).append(group)
+    for event, specs in entries.items():
+        for matcher, command, timeout, label in (specs if isinstance(specs, list) else [specs]):
+            group = {"hooks": [{"type": "command", "command": command, "timeout": timeout,
+                                "statusMessage": f"{HOOK_TAG} {label}"}]}
+            if matcher:
+                group["matcher"] = matcher
+            hooks.setdefault(event, []).append(group)
 
 
 def strip_hooks(settings: dict) -> None:
@@ -281,11 +282,17 @@ def install_claude(rec: Recorder, args) -> None:
             settings["statusLine"] = {"type": "command", "command": hook_cmd("statusline.py"), "padding": 0}
         if not args.no_hooks:
             merge_hooks(settings, {
-                "SessionStart": (None, hook_cmd("mode_hook.py", "start"), 10, "plan mode"),
-                "UserPromptSubmit": (None, hook_cmd("mode_hook.py", "prompt"), 10, "plan mode"),
+                "SessionStart": [(None, hook_cmd("mode_hook.py", "start"), 10, "plan mode"),
+                                 (None, hook_cmd("canary_gate.py", "start"), 10, "canary")],
+                "UserPromptSubmit": [(None, hook_cmd("mode_hook.py", "prompt"), 10, "plan mode"),
+                                     (None, hook_cmd("canary_gate.py", "prompt"), 10, "canary")],
                 "PreToolUse": ("Agent|Task", hook_cmd("fable_gate.py"), 10, "frontier gate"),
-                "Stop": (None, hook_cmd("verify_gate.py"), 900, "verify gate"),
-                "SubagentStop": (None, hook_cmd("verify_gate.py"), 900, "verify gate"),
+                "PostToolUse": ("Agent|Task", hook_cmd("canary_gate.py", "agent-done"), 10, "canary"),
+                "Stop": [(None, hook_cmd("verify_gate.py"), 900, "verify gate"),
+                         (None, hook_cmd("canary_gate.py", "stop"), 10, "canary")],
+                "SubagentStart": (None, hook_cmd("canary_gate.py", "subagent-start"), 10, "canary"),
+                "SubagentStop": [(None, hook_cmd("verify_gate.py"), 900, "verify gate"),
+                                 (None, hook_cmd("canary_gate.py", "subagent-stop"), 10, "canary")],
             })
     edit_json(rec, root / "settings.json", edit)
 
@@ -312,8 +319,11 @@ def install_codex(rec: Recorder, args) -> None:
     if not args.no_hooks:
         def edit(settings: dict) -> None:
             merge_hooks(settings, {
-                "SessionStart": (None, hook_cmd("mode_hook.py", "start", "--provider", "codex"), 30, "plan mode"),
-                "Stop": (None, hook_cmd("verify_gate.py"), 900, "verify gate"),
+                "SessionStart": [(None, hook_cmd("mode_hook.py", "start", "--provider", "codex"), 30, "plan mode"),
+                                 (None, hook_cmd("canary_gate.py", "start"), 10, "canary")],
+                "UserPromptSubmit": (None, hook_cmd("canary_gate.py", "prompt", "--provider", "codex"), 10, "canary"),
+                "Stop": [(None, hook_cmd("verify_gate.py"), 900, "verify gate"),
+                         (None, hook_cmd("canary_gate.py", "stop", "--provider", "codex"), 10, "canary")],
             })
         edit_json(rec, root / "hooks.json", edit)
     rec.notes.append(f"codex: {n} agents ({profile}), overlay in AGENTS.md, hooks.json")

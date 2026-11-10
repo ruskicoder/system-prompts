@@ -1,0 +1,39 @@
+# Installed by the prompt-orchestrator harness (`harnessctl.py ci-install`). Profile: {profile}.
+# Include it from .gitlab-ci.yml:
+#   include:
+#     - local: .gitlab/harness-rules.yml
+#
+# Runs in merge request pipelines only and uses no protected variables. The checker in .harness/ci/
+# comes from the merge request's base commit; until it is on the base branch, the merge request's
+# copy is used. Merge request text reaches the checker only through a file.
+
+harness-rules:
+  image: python:3.13-slim
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  variables:
+    GIT_DEPTH: "0"
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq git > /dev/null
+  script:
+    - |
+      set -eu
+      BASE="$CI_MERGE_REQUEST_DIFF_BASE_SHA"; HEAD="$CI_COMMIT_SHA"
+      if git cat-file -e "$BASE:.harness/ci/ci-enforcement/check.py" 2> /dev/null; then
+        git worktree add --detach /tmp/base "$BASE" > /dev/null
+        C=/tmp/base/.harness/ci/ci-enforcement/check.py
+      else
+        C=.harness/ci/ci-enforcement/check.py
+        echo "warning: the base branch has no checker yet; using the merge request's copy"
+      fi
+      SUBCMDS=",$(python3 -B "$C" --help | grep -o '{rules,[a-z,]*}' | head -1 | tr -d '{}'),"
+      printf '%s\n\n%s\n' "$CI_MERGE_REQUEST_TITLE" "$CI_MERGE_REQUEST_DESCRIPTION" > /tmp/mr.txt
+      python3 -B "$C" rules
+      python3 -B "$C" prose --repo . --base "$BASE" --head "$HEAD"
+      python3 -B "$C" attribution --repo . --base "$BASE" --head "$HEAD" --pr-body-file /tmp/mr.txt
+      for check in secrets unicode; do
+        case "$SUBCMDS" in
+          *,$check,*) python3 -B "$C" "$check" --repo . --base "$BASE" --head "$HEAD" ;;
+          *) echo "warning: the base checker has no $check check yet; skipped until it is merged" ;;
+        esac
+      done

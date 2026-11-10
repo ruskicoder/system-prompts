@@ -1,0 +1,10 @@
+# Template for .github/CODEOWNERS. A change to the CI, the checker or the rule registry needs a
+# review from the owner. Branch protection must set "Require review from Code Owners" for this
+# to bind. Replace the handle with a human reviewer who is not the agent identity: GitHub does
+# not let an author approve their own pull request, so with the agent and the owner on one
+# account this review cannot be given and the merge waits for an admin.
+
+/.github/                                          @ruskicoder
+/prompt-orchestrator/skills/ci-enforcement/        @ruskicoder
+/prompt-orchestrator/skills/no-ai-trailer/         @ruskicoder
+/.harness/                                         @ruskicoder

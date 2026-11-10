@@ -1,0 +1,11 @@
+[
+  {"url": "http://app/", "scheme": "light", "viewport": {"label": "w320", "width": 320, "height": 800, "scale": 1},
+   "axe": [], "scrollWidth": 320, "clientWidth": 320,
+   "targets": [
+     {"selector": "button(\"Save\")", "x": 16, "y": 100, "width": 44, "height": 44, "inline": false},
+     {"selector": "a(\"guide\")", "x": 60, "y": 60, "width": 30, "height": 18, "inline": true},
+     {"selector": "#icon", "x": 200, "y": 300, "width": 16, "height": 16, "inline": false}
+   ]},
+  {"url": "http://app/", "scheme": "light", "viewport": {"label": "zoom-400", "width": 320, "height": 256, "scale": 4},
+   "axe": [], "scrollWidth": 320, "clientWidth": 320, "targets": []}
+]

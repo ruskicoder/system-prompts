@@ -6,7 +6,7 @@ owner: Do Dang Khoa
 summary: "Optional model-tier and plan-aware layer: tiered agents, plan profiles, power modes, frontier gate, verify gate."
 kind: module
 sources: [harness/**, install/install.py, install/install-tui.*, install/install-harness.*]
-verified: {commit: 9e695a7, date: 2026-11-07}
+verified: {commit: 804713c, date: 2026-11-10}
 ---
 
 # harness
@@ -22,13 +22,16 @@ an optional layer; a core-only install behaves as before.
 - `harness/agents/*.md`: 17 canonical agents. Each declares a tier (`frontier`, `lead`, `worker`, `light`), an effort (`medium`, `high`, `xhigh`; never `low`) and read or write access.
 - `harness/profiles/*.toml`: `claude-max`, `claude-pro`, `codex-plus`, `api`, `free` map tiers to models and hold mode thresholds and fan-out caps (decision 0003).
 - `harness/scripts/`: standard-library Python 3.11+ runtime.
-  - `statusline.py` caches Claude `rate_limits` and shows model, mode, 5-hour %, weekly % and context %.
+  - `statusline.py` caches Claude `rate_limits` and the context percentage, and shows model, mode, 5-hour %, weekly %, context % and canary health (`canary ok`, `canary N miss`, `canary off`).
   - `mode_hook.py` prints the mode tag at session start and when the mode changes, records a Fable command, and handles `harness profile: <name>`. A Fable phrase counts only in the user's own words: `harness_lib.own_words` drops fenced and inline code, quoted text, block quotes and tagged blocks pasted from tools or other sessions before matching.
   - `fable_gate.py` denies frontier spawns without the user's command in the session, and Fable on profiles without included Fable unless the user said "Fable with credits".
   - `verify_gate.py` runs the repo's `verify` command on Stop and SubagentStop, blocks on failure, gives up after 3 blocks.
+  - `canary_gate.py` (decision 0005) draws a probe on each prompt (`[canary: probe N, ctx P]`, plus rotation advice from 60 percent context), checks line 1 of each reply on Stop (braille frame step, mode bar, context shade, reply letter, probe bracket against `harness/canary.toml`), scans the reply for em dashes, en dash separators, banned openers, emoji and an incomplete reply contract, and reports faults to the user in one `systemMessage`. It never blocks. SubagentStart gives each subagent its own probe; SubagentStop checks the report; PostToolUse on `Agent` tells the lead which subagents missed. Off with "canary off" for a session, `canary = false` in `.harness.toml` or the user config.
+  - `ci_install.py` backs `harnessctl.py ci-install`: vendors the `ci-enforcement` checker into `.harness/ci/` with an `own` or `external` registry and writes the GitHub or GitLab job, or local git hooks on other hosts. Run only on the user's command; nothing is committed.
   - `codex_bridge.py` reads Codex plan usage and models from `codex app-server` (`account/rateLimits/read`, `model/list`).
-  - `harnessctl.py` backs `/autosetup`: set the profile, cache usage-tool data, discover Codex models, re-render agents.
+  - `harnessctl.py` backs `/autosetup`: set the profile, cache usage-tool data, discover Codex models, re-render agents. `canary check|rotate|on|off` manages the probe markers and the switch; `ci-install` installs the rule job.
   - `render.py` renders agents per tool; `install_harness.py` installs, records a manifest and uninstalls.
+- `harness/canary.toml`: the eight probe markers (file, heading they sit before, bracket shape). `harnessctl.py canary rotate` re-draws the shapes and rewrites the marker lines.
 - `harness/skills/autosetup.md`: the `/autosetup` skill. Plans change and no local file names the plan, so hooks never detect it.
 - `harness/workflows/`: `pr-sweep` and `refactor-fanout`, started only when the user asks.
 - `harness/dist/`: generated per tool and profile by `tools/generate_integrations.py`, used by the native installers.
@@ -51,6 +54,10 @@ triggers the frontier tier.
 |---|---|---|---|---|---|---|
 | Claude Code | yes, per profile | `CLAUDE.md` import | hook | hook | hook | status line, desktop usage tool via `/autosetup` |
 | Codex | yes, per profile | `AGENTS.md` block | hook | prompt only | hook | `codex app-server` |
+
+Canary: Claude Code checks replies and subagent reports by hook; Codex checks replies only
+(UserPromptSubmit and Stop) and gets no context shade value. Every other tool carries the rule
+from communication-tone, and the user reads the frame and letter by eye.
 | OpenCode | yes, Claude model ids | `AGENTS.md` block | none | prompt only | none | none |
 | Cursor | yes, inherit; skipped when Claude agents exist (Cursor also loads `~/.claude/agents`) | rule file | none | prompt only | none | none |
 | GitHub Copilot | yes, inherit; CLI loading of user agents has a reported bug (github/copilot-cli#452) | none documented | none | none | none | none |

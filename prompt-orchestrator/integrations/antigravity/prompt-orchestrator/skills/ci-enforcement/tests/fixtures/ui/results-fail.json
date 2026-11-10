@@ -1,0 +1,11 @@
+[
+  {"url": "http://app/", "scheme": "dark", "viewport": {"label": "w320", "width": 320, "height": 800, "scale": 1},
+   "axe": [{"id": "color-contrast", "impact": "serious", "help": "Elements must meet minimum color contrast ratio thresholds", "nodes": 3}],
+   "scrollWidth": 916, "clientWidth": 320,
+   "targets": [
+     {"selector": "button(\"Bold\")", "x": 16, "y": 100, "width": 12, "height": 12, "inline": false},
+     {"selector": "button(\"Italic\")", "x": 30, "y": 100, "width": 12, "height": 12, "inline": false}
+   ]},
+  {"url": "http://app/broken", "scheme": "light", "viewport": {"label": "w768", "width": 768, "height": 800, "scale": 1},
+   "error": "net::ERR_CONNECTION_REFUSED"}
+]

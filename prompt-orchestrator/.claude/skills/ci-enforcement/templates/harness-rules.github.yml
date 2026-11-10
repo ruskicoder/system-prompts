@@ -1,0 +1,87 @@
+# Installed by the prompt-orchestrator harness (`harnessctl.py ci-install`). Profile: {profile}.
+#
+# Safety properties, keep them when editing:
+#   - Trigger is pull_request, never pull_request_target: fork code never runs with a write token.
+#   - The token is read-only (permissions: contents: read) and no secret is referenced.
+#   - Every action is pinned by full commit SHA; the tag is a comment for humans.
+#   - The checker in .harness/ci/ comes from the BASE commit, so a pull request cannot weaken it. It
+#     can still edit this workflow file: CODEOWNERS on .github/ and .harness/ and a required check carry
+#     that part. Until the checker is on the base branch, the pull request's copy is used; a check the
+#     base checker lacks is skipped with a warning.
+#   - Pull request text reaches the checker only as the event file ($GITHUB_EVENT_PATH).
+
+name: harness-rules
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harness-rules-${{ github.event.pull_request.number }}-${{ github.event.action }}
+  cancel-in-progress: true
+
+jobs:
+  rules:
+    name: harness-rules
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Check out the pull request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out the base commit (checker)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Pick the checker
+        run: |
+          src=base
+          if [ ! -f base/.harness/ci/ci-enforcement/check.py ]; then
+            src=pr
+            echo "::warning::The base branch has no checker yet; using the pull request's copy for this run."
+          fi
+          {
+            echo "CHECKER=$src/.harness/ci/ci-enforcement/check.py"
+            echo "SUBCMDS=,$(python3 -B "$src/.harness/ci/ci-enforcement/check.py" --help | grep -o '{rules,[a-z,]*}' | head -1 | tr -d '{}'),"
+          } >> "$GITHUB_ENV"
+
+      - name: Rule registry
+        run: python3 -B "$CHECKER" rules
+
+      - name: Prose in changed files
+        run: python3 -B "$CHECKER" --format github prose --repo pr --base "$BASE_SHA" --head "$HEAD_SHA"
+
+      - name: AI attribution in commits and the pull request text
+        run: python3 -B "$CHECKER" --format github attribution --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" --event "$GITHUB_EVENT_PATH"
+
+      - name: Credentials in changed files
+        run: |
+          case "$SUBCMDS" in
+            *,secrets,*) python3 -B "$CHECKER" --format github secrets --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" ;;
+            *) echo "::warning::The base checker has no secrets check yet; skipped until it is merged." ;;
+          esac
+
+      - name: Invisible characters in agent rule files
+        run: |
+          case "$SUBCMDS" in
+            *,unicode,*) python3 -B "$CHECKER" --format github unicode --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" ;;
+            *) echo "::warning::The base checker has no unicode check yet; skipped until it is merged." ;;
+          esac
