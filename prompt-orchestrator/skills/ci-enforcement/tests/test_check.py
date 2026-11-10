@@ -48,8 +48,12 @@ class GitRepo:
         self.commit("base", OWNER, OWNER)
 
     def git(self, *argv: str, env: dict | None = None) -> str:
+        # A default identity, so commits work on CI runners that have no global git user.
+        name, email = check.parse_identity(OWNER)
+        identity = {"GIT_AUTHOR_NAME": name, "GIT_AUTHOR_EMAIL": email,
+                    "GIT_COMMITTER_NAME": name, "GIT_COMMITTER_EMAIL": email}
         return subprocess.run(["git", "-C", str(self.root), *argv], check=True, capture_output=True,
-                              text=True, env={**os.environ, **(env or {})}).stdout.strip()
+                              text=True, env={**os.environ, **identity, **(env or {})}).stdout.strip()
 
     def commit(self, message: str, author: str, committer: str) -> str:
         an, ae = check.parse_identity(author)
