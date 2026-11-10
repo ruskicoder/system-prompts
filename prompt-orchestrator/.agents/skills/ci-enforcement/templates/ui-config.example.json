@@ -1,0 +1,7 @@
+{
+  "_comment": "Config for check.py ui. widths are the project's breakpoints in CSS px; the 400 percent zoom case (1280 px at 4x, a 320 px wide viewport) is always added.",
+  "urls": ["http://localhost:4173/", "http://localhost:4173/settings"],
+  "widths": [320, 768, 1280],
+  "height": 800,
+  "color_schemes": ["light", "dark"]
+}

@@ -7,8 +7,8 @@ summary: "Install layout, runtime state, hook contracts and session flow."
 ---
 
 ## Structure
-- Source: `harness/` in the repo. Installed home: `~/.local/share/prompt-orchestrator/harness/` (`%LOCALAPPDATA%\prompt-orchestrator\harness\` on Windows) holds `scripts/`, `profiles/`, `agents/`, `skills/`, `critical.toml` and `HARNESS.md`. Hooks run from there.
-- User config: `~/.config/prompt-orchestrator/harness.toml` (`[profiles] claude`, `codex`, `plan_source`, `plan_set_at`, `statusline_wrap`). Repo config: `.harness.toml` (`verify`, `verify_timeout`, `profile`, `[critical]`).
+- Source: `harness/` in the repo. Installed home: `~/.local/share/prompt-orchestrator/harness/` (`%LOCALAPPDATA%\prompt-orchestrator\harness\` on Windows) holds `scripts/`, `profiles/`, `agents/`, `skills/`, `critical.toml`, `canary.toml` and `HARNESS.md`. Hooks run from there.
+- User config: `~/.config/prompt-orchestrator/harness.toml` (`[profiles] claude`, `codex`, `plan_source`, `plan_set_at`, `statusline_wrap`, `canary`). Repo config: `.harness.toml` (`verify`, `verify_timeout`, `profile`, `canary`, `ci_profile`, `[critical]`).
 - State: quota cache `~/.cache/prompt-orchestrator/quota-<provider>.json`; sessions, Fable run count, install manifest and backups under `~/.local/state/prompt-orchestrator/`. `PO_HARNESS_HOME` relocates all of them (tests use it).
 - Profile order: session override, repo `.harness.toml`, user config, fallback (`claude-pro` or `codex-plus`) with a tag asking for `/autosetup`.
 
@@ -18,15 +18,16 @@ summary: "Install layout, runtime state, hook contracts and session flow."
 3. UserPromptSubmit: `mode_hook.py prompt` records a Fable command or a session profile, and prints a tag only on change.
 4. PreToolUse `Agent|Task`: `fable_gate.py` denies unauthorized frontier spawns and counts allowed ones.
 5. Stop and SubagentStop: `verify_gate.py` fingerprints the git tree and runs `verify` when it changed since the last pass.
+6. Canary (decision 0005), beside the hooks above: SessionStart restarts the frame and letter cycle; UserPromptSubmit draws a probe and injects `[canary: probe N, ctx P]` with the context percentage the status line cached; Stop checks line 1 and scans the reply, then reports faults or a new context level in one `systemMessage`; SubagentStart and SubagentStop give and check a subagent probe; PostToolUse `Agent|Task` passes subagent misses to the lead. Canary state lives in its own session file (`canary-<session>`), the context cache in `ctx-<session>`, so parallel hooks on one event never write the same file.
 
 ## States
 Mode is computed per call from the cache; nothing persists except `last_mode` per session, so a
 stale cache degrades to Normal. Hook scripts exit 0 on internal errors so a broken harness never
-blocks work; the only deliberate blocks are the frontier gate and a failed verify.
+blocks work; the only deliberate blocks are the frontier gate and a failed verify. The canary never blocks.
 
 ## Install
 `install_harness.py` writes only files that carry the marker `prompt-orchestrator-harness`, skips
-existing files without it, backs up `settings.json` and `hooks.json` before editing, and records
+existing files without it, backs up `settings.json` and `hooks.json` before editing, registers several hook commands per event where needed (mode and canary, verify and canary), and records
 every change in the manifest. Uninstall removes marked files and blocks, removes only harness hook
 entries, restores the previous `CLAUDE_CODE_SUBAGENT_MODEL` and status line, restores the legacy
 Kiro rules file, and removes the harness home when no tool remains.

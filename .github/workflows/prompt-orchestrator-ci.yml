@@ -1,0 +1,139 @@
+# Pull request checks for prompt-orchestrator: code quality and the rule gate.
+#
+# Safety properties, keep them when editing:
+#   - Trigger is pull_request, never pull_request_target: fork code never runs with a write token.
+#   - The token is read-only (permissions: contents: read) and no secret is referenced.
+#   - Every action is pinned by full commit SHA; the tag is a comment for humans.
+#   - The rule gate runs the checker and allowlists from the BASE commit, so a pull request cannot
+#     weaken the checker or its allowlists. It can still edit this workflow file, so CODEOWNERS on
+#     .github/ and a required check carry that part. Until the checker exists on the base branch, the
+#     gate falls back to the pull request's copy and prints a warning; a check the base checker does not
+#     have yet is skipped with a warning.
+#   - Pull request text reaches the checker only as the event file ($GITHUB_EVENT_PATH).
+
+name: prompt-orchestrator-ci
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prompt-orchestrator-ci-${{ github.event.pull_request.number }}-${{ github.event.action == 'edited' && 'meta' || 'code' }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: quality
+    # A title or body edit changes no code.
+    if: ${{ github.event.action != 'edited' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: prompt-orchestrator
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Install the validator dependency
+        run: python3 -m pip install --disable-pip-version-check --no-input "pyyaml==6.0.2"
+
+      - name: Generated integrations match their sources
+        run: |
+          python3 -B tools/generate_integrations.py > /dev/null
+          if [ -n "$(git status --porcelain -- .)" ]; then
+            git status --porcelain -- .
+            echo "::error::Generated files are stale. Run python3 tools/generate_integrations.py and commit the result."
+            exit 1
+          fi
+
+      - name: Skill, workflow and harness validator
+        run: python3 -B skills/validate_skills.py
+
+      - name: Unit tests
+        run: |
+          for d in harness/tests install skills/academic-writing/scripts skills/architecture-diagrams/scripts \
+                   skills/ci-enforcement/tests skills/concision-and-logic/scripts skills/docs-scaffold/scripts \
+                   skills/human/scripts skills/no-ai-trailer/scripts skills/skill-creator/scripts; do
+            echo "::group::$d"
+            python3 -B -m unittest discover -s "$d" -t "$d" || { echo "::error::unit tests failed in $d"; exit 1; }
+            echo "::endgroup::"
+          done
+
+  gate:
+    name: ci-enforcement-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Check out the pull request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out the base commit (checker and allowlists)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Pick the checker
+        run: |
+          src=base
+          if [ ! -f base/prompt-orchestrator/skills/ci-enforcement/check.py ]; then
+            src=pr
+            echo "::warning::The base branch has no checker yet; using the pull request's copy for this run."
+          fi
+          {
+            echo "CHECKER_DIR=$src/prompt-orchestrator/skills/ci-enforcement"
+            echo "IDENTITIES=$src/.github/ci-enforcement/identities.txt"
+            echo "SUBCMDS=,$(python3 -B "$src/prompt-orchestrator/skills/ci-enforcement/check.py" --help | grep -o '{rules,[a-z,]*}' | head -1 | tr -d '{}'),"
+          } >> "$GITHUB_ENV"
+
+      - name: Rule registry
+        run: python3 -B "$CHECKER_DIR/check.py" rules
+
+      - name: Prose in changed files
+        run: python3 -B "$CHECKER_DIR/check.py" --format github prose --repo pr --base "$BASE_SHA" --head "$HEAD_SHA"
+
+      - name: AI attribution in commits and the pull request text
+        run: python3 -B "$CHECKER_DIR/check.py" --format github attribution --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" --event "$GITHUB_EVENT_PATH"
+
+      - name: Credentials in changed files
+        run: |
+          case "$SUBCMDS" in
+            *,secrets,*) python3 -B "$CHECKER_DIR/check.py" --format github secrets --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" ;;
+            *) echo "::warning::The base checker has no secrets check yet; skipped until it is merged." ;;
+          esac
+
+      - name: Invisible characters in agent rule files
+        run: |
+          case "$SUBCMDS" in
+            *,unicode,*) python3 -B "$CHECKER_DIR/check.py" --format github unicode --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" ;;
+            *) echo "::warning::The base checker has no unicode check yet; skipped until it is merged." ;;
+          esac
+
+      - name: Commit identities
+        run: python3 -B "$CHECKER_DIR/check.py" --format github commits --repo pr --base "$BASE_SHA" --head "$HEAD_SHA" --allow-file "$IDENTITIES"
+
+      - name: Model ids
+        run: python3 -B "$CHECKER_DIR/check.py" --format github models --root pr/prompt-orchestrator --allow-file "$CHECKER_DIR/allowed-models.txt"

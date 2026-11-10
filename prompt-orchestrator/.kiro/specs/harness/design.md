@@ -73,6 +73,8 @@ harness/
     mode_hook.py             SessionStart and UserPromptSubmit
     fable_gate.py            PreToolUse on Agent
     verify_gate.py           Stop and SubagentStop (Claude and Codex input)
+    canary_gate.py           canary: probe, reply check, subagent probe (decision 0005)
+    ci_install.py            harnessctl ci-install: rule job for GitHub, GitLab or local hooks
     codex_bridge.py          app-server: rateLimits and model list
     install_harness.py       per-tool install, settings merge, backup, uninstall
     render.py                agent renderers, used by the generator
@@ -176,7 +178,9 @@ The mode hook adds one suggestion line when `plan_set_at` is older than 30 days 
 | UserPromptSubmit | `mode_hook.py prompt` | `session_id`, `prompt` (read `user_input` as fallback) | tag only on mode change, Fable command or session profile override |
 | PreToolUse `Agent\|Task` | `fable_gate.py` | `tool_input.subagent_type`, `tool_input.model` | JSON `permissionDecision: deny` with reason, or record a frontier run |
 | Stop, SubagentStop | `verify_gate.py` | `session_id`, `agent_id`, `cwd`, `stop_hook_active` when present | JSON `decision: block` with failing output, or exit 0 |
-| statusLine | `statusline.py` | full status JSON | one display line; writes cache |
+| SessionStart, UserPromptSubmit, Stop | `canary_gate.py start`, `prompt`, `stop` | `session_id`, `prompt`, `last_assistant_message`, `stop_hook_active`, `transcript_path` | probe line on the prompt; JSON `systemMessage` with faults on Stop; never blocks |
+| SubagentStart, SubagentStop, PostToolUse `Agent\|Task` | `canary_gate.py subagent-start`, `subagent-stop`, `agent-done` | `agent_id`, `agent_type`, `last_assistant_message` | `additionalContext` probe for the subagent; misses passed to the lead as `additionalContext` |
+| statusLine | `statusline.py` | full status JSON | one display line with canary health; writes quota and context caches |
 
 Fable command detection: case-insensitive match of the profile's phrases ("spin up fable", "use fable", "fable with credits", "critical-architect", "critical-reviewer") in the user prompt. Authorization lasts for the session.
 

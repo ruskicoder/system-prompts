@@ -84,3 +84,22 @@ Navigate, interact with, and extract information from web pages programmatically
 - Use file tools for local file reading
 - Use API tools for known API endpoints
 - Browser is for interactive web apps and complex page interactions
+
+## Browser Use CLI
+- `skills/browser-use.md` is the vetted upstream skill for the `browser-use` CLI, adopted unchanged,
+  cloud browser suggestions included.
+- Run it with anonymized telemetry off: `ANONYMIZED_TELEMETRY=false` in the agent's environment
+  (Claude Code `env` in `~/.claude/settings.json`, and the Codex environment).
+- Install the pinned CLI version recorded in the vetting report, not the latest.
+
+## Desktop Applications
+Rules for driving a native desktop application through a desktop automation driver (accessibility
+tree, window capture, synthetic input).
+
+| Rule | What to do |
+|------|------------|
+| Element over coordinate | Act on an element from the latest accessibility snapshot. Use a pixel position only when the element has no accessible handle, and take it from a fresh capture of the same window |
+| Background input first | Send input to the target window without raising or focusing it. Use foreground or desktop-wide input only after the background route was refused, and only when the user allowed visible control |
+| Read the verdict, then re-capture | Read the result the driver returns for each action (done, refused, unverifiable). Before any retry, capture the window again and check whether the first attempt already changed it. Never replay an action whose outcome is unknown |
+| Hands off sensitive dialogs | Never click or type into a permission, password, payment or two-factor dialog. Stop and hand it to the user |
+| Stay on the current desktop | Never switch virtual desktops, workspaces or Spaces. If the target window is on another one, ask the user to bring it over |

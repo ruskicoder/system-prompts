@@ -69,6 +69,13 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 - Third-party skills the harness installs (procable) sit below these rules: when one of their
   directives conflicts with communication-tone or this overlay, communication-tone wins, and
   every change such a skill makes on its own is reported.
+- Delegating to another agent CLI runs it headless with limits: `claude -p "<task>" --allowedTools
+  "<list>" --max-turns <n>`, or `codex exec --sandbox workspace-write "<task>"`. Read progress from
+  `--output-format stream-json --verbose` (Claude) or `--json` (Codex), not from a terminal screen.
+  Never send a blind Enter or `y` to approve a prompt: read it, or rerun with the tools it needed.
+  Never pass `--dangerously-skip-permissions` or `--dangerously-bypass-approvals-and-sandbox`.
+  A missing `OPENAI_API_KEY` is not missing auth: check `~/.codex/auth.json` (or `$CODEX_HOME/auth.json`,
+  a ChatGPT sign-in) or `codex login status` first.
 - Before any local spawn, check available memory against the machine's limit; on a host with a
   recorded limit (for example "no local agents under 3 GB available"), do the work in-session.
 - Issues ride the PR review tick: whenever a tick, loop or sweep reviews PRs with `reviewer`, run
@@ -102,12 +109,17 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 Built-in agents (Explore, Plan, general-purpose) run on the worker tier by default under this
 harness. Prefer the named agents above when one fits.
 
+> canary marker 8: <
+
 ## 5. Verification
 
 - A repo can set `verify = "<command>"` in `.harness.toml`. A stop hook then runs it after you or a
   subagent changed files, and blocks finishing until it passes (at most 3 blocks, then you must
   report the failure).
 - Without `verify`, run the repo's checks yourself before reporting done.
+- Canary hooks check line 1 of each reply and subagent report against the probe, and report a miss or
+  context at 60 percent or more. Act on the probe line's context advice: at 75 percent finish the step,
+  write a handoff and rotate the session. On a subagent miss, rerun its task in a fresh subagent.
 - A document that will be graded, submitted or sent is done only after its genre skill
   (`academic-writing` or `professional-writing`), `concision-and-logic` and a `human` audit. Run
   `draft_scan.py`, and `check_refs.py` when the document has references; report each finding
