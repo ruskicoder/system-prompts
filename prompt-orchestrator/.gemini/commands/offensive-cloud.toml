@@ -1,0 +1,2 @@
+description = "Cloud security attack methodology covering AWS, Azure, and GCP. Includes credential harvesting (IMDS, ~/.aws, env vars, leaked CI secrets, instance roles), enumeration with cloud-specific tools (pacu..."
+prompt = "This is the 'offensive-cloud' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-cloud/SKILL.md' (canonical source: 'skills/offensive-cloud.md') exactly, then apply them to: {{args}}"

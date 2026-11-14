@@ -1,0 +1,2 @@
+description = "Systematic bug identification methodology: source code review patterns, black-box testing strategies, taint analysis, dangerous function hunting, data flow tracing, and automated scanning setup. Use..."
+prompt = "This is the 'offensive-bug-identification' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-bug-identification/SKILL.md' (canonical source: 'skills/offensive-bug-identification.md') exactly, then apply them to: {{args}}"

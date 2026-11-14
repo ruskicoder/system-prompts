@@ -1,0 +1,2 @@
+description = "Insecure deserialization exploitation across Java, PHP, .NET, Python, Node.js, and Ruby. Covers gadget chain construction with ysoserial/phpggc/ysoserial.net, ObjectInputStream and BinaryFormatter..."
+prompt = "This is the 'offensive-deserialization' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-deserialization/SKILL.md' (canonical source: 'skills/offensive-deserialization.md') exactly, then apply them to: {{args}}"

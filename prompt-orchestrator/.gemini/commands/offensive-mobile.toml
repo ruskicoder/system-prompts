@@ -1,0 +1,2 @@
+description = "Mobile (Android + iOS) application penetration testing methodology. Covers static analysis (apktool/jadx for Android, class-dump/Hopper/IDA for iOS), dynamic instrumentation with Frida and Objection..."
+prompt = "This is the 'offensive-mobile' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-mobile/SKILL.md' (canonical source: 'skills/offensive-mobile.md') exactly, then apply them to: {{args}}"

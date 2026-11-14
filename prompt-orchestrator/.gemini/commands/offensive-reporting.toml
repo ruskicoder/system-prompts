@@ -1,0 +1,2 @@
+description = "Penetration test and red team report writing methodology. Covers executive summary structuring (risk-led narrative for non-technical readers), technical finding format (title, severity, affected..."
+prompt = "This is the 'offensive-reporting' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-reporting/SKILL.md' (canonical source: 'skills/offensive-reporting.md') exactly, then apply them to: {{args}}"

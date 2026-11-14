@@ -1,0 +1,2 @@
+description = "Comprehensive offensive methodology for software supply chain attacks covering the full kill chain from reconnaissance through exploitation. Addresses dependency confusion across npm, PyPI, and NuGet..."
+prompt = "This is the 'offensive-supply-chain' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-supply-chain/SKILL.md' (canonical source: 'skills/offensive-supply-chain.md') exactly, then apply them to: {{args}}"

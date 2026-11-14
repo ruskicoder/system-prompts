@@ -1,0 +1,2 @@
+description = "Shellcode development reference for offensive security engagements. Use when writing custom x86/x64 shellcode, implementing position-independent code (PIC), building shellcode loaders, evading AV/EDR..."
+prompt = "This is the 'offensive-shellcode' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-shellcode/SKILL.md' (canonical source: 'skills/offensive-shellcode.md') exactly, then apply them to: {{args}}"

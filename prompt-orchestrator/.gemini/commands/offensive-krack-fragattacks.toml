@@ -1,0 +1,2 @@
+description = "KRACK (CVE-2017-13077..082) and FragAttacks (CVE-2020-24586..588 + 26139-26147),  key reinstallation, fragmentation, and aggregation attacks against WPA2 supplicants. Covers Vanhoef's test scripts..."
+prompt = "This is the 'offensive-krack-fragattacks' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-krack-fragattacks/SKILL.md' (canonical source: 'skills/offensive-krack-fragattacks.md') exactly, then apply them to: {{args}}"

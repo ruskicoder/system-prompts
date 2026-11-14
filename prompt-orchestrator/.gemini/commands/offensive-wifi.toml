@@ -1,0 +1,2 @@
+description = "Wireless / 802.11 attack methodology for red team engagements and wireless security assessments. Covers monitor-mode setup, WPA/WPA2-PSK handshake capture and PMKID attacks, WPA3 SAE downgrade and..."
+prompt = "This is the 'offensive-wifi' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-wifi/SKILL.md' (canonical source: 'skills/offensive-wifi.md') exactly, then apply them to: {{args}}"

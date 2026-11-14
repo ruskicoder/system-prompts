@@ -1,0 +1,2 @@
+description = "HTTP request smuggling checklist: CL.TE, TE.CL, TE.TE variants, detection with timing and differential responses, WAF bypass, cache poisoning, credential hijacking, and request smuggling via HTTP/2..."
+prompt = "This is the 'offensive-request-smuggling' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-request-smuggling/SKILL.md' (canonical source: 'skills/offensive-request-smuggling.md') exactly, then apply them to: {{args}}"

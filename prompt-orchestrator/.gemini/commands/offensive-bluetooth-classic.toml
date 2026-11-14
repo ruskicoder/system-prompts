@@ -1,0 +1,2 @@
+description = "Bluetooth Classic (BR/EDR) attack methodology,  device discovery, service enumeration via SDP, LMP/L2CAP layer attacks, legacy PIN cracking (BlueBorne / KNOB), Bluetooth file-transfer abuse..."
+prompt = "This is the 'offensive-bluetooth-classic' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-bluetooth-classic/SKILL.md' (canonical source: 'skills/offensive-bluetooth-classic.md') exactly, then apply them to: {{args}}"

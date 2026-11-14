@@ -1,0 +1,2 @@
+description = "Evil Twin / KARMA / Mana access point methodology,  rogue AP construction with hostapd-mana / wifiphisher / airgeddon, KARMA universal probe response, Mana selective probe response, captive portal..."
+prompt = "This is the 'offensive-evil-twin' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-evil-twin/SKILL.md' (canonical source: 'skills/offensive-evil-twin.md') exactly, then apply them to: {{args}}"

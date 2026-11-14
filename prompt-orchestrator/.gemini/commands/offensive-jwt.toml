@@ -1,0 +1,2 @@
+description = "JWT attack methodology for penetration testers. Covers algorithm confusion (alg:none, RS256→HS256), weak HMAC secret brute force, kid parameter injection (SQLi, path traversal), jku/x5u/jwk header..."
+prompt = "This is the 'offensive-jwt' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-jwt/SKILL.md' (canonical source: 'skills/offensive-jwt.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Server-Side Request Forgery testing checklist: SSRF discovery, blind SSRF with out-of-band, cloud metadata endpoints (AWS/GCP/Azure), SSRF filter bypass techniques (IP encoding, DNS rebinding..."
+prompt = "This is the 'offensive-ssrf' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-ssrf/SKILL.md' (canonical source: 'skills/offensive-ssrf.md') exactly, then apply them to: {{args}}"

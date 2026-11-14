@@ -1,0 +1,2 @@
+description = "Advanced API exploitation methodology focused on business logic abuse and sophisticated attack patterns that bypass traditional security controls. Covers business logic bypass through API call..."
+prompt = "This is the 'offensive-api-abuse' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-api-abuse/SKILL.md' (canonical source: 'skills/offensive-api-abuse.md') exactly, then apply them to: {{args}}"

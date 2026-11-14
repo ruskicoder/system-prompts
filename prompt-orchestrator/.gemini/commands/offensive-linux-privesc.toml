@@ -1,0 +1,2 @@
+description = "Comprehensive Linux privilege escalation methodology for offensive security engagements. Covers the full attack surface from a low-privilege shell to root: SUID/SGID binary abuse via GTFOBins, Linux..."
+prompt = "This is the 'offensive-linux-privesc' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-linux-privesc/SKILL.md' (canonical source: 'skills/offensive-linux-privesc.md') exactly, then apply them to: {{args}}"

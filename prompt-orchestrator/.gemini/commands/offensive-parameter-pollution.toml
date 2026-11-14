@@ -1,0 +1,2 @@
+description = "HTTP parameter pollution (HPP) checklist: duplicate parameter injection, backend vs frontend parsing differences, WAF bypass via HPP, server-side vs client-side HPP, and practical exploitation..."
+prompt = "This is the 'offensive-parameter-pollution' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-parameter-pollution/SKILL.md' (canonical source: 'skills/offensive-parameter-pollution.md') exactly, then apply them to: {{args}}"

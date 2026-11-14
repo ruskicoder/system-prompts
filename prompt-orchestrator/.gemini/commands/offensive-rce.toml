@@ -1,0 +1,2 @@
+description = "Remote Code Execution testing checklist: OS command injection, SSTI-to-RCE, deserialization RCE, file upload RCE, XXE with SSRF to RCE, RCE via dependency confusion, and CVE-based RCE patterns. Use..."
+prompt = "This is the 'offensive-rce' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-rce/SKILL.md' (canonical source: 'skills/offensive-rce.md') exactly, then apply them to: {{args}}"

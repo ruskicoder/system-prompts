@@ -1,0 +1,2 @@
+description = "Week 4 exploit development curriculum. Crash triage and analysis methodology: WinDbg/GDB analysis, ASAN/MSAN output interpretation, exploitability assessment, register/stack trace reading, root cause..."
+prompt = "This is the 'offensive-crash-analysis' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-crash-analysis/SKILL.md' (canonical source: 'skills/offensive-crash-analysis.md') exactly, then apply them to: {{args}}"

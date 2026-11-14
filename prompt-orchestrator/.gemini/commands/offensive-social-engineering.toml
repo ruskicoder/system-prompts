@@ -1,0 +1,2 @@
+description = "Social engineering attack techniques beyond email phishing for authorized red team and physical penetration testing engagements. Covers pretexting methodology (persona creation, authority and urgency..."
+prompt = "This is the 'offensive-social-engineering' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-social-engineering/SKILL.md' (canonical source: 'skills/offensive-social-engineering.md') exactly, then apply them to: {{args}}"

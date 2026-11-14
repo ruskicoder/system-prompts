@@ -1,0 +1,2 @@
+description = "OAuth 2.0 attack checklist: authorization code interception, redirect_uri bypass, CSRF on OAuth flow, state parameter abuse, open redirector chaining, token leakage via Referer, PKCE bypass, and scope..."
+prompt = "This is the 'offensive-oauth' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-oauth/SKILL.md' (canonical source: 'skills/offensive-oauth.md') exactly, then apply them to: {{args}}"

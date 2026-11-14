@@ -1,0 +1,2 @@
+description = "WPA/WPA2/WPA3-Enterprise (802.1X / EAP) attack methodology,  EAP method identification (PEAP-MSCHAPv2, EAP-TTLS, EAP-TLS, EAP-GTC, EAP-PWD, EAP-FAST), evil-twin RADIUS attacks with eaphammer for..."
+prompt = "This is the 'offensive-wpa-enterprise' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-wpa-enterprise/SKILL.md' (canonical source: 'skills/offensive-wpa-enterprise.md') exactly, then apply them to: {{args}}"

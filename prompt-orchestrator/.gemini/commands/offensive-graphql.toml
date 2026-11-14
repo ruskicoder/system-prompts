@@ -1,0 +1,2 @@
+description = "Offensive methodology for attacking GraphQL APIs during penetration tests and bug bounty engagements. Covers the full attack lifecycle: endpoint discovery, introspection abuse and blind schema..."
+prompt = "This is the 'offensive-graphql' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-graphql/SKILL.md' (canonical source: 'skills/offensive-graphql.md') exactly, then apply them to: {{args}}"

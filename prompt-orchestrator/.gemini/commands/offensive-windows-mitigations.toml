@@ -1,0 +1,2 @@
+description = "Deep-dive on Windows exploit mitigations: ASLR, DEP/NX, CFG, CET/Shadow Stack, SEHOP, Heap Guard, ACG, Arbitrary Code Guard. Covers both the protection mechanism and known bypass techniques. Use when..."
+prompt = "This is the 'offensive-windows-mitigations' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-windows-mitigations/SKILL.md' (canonical source: 'skills/offensive-windows-mitigations.md') exactly, then apply them to: {{args}}"

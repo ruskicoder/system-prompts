@@ -1,0 +1,2 @@
+description = "EDR evasion offensive checklist: hook unhooking (user/kernel), direct syscalls, PPID spoofing, process injection variants, AMSI bypass, ETW patching, memory encryption, and behavior-based evasion. Use..."
+prompt = "This is the 'offensive-edr-evasion' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-edr-evasion/SKILL.md' (canonical source: 'skills/offensive-edr-evasion.md') exactly, then apply them to: {{args}}"

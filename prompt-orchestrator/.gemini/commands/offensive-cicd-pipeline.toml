@@ -1,0 +1,2 @@
+description = "Comprehensive CI/CD pipeline exploitation methodology covering GitHub Actions injection vectors (expression injection via PR titles and issue bodies, workflow_run event abuse, GITHUB_TOKEN..."
+prompt = "This is the 'offensive-cicd-pipeline' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-cicd-pipeline/SKILL.md' (canonical source: 'skills/offensive-cicd-pipeline.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "XML External Entity injection testing checklist: classic XXE, blind XXE (out-of-band), XXE via file upload (SVG/docx), XXE in SOAP/REST, error-based XXE, XInclude attacks, and XXE filter bypass. Use..."
+prompt = "This is the 'offensive-xxe' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-xxe/SKILL.md' (canonical source: 'skills/offensive-xxe.md') exactly, then apply them to: {{args}}"

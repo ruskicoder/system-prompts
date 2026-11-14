@@ -1,0 +1,2 @@
+description = "Low-level keylogger architecture design: kernel driver hooks (WH_KEYBOARD_LL, SetWindowsHookEx), ETW-based input capture, user-mode vs kernel-mode approaches, stealth techniques, and data..."
+prompt = "This is the 'offensive-keylogger-arch' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-keylogger-arch/SKILL.md' (canonical source: 'skills/offensive-keylogger-arch.md') exactly, then apply them to: {{args}}"
