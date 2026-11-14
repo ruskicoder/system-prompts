@@ -1,7 +1,7 @@
 {
   "name": "prompt-orchestrator",
   "description": "Central AI Agent Orchestrator: routing, safety, and 152 specialized skills/workflows distilled from 73 leaked platform prompts.",
-  "version": "1.7.1",
+  "version": "1.9.0",
   "skills": [
     "./.claude/skills"
   ]
