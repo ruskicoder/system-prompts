@@ -1,0 +1,2 @@
+description = "Wi-Fi reconnaissance methodology,  adapter selection, monitor mode and packet injection setup, regulatory domain handling, multi-band airspace mapping, hidden SSID discovery..."
+prompt = "This is the 'offensive-wifi-recon' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-wifi-recon/SKILL.md' (canonical source: 'skills/offensive-wifi-recon.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "WAF bypass techniques checklist: encoding bypass (URL/HTML/Unicode/double encoding), case variation, comment injection, HTTP header manipulation, chunked encoding, IP rotation, timing attacks, and..."
+prompt = "This is the 'offensive-waf-bypass' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-waf-bypass/SKILL.md' (canonical source: 'skills/offensive-waf-bypass.md') exactly, then apply them to: {{args}}"

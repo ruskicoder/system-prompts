@@ -1,0 +1,2 @@
+description = "Dense description covering Server-Side Template Injection across Jinja2, Twig, Freemarker, Velocity, Pebble, Smarty, Mako, Handlebars, ERB, Thymeleaf, EJS, Pug. Engine fingerprinting, filter bypass..."
+prompt = "This is the 'offensive-ssti' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-ssti/SKILL.md' (canonical source: 'skills/offensive-ssti.md') exactly, then apply them to: {{args}}"

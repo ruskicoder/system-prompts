@@ -1,0 +1,2 @@
+description = "Time-of-Check / Time-of-Use (TOCTOU) race condition exploitation methodology across binary, kernel, filesystem, web, and container layers. Covers symbolic-link races (open/access/stat split)..."
+prompt = "This is the 'offensive-toctou' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-toctou/SKILL.md' (canonical source: 'skills/offensive-toctou.md') exactly, then apply them to: {{args}}"

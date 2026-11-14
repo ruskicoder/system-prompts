@@ -1,0 +1,2 @@
+description = "Cross-Site Scripting testing checklist: stored/reflected/DOM/blind XSS discovery, polyglot payloads, CSP bypass, XSS filter bypass, event handler injection, DOM clobbering, mutation XSS, and impact..."
+prompt = "This is the 'offensive-xss' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-xss/SKILL.md' (canonical source: 'skills/offensive-xss.md') exactly, then apply them to: {{args}}"

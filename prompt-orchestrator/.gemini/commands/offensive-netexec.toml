@@ -1,0 +1,2 @@
+description = "Use this skill whenever the user asks about NetExec (nxc),  a network exploitation and post-exploitation tool for Active Directory environments. Triggers include: any mention of 'nxc', 'netexec'..."
+prompt = "This is the 'offensive-netexec' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-netexec/SKILL.md' (canonical source: 'skills/offensive-netexec.md') exactly, then apply them to: {{args}}"

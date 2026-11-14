@@ -1,0 +1,2 @@
+description = "Week 2 of the exploit development curriculum. Covers fuzzing methodology: target selection, corpus generation, coverage-guided fuzzing with AFL++/libFuzzer, structured fuzzing, and..."
+prompt = "This is the 'offensive-fuzzing-course' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-fuzzing-course/SKILL.md' (canonical source: 'skills/offensive-fuzzing-course.md') exactly, then apply them to: {{args}}"

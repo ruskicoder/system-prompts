@@ -1,0 +1,2 @@
+description = "Zigbee, Thread, and Matter mesh-protocol attack methodology,  IEEE 802.15.4 sniffing with TI CC2531 / CC2540 / Sonoff Zigbee Dongle E, KillerBee toolkit, Touchlink commissioning abuse with the..."
+prompt = "This is the 'offensive-zigbee-thread-matter' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-zigbee-thread-matter/SKILL.md' (canonical source: 'skills/offensive-zigbee-thread-matter.md') exactly, then apply them to: {{args}}"

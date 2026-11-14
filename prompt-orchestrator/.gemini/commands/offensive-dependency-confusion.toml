@@ -1,0 +1,2 @@
+description = "Deep-dive offensive methodology for dependency confusion and namespace attacks across all major package ecosystems. Covers npm scope confusion exploiting the gap between public and private scoped..."
+prompt = "This is the 'offensive-dependency-confusion' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-dependency-confusion/SKILL.md' (canonical source: 'skills/offensive-dependency-confusion.md') exactly, then apply them to: {{args}}"

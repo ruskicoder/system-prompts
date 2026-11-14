@@ -1,0 +1,2 @@
+description = "File upload vulnerability checklist: MIME type bypass, extension bypass, magic byte manipulation, path traversal in filenames, stored XSS via SVG/HTML upload, server-side processing attacks, and race..."
+prompt = "This is the 'offensive-file-upload' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-file-upload/SKILL.md' (canonical source: 'skills/offensive-file-upload.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Race condition (TOCTOU) testing checklist: identifying timing windows, Burp Suite Turbo Intruder, Last-Byte sync technique, rate limit bypass, double-spend attacks, and concurrent request..."
+prompt = "This is the 'offensive-race-condition' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-race-condition/SKILL.md' (canonical source: 'skills/offensive-race-condition.md') exactly, then apply them to: {{args}}"

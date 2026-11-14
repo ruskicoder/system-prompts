@@ -1,0 +1,2 @@
+description = "Comprehensive lateral movement tradecraft for authorized red team engagements covering credential-based movement (pass-the-hash, pass-the-ticket, overpass-the-hash), NTLM relay attacks (ntlmrelayx..."
+prompt = "This is the 'offensive-lateral-movement' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-lateral-movement/SKILL.md' (canonical source: 'skills/offensive-lateral-movement.md') exactly, then apply them to: {{args}}"

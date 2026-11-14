@@ -1,0 +1,2 @@
+description = "Dense methodology covering DNS exfiltration (dnscat2, iodine, dns2tcp), HTTPS tunneling (domain fronting, CDN abuse, legitimate service channels), ICMP tunneling (icmpsh, ptunnel-ng), cloud storage..."
+prompt = "This is the 'offensive-data-exfiltration' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-data-exfiltration/SKILL.md' (canonical source: 'skills/offensive-data-exfiltration.md') exactly, then apply them to: {{args}}"

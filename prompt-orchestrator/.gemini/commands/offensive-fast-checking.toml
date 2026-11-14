@@ -1,0 +1,2 @@
+description = "Speed-optimized offensive checklist for rapid assessment: quick-win vulnerability patterns, fast recon shortcuts, automated scanner configurations, and triage shortcuts. Use for time-boxed..."
+prompt = "This is the 'offensive-fast-checking' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-fast-checking/SKILL.md' (canonical source: 'skills/offensive-fast-checking.md') exactly, then apply them to: {{args}}"

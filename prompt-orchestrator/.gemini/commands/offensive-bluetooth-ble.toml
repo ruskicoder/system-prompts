@@ -1,0 +1,2 @@
+description = "Bluetooth Low Energy (BLE) attack methodology,  GATT enumeration, characteristic read/write without auth, pairing downgrade (Just Works forced), LE Secure Connections bypass, MITM via active relay..."
+prompt = "This is the 'offensive-bluetooth-ble' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-bluetooth-ble/SKILL.md' (canonical source: 'skills/offensive-bluetooth-ble.md') exactly, then apply them to: {{args}}"

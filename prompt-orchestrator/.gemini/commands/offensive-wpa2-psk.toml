@@ -1,0 +1,2 @@
+description = "WPA/WPA2-PSK attack methodology,  four-way handshake capture via targeted deauthentication, PMKID attacks (no client required), hcxdumptool / hcxpcapngtool conversion to hashcat hc22000 format..."
+prompt = "This is the 'offensive-wpa2-psk' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-wpa2-psk/SKILL.md' (canonical source: 'skills/offensive-wpa2-psk.md') exactly, then apply them to: {{args}}"

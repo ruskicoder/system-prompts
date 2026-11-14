@@ -1,0 +1,2 @@
+description = "Structured OSINT methodology framework: target definition, source selection, collection workflows, data correlation, timeline reconstruction, and reporting. Use to guide systematic OSINT campaigns or..."
+prompt = "This is the 'offensive-osint-methodology' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-osint-methodology/SKILL.md' (canonical source: 'skills/offensive-osint-methodology.md') exactly, then apply them to: {{args}}"

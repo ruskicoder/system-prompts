@@ -1,0 +1,2 @@
+description = "Systematic methodology for identifying and exploiting cryptographic implementation weaknesses in real-world applications. Covers padding oracle attacks against CBC-mode ciphers with PKCS7 padding..."
+prompt = "This is the 'offensive-crypto-attacks' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-crypto-attacks/SKILL.md' (canonical source: 'skills/offensive-crypto-attacks.md') exactly, then apply them to: {{args}}"

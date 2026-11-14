@@ -1,0 +1,2 @@
+description = "Windows security boundary taxonomy and attack surface enumeration: kernel/user boundary, sandbox boundaries (LPAC, AppContainer), COM/RPC boundaries, hypervisor boundary, trust level transitions. Use..."
+prompt = "This is the 'offensive-windows-boundaries' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-windows-boundaries/SKILL.md' (canonical source: 'skills/offensive-windows-boundaries.md') exactly, then apply them to: {{args}}"

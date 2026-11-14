@@ -1,0 +1,2 @@
+description = "Comprehensive OSINT methodology skill for offensive security, red team intelligence gathering, and bug bounty reconnaissance. Covers domain recon, email harvesting, social media profiling, GitHub/code..."
+prompt = "This is the 'offensive-osint' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-osint/SKILL.md' (canonical source: 'skills/offensive-osint.md') exactly, then apply them to: {{args}}"

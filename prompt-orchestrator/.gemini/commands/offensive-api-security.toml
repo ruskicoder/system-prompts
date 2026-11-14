@@ -1,0 +1,2 @@
+description = "Comprehensive API security testing methodology covering REST, gRPC, and WebSocket attack surfaces. Addresses the full OWASP API Security Top 10 2023 including BOLA/IDOR, broken authentication..."
+prompt = "This is the 'offensive-api-security' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-api-security/SKILL.md' (canonical source: 'skills/offensive-api-security.md') exactly, then apply them to: {{args}}"

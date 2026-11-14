@@ -1,0 +1,2 @@
+description = "IDOR (Insecure Direct Object Reference) testing checklist: object ID enumeration, horizontal/vertical privilege escalation, GUID predictability, indirect references via hashes, chained IDOR, and API..."
+prompt = "This is the 'offensive-idor' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-idor/SKILL.md' (canonical source: 'skills/offensive-idor.md') exactly, then apply them to: {{args}}"

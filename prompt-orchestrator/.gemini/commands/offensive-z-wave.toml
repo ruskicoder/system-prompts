@@ -1,0 +1,2 @@
+description = "Z-Wave attack methodology,  sniffing with Z-Force / EZ-Wave / RTL-SDR + ZniffMobile, S0 (legacy) network-key derivation flaw and key reuse, S2 (modern) ECDH commissioning analysis, replay/injection on..."
+prompt = "This is the 'offensive-z-wave' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-z-wave/SKILL.md' (canonical source: 'skills/offensive-z-wave.md') exactly, then apply them to: {{args}}"

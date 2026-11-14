@@ -1,0 +1,2 @@
+description = "Comprehensive red team operations methodology covering full engagement lifecycle from planning through reporting. Addresses engagement scoping and rules of engagement negotiation, multi-tier C2..."
+prompt = "This is the 'offensive-advanced-redteam' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-advanced-redteam/SKILL.md' (canonical source: 'skills/offensive-advanced-redteam.md') exactly, then apply them to: {{args}}"

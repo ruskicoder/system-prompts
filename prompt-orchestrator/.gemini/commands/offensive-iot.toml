@@ -1,0 +1,2 @@
+description = "IoT and embedded device security testing methodology. Covers hardware reconnaissance (UART, JTAG, SWD, SPI flash, I2C EEPROM, eMMC chip-off), firmware acquisition (vendor portals, OTA capture, flash..."
+prompt = "This is the 'offensive-iot' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-iot/SKILL.md' (canonical source: 'skills/offensive-iot.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Security mitigation reference and bypass catalog: ASLR, DEP/NX, RELRO, stack canaries, CFI, sandboxing, seccomp. Covers both detection of enabled mitigations and known bypass techniques. Use when..."
+prompt = "This is the 'offensive-mitigations' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-mitigations/SKILL.md' (canonical source: 'skills/offensive-mitigations.md') exactly, then apply them to: {{args}}"

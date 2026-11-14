@@ -1,0 +1,2 @@
+description = "Business logic vulnerability testing for web/mobile/API engagements. Covers workflow bypass, state machine violations, multi-step process abuse, price/quantity/discount manipulation, currency..."
+prompt = "This is the 'offensive-business-logic' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-business-logic/SKILL.md' (canonical source: 'skills/offensive-business-logic.md') exactly, then apply them to: {{args}}"

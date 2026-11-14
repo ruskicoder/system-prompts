@@ -1,0 +1,2 @@
+description = "Command and Control framework deployment, configuration, and operational tradecraft for red team engagements. Covers Cobalt Strike (malleable C2 profiles, Beacon types HTTP/HTTPS/DNS/SMB, Beacon..."
+prompt = "This is the 'offensive-c2-frameworks' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-c2-frameworks/SKILL.md' (canonical source: 'skills/offensive-c2-frameworks.md') exactly, then apply them to: {{args}}"

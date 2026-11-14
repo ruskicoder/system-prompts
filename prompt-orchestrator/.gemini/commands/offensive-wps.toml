@@ -1,0 +1,2 @@
+description = "WPS (Wi-Fi Protected Setup) PIN attack methodology,  Pixie Dust offline attack against vulnerable chipsets (Ralink, Realtek, Broadcom, MediaTek), online PIN brute-force with reaver/bully, lockout..."
+prompt = "This is the 'offensive-wps' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-wps/SKILL.md' (canonical source: 'skills/offensive-wps.md') exactly, then apply them to: {{args}}"

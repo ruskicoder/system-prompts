@@ -1,0 +1,2 @@
+description = "Dense description covering ARP spoofing, LLMNR/NBT-NS/mDNS poisoning, DNS poisoning, MITM attacks, VLAN hopping, DHCP attacks, 802.1X/NAC bypass, IPv6 attacks. Tools: Bettercap, Responder, mitm6..."
+prompt = "This is the 'offensive-network-attacks' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-network-attacks/SKILL.md' (canonical source: 'skills/offensive-network-attacks.md') exactly, then apply them to: {{args}}"

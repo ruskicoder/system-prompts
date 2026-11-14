@@ -1,0 +1,2 @@
+description = "Comprehensive methodology for auditing and exploiting TLS/SSL implementations and misconfigurations across network services and mobile applications. Covers protocol downgrade attacks including POODLE..."
+prompt = "This is the 'offensive-tls-attacks' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-tls-attacks/SKILL.md' (canonical source: 'skills/offensive-tls-attacks.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Phishing campaign execution methodology for authorized red team engagements. Covers end-to-end campaign lifecycle: infrastructure provisioning (GoPhish, SMTP relay configuration, domain acquisition..."
+prompt = "This is the 'offensive-phishing' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-phishing/SKILL.md' (canonical source: 'skills/offensive-phishing.md') exactly, then apply them to: {{args}}"

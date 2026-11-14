@@ -1,0 +1,2 @@
+description = "Active Directory attack methodology for internal network red team engagements. Covers reconnaissance (BloodHound, PowerView, ADExplorer), credential abuse (Kerberoasting, ASREProasting, NTLM relay..."
+prompt = "This is the 'offensive-active-directory' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-active-directory/SKILL.md' (canonical source: 'skills/offensive-active-directory.md') exactly, then apply them to: {{args}}"

@@ -1,0 +1,2 @@
+description = "Container escape and breakout techniques targeting Docker, containerd, and Podman runtimes. Covers privileged container breakout via host filesystem mount and nsenter, Docker socket abuse through..."
+prompt = "This is the 'offensive-container-escape' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-container-escape/SKILL.md' (canonical source: 'skills/offensive-container-escape.md') exactly, then apply them to: {{args}}"

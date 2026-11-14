@@ -1,0 +1,2 @@
+description = "Anti-forensics and evidence destruction techniques for red team operators conducting authorized engagements. Covers log clearing on Windows (wevtutil, Clear-EventLog, ETW provider patching) and Linux..."
+prompt = "This is the 'offensive-anti-forensics' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-anti-forensics/SKILL.md' (canonical source: 'skills/offensive-anti-forensics.md') exactly, then apply them to: {{args}}"

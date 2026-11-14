@@ -1,0 +1,2 @@
+description = "Initial access techniques checklist: phishing (spear/smishing), credential stuffing, exposed service exploitation, supply chain attacks, watering hole, VPN/RDP brute force, public-facing application..."
+prompt = "This is the 'offensive-initial-access' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/offensive-initial-access/SKILL.md' (canonical source: 'skills/offensive-initial-access.md') exactly, then apply them to: {{args}}"
