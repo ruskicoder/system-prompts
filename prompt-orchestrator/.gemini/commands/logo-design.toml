@@ -1,0 +1,2 @@
+description = "Professional logo and brand-mark design, from brief to production files. Guides discovery and the design brief, concept generation, choosing a mark type (wordmark, monogram, letterform, pictorial..."
+prompt = "This is the 'logo-design' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/logo-design/SKILL.md' (canonical source: 'skills/logo-design.md') exactly, then apply them to: {{args}}"
