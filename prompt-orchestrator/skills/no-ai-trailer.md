@@ -56,7 +56,7 @@ The companion folder `scripts/` holds four stdlib Python files.
 The object form of `attribution` is used because `"attribution": false` needs Claude Code
 v2.1.281 or later, and older versions skip the whole settings file that holds it.
 
-It runs at install (`install/install-claude.sh` and `install/install-claude.ps1`) and at every
+It runs at install (the Claude Code step of `install/install.sh` and `install/install.ps1`) and at every
 Claude Code session start. Run it by hand from the installed skill folder:
 
 ```bash

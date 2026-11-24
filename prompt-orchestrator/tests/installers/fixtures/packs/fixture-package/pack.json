@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "fixture-package",
+  "label": "Fixture package",
+  "description": "In-house package pack whose payload goes to the data home.",
+  "kind": "package",
+  "license": "MIT",
+  "upstream": null,
+  "upstream_commit": null,
+  "vetting": null,
+  "sets": [
+    {"id": "main", "label": "Main", "description": "The entry skill for the fixture payload.", "skills": ["fixture-entry"]}
+  ],
+  "package": {"payload": "package"}
+}
