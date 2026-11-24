@@ -64,6 +64,8 @@ DEFAULT_EXCLUDES = [
     ".kiro/*", "*/.agents/*", "*/.claude/*", "*/.opencode/*", "*/.cursor/*", "*/.codex/*",
     "*/.gemini/*", "*/.windsurf/*", "*/.kiro/*", "*/integrations/*", "*/harness/dist/*",
     "*/node_modules/*", "node_modules/*", "*/fixtures/*", "*CHANGELOG*",
+    # Vendored skills in opt-in packs keep their upstream wording; the pack import checks edited files.
+    "packs/*/skills/*", "*/packs/*/skills/*",
 ]
 BANNED_OPENERS = [
     "Let's", "In order to", "It's worth noting", "Needless to say", "At the end of the day",
