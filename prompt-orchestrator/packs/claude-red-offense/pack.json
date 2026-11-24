@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "id": "claude-red-offense",
+  "label": "Claude Red offense",
+  "description": "Offensive security checklists from SnailSploit claude-red, grouped by attack area.",
+  "kind": "skills",
+  "license": "MIT",
+  "upstream": "https://github.com/SnailSploit/claude-red",
+  "upstream_commit": "fd81441b613c7d4fab39256720a31c96859d138b",
+  "vetting": {
+    "status": "passed",
+    "vetted": "2026-11-15"
+  },
+  "sets": [
+    {
+      "id": "active-directory",
+      "label": "Active Directory",
+      "description": "Active Directory attack paths and NetExec usage for domain assessments.",
+      "skills": [
+        "offensive-active-directory",
+        "offensive-netexec"
+      ]
+    },
+    {
+      "id": "ai",
+      "label": "AI security",
+      "description": "Prompt injection, jailbreak and model extraction checks for AI and LLM systems.",
+      "skills": [
+        "offensive-ai-security"
+      ]
+    },
+    {
+      "id": "api",
+      "label": "API",
+      "description": "Abuse and security testing checklists for REST and other web APIs.",
+      "skills": [
+        "offensive-api-abuse",
+        "offensive-api-security"
+      ]
+    },
+    {
+      "id": "auth",
+      "label": "Authentication",
+      "description": "Attacks on login flows, sessions, OAuth and JWT handling.",
+      "skills": [
+        "offensive-jwt",
+        "offensive-oauth"
+      ]
+    },
+    {
+      "id": "cicd",
+      "label": "CI/CD",
+      "description": "Pipeline compromise and secret exposure checks for CI/CD systems.",
+      "skills": [
+        "offensive-cicd-pipeline",
+        "offensive-cicd-secrets"
+      ]
+    },
+    {
+      "id": "cloud",
+      "label": "Cloud",
+      "description": "Attack checklist for cloud accounts, identities and services.",
+      "skills": [
+        "offensive-cloud"
+      ]
+    },
+    {
+      "id": "container",
+      "label": "Containers",
+      "description": "Container escape and Kubernetes attack checklists.",
+      "skills": [
+        "offensive-container-escape",
+        "offensive-k8s-attacks"
+      ]
+    },
+    {
+      "id": "crypto",
+      "label": "Cryptography",
+      "description": "Checks for weak cryptography and padding oracle attacks.",
+      "skills": [
+        "offensive-crypto-attacks",
+        "offensive-tls-attacks"
+      ]
+    },
+    {
+      "id": "exploit-dev",
+      "label": "Exploit development",
+      "description": "Memory corruption exploitation, crash analysis, mitigations and race windows.",
+      "skills": [
+        "offensive-basic-exploitation",
+        "offensive-crash-analysis",
+        "offensive-exploit-dev-course",
+        "offensive-exploit-development",
+        "offensive-mitigations",
+        "offensive-toctou"
+      ]
+    },
+    {
+      "id": "forensics",
+      "label": "Anti-forensics and C2",
+      "description": "Anti-forensics techniques and command-and-control framework usage.",
+      "skills": [
+        "offensive-anti-forensics",
+        "offensive-c2-frameworks"
+      ]
+    },
+    {
+      "id": "fuzzing",
+      "label": "Fuzzing",
+      "description": "Fuzzing methods, bug identification and vulnerability classes.",
+      "skills": [
+        "offensive-bug-identification",
+        "offensive-fuzzing",
+        "offensive-fuzzing-course",
+        "offensive-vuln-classes"
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure red team",
+      "description": "Initial access, EDR evasion, shellcode and Windows boundary research for red-team operations.",
+      "skills": [
+        "offensive-advanced-redteam",
+        "offensive-edr-evasion",
+        "offensive-initial-access",
+        "offensive-keylogger-arch",
+        "offensive-shellcode",
+        "offensive-windows-boundaries",
+        "offensive-windows-mitigations"
+      ]
+    },
+    {
+      "id": "iot",
+      "label": "IoT",
+      "description": "Attack checklist for IoT devices and their firmware.",
+      "skills": [
+        "offensive-iot"
+      ]
+    },
+    {
+      "id": "mobile",
+      "label": "Mobile",
+      "description": "Attack checklist for Android and iOS applications.",
+      "skills": [
+        "offensive-mobile"
+      ]
+    },
+    {
+      "id": "network",
+      "label": "Network",
+      "description": "Network-layer attacks such as spoofing, relay and man-in-the-middle.",
+      "skills": [
+        "offensive-network-attacks"
+      ]
+    },
+    {
+      "id": "post-exploitation",
+      "label": "Post-exploitation",
+      "description": "Lateral movement, persistence and data exfiltration after initial access.",
+      "skills": [
+        "offensive-data-exfiltration",
+        "offensive-lateral-movement",
+        "offensive-persistence"
+      ]
+    },
+    {
+      "id": "privesc",
+      "label": "Privilege escalation",
+      "description": "Linux and Windows privilege escalation checklists.",
+      "skills": [
+        "offensive-linux-privesc",
+        "offensive-windows-privesc"
+      ]
+    },
+    {
+      "id": "recon",
+      "label": "Reconnaissance",
+      "description": "OSINT methodology and reconnaissance techniques.",
+      "skills": [
+        "offensive-osint",
+        "offensive-osint-methodology"
+      ]
+    },
+    {
+      "id": "social-engineering",
+      "label": "Social engineering",
+      "description": "Phishing and social-engineering campaign checklists.",
+      "skills": [
+        "offensive-phishing",
+        "offensive-social-engineering"
+      ]
+    },
+    {
+      "id": "supply-chain",
+      "label": "Supply chain",
+      "description": "Dependency confusion and software supply-chain attacks.",
+      "skills": [
+        "offensive-dependency-confusion",
+        "offensive-supply-chain"
+      ]
+    },
+    {
+      "id": "utility",
+      "label": "Utilities",
+      "description": "Fast triage checks and pentest report writing.",
+      "skills": [
+        "offensive-fast-checking",
+        "offensive-reporting"
+      ]
+    },
+    {
+      "id": "web",
+      "label": "Web",
+      "description": "Web application attacks from SQL injection to request smuggling.",
+      "skills": [
+        "offensive-business-logic",
+        "offensive-deserialization",
+        "offensive-file-upload",
+        "offensive-graphql",
+        "offensive-idor",
+        "offensive-open-redirect",
+        "offensive-parameter-pollution",
+        "offensive-race-condition",
+        "offensive-rce",
+        "offensive-request-smuggling",
+        "offensive-sqli",
+        "offensive-ssrf",
+        "offensive-ssti",
+        "offensive-waf-bypass",
+        "offensive-xss",
+        "offensive-xxe"
+      ]
+    },
+    {
+      "id": "wireless",
+      "label": "Wireless",
+      "description": "Wi-Fi, Bluetooth, Zigbee, Z-Wave and sub-GHz attack checklists.",
+      "skills": [
+        "offensive-bluetooth-ble",
+        "offensive-bluetooth-classic",
+        "offensive-deauth-disassoc",
+        "offensive-evil-twin",
+        "offensive-krack-fragattacks",
+        "offensive-lorawan-sub-ghz",
+        "offensive-wifi",
+        "offensive-wifi-recon",
+        "offensive-wpa-enterprise",
+        "offensive-wpa2-psk",
+        "offensive-wpa3-sae",
+        "offensive-wps",
+        "offensive-z-wave",
+        "offensive-zigbee-thread-matter"
+      ]
+    }
+  ]
+}

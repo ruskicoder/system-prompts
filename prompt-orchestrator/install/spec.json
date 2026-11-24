@@ -1,0 +1,180 @@
+{
+  "schema": 1,
+  "product": "prompt-orchestrator",
+  "generator": "tools/generate_installers.py",
+  "outputs": {"bash": "install/install.sh", "powershell": "install/install.ps1", "cmd": "install/install.cmd"},
+  "packs_dir": "packs",
+  "manifest": "install-manifest.tsv",
+  "locations": {
+    "HOME": {
+      "posix": [{"env": "HOME"}],
+      "windows": [{"env": "USERPROFILE"}]
+    },
+    "DATA_HOME": {
+      "posix": [{"env": "XDG_DATA_HOME", "join": "prompt-orchestrator"}, {"path": "{HOME}/.local/share/prompt-orchestrator"}],
+      "windows": [{"env": "LOCALAPPDATA", "join": "prompt-orchestrator"}, {"path": "{HOME}/AppData/Local/prompt-orchestrator"}]
+    },
+    "CODEX_HOME": {
+      "posix": [{"env": "CODEX_HOME"}, {"path": "{HOME}/.codex"}],
+      "windows": [{"env": "CODEX_HOME"}, {"path": "{HOME}/.codex"}]
+    },
+    "OPENCODE": {
+      "posix": [{"path": "{HOME}/.config/opencode"}],
+      "windows": [{"path": "{HOME}/.config/opencode", "if_dir": "{HOME}/.config"}, {"env": "APPDATA", "join": "opencode"}, {"path": "{HOME}/.config/opencode"}]
+    }
+  },
+  "tools": [
+    {
+      "id": "claude",
+      "label": "Claude Code",
+      "default": true,
+      "steps": [
+        {"op": "tree", "src": ".claude/skills", "dest": "{HOME}/.claude/skills"},
+        {"op": "doc", "src": "AGENTS.md", "dest": "{HOME}/.claude/AGENTS.md"},
+        {"op": "block", "dest": "{HOME}/.claude/CLAUDE.md", "marker": "prompt-orchestrator", "text": "@AGENTS.md"},
+        {"op": "attribution", "script": "{HOME}/.claude/skills/no-ai-trailer/scripts/ensure_attribution_off.py",
+         "track": ["{HOME}/.claude/settings.json", "{HOME}/.gitconfig", "{HOME}/.config/git/no-ai-trailer"],
+         "hooks_path": "{HOME}/.config/git/no-ai-trailer/hooks"}
+      ],
+      "skills": ["{HOME}/.claude/skills"],
+      "harness": true
+    },
+    {
+      "id": "codex",
+      "label": "OpenAI Codex",
+      "default": true,
+      "steps": [
+        {"op": "tree", "src": ".agents/skills", "dest": "{HOME}/.agents/skills"},
+        {"op": "tree", "src": ".codex/prompts", "dest": "{CODEX_HOME}/prompts"},
+        {"op": "doc", "src": "AGENTS.md", "dest": "{CODEX_HOME}/AGENTS.md"}
+      ],
+      "skills": ["{HOME}/.agents/skills"],
+      "harness": true
+    },
+    {
+      "id": "opencode",
+      "label": "OpenCode",
+      "default": true,
+      "steps": [
+        {"op": "tree", "src": ".opencode/skills", "dest": "{OPENCODE}/skills"},
+        {"op": "tree", "src": ".opencode/commands", "dest": "{OPENCODE}/commands"},
+        {"op": "doc", "src": "AGENTS.md", "dest": "{OPENCODE}/AGENTS.md"}
+      ],
+      "skills": ["{OPENCODE}/skills"],
+      "harness": true
+    },
+    {
+      "id": "cursor",
+      "label": "Cursor",
+      "default": true,
+      "steps": [
+        {"op": "tree", "src": ".cursor/commands", "dest": "{HOME}/.cursor/commands"},
+        {"op": "file", "src": ".cursor/rules/orchestrator.mdc", "dest": "{HOME}/.cursor/rules/prompt-orchestrator.mdc"},
+        {"op": "doc", "src": "AGENTS.md", "dest": "{HOME}/.cursor/AGENTS.md"}
+      ],
+      "skills": ["{HOME}/.cursor/skills"],
+      "harness": true
+    },
+    {
+      "id": "gemini",
+      "label": "Gemini CLI",
+      "default": true,
+      "steps": [
+        {"op": "tree", "src": ".gemini/commands", "dest": "{HOME}/.gemini/commands"},
+        {"op": "tree", "src": ".agents/skills", "dest": "{HOME}/.agents/skills"},
+        {"op": "doc", "src": "AGENT.md", "dest": "{HOME}/.gemini/GEMINI.md"}
+      ],
+      "skills": ["{HOME}/.agents/skills"],
+      "harness": true
+    },
+    {
+      "id": "antigravity",
+      "label": "Antigravity",
+      "default": true,
+      "steps": [
+        {"op": "plugin", "src": "integrations/antigravity/prompt-orchestrator", "mirror": ".agents/skills",
+         "dest": "{HOME}/.gemini/config/plugins/prompt-orchestrator", "backups": "{HOME}/.gemini/config/plugin-backups"}
+      ],
+      "skills": ["{HOME}/.gemini/config/skills"],
+      "harness": true
+    },
+    {
+      "id": "openclaw",
+      "label": "OpenClaw",
+      "default": true,
+      "steps": [
+        {"op": "doc", "src": "AGENT.md", "dest": "{HOME}/.openclaw/AGENT.md"},
+        {"op": "doc", "src": "AGENTS.md", "dest": "{HOME}/.openclaw/AGENTS.md"},
+        {"op": "tree", "src": "skills", "dest": "{HOME}/.openclaw/skills"},
+        {"op": "tree", "src": "workflows", "dest": "{HOME}/.openclaw/workflows"},
+        {"op": "tree", "src": ".agents/skills", "dest": "{HOME}/.openclaw/agents-skills"}
+      ],
+      "skills": ["{HOME}/.openclaw/agents-skills"],
+      "harness": true
+    },
+    {
+      "id": "copilot",
+      "label": "GitHub Copilot (harness agents only)",
+      "default": false,
+      "steps": [],
+      "skills": [],
+      "harness": true
+    },
+    {
+      "id": "kiro",
+      "label": "Kiro (harness agents only)",
+      "default": false,
+      "steps": [],
+      "skills": [],
+      "harness": true
+    }
+  ],
+  "projects": [
+    {
+      "id": "project",
+      "label": "Every tool, inside one project",
+      "steps": [
+        {"op": "tree", "src": ".agents", "dest": "{PROJECT}/.agents"},
+        {"op": "tree", "src": ".claude", "dest": "{PROJECT}/.claude"},
+        {"op": "tree", "src": ".claude-plugin", "dest": "{PROJECT}/.claude-plugin"},
+        {"op": "tree", "src": ".codex", "dest": "{PROJECT}/.codex"},
+        {"op": "tree", "src": ".cursor", "dest": "{PROJECT}/.cursor"},
+        {"op": "tree", "src": ".gemini", "dest": "{PROJECT}/.gemini"},
+        {"op": "tree", "src": ".opencode", "dest": "{PROJECT}/.opencode"},
+        {"op": "tree", "src": ".windsurf", "dest": "{PROJECT}/.windsurf"},
+        {"op": "file", "src": "AGENTS.md", "dest": "{PROJECT}/AGENTS.md"},
+        {"op": "file", "src": "AGENT.md", "dest": "{PROJECT}/AGENT.md"},
+        {"op": "file", "src": "CLAUDE.md", "dest": "{PROJECT}/CLAUDE.md"},
+        {"op": "file", "src": "INTEGRATIONS.md", "dest": "{PROJECT}/INTEGRATIONS.md"},
+        {"op": "tree", "src": "skills", "dest": "{PROJECT}/skills"},
+        {"op": "tree", "src": "workflows", "dest": "{PROJECT}/workflows"}
+      ]
+    },
+    {
+      "id": "windsurf",
+      "label": "Windsurf, inside one project",
+      "steps": [
+        {"op": "tree", "src": ".windsurf/workflows", "dest": "{PROJECT}/.windsurf/workflows"},
+        {"op": "tree", "src": ".windsurf/rules", "dest": "{PROJECT}/.windsurf/rules"},
+        {"op": "file", "src": "AGENTS.md", "dest": "{PROJECT}/AGENTS.md"}
+      ]
+    }
+  ],
+  "harness": {
+    "script": "harness/scripts/install_harness.py",
+    "python": [3, 11],
+    "default": true,
+    "profiles": {
+      "claude": ["claude-max", "claude-pro", "api", "free"],
+      "codex": ["codex-plus", "api", "free"]
+    },
+    "profile_tools": {"claude": "claude", "opencode": "claude", "codex": "codex"},
+    "options": [
+      {"id": "subagent-model", "label": "Claude: run unnamed subagents on Sonnet"},
+      {"id": "statusline", "label": "Claude: harness status line"},
+      {"id": "hooks", "label": "Hooks: mode tag, frontier gate, verify gate (Claude and Codex)"},
+      {"id": "legacy-move", "label": "Claude: move the legacy Kiro rules file to a backup"}
+    ]
+  },
+  "exclude": ["__pycache__", "*.pyc", ".DS_Store"]
+}

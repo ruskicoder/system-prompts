@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "id": "procable",
+  "label": "procable",
+  "description": "Offline design skill with a design detector and per-edit hooks, installed from a release pinned by digest.",
+  "kind": "release",
+  "license": "Apache-2.0",
+  "upstream": "https://github.com/ruskicoder/procable",
+  "upstream_commit": null,
+  "vetting": {
+    "status": "passed",
+    "vetted": "2026-11-02"
+  },
+  "sets": [
+    {
+      "id": "procable",
+      "label": "procable",
+      "description": "The procable skill and engine for polish, critique, audit and WCAG 2.2 AA review.",
+      "skills": [
+        "procable"
+      ]
+    }
+  ],
+  "release": {
+    "lock": "procable.lock.json",
+    "tag": "procable-v{version}",
+    "bundle": "universal.zip",
+    "engine": "procable-{os}-{arch}",
+    "providers": {
+      "claude": "claude",
+      "codex": "codex",
+      "cursor": "cursor",
+      "gemini": "gemini",
+      "opencode": "opencode",
+      "antigravity": "antigravity",
+      "copilot": "github",
+      "kiro": "kiro"
+    },
+    "codex_hooks": [
+      {
+        "event": "PostToolUse",
+        "matcher": "Edit|Write|apply_patch",
+        "timeout": 5,
+        "status": "Checking UI changes"
+      },
+      {
+        "event": "Stop",
+        "matcher": null,
+        "timeout": 30,
+        "status": "Design deep pass"
+      }
+    ],
+    "skill_roots": [
+      "{HOME}/.claude/skills",
+      "{HOME}/.agents/skills",
+      "{HOME}/.cursor/skills",
+      "{HOME}/.gemini/skills",
+      "{HOME}/.gemini/config/skills",
+      "{OPENCODE}/skills",
+      "{HOME}/.github/skills",
+      "{HOME}/.kiro/skills"
+    ],
+    "hook_files": [
+      "{HOME}/.claude/settings.json",
+      "{CODEX_HOME}/hooks.json"
+    ]
+  }
+}

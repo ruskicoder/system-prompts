@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "id": "logo-design",
+  "label": "Logo design",
+  "description": "Logo and brand-mark design from brief to production SVG files, with a searchable logo library.",
+  "kind": "skills",
+  "license": "MIT",
+  "upstream": "https://github.com/kaankiziltug/logo-design-skill",
+  "upstream_commit": "e9eaddc07895575253d6663320354a708f53e955",
+  "vetting": {
+    "status": "passed",
+    "vetted": "2026-11-15"
+  },
+  "sets": [
+    {
+      "id": "logo-design",
+      "label": "Logo design",
+      "description": "One skill with references, SVG scripts and the logo library catalog.",
+      "skills": [
+        "logo-design"
+      ]
+    }
+  ]
+}
