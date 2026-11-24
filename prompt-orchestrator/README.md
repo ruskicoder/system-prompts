@@ -272,7 +272,7 @@ managed, JavaScript, firmware and browser targets. The opt-in pack `rea` has two
   `rea` server for Claude Code, Codex, Cursor, Gemini CLI and OpenCode, and copies the skill
   `reverse-engineer-anything`.
 - `rea-frida` adds `frida@17.23.2` and the Frida Node binding. The installer checks the binding archive
-  against the sha256 pinned per platform. Pinned platforms: `linux-x64`, `darwin-arm64`, `win32-x64`.
+  against the sha256 pinned per platform. Pinned platforms: `linux-x64`, `linux-arm64`, `darwin-arm64`, `darwin-x64`, `win32-x64`, `win32-arm64`.
   The installer refuses other platforms. It also refuses `rea-frida` without `rea`, and the menu checks
   both together.
 

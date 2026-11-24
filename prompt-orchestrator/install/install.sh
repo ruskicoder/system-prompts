@@ -482,7 +482,10 @@ po_npm_get() {
         'rea:rea-frida:url') printf '%s' 'https://github.com/frida/frida/releases/download/{version}/frida-v{version}-napi-v8-{platform}.tar.gz' ;;
         'rea:rea-frida:member') printf '%s' 'build/frida_binding.node' ;;
         'rea:rea-frida:sha256:darwin-arm64') printf '%s' '850fba220a2d9b6aae282ac6dde37f48847e73597b7a06d648737ff9addc3340' ;;
+        'rea:rea-frida:sha256:darwin-x64') printf '%s' 'f8953b09720cbdccd271c1d6caa4fff085474a9f24def3fe46160526aacdb40b' ;;
+        'rea:rea-frida:sha256:linux-arm64') printf '%s' '11083f016a429e87506cd68166bd1445da8febd506a24edf3f6c4a9a7a3ea9fe' ;;
         'rea:rea-frida:sha256:linux-x64') printf '%s' '9fa8f668ce91eb03713e8564de4f8fbde232233ee91d729c16773fde11dbae95' ;;
+        'rea:rea-frida:sha256:win32-arm64') printf '%s' '378351a592b2a5212c1c5e0412574fa361fe6cac37da5c093c9e455373114b14' ;;
         'rea:rea-frida:sha256:win32-x64') printf '%s' 'e9dbc08d386130610430137f0bb31d90af7b08c0f5710942d4313368ada930ea' ;;
         *) printf '' ;;
     esac

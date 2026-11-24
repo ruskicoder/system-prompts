@@ -1755,7 +1755,10 @@ $PO_Data = [ordered]@{
                             'member' = 'build/frida_binding.node'
                             'sha256' = [ordered]@{
                                 'darwin-arm64' = '850fba220a2d9b6aae282ac6dde37f48847e73597b7a06d648737ff9addc3340'
+                                'darwin-x64' = 'f8953b09720cbdccd271c1d6caa4fff085474a9f24def3fe46160526aacdb40b'
+                                'linux-arm64' = '11083f016a429e87506cd68166bd1445da8febd506a24edf3f6c4a9a7a3ea9fe'
                                 'linux-x64' = '9fa8f668ce91eb03713e8564de4f8fbde232233ee91d729c16773fde11dbae95'
+                                'win32-arm64' = '378351a592b2a5212c1c5e0412574fa361fe6cac37da5c093c9e455373114b14'
                                 'win32-x64' = 'e9dbc08d386130610430137f0bb31d90af7b08c0f5710942d4313368ada930ea'
                             }
                         }
