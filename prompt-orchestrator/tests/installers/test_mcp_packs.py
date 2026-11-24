@@ -216,25 +216,42 @@ class FakeNpmSandbox(Sandbox):
 
 
 def rea_copy(base: Path, digest: str | None = None) -> Path:
-    """packs/rea copied into base/packs, with the binding digest for this platform replaced."""
+    """packs/rea copied into base/packs for the fake npm.
+
+    The copy accepts any Node.js from 18 on, so the flows also run where the installed Node.js is
+    older than rea needs; HelperTests covers the range check. With a digest, the copy pins it as
+    the binding digest for this platform.
+    """
     packs = base / "packs"
     shutil.copytree(ROOT / "packs" / "rea", packs / "rea")
+    pack_json = packs / "rea" / "pack.json"
+    data = json.loads(pack_json.read_text())
+    data["npm"]["node"] = ">=18.0.0"
     if digest:
-        pack_json = packs / "rea" / "pack.json"
-        data = json.loads(pack_json.read_text())
         data["npm"]["packages"][1]["binding"]["sha256"] = {node_platform(): digest}
-        pack_json.write_text(json.dumps(data, indent=2))
+    pack_json.write_text(json.dumps(data, indent=2))
     return packs
 
 
 @unittest.skipUnless(BASH and NODE, "bash and node required")
 class ReaBashTests(unittest.TestCase):
-    """The committed installer with the real rea pack and the fake npm."""
+    """The rea pack (pins, skill, MCP server) with the fake npm."""
 
     tools = ("--tools", ",".join(MCP_TOOLS))
 
+    @classmethod
+    def setUpClass(cls):
+        cls.temporary = tempfile.TemporaryDirectory(prefix="po rea pack ")
+        base = Path(cls.temporary.name)
+        cls.installer = base / "out" / "install.sh"
+        generate(cls.installer.parent, rea_copy(base))
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.temporary.cleanup()
+
     def test_rea_set_registers_once_reruns_clean_and_removes_byte_identical(self):
-        box = FakeNpmSandbox(self, ROOT / "install" / "install.sh")
+        box = FakeNpmSandbox(self, self.installer)
         box.write_configs()
         prefix = box.data / "packages" / "rea"
         first = box.run("packs", "install", "rea", *self.tools)
@@ -263,14 +280,14 @@ class ReaBashTests(unittest.TestCase):
         self.assertEqual(set(CONFIGS), {p for p in files_under(box.home) if (box.home / p).is_file()})
 
     def test_bare_pack_name_skips_frida_and_frida_alone_is_refused(self):
-        box = FakeNpmSandbox(self, ROOT / "install" / "install.sh")
+        box = FakeNpmSandbox(self, self.installer)
         proc = box.run("packs", "install", "rea:rea-frida", *self.tools, ok=False)
         self.assertNotEqual(0, proc.returncode)
         self.assertIn("needs set rea:rea", proc.stderr)
         self.assertEqual([], files_under(box.home))
 
     def test_integrity_mismatch_refuses_and_writes_no_config(self):
-        box = FakeNpmSandbox(self, ROOT / "install" / "install.sh", integrity={"rea-agents": "sha512-" + "B" * 86 + "=="})
+        box = FakeNpmSandbox(self, self.installer, integrity={"rea-agents": "sha512-" + "B" * 86 + "=="})
         box.write_configs()
         proc = box.run("packs", "install", "rea", *self.tools, ok=False)
         self.assertIn("fails the pinned check", proc.stderr)
@@ -279,7 +296,7 @@ class ReaBashTests(unittest.TestCase):
             self.assertEqual(text.encode(), (box.home / rel).read_bytes(), rel)
 
     def test_frida_wrong_digest_refuses_and_leaves_no_binding(self):
-        box = FakeNpmSandbox(self, ROOT / "install" / "install.sh")
+        box = FakeNpmSandbox(self, self.installer)
         bundle = box.base / "bundle"
         bundle.mkdir()
         frida_asset(bundle / f"frida-v17.23.2-napi-v8-{node_platform()}.tar.gz", b"not the pinned binding")
