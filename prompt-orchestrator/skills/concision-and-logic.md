@@ -35,8 +35,9 @@ Order for a document that will be submitted or sent:
 6. **No notes about the text.** Delete "note that", "this means", "as mentioned above", "the
    following section describes", "sample values". Put a value's status in a table column
    (`Default`, `Measured`, `Planned`).
-7. **Parentheses for references, units, abbreviations and short codes only.** Anything that needs a
-   verb inside the brackets becomes its own sentence or a table cell.
+7. **Parentheses for references, units, abbreviations, short codes and short noun lists only.** A
+   short list of nouns after a label may sit in parentheses (prose-and-wording A1). Anything that
+   needs a verb inside the brackets becomes its own sentence or a table cell.
 8. **Show the consequence instead of announcing importance.** Cut "this matters", "crucially",
    "plays a key role"; give the number, failure or cost that makes it matter.
 9. **One hedge per uncertainty, tied to its cause.** "Results from 3 nodes may not hold for 20"

@@ -899,7 +899,7 @@
     "id": "prose-and-wording",
     "kind": "skill",
     "source": "skills/prose-and-wording.md",
-    "description": "Wording rules for every document, comment, commit message, PR body and chat reply. Bans the em dash, banned openers, aphorism formulas, two-beat antithesis, unverified claims and fabricated precision. Always active. Use when writing or editing any prose, and when reviewing wording.",
+    "description": "Wording rules for every document, comment, commit message, PR body and chat reply. Bans the em dash, banned openers, aphorism formulas, two-beat antithesis, unverified claims and fabricated precision. Addendum A bans the sentence-level AI patterns: inline-list colons, sweeping quantifiers, trailing conditions, back-reference pronouns, loose articles, X-not-Y contrast, dashes and comma splices. Always active. Use when writing or editing any prose, and when reviewing wording.",
     "argument_hint": null
   },
   {
