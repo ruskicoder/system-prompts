@@ -1676,6 +1676,27 @@ $PO_Data = [ordered]@{
                 )
                 'bundle_env' = 'PROCABLE_BUNDLE_PATH'
             }
+        },
+        [ordered]@{
+            'id' = 'reverse-skill'
+            'label' = 'Reverse Skill'
+            'description' = 'Routing package for reverse engineering, exploitation, penetration testing, malware, mobile, firmware and CTF work with case gates, tool bootstrap and MCP setup.'
+            'kind' = 'package'
+            'license' = 'MIT'
+            'upstream' = 'https://github.com/zhaoxuya520/reverse-skill'
+            'payload' = 'package'
+            'sets' = @(
+                [ordered]@{
+                    'id' = 'reverse-skill'
+                    'label' = 'Reverse Skill'
+                    'description' = 'Entry skill that points the agent at the installed reverse-skill package and its router.'
+                    'skills' = @(
+                        'reverse-skill'
+                    )
+                    'count' = 1
+                }
+            )
+            'release' = $null
         }
     )
 }
