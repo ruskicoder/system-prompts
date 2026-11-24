@@ -42,6 +42,20 @@ def files_under(path: Path) -> list[str]:
     return sorted(str(p.relative_to(path)) for p in path.rglob("*")) if path.exists() else []
 
 
+# pwsh writes its own caches into HOME (module analysis cache, telemetry id, .NET runtime files).
+PWSH_OWN = (".cache/powershell", ".dotnet", ".local/share/powershell", ".config/powershell", ".local/state/powershell")
+PWSH_PARENTS = {".cache", ".local", ".local/share", ".local/state", ".config"}
+
+
+def files_under_without_pwsh(path: Path) -> list[str]:
+    rest = [p for p in files_under(path) if not any(p == o or p.startswith(o + "/") for o in PWSH_OWN)]
+    while True:
+        empty = {p for p in rest if p in PWSH_PARENTS and not any(q.startswith(p + "/") for q in rest)}
+        if not empty:
+            return rest
+        rest = [p for p in rest if p not in empty]
+
+
 class Sandbox:
     """A temporary HOME and a runner for one installer."""
 
@@ -605,7 +619,7 @@ class PowerShellTests(unittest.TestCase):
         self.run_ps(home, "--tools", "claude", "--dry-run")
         self.run_ps(home, "tui", stdin="\n".join(["n", "1", "", "", "h", "", "3", "", ""]) + "\n")
         self.run_ps(home, "uninstall")
-        self.assertEqual([], files_under(home))
+        self.assertEqual([], files_under_without_pwsh(home))
 
 
 if __name__ == "__main__":
