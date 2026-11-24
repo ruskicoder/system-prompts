@@ -1,0 +1,2 @@
+description = "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart..."
+prompt = "This is the 'pdf' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/pdf/SKILL.md' (canonical source: 'skills/pdf.md') exactly, then apply them to: {{args}}"

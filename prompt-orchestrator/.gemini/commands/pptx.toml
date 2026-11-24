@@ -1,0 +1,2 @@
+description = "Use this skill any time a .pptx or .potx file is involved in any way: as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting..."
+prompt = "This is the 'pptx' skill from the prompt-orchestrator framework. Read and follow the instructions in '.agents/skills/pptx/SKILL.md' (canonical source: 'skills/pptx.md') exactly, then apply them to: {{args}}"
