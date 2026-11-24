@@ -1,0 +1,587 @@
+{
+  "platform": "kali-linux",
+  "targetVersion": "2026.1",
+  "kernel": "6.18",
+  "note": "Kali 2026.1 manifest. Tuned for the tools added in 2025.4 and 2026.1. Many tools are preinstalled, so bootstrap mainly handles tools that are not preinstalled and MCP registration.",
+  "kaliNewTools2026_1": [
+    "adaptixc2 — post-exploitation and adversary emulation framework (apt install adaptixc2)",
+    "atomic-operator — Atomic Red Team test runner (apt install atomic-operator)",
+    "fluxion — WiFi social engineering audit tool (apt install fluxion)",
+    "gef — enhanced GDB debugging framework (apt install gef)",
+    "metasploitmcp — Metasploit MCP Server (apt install metasploitmcp)",
+    "sstimap — automatic SSTI detection tool (apt install sstimap)",
+    "wpprobe — WordPress plugin enumeration (apt install wpprobe)",
+    "xsstrike — advanced XSS scanner (apt install xsstrike)"
+  ],
+  "kaliNewTools2025_4": [
+    "bpf-linker — BPF static linker (apt install bpf-linker)",
+    "evil-winrm-py — Python WinRM remote execution (apt install evil-winrm-py)",
+    "hexstrike-ai — AI MCP security automation platform (apt install hexstrike-ai)"
+  ],
+  "kaliNativeMCP": [
+    "mcp-kali-server — official Kali MCP server that connects AI to the Kali terminal (apt install mcp-kali-server, port 5000)",
+    "metasploitmcp — Metasploit MCP Server (apt install metasploitmcp, port 8085)",
+    "hexstrike-ai — MCP automation of 150+ security tools (apt install hexstrike-ai)"
+  ],
+  "bootstrapDependencies": {
+    "pipx": {
+      "package": "pipx==1.16.5",
+      "version": "1.16.5"
+    },
+    "pnpm": {
+      "package": "pnpm@10.24.0",
+      "version": "10.24.0"
+    }
+  },
+  "capabilities": [
+    {
+      "name": "jadx",
+      "bootstrapKind": "github-release-tar",
+      "repo": "skylot/jadx",
+      "assetRegex": "^jadx-1\\.5\\.6\\.zip$",
+      "installDir": "$HOME/tools/jadx",
+      "docsUrl": "https://github.com/skylot/jadx",
+      "canAutoInstall": true,
+      "verifyCommand": "jadx",
+      "kaliNote": "Not preinstalled on Kali; download from the GitHub release",
+      "releaseTag": "v1.5.6",
+      "assetSha256": "545ea2be9c242511bc145755cf4bda2485ade42966e096f8b4d3da2a230e8974"
+    },
+    {
+      "name": "apktool",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "apktool",
+      "fallbackKind": "github-release-jar",
+      "repo": "iBotPeaches/Apktool",
+      "assetRegex": "^apktool_3\\.0\\.2\\.jar$",
+      "installDir": "$HOME/tools/apktool",
+      "docsUrl": "https://apktool.org/",
+      "canAutoInstall": true,
+      "verifyCommand": "apktool",
+      "kaliNote": "apt install apktool is enough; when the version is old, download the latest from GitHub",
+      "releaseTag": "v3.0.2",
+      "assetSha256": "eee4669a704a14e0623407e6701b0b91887e61e1e4049cb7a82833e14ae8b5fd"
+    },
+    {
+      "name": "frida",
+      "bootstrapKind": "pip-package",
+      "pipPackage": "frida-tools==14.10.4",
+      "pinnedVersion": "14.10.4",
+      "docsUrl": "https://frida.re/",
+      "canAutoInstall": true,
+      "verifyCommand": "frida",
+      "kaliNote": "pip3 install frida-tools or apt install python3-frida-tools"
+    },
+    {
+      "name": "frida-ps",
+      "bootstrapKind": "pip-package",
+      "pipPackage": "frida-tools==14.10.4",
+      "pinnedVersion": "14.10.4",
+      "docsUrl": "https://frida.re/",
+      "canAutoInstall": true,
+      "verifyCommand": "frida-ps"
+    },
+    {
+      "name": "idalib-mcp",
+      "bootstrapKind": "pip-package",
+      "pipPackage": "ida-pro-mcp",
+      "pipSource": "git+https://github.com/mrexodia/ida-pro-mcp.git@f82e6e2517a161b77e738951c3071cd446480ba0",
+      "pinnedCommit": "f82e6e2517a161b77e738951c3071cd446480ba0",
+      "docsUrl": "https://github.com/mrexodia/ida-pro-mcp",
+      "canAutoInstall": true,
+      "verifyCommand": "ida-pro-mcp",
+      "postInstallSteps": [
+        "ida-pro-mcp --install (choose Streamable HTTP + Global)",
+        "Restart IDA Pro so the plugin takes effect",
+        "After IDA opens a file, MCP listens on 127.0.0.1:13337 automatically"
+      ],
+      "kaliNote": "Needs IDA Pro for Linux"
+    },
+    {
+      "name": "jeb-pro",
+      "bootstrapKind": "manual",
+      "docsUrl": "https://www.pnfsoftware.com/jeb/",
+      "canAutoInstall": false,
+      "verifyCommand": "jeb",
+      "manualInstallHint": "JEB Pro is commercial. Obtain a valid license from PNF Software, install it manually, then refresh the tool index. Optional community MCP bridges must pass the skill-supply-chain review before registration.",
+      "kaliNote": "JEB Pro Linux edition requires a user-provided license and manual installation."
+    },
+    {
+      "name": "binaryninja",
+      "bootstrapKind": "manual",
+      "docsUrl": "https://binary.ninja/",
+      "canAutoInstall": false,
+      "verifyCommand": "binaryninja",
+      "manualInstallHint": "Binary Ninja is commercial software. Obtain a valid Vector 35 license and install it manually. Optional community MCP plugins require supply-chain review and loopback binding.",
+      "kaliNote": "Binary Ninja Linux requires a user-provided license and manual installation."
+    },
+    {
+      "name": "reqable-mcp",
+      "bootstrapKind": "npm-mcp",
+      "npmPackage": "reqable-mcp-server@1.0.1",
+      "mcpNames": [
+        "reqable-mcp"
+      ],
+      "mcpCommand": "npx",
+      "mcpArgs": [
+        "-y",
+        "reqable-mcp-server@1.0.1",
+        "--scope",
+        "minimal"
+      ],
+      "docsUrl": "https://github.com/reqable/reqable-mcp-server",
+      "canAutoInstall": true,
+      "verifyCommand": "npx",
+      "pinnedVersion": "1.0.1",
+      "kaliNote": "Requires the separately installed Reqable desktop application and its local API."
+    },
+    {
+      "name": "jshookmcp",
+      "bootstrapKind": "npm-mcp",
+      "npmPackage": "@jshookmcp/jshook@0.3.4",
+      "mcpNames": [
+        "jshook"
+      ],
+      "mcpCommand": "npx",
+      "mcpArgs": [
+        "-y",
+        "@jshookmcp/jshook@0.3.4"
+      ],
+      "mcpEnv": {
+        "JSHOOK_BASE_PROFILE": "search"
+      },
+      "docsUrl": "https://github.com/vmoranv/jshookmcp",
+      "canAutoInstall": true,
+      "verifyCommand": "npx",
+      "pinnedVersion": "0.3.4"
+    },
+    {
+      "name": "xquik-mcp",
+      "bootstrapKind": "remote-http-mcp",
+      "mcpNames": [
+        "xquik"
+      ],
+      "mcpUrl": "https://xquik.com/mcp",
+      "docsUrl": "https://docs.xquik.com/mcp/overview",
+      "canAutoInstall": true,
+      "pinPolicy": "remote-service-no-local-install",
+      "verificationMode": "registration-only",
+      "note": "Registers the first-party remote MCP URL only. OAuth is completed in the MCP client. No local package, bridge, or credential is installed."
+    },
+    {
+      "name": "anything-analyzer",
+      "bootstrapKind": "local-http-mcp",
+      "repoUrl": "https://github.com/Mouseww/anything-analyzer",
+      "installDir": "$HOME/tools/anything-analyzer",
+      "startupDirCandidates": [
+        "$HOME/tools/anything-analyzer"
+      ],
+      "startCommand": "pnpm",
+      "startArgs": [
+        "dev"
+      ],
+      "mcpNames": [
+        "anything-analyzer",
+        "local-mcp"
+      ],
+      "mcpUrl": "http://localhost:23816/mcp",
+      "servicePort": 23816,
+      "docsUrl": "https://github.com/Mouseww/anything-analyzer",
+      "canAutoInstall": true,
+      "pinnedCommit": "0ed4791688e5186da051c85eb7ddfe4639e14fd2",
+      "verificationMode": "service-or-registration"
+    },
+    {
+      "name": "idapro",
+      "bootstrapKind": "local-http-mcp",
+      "dependsOn": [
+        "idalib-mcp"
+      ],
+      "mcpNames": [
+        "idapro"
+      ],
+      "mcpUrl": "http://127.0.0.1:13337/mcp",
+      "servicePort": 13337,
+      "servicePortRange": [
+        13337,
+        13350
+      ],
+      "portNote": "With several IDA instances the port increments (13337, 13338, ...); check the [MCP] port=xxxxx log in the IDA Output window",
+      "startScript": "$SKILL_ROOT/../kali/scripts/ida-start.sh",
+      "docsUrl": "https://hex-rays.com/ida-pro/",
+      "canAutoInstall": true,
+      "verificationMode": "service-and-registration",
+      "kaliNote": "Needs IDA Pro for Linux, installed to /opt/idapro/"
+    },
+    {
+      "name": "r2",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "radare2",
+      "fallbackKind": "github-release-tar",
+      "repo": "radareorg/radare2",
+      "assetRegex": "^radare2-.*-w64\\.zip$",
+      "docsUrl": "https://github.com/radareorg/radare2",
+      "canAutoInstall": true,
+      "verifyCommand": "r2",
+      "kaliNote": "Preinstalled on Kali. For the latest version, download the .deb from GitHub",
+      "preferApiDigest": true
+    },
+    {
+      "name": "rabin2",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "radare2",
+      "docsUrl": "https://github.com/radareorg/radare2",
+      "canAutoInstall": true,
+      "verifyCommand": "rabin2",
+      "kaliNote": "Installed together with radare2",
+      "assetRegex": "^radare2-.*-w64\\.zip$",
+      "preferApiDigest": true
+    },
+    {
+      "name": "adb",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "adb",
+      "docsUrl": "https://developer.android.com/tools/releases/platform-tools",
+      "canAutoInstall": true,
+      "verifyCommand": "adb",
+      "kaliNote": "apt install adb"
+    },
+    {
+      "name": "agent-browser",
+      "bootstrapKind": "npm-global",
+      "npmPackage": "agent-browser@0.31.1",
+      "pinnedVersion": "0.31.1",
+      "postInstall": "npx playwright install chromium",
+      "docsUrl": "https://github.com/nicepkg/agent-browser",
+      "canAutoInstall": true,
+      "verifyCommand": "agent-browser"
+    },
+    {
+      "name": "ghidra-mcp",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "ghidra",
+      "fallbackKind": "github-release-tar",
+      "repo": "NationalSecurityAgency/ghidra",
+      "assetRegex": "^ghidra_.*_PUBLIC_.*\\.zip$",
+      "installDir": "$HOME/tools/ghidra",
+      "docsUrl": "https://ghidra-sre.org/",
+      "canAutoInstall": true,
+      "verifyCommand": "ghidra",
+      "postInstallSteps": [
+        "Download the GhidraMCP plugin: https://github.com/LaurieWired/GhidraMCP/releases",
+        "Install the plugin zip in Ghidra: File, Install Extensions, choose the downloaded zip",
+        "The MCP server listens on localhost:8765 automatically after a Ghidra project opens"
+      ],
+      "mcpNames": [
+        "ghidra"
+      ],
+      "mcpUrl": "http://localhost:8765/mcp",
+      "servicePort": 8765,
+      "verificationMode": "service-or-registration",
+      "kaliNote": "apt install ghidra or download from GitHub",
+      "preferApiDigest": true
+    },
+    {
+      "name": "seclists",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "seclists",
+      "installDir": "/usr/share/seclists",
+      "docsUrl": "https://github.com/danielmiessler/SecLists",
+      "canAutoInstall": true,
+      "verifyCommand": "",
+      "kaliNote": "apt install seclists, installs to /usr/share/seclists/"
+    },
+    {
+      "name": "proxycat",
+      "bootstrapKind": "git-clone",
+      "repo": "https://github.com/honmashironeko/ProxyCat.git",
+      "pinnedCommit": "2309b713e2e4f574df14c2ace7e8fa6c00eb6941",
+      "installDir": "$HOME/tools/ProxyCat",
+      "docsUrl": "https://github.com/honmashironeko/ProxyCat",
+      "canAutoInstall": true,
+      "verifyCommand": "proxycat"
+    },
+    {
+      "name": "burpsuite-mcp",
+      "bootstrapKind": "manual",
+      "mcpNames": [
+        "burpsuite"
+      ],
+      "mcpUrl": "http://localhost:9876/mcp",
+      "servicePort": 9876,
+      "docsUrl": "https://portswigger.net/burp",
+      "canAutoInstall": false,
+      "verificationMode": "service-or-registration",
+      "manualInstallHint": "BurpSuite is preinstalled on Kali. Search the extension store for the MCP plugin and install it; after start it listens on localhost:9876",
+      "kaliNote": "BurpSuite Community is preinstalled on Kali; the MCP plugin must be installed manually"
+    },
+    {
+      "name": "nmap",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "nmap",
+      "docsUrl": "https://nmap.org/",
+      "canAutoInstall": true,
+      "verifyCommand": "nmap",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "sqlmap",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "sqlmap",
+      "docsUrl": "https://sqlmap.org/",
+      "canAutoInstall": true,
+      "verifyCommand": "sqlmap",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "hashcat",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "hashcat",
+      "docsUrl": "https://hashcat.net/hashcat/",
+      "canAutoInstall": true,
+      "verifyCommand": "hashcat",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "hydra",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "hydra",
+      "docsUrl": "https://github.com/vanhauser-thc/thc-hydra",
+      "canAutoInstall": true,
+      "verifyCommand": "hydra",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "gobuster",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "gobuster",
+      "docsUrl": "https://github.com/OJ/gobuster",
+      "canAutoInstall": true,
+      "verifyCommand": "gobuster",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "ffuf",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "ffuf",
+      "docsUrl": "https://github.com/ffuf/ffuf",
+      "canAutoInstall": true,
+      "verifyCommand": "ffuf",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "msfconsole",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "metasploit-framework",
+      "docsUrl": "https://www.metasploit.com/",
+      "canAutoInstall": true,
+      "verifyCommand": "msfconsole",
+      "kaliNote": "Preinstalled on Kali"
+    },
+    {
+      "name": "nuclei",
+      "bootstrapKind": "go-install",
+      "goPackage": "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@v3.8.0",
+      "pinnedVersion": "v3.8.0",
+      "fallbackKind": "github-release-tar",
+      "repo": "projectdiscovery/nuclei",
+      "assetRegex": "^nuclei_.*_linux_amd64\\.zip$",
+      "releaseTag": "v3.8.0",
+      "preferApiDigest": true,
+      "docsUrl": "https://github.com/projectdiscovery/nuclei",
+      "canAutoInstall": true,
+      "verifyCommand": "nuclei",
+      "kaliNote": "go install or download from the GitHub release"
+    },
+    {
+      "name": "mcp-kali-server",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "mcp-kali-server",
+      "mcpNames": [
+        "kali-server"
+      ],
+      "mcpUrl": "http://localhost:5000",
+      "servicePort": 5000,
+      "docsUrl": "https://github.com/Wh0am123/MCP-Kali-Server",
+      "canAutoInstall": true,
+      "verifyCommand": "kali-server-mcp",
+      "verificationMode": "service-or-registration",
+      "kaliNote": "Included officially in Kali 2026.1. After apt install, start the API server with kali-server-mcp and connect AI clients with mcp-server. Can call any terminal tool such as nmap/nxc/curl/gobuster directly."
+    },
+    {
+      "name": "metasploitmcp",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "metasploitmcp",
+      "mcpNames": [
+        "metasploit-mcp"
+      ],
+      "mcpCommand": "metasploitmcp",
+      "mcpArgs": [
+        "--transport",
+        "stdio"
+      ],
+      "mcpUrl": "http://127.0.0.1:8085",
+      "servicePort": 8085,
+      "docsUrl": "https://github.com/GH05TCREW/MetasploitMCP",
+      "canAutoInstall": true,
+      "verifyCommand": "metasploitmcp",
+      "verificationMode": "service-or-registration",
+      "kaliNote": "New in Kali 2026.1. MCP interface for the Metasploit Framework, with HTTP and stdio transport modes."
+    },
+    {
+      "name": "hexstrike-ai",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "hexstrike-ai",
+      "mcpNames": [
+        "hexstrike"
+      ],
+      "docsUrl": "https://github.com/0x4m4/hexstrike-ai",
+      "canAutoInstall": true,
+      "verifyCommand": "hexstrike-ai",
+      "kaliNote": "New in Kali 2025.4. AI MCP security automation platform that exposes 150+ security tools to AI agents over MCP."
+    },
+    {
+      "name": "adaptixc2",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "adaptixc2",
+      "docsUrl": "https://www.kali.org/tools/adaptixc2/",
+      "canAutoInstall": true,
+      "verifyCommand": "AdaptixServer",
+      "kaliNote": "New in Kali 2026.1. Extensible post-exploitation and adversary emulation framework."
+    },
+    {
+      "name": "atomic-operator",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "atomic-operator",
+      "docsUrl": "https://www.kali.org/tools/atomic-operator/",
+      "canAutoInstall": true,
+      "verifyCommand": "atomic-operator",
+      "kaliNote": "New in Kali 2026.1. Runs Atomic Red Team test cases across platforms."
+    },
+    {
+      "name": "sstimap",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "sstimap",
+      "docsUrl": "https://github.com/vladko312/SSTImap",
+      "canAutoInstall": true,
+      "verifyCommand": "sstimap",
+      "kaliNote": "New in Kali 2026.1. Automatic SSTI (server-side template injection) detection and exploitation."
+    },
+    {
+      "name": "xsstrike",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "xsstrike",
+      "docsUrl": "https://github.com/s0md3v/XSStrike",
+      "canAutoInstall": true,
+      "verifyCommand": "xsstrike",
+      "kaliNote": "New in Kali 2026.1. Advanced XSS scanner with DOM, reflected and stored detection."
+    },
+    {
+      "name": "wpprobe",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "wpprobe",
+      "docsUrl": "https://www.kali.org/tools/wpprobe/",
+      "canAutoInstall": true,
+      "verifyCommand": "wpprobe",
+      "kaliNote": "New in Kali 2026.1. Fast WordPress plugin enumeration tool."
+    },
+    {
+      "name": "fluxion",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "fluxion",
+      "docsUrl": "https://www.kali.org/tools/fluxion/",
+      "canAutoInstall": true,
+      "verifyCommand": "fluxion",
+      "kaliNote": "New in Kali 2026.1. WiFi security audit and social engineering research tool."
+    },
+    {
+      "name": "gef",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "gef",
+      "docsUrl": "https://www.kali.org/tools/gef/",
+      "canAutoInstall": true,
+      "verifyCommand": "gdb",
+      "kaliNote": "New in Kali 2026.1. GDB Enhanced Features, a modern GDB debugging experience. After installation gdb loads GEF automatically."
+    },
+    {
+      "name": "evil-winrm-py",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "evil-winrm-py",
+      "docsUrl": "https://www.kali.org/tools/evil-winrm-py/",
+      "canAutoInstall": true,
+      "verifyCommand": "evil-winrm-py",
+      "kaliNote": "New in Kali 2025.4. Python WinRM remote command execution for Windows post-exploitation."
+    },
+    {
+      "name": "pentestswarm",
+      "bootstrapKind": "go-install",
+      "goPackage": "github.com/Armur-Ai/Pentest-Swarm-AI/cmd/pentestswarm@v0.1.0",
+      "fallbackKind": "docker-image",
+      "dockerImage": "ghcr.io/armur-ai/pentestswarm:v0.1.0",
+      "mcpNames": [
+        "pentestswarm"
+      ],
+      "mcpCommand": "pentestswarm",
+      "mcpArgs": [
+        "mcp",
+        "serve"
+      ],
+      "docsUrl": "https://github.com/Armur-Ai/Pentest-Swarm-AI",
+      "canAutoInstall": true,
+      "verifyCommand": "pentestswarm",
+      "dependencies": [
+        "go",
+        "postgres",
+        "redis"
+      ],
+      "kaliNote": "Swarm-intelligence pentest framework. Runs with go install or Docker. Supports MCP server mode (pentestswarm mcp serve). Needs a Claude/Ollama API key.",
+      "pinnedVersion": "v0.1.0"
+    },
+    {
+      "name": "coercer",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "coercer",
+      "docsUrl": "https://www.kali.org/tools/coercer/",
+      "canAutoInstall": true,
+      "verifyCommand": "coercer",
+      "kaliNote": "Windows authentication coercion tool for NTLM relay in AD attacks."
+    },
+    {
+      "name": "binwalk",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "binwalk",
+      "docsUrl": "https://github.com/ReFirmLabs/binwalk",
+      "canAutoInstall": true,
+      "verifyCommand": "binwalk",
+      "kaliNote": "Firmware analysis and extraction. Preinstalled on Kali, updatable with apt."
+    },
+    {
+      "name": "yara",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "yara",
+      "docsUrl": "https://virustotal.github.io/yara/",
+      "canAutoInstall": true,
+      "verifyCommand": "yara",
+      "kaliNote": "Malware rule matching engine. Preinstalled on Kali, updatable with apt."
+    },
+    {
+      "name": "pwntools",
+      "bootstrapKind": "pip-package",
+      "pipPackage": "pwntools==4.15.0",
+      "pinnedVersion": "4.15.0",
+      "docsUrl": "https://github.com/Gallopsled/pwntools",
+      "canAutoInstall": true,
+      "verifyCommand": "pwn",
+      "kaliNote": "CTF pwn exploit development framework. Preinstalled on Kali, updatable with pip."
+    },
+    {
+      "name": "bkcrack",
+      "bootstrapKind": "apt-package",
+      "aptPackage": "bkcrack",
+      "docsUrl": "https://github.com/kimci86/bkcrack",
+      "canAutoInstall": true,
+      "verifyCommand": "bkcrack",
+      "kaliNote": "Known-plaintext attack tool for legacy ZipCrypto; installable with apt on Kali/Debian."
+    }
+  ]
+}

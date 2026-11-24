@@ -1,0 +1,172 @@
+name: Auto-merge field-journal PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'skills/field-journal/**'
+
+jobs:
+  validate-and-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_TITLE: ${{ github.event.pull_request.title }}
+      PR_SUBJECT: ${{ format('[field-journal] {0}', github.event.pull_request.title) }}
+    
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Validate PR safety
+        id: validate
+        run: |
+          set -e
+          
+          # 1. Only allow changes to .md files under the field-journal directory
+          CHANGED_FILES=$(gh pr diff "$PR_NUMBER" --name-only)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # Strict allowlist: only .md files under field-journal
+          INVALID_FILES=$(echo "$CHANGED_FILES" | grep -v '^skills/field-journal/.*\.md$' || true)
+          if [ -n "$INVALID_FILES" ]; then
+            echo "❌ BLOCKED: the PR changes files outside field-journal"
+            echo "$INVALID_FILES"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          # Do not allow changes to CONTRIBUTE-BACK.md and _template.md (system files)
+          SYSTEM_FILES=$(echo "$CHANGED_FILES" | grep -E '(CONTRIBUTE-BACK\.md|_template\.md)' || true)
+          if [ -n "$SYSTEM_FILES" ]; then
+            echo "❌ BLOCKED: changes to system files are not allowed"
+            echo "$SYSTEM_FILES"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          # 2. File count limit (at most 5 files per PR)
+          FILE_COUNT=$(echo "$CHANGED_FILES" | wc -l)
+          if [ "$FILE_COUNT" -gt 5 ]; then
+            echo "❌ BLOCKED: the PR has more than 5 files (actual $FILE_COUNT)"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          # 3. Per-file security scan
+          for file in $CHANGED_FILES; do
+            if [ ! -f "$file" ]; then
+              continue
+            fi
+            
+            echo "--- Scanning: $file ---"
+            
+            # 3a. Prompt injection detection (broad mode)
+            if grep -iE "(ignore previous|ignore all|you are now|forget (all|everything)|disregard|new instructions|system prompt|override|jailbreak|DAN mode|bypass safety)" "$file"; then
+              echo "❌ BLOCKED: $file contains prompt injection signatures"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3b. HTML/JS injection detection
+            if grep -iE "(<script|<iframe|<object|<embed|<form|<input|javascript:|onerror=|onload=|onclick=|onmouseover=|onfocus=|data:text/html)" "$file"; then
+              echo "❌ BLOCKED: $file contains HTML/JS injection code"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3c. Detection of disguised executable code or shell commands
+            if grep -E "^(#!/|import os|import subprocess|require\('child_process|from os import|exec\(|eval\(|os\.system|subprocess\.|Runtime\.getRuntime|ProcessBuilder|powershell -e|cmd /c|curl .* \| (bash|sh)|wget .* -O- \| (bash|sh))" "$file"; then
+              echo "❌ BLOCKED: $file contains executable code or malicious commands"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3d. Encoding bypass detection (base64-encoded commands)
+            if grep -iE "(base64 -d|base64 --decode|atob\(|Buffer\.from\(.*base64|echo .* \| base64)" "$file"; then
+              echo "❌ BLOCKED: $file contains base64 encoding bypass signatures"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3e. Unredacted token/key detection (extended mode)
+            if grep -iE "(AKIA[0-9A-Z]{16}|sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|npm_[a-zA-Z0-9]{36}|xox[baprs]-[a-zA-Z0-9-]+|ya29\.[a-zA-Z0-9_-]+|AIza[a-zA-Z0-9_-]{35}|[0-9]+-[a-zA-Z0-9_]{32}\.apps\.googleusercontent\.com|sk_live_[a-zA-Z0-9]{24,}|rk_live_[a-zA-Z0-9]{24,}|sq0atp-[a-zA-Z0-9_-]{22})" "$file"; then
+              echo "❌ BLOCKED: $file contains what looks like a real API key or token"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3f. Real IP address detection (not RFC1918 private, not example addresses)
+            # Allowed: 10.x.x.x, 172.16-31.x.x, 192.168.x.x, 127.x.x.x, 0.0.0.0
+            if grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b' "$file" | grep -vE '^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|255\.|224\.)' | grep -vE '^(198\.51\.100\.|203\.0\.113\.|192\.0\.2\.)' | head -5 > /tmp/real_ips; then
+              if [ -s /tmp/real_ips ]; then
+                echo "⚠️ WARNING: $file may contain unredacted real IPs:"
+                cat /tmp/real_ips
+                echo "❌ BLOCKED: replace real IPs with 10.x.x.x or 192.168.x.x"
+                echo "valid=false" >> $GITHUB_OUTPUT
+                exit 1
+              fi
+            fi
+            
+            # 3g. File size check (50KB limit per file)
+            SIZE=$(wc -c < "$file")
+            if [ "$SIZE" -gt 51200 ]; then
+              echo "❌ BLOCKED: $file exceeds 50KB ($SIZE bytes)"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3h. Markdown structure check (must start with #, which shows it is a normal journal)
+            FIRST_CONTENT_LINE=$(grep -m1 -v '^$' "$file" || echo "")
+            if [[ ! "$FIRST_CONTENT_LINE" =~ ^#\  ]]; then
+              echo "❌ BLOCKED: $file is not a valid field-journal entry (must start with a # heading)"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            # 3i. Link and URL safety check (no external links to executables)
+            if grep -iE "(https?://.*\.(exe|msi|bat|cmd|ps1|sh|py|rb|pl|vbs|js)(\?|$|[\"' ]))" "$file"; then
+              echo "❌ BLOCKED: $file contains external links to executable files"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            echo "✅ $file passed the security checks"
+          done
+          
+          echo ""
+          echo "✅ All files passed the security review"
+          echo "valid=true" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-merge if valid
+        if: steps.validate.outputs.valid == 'true'
+        run: |
+          gh pr merge "$PR_NUMBER" \
+            --auto --squash \
+            --subject "$PR_SUBJECT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on failure
+        if: failure() && steps.validate.outputs.valid == 'false'
+        run: |
+          gh pr comment "$PR_NUMBER" \
+            --body "❌ **Automatic review failed**
+
+          This PR failed the security checks and cannot be merged automatically. Possible reasons:
+          - It changes files outside field-journal
+          - The content contains suspicious prompt injection signatures
+          - The content contains an unredacted API key or token
+          - A single file exceeds 50KB
+
+          Please check, fix and resubmit."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

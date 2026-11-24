@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "kali-server": {
+      "command": "kali-server-mcp",
+      "args": ["--port", "5000"],
+      "_comment": "Official Kali MCP server. Available after apt install mcp-kali-server. Can call any terminal tool such as nmap/nxc/curl/gobuster directly."
+    },
+    "metasploit-mcp": {
+      "command": "metasploitmcp",
+      "args": ["--transport", "stdio"],
+      "_comment": "Metasploit Framework MCP interface. apt install metasploitmcp. Supports exploit/payload/session management."
+    },
+    "hexstrike": {
+      "command": "hexstrike-ai",
+      "args": [],
+      "_comment": "HexStrike AI MCP. apt install hexstrike-ai. Automated orchestration of 150+ security tools."
+    },
+    "pentestswarm": {
+      "command": "pentestswarm",
+      "args": ["mcp", "serve"],
+      "env": {
+        "PENTESTSWARM_ORCHESTRATOR_API_KEY": "<your-claude-or-ollama-key>"
+      },
+      "_comment": "Pentest Swarm AI. Swarm-intelligence autonomous pentest framework. go install or Docker. Supports --swarm mode."
+    },
+    "jshook": {
+      "command": "npx",
+      "args": ["-y", "@jshookmcp/jshook@0.3.4"],
+      "env": {
+        "JSHOOK_BASE_PROFILE": "search"
+      },
+      "_comment": "JS reverse engineering MCP. Browser/CDP/Hook/Network/SourceMap/AST."
+    },
+    "anything-analyzer": {
+      "url": "http://localhost:23816/mcp",
+      "_comment": "Browser automation + HTTP capture. Clone it first and start it with pnpm dev."
+    },
+    "idapro": {
+      "url": "http://127.0.0.1:13337/mcp",
+      "_comment": "IDA Pro MCP. Needs IDA Pro for Linux + the ida-pro-mcp plugin. The port may increment up to 13350."
+    },
+    "ghidra": {
+      "url": "http://localhost:8765/mcp",
+      "_comment": "Ghidra MCP. apt install ghidra + the GhidraMCP plugin. Free alternative to IDA."
+    }
+  }
+}

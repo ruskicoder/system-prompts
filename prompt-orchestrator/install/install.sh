@@ -16,7 +16,7 @@ PO_HARNESS_PY_MAJOR=3
 PO_HARNESS_PY_MINOR=11
 PO_HARNESS_DEFAULT=1
 PO_HARNESS_OPTIONS='subagent-model statusline hooks legacy-move'
-PO_PACKS='claude-red-offense cyber-skills logo-design procable'
+PO_PACKS='claude-red-offense cyber-skills logo-design procable reverse-skill'
 
 # shellcheck disable=SC2034  # the L_* locations are read through po_expand
 po_init_locations() {
@@ -212,6 +212,12 @@ po_pack_get() {
         'procable:license') printf '%s' 'Apache-2.0' ;;
         'procable:payload') printf '%s' '' ;;
         'procable:sets') printf '%s' 'procable' ;;
+        'reverse-skill:label') printf '%s' 'Reverse Skill' ;;
+        'reverse-skill:description') printf '%s' 'Routing package for reverse engineering, exploitation, penetration testing, malware, mobile, firmware and CTF work with case gates, tool bootstrap and MCP setup.' ;;
+        'reverse-skill:kind') printf '%s' 'package' ;;
+        'reverse-skill:license') printf '%s' 'MIT' ;;
+        'reverse-skill:payload') printf '%s' 'package' ;;
+        'reverse-skill:sets') printf '%s' 'reverse-skill' ;;
         *) printf '' ;;
     esac
 }
@@ -357,6 +363,10 @@ po_set_get() {
         'procable:procable:description') printf '%s' 'The procable skill and engine for polish, critique, audit and WCAG 2.2 AA review.' ;;
         'procable:procable:count') printf '%s' '1' ;;
         'procable:procable:skills') printf '%s' 'procable' ;;
+        'reverse-skill:reverse-skill:label') printf '%s' 'Reverse Skill' ;;
+        'reverse-skill:reverse-skill:description') printf '%s' 'Entry skill that points the agent at the installed reverse-skill package and its router.' ;;
+        'reverse-skill:reverse-skill:count') printf '%s' '1' ;;
+        'reverse-skill:reverse-skill:skills') printf '%s' 'reverse-skill' ;;
         *) printf '' ;;
     esac
 }

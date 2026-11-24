@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "reverse-skill",
+  "label": "Reverse Skill",
+  "description": "Routing package for reverse engineering, exploitation, penetration testing, malware, mobile, firmware and CTF work with case gates, tool bootstrap and MCP setup.",
+  "kind": "package",
+  "license": "MIT",
+  "upstream": "https://github.com/zhaoxuya520/reverse-skill",
+  "upstream_commit": "b972ad0e90f26d8f044828f004da22a4a585da12",
+  "vetting": {"status": "passed", "vetted": "2026-11-24"},
+  "sets": [
+    {
+      "id": "reverse-skill",
+      "label": "Reverse Skill",
+      "description": "Entry skill that points the agent at the installed reverse-skill package and its router.",
+      "skills": ["reverse-skill"]
+    }
+  ],
+  "package": {"payload": "package"}
+}
