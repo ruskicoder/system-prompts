@@ -198,21 +198,21 @@ Assert-Fields (Join-Path $skillsRoot 'ops/timeline-workitem.md') @('timeline.md'
 Assert-Fields (Join-Path $skillsRoot 'ops/role-map.md') @('lead', 'cie', 'cpe', 'cre', 'Handoff')
 Assert-Fields (Join-Path $skillsRoot 'ops/skill-supply-chain.md') @('AST10', 'MCP', 'bootstrap', 'MUST')
 Assert-Fields (Join-Path $skillsRoot 'references/community-security-skills.md') @('trailofbits', 'agentskills.io', 'MUST', '2026-07')
-Assert-Fields (Join-Path $skillsRoot 'reverse-engineering/references/re-agent-workflow.md') @('Triage', 'Static', 'Dynamic', 'Synthesis', 'IAT repair iron rule', 'E-iat-repair-fail', 'E-exports', 'dnSpy', 'feasibility latch', 'E-self-check-crash', 'ExitProcess', 'timebox', 'E-api-hash', 'E-anti-debug-peb', 'E-wide-strings', 'A–T', 'U–AV', 'nonpe-format-cookbook')
+Assert-Fields (Join-Path $skillsRoot 'reverse-engineering/references/re-agent-workflow.md') @('Triage', 'Static', 'Dynamic', 'Synthesis', 'IAT repair iron rule', 'E-iat-repair-fail', 'E-exports', 'dnSpy', 'feasibility gate', 'E-self-check-crash', 'ExitProcess', 'time box', 'E-api-hash', 'E-anti-debug-peb', 'E-wide-strings', 'A–T', 'U–AV', 'nonpe-format-cookbook')
 Assert-Fields (Join-Path $skillsRoot 'pentest-tools/references/recon-pipeline.md') @('auth.status', 'network_profile', 'Evidence', 'nuclei')
 Assert-Fields (Join-Path $skillsRoot 'docs-generator/references/security-report-templates.md') @('Evidence Chain', 'Findings', 'Path')
 Assert-Fields (Join-Path $skillsRoot 'field-journal/_template.md') @('Scope', 'Evidence', 'Finding')
 Assert-Fields (Join-Path $skillsRoot 'case-review/SKILL.md') @('ACTION REQUIRED', 'review_case.py', 'Evidence Graph Review')
 $vendorRulesPath = Join-Path $skillsRoot 'docs-generator/references/vendor-report-rules.md'
 $vendorRulesText = Get-Content $vendorRulesPath -Raw -Encoding UTF8
-Assert-Fields (Join-Path $skillsRoot 'docs-generator/SKILL.md') @('vendor-report-rules.md', 'flavor = null', 'IOC/ATT&CK not required')
+Assert-Fields (Join-Path $skillsRoot 'docs-generator/SKILL.md') @('vendor-report-rules.md', 'flavor = null', 'no forced IOC/ATT&CK')
 Assert-Fields $vendorRulesPath @('flavor = null', 'explicit_malware')
 if ($vendorRulesText -match '(?m)Reverse engineering report\s*\|\s*default\s*`malware`') {
     Bad 'vendor rules default generic reverse engineering to malware flavor'
 } else {
     Ok 'vendor rules keep generic reverse engineering flavor-neutral'
 }
-if ($vendorRulesText -match 'confirm scope and preserve evidence first' -and $vendorRulesText -match 'do not delete files before evidence is preserved') {
+if ($vendorRulesText -match 'first confirm the scope and preserve evidence' -and $vendorRulesText -match 'do not delete files before evidence is preserved') {
     Ok 'malware remediation preserves evidence before destructive actions'
 } else {
     Bad 'malware remediation does not require evidence preservation before destructive actions'
@@ -223,7 +223,7 @@ if ($vendorRulesText -match '(?m)JS/Web signature reverse engineering report\s*\
     Ok 'vendor rules keep JS signature reports flavor-neutral'
 }
 Assert-Fields $vendorRulesPath @('skills/ops/evidence-finding-path.md', 'source evidence', 'securelist.com/updated-mata', 'www.huorong.cn', 'thin overlay', 'vuln')
-Assert-Fields (Join-Path $skillsRoot 'malware-analysis/SKILL.md') @('IAT repair iron rule', 'E-iat-repair-fail', 'E-exports', 'E-self-check-crash', 'ExitProcess', 'timebox', 'feasibility', 'E-api-hash', 'E-sig-forge', 'A–T', 'U–AV', 'E-batch-deobf', 'E-vba-pcode')
+Assert-Fields (Join-Path $skillsRoot 'malware-analysis/SKILL.md') @('IAT repair iron rule', 'E-iat-repair-fail', 'E-exports', 'E-self-check-crash', 'ExitProcess', 'time box', 'feasibility', 'E-api-hash', 'E-sig-forge', 'A–T', 'U–AV', 'E-batch-deobf', 'E-vba-pcode')
 Assert-Fields (Join-Path $skillsRoot 'reverse-engineering/anti-analysis.md') @('Agent response recipes A–T', 'E-anti-debug-cpuid', 'E-api-hash', 'SigCheck', 'ollvm-deobfuscation')
 Assert-Fields (Join-Path $skillsRoot 'reverse-engineering/references/nonpe-format-cookbook.md') @('U–AV', 'E-batch-deobf', 'E-ps-decode-layer-N', 'E-vba-pcode', 'E-js-vmp', 'E-driver-irp-handlers', 'E-dll-tls-dllmain', 'E-android-hidden-icon-manifest', 'E-delay-import')
 Assert-Fields (Join-Path $skillsRoot 'js-reverse/SKILL.md') @('E-js-vmp', 'E-js-deobf', 'nonpe-format-cookbook')
@@ -482,7 +482,7 @@ if ($routingText -like "*genuine decision boundary*" -and $routingText -notlike 
 $contribText = Get-Content -LiteralPath (Join-Path $PackageRoot "skills/CONTRIBUTING.md") -Raw -Encoding UTF8
 if ($contribText -like "*genuine decision boundary*" -and $contribText -notlike "*provide 3-6 numbered*") { Ok "new-skill contract uses genuine decision boundaries" } else { Bad "new-skill contract still requires per-stage menus" }
 $reWorkflowText = Get-Content -LiteralPath (Join-Path $PackageRoot "skills/reverse-engineering/references/re-agent-workflow.md") -Raw -Encoding UTF8
-if ($reWorkflowText -like "*decision_delta*" -and $reWorkflowText -like "*carry_forward_refs*" -and $reWorkflowText -like "*consumer must inherit refs first*") { Ok "representative RE workflow consumes delta by reference" } else { Bad "representative RE workflow missing delta consumer contract" }
+if ($reWorkflowText -like "*decision_delta*" -and $reWorkflowText -like "*carry_forward_refs*" -and $reWorkflowText -like "*the consumer must inherit the refs first*") { Ok "representative RE workflow consumes delta by reference" } else { Bad "representative RE workflow missing delta consumer contract" }
 
 # Issue #77 — analysis decision framework anchors (MUST run before fail gate)
 $adf = Join-Path $PackageRoot "skills/ops/analysis-decision-framework.md"
