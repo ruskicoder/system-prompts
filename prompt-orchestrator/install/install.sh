@@ -682,7 +682,7 @@ po_attribution() {  # run ensure_attribution_off.py and record what it created
 
 po_plugin() {  # $1 package, $2 mirror folder, $3 destination, $4 backup folder
     local src="$1" mirror="$2" dst="$3" backups="$4"
-    [ -f "$src/plugin.json" ] && [ -d "$src/skills" ] || po_die "missing $src (run: python3 tools/generate_integrations.py)"
+    if [ ! -f "$src/plugin.json" ] || [ ! -d "$src/skills" ]; then po_die "missing $src (run: python3 tools/generate_integrations.py)"; fi
     if ! diff -r -q -x __pycache__ -x '*.pyc' "$src/skills" "$mirror" >/dev/null 2>&1; then
         po_die "$src/skills differs from $mirror; regenerate with python3 tools/generate_integrations.py"
     fi
@@ -1119,7 +1119,7 @@ po_release_install() {  # $1 pack, $2 set, $3 tools
     version="$(po_lock_value "$lock" version)"
     repo="$(po_lock_value "$lock" repo)"
     pinned="$(po_lock_value "$lock" sha256sums)"
-    [ -n "$version" ] && [ -n "$repo" ] && [ -n "$pinned" ] || po_die "$lock does not pin version, repo and sha256sums"
+    if [ -z "$version" ] || [ -z "$repo" ] || [ -z "$pinned" ]; then po_die "$lock does not pin version, repo and sha256sums"; fi
     os="$(po_platform)"
     arch="${os#* }"
     os="${os% *}"
