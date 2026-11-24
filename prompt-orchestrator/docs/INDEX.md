@@ -27,7 +27,7 @@
 | [30-units/harness/README.md](30-units/harness/README.md) | units.harness | section | draft | Optional model-tier and plan-aware layer: tiered agents, plan profiles, power modes, frontier gate, verify gate. |
 | [30-units/harness/design.md](30-units/harness/design.md) | units.harness.design | design | draft | Install layout, runtime state, hook contracts and session flow. |
 | [30-units/harness/tests.md](30-units/harness/tests.md) | units.harness.tests | test | draft | Harness self-tests and live checks. |
-| [30-units/installers/README.md](30-units/installers/README.md) | units.installers | section | draft | Per-tool installers and the Antigravity plugin installer. |
+| [30-units/installers/README.md](30-units/installers/README.md) | units.installers | section | draft | Generated native installers (bash, PowerShell, cmd) with opt-in packs, built from install/spec.json. |
 | [30-units/installers/design.md](30-units/installers/design.md) | units.installers.design | design | todo | Structure: components, classes, sequences, states. |
 | [30-units/installers/tests.md](30-units/installers/tests.md) | units.installers.tests | test | draft | Installer test coverage. |
 | [30-units/orchestrator/README.md](30-units/orchestrator/README.md) | units.orchestrator | section | draft | Central orchestrator system prompt and the files that load it. |
