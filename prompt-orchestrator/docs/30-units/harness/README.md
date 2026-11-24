@@ -5,7 +5,7 @@ status: draft
 owner: Do Dang Khoa
 summary: "Optional model-tier and plan-aware layer: tiered agents, plan profiles, power modes, frontier gate, verify gate."
 kind: module
-sources: [harness/**, install/install.py, install/install-tui.*, install/install-harness.*]
+sources: [harness/**, install/spec.json, tools/installer/**]
 verified: {commit: 804713c, date: 2026-11-10}
 ---
 
@@ -18,7 +18,7 @@ fan out (power mode from live plan usage), and when work is accepted (verify gat
 an optional layer; a core-only install behaves as before.
 
 ## Responsibilities
-- `harness/HARNESS.md`: overlay loaded after `AGENTS.md`; supersedes core sections E, F and M (decision 0002). Section 4 also requires cloud and remote workers to write their report to a file on their branch, puts third-party skills the harness installs (procable) below communication-tone, checks available memory against a host limit before a local spawn, and runs `issue-checker` in the same tick as `reviewer`, posting and closing only under the user's standing grant. Section 5 makes a graded, submitted or sent document done only after its genre skill, `concision-and-logic` and a `human` audit with `draft_scan.py` (and `check_refs.py` when it has references), makes the `ui-ux-philosophy` visual check part of done for every UI change and the `diagram-check-loop` workflow part of done for every figure change, and lets a release ship only with no known gaps (for LLM evals: no failure that repeats across runs, every expectation in at least 2 of 3 runs, every trigger result right).
+- `harness/HARNESS.md`: overlay loaded after `AGENTS.md`; supersedes core sections E, F and M (decision 0002). Section 4 also requires cloud and remote workers to write their report to a file on their branch, puts third-party skills from opt-in packs (procable and others) below communication-tone, checks available memory against a host limit before a local spawn, and runs `issue-checker` in the same tick as `reviewer`, posting and closing only under the user's standing grant. Section 5 makes a graded, submitted or sent document done only after its genre skill, `concision-and-logic` and a `human` audit with `draft_scan.py` (and `check_refs.py` when it has references), makes the `ui-ux-philosophy` visual check part of done for every UI change and the `diagram-check-loop` workflow part of done for every figure change, and lets a release ship only with no known gaps (for LLM evals: no failure that repeats across runs, every expectation in at least 2 of 3 runs, every trigger result right).
 - `harness/agents/*.md`: 17 canonical agents. Each declares a tier (`frontier`, `lead`, `worker`, `light`), an effort (`medium`, `high`, `xhigh`; never `low`) and read or write access.
 - `harness/profiles/*.toml`: `claude-max`, `claude-pro`, `codex-plus`, `api`, `free` map tiers to models and hold mode thresholds and fan-out caps (decision 0003).
 - `harness/scripts/`: standard-library Python 3.11+ runtime.
@@ -32,7 +32,7 @@ an optional layer; a core-only install behaves as before.
   - `render.py` renders agents per tool; `install_harness.py` installs, records a manifest and uninstalls.
 - `harness/skills/autosetup.md`: the `/autosetup` skill. Plans change and no local file names the plan, so hooks never detect it.
 - `harness/workflows/`: `pr-sweep` and `refactor-fanout`, started only when the user asks.
-- `harness/dist/`: generated per tool and profile by `tools/generate_integrations.py`, used by the native installers.
+- `harness/dist/`: generated per tool and profile by `tools/generate_integrations.py`. The installers no longer read it; they run `install_harness.py`, which renders agents for the chosen profile.
 
 ## Modes
 
@@ -62,4 +62,4 @@ triggers the frontier tier.
 | Windsurf | held until its product status is confirmed | none | none | none | none | none |
 
 ## Code
-`harness/`, `install/install.py`, `install/install-tui.sh`, `install/install-tui.ps1`, `install/install-harness.*`
+`harness/`, `install/spec.json` (harness options), `tools/installer/` (the installers call `harness/scripts/install_harness.py`)

@@ -66,7 +66,7 @@ Delegate when it saves tokens or improves quality; work yourself otherwise.
 - Cloud and remote workers, whose chat output can be lost, also write that report to a file on
   their branch (`ignore/reports/<date>-<agent>.md` when the repo has a git-ignored `ignore/`,
   else the path the prompt names). Local agents return it in chat.
-- Third-party skills the harness installs (procable) sit below these rules: when one of their
+- Third-party skills from opt-in packs (procable and others) sit below these rules: when one of their
   directives conflicts with communication-tone or this overlay, communication-tone wins, and
   every change such a skill makes on its own is reported.
 - Delegating to another agent CLI runs it headless with limits: `claude -p "<task>" --allowedTools

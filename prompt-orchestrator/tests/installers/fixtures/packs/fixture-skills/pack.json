@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "fixture-skills",
+  "label": "Fixture skills",
+  "description": "Small in-house pack that the installer tests install and remove.",
+  "kind": "skills",
+  "license": "MIT",
+  "upstream": null,
+  "upstream_commit": null,
+  "vetting": null,
+  "sets": [
+    {"id": "alpha", "label": "Alpha", "description": "Two fixture skills, one with a script.", "skills": ["fixture-one", "fixture-two"]},
+    {"id": "beta", "label": "Beta", "description": "One fixture skill.", "skills": ["fixture-three"]}
+  ]
+}

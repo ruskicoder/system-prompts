@@ -15,11 +15,9 @@ HARNESS = Path(__file__).resolve().parent.parent
 SCRIPTS = HARNESS / "scripts"
 ROOT = HARNESS.parent
 sys.path.insert(0, str(SCRIPTS))
-sys.path.insert(0, str(ROOT / "install"))
 
 import harness_lib as h  # noqa: E402
 import harnessctl  # noqa: E402
-import install  # noqa: E402
 import install_harness as ih  # noqa: E402
 import render  # noqa: E402
 
@@ -408,20 +406,22 @@ class InstallerTests(TempHome):
         self.assertEqual(11, windows["seven_day"]["used"])
         self.assertEqual(0, fable["used"])
 
+    @unittest.skipUnless(shutil.which("bash"), "bash not installed")
     def test_installer_flags(self):
-        plan = install.initial_plan(install.parse_args(["--core", "--yes"]))
-        self.assertFalse(plan["harness"])
-        self.assertTrue(plan["core"])
-        plan = install.initial_plan(install.parse_args(["--harness-only", "--tools", "claude,codex", "--no-hooks"]))
-        self.assertEqual((["claude", "codex"], False, True, False),
-                         (plan["tools"], plan["core"], plan["harness"], plan["globals"]["hooks"]))
-        plan = install.initial_plan(install.parse_args([]))
-        self.assertTrue(plan["core"] and plan["harness"])
-        args = install.harness_args({**plan, "profile_claude": "claude-max"}, "claude")
-        self.assertIn("claude-max", args)
-        with self.assertRaises(SystemExit):
-            install.parse_args(["--tools", "nope"])
-
+        """The generated installer passes the harness flags to install_harness.py."""
+        env = {"PATH": os.environ.get("PATH", ""), "HOME": str(self.home), "TMPDIR": str(self.home)}
+        run = subprocess.run(["bash", str(ROOT / "install" / "install.sh"), "--harness-only", "--tools", "claude,codex",
+                              "--no-hooks", "--profile-claude", "claude-max", "--dry-run"],
+                             capture_output=True, text=True, env=env)
+        self.assertEqual(0, run.returncode, run.stderr)
+        lines = [line for line in run.stdout.splitlines() if "install_harness.py install" in line]
+        self.assertEqual(2, len(lines), run.stdout)
+        self.assertIn("--tool claude --profile claude-max --no-hooks", lines[0])
+        self.assertIn("--tool codex --no-hooks", lines[1])
+        self.assertNotIn("=== core", run.stdout)
+        bad = subprocess.run(["bash", str(ROOT / "install" / "install.sh"), "--tools", "nope", "--yes"],
+                             capture_output=True, text=True, env=env)
+        self.assertNotEqual(0, bad.returncode)
 
 if __name__ == "__main__":
     unittest.main()

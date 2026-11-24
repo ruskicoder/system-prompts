@@ -186,6 +186,19 @@ class ProseTests(unittest.TestCase):
         code, out = self.prose("third_party.md", "code.py", "generated.md")
         self.assertEqual((code, gates(out)), (0, []), out)
 
+    def test_pack_skills_are_exempt_pack_docs_are_not(self):
+        bad = "Install it \u2014 then run it.\n"
+        names = ("packs/p/skills/s/SKILL.md", "po/packs/p/skills/s/references/x.md", "po/packs/p/README.md")
+        with tempfile.TemporaryDirectory() as tmp:
+            for rel in names:
+                (Path(tmp) / rel).parent.mkdir(parents=True, exist_ok=True)
+                (Path(tmp) / rel).write_text(bad, encoding="utf-8")
+            code, out = run("prose", "--repo", tmp, *names)
+        self.assertEqual(code, 1, out)
+        self.assertEqual(gates(out), ["prose.em-dash"], out)
+        self.assertIn("po/packs/p/README.md", out)
+        self.assertNotIn("SKILL.md", out)
+
     def test_changed_files_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = GitRepo(Path(tmp))

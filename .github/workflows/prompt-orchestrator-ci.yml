@@ -59,9 +59,18 @@ jobs:
       - name: Skill, workflow and harness validator
         run: python3 -B skills/validate_skills.py
 
+      - name: Pack format validator
+        run: python3 -B tools/validate_packs.py
+
+      - name: Generated installers match the spec and the packs
+        run: python3 -B tools/generate_installers.py --check
+
+      - name: Shell check of the generated bash installer
+        run: shellcheck -s bash install/install.sh
+
       - name: Unit tests
         run: |
-          for d in harness/tests install skills/academic-writing/scripts skills/architecture-diagrams/scripts \
+          for d in harness/tests install tests/installers skills/academic-writing/scripts skills/architecture-diagrams/scripts \
                    skills/ci-enforcement/tests skills/concision-and-logic/scripts skills/docs-scaffold/scripts \
                    skills/human/scripts skills/no-ai-trailer/scripts skills/skill-creator/scripts; do
             echo "::group::$d"
