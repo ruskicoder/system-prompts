@@ -16,7 +16,7 @@
 ```bash
 # Lookup events by access key
 aws cloudtrail lookup-events \
-  --lookup-attributes AttributeKey=AccessKeyId,AttributeValue=AKIAXXXXXXXXXXXXXXXX \
+  --lookup-attributes AttributeKey=AccessKeyId,AttributeValue=AKIAXXXXXXXXXEXAMPLE \
   --start-time 2024-01-01T00:00:00Z --end-time 2024-01-02T00:00:00Z
 
 # Lookup by username
@@ -27,7 +27,7 @@ aws cloudtrail lookup-events \
 SELECT eventtime, eventsource, eventname, sourceipaddress,
        useridentity.arn, errorcode
 FROM cloudtrail_logs
-WHERE useridentity.accesskeyid = 'AKIAXXXXXXXXXXXXXXXX'
+WHERE useridentity.accesskeyid = 'AKIAXXXXXXXXXEXAMPLE'
   AND eventtime > '2024-01-01'
 ORDER BY eventtime DESC
 ```
@@ -67,3 +67,4 @@ az rest --method GET --url "https://graph.microsoft.com/v1.0/identityProtection/
 # Revoke user sessions
 az rest --method POST --url "https://graph.microsoft.com/v1.0/users/{id}/revokeSignInSessions"
 ```
+<!-- Modified by prompt-orchestrator on 2026-11-24: placeholder credentials marked as examples. -->

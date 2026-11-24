@@ -19,7 +19,7 @@ hsts = resp.headers.get("Strict-Transport-Security", "")
 | Google API Key | `AIza[0-9A-Za-z\-_]{35}` | AIzaSyA... |
 | Stripe Secret | `sk_live_[0-9a-zA-Z]{24,}` | sk_live_... |
 | GitHub Token | `ghp_[a-zA-Z0-9]{36}` | ghp_xxxx... |
-| Private Key | `-----BEGIN PRIVATE KEY-----` | PEM format |
+| Private Key | `-----BEGIN [A-Z ]*PRIVATE KEY-----` | PEM format |
 
 ## Exposed File Checks
 | File | Risk |
@@ -48,3 +48,4 @@ Pragma: no-cache
 - OWASP Sensitive Data Exposure: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/04-Authentication_Testing/
 - trufflehog: https://github.com/trufflesecurity/trufflehog
 - gitleaks: https://github.com/gitleaks/gitleaks
+<!-- Modified by prompt-orchestrator on 2026-11-24: placeholder credentials marked as examples. -->

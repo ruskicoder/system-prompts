@@ -28,7 +28,7 @@ vetting: passed
 vetted: '2026-11-24'
 upstream: https://github.com/mukul975/Anthropic-Cybersecurity-Skills/blob/54a798831d2266a3ca61ce68a7acb80b81160d57/skills/detecting-indirect-prompt-injection/SKILL.md
 upstream-commit: 54a798831d2266a3ca61ce68a7acb80b81160d57
-modified: '2026-11-24 prompt-orchestrator: em dashes and emoji removed from prose, provenance added'
+modified: '2026-11-24 prompt-orchestrator: em dashes and emoji removed from prose, provenance added; placeholder credentials and invisible characters rewritten for the secret and unicode gates'
 ---
 # Detecting Indirect Prompt Injection
 
@@ -118,7 +118,7 @@ Strip zero-width / Unicode-tag characters and decode common encodings so detecto
 # normalize.py
 import base64, codecs, re, unicodedata
 
-ZERO_WIDTH = dict.fromkeys(map(ord, "​‌‍⁠﻿"), None)
+ZERO_WIDTH = dict.fromkeys(map(ord, "\u200b\u200c\u200d\u2060\ufeff"), None)
 TAG_RANGE = range(0xE0000, 0xE0080)  # Unicode tag chars used to smuggle text
 
 def normalize(text: str) -> str:

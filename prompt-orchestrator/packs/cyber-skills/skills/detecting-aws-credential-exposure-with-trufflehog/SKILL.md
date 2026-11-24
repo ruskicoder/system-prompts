@@ -61,7 +61,7 @@ vetting: passed
 vetted: '2026-11-24'
 upstream: https://github.com/mukul975/Anthropic-Cybersecurity-Skills/blob/54a798831d2266a3ca61ce68a7acb80b81160d57/skills/detecting-aws-credential-exposure-with-trufflehog/SKILL.md
 upstream-commit: 54a798831d2266a3ca61ce68a7acb80b81160d57
-modified: '2026-11-24 prompt-orchestrator: em dashes and emoji removed from prose, provenance added'
+modified: '2026-11-24 prompt-orchestrator: em dashes and emoji removed from prose, provenance added; placeholder credentials and invisible characters rewritten for the secret and unicode gates'
 ---
 
 # Detecting AWS Credential Exposure with TruffleHog
@@ -216,7 +216,7 @@ Execute incident response procedures when verified credentials are found exposed
 # IMMEDIATE: Deactivate the exposed access key
 aws iam update-access-key \
   --user-name compromised-user \
-  --access-key-id AKIAEXPOSEDKEY123456 \
+  --access-key-id AKIAEXPOSED12EXAMPLE \
   --status Inactive
 
 # Generate new credentials
@@ -224,7 +224,7 @@ aws iam create-access-key --user-name compromised-user
 
 # Review CloudTrail for unauthorized usage of the exposed key
 aws cloudtrail lookup-events \
-  --lookup-attributes AttributeKey=AccessKeyId,AttributeValue=AKIAEXPOSEDKEY123456 \
+  --lookup-attributes AttributeKey=AccessKeyId,AttributeValue=AKIAEXPOSED12EXAMPLE \
   --start-time 2026-01-01T00:00:00Z \
   --query 'Events[*].[EventTime,EventName,EventSource,SourceIPAddress]' \
   --output table
@@ -232,7 +232,7 @@ aws cloudtrail lookup-events \
 # Delete the exposed key after rotation is confirmed
 aws iam delete-access-key \
   --user-name compromised-user \
-  --access-key-id AKIAEXPOSEDKEY123456
+  --access-key-id AKIAEXPOSED12EXAMPLE
 
 # Remove the credential from git history using BFG Repo Cleaner
 java -jar bfg.jar --replace-text credentials.txt repo.git
