@@ -453,11 +453,11 @@ function Add-PoJsonHooks([string]$File, [string]$Command, $Hooks) {
 function Remove-PoRecords($Records, [string]$Removing) {
     $ref = @{}
     foreach ($r in (Read-PoManifest)) {
-        if ($r.Owner -ne '@dirs' -and $r.Owner -cne $Removing -and @('k', 'u', 'h') -notcontains $r.Kind) { $ref[$r.Path] = $true }
+        if ($r.Owner -ne '@dirs' -and $r.Owner -cne $Removing -and @('k', 'u', 'h', 'm', 'n') -notcontains $r.Kind) { $ref[$r.Path] = $true }
     }
     foreach ($r in @($Records | Where-Object { $_.Kind -eq 'h' })) { Uninstall-PoHarness $r.Path }
     foreach ($r in $Records) {
-        if ($ref.ContainsKey($r.Path)) { continue }
+        if ($ref.ContainsKey($r.Path) -and @('m', 'n') -notcontains $r.Kind) { continue }
         $path = $r.Path
         switch ($r.Kind) {
             { $_ -in @('f', 'x') } {
@@ -479,6 +479,7 @@ function Remove-PoRecords($Records, [string]$Removing) {
                 if ($r.Extra -eq 'new' -and -not $text.Trim()) { Remove-Item -LiteralPath $path -Force } else { Write-PoText $path $text }
                 Add-PoChange
             }
+            'm' { Unregister-PoMcp $path $r.Hash $r.Extra }
         }
     }
     foreach ($r in $Records) {
@@ -490,7 +491,15 @@ function Remove-PoRecords($Records, [string]$Removing) {
             }
         } elseif ($r.Extra.StartsWith('json-strip:')) {
             Remove-PoJsonHooks $r.Path $r.Extra.Substring(11)
+        } elseif ($r.Extra.StartsWith('npm-rm:')) {
+            Remove-PoNpmPackage $r.Path $r.Extra.Substring(7)
         }
+    }
+    foreach ($r in $Records) {
+        if ($r.Kind -ne 'n') { continue }
+        $root = (Join-Path $script:DataHome 'packages') + $script:Sep
+        if (-not $r.Path.StartsWith($root)) { Write-PoWarn "kept $($r.Path): not inside $root"; continue }
+        if (Test-Path -LiteralPath $r.Path) { Remove-Item -LiteralPath $r.Path -Recurse -Force; Add-PoChange }
     }
     foreach ($r in $Records) {
         if ($r.Kind -ne 'k') { continue }
@@ -634,12 +643,12 @@ function Add-PoSets([string]$Spec) {
             $pack = Get-PoPack $p
             if (-not $pack) { Stop-Po "unknown pack: $p (see: install.ps1 packs list)" }
             $cur = $pack
-            if (-not $s -or $s -eq '*') { foreach ($x in $pack['sets']) { Add-PoSel "${p}:$($x['id'])" } }
+            if (-not $s -or $s -eq '*') { foreach ($x in (Get-PoBaseSets $pack)) { Add-PoSel "${p}:$x" } }
             elseif (Get-PoSet $pack $s) { Add-PoSel "${p}:$s" }
             else { Stop-Po "pack $p has no set $s" }
         } elseif (Get-PoPack $tok) {
             $cur = Get-PoPack $tok
-            foreach ($x in $cur['sets']) { Add-PoSel "${tok}:$($x['id'])" }
+            foreach ($x in (Get-PoBaseSets $cur)) { Add-PoSel "${tok}:$x" }
         } elseif ($cur -and (Get-PoSet $cur $tok)) {
             Add-PoSel "$($cur['id']):$tok"
         } else {
@@ -664,16 +673,21 @@ function Install-PoSet([string]$PackId, [string]$SetId, $Tools) {
     $set = Get-PoSet $pack $SetId
     Write-PoSay "=== pack $PackId, set $SetId ($($set['count']) skills)"
     if ($pack['kind'] -eq 'release') { Install-PoRelease $pack $set $Tools; return }
+    $mcp = [bool]($pack['mcp'] -and $pack['mcp']['set'] -eq $SetId)
+    if (Get-PoNpmPackage $pack $SetId) { Test-PoNodeReady $pack $true; Install-PoNpm $pack $SetId }
+    elseif ($mcp) { Test-PoNodeReady $pack $false }
     $packsDir = Join-Path $PO_Root $PO_Data['packs_rel']
     foreach ($tool in $Tools) {
         $t = Get-PoTool $tool
-        if (@($t['skills']).Count -eq 0) { continue }
+        $withMcp = [bool]($mcp -and $t['mcp'])
+        if (-not $withMcp -and (@($t['skills']).Count -eq 0 -or @($set['skills']).Count -eq 0)) { continue }
         Start-PoOwner "pack:${PackId}:${SetId}:$tool"
         foreach ($skill in $set['skills']) {
             foreach ($dir in $t['skills']) {
                 Copy-PoTree (Join-Path (Join-Path (Join-Path $packsDir $PackId) 'skills') $skill) (Join-Path (Expand-PoPath $dir) $skill)
             }
         }
+        if ($withMcp) { Register-PoMcp $pack $t }
         Complete-PoOwner
     }
     if ($pack['kind'] -eq 'package') {
@@ -683,20 +697,244 @@ function Install-PoSet([string]$PackId, [string]$SetId, $Tools) {
     }
 }
 
-function Remove-PoPackSpec([string]$Spec) {
+function Remove-PoPackSpec([string]$Spec) {  # a set takes the sets that require it along
     $p, $s = $Spec.Split(':', 2)
     $pack = Get-PoPack $p
     if (-not $pack) { Stop-Po "unknown pack: $p" }
-    if ($s -and -not (Get-PoSet $pack $s)) { Stop-Po "pack $p has no set $s" }
-    foreach ($owner in @(Get-PoOwners)) {
-        if (-not $owner.StartsWith("pack:${p}:")) { continue }
-        $rest = $owner.Substring("pack:${p}:".Length)
-        if ($rest -eq 'payload') { continue }
-        if ($s -and $rest.Split(':')[0] -ne $s) { continue }
-        Remove-PoOwner $owner
+    $sets = @('*')
+    if ($s) {
+        if (-not (Get-PoSet $pack $s)) { Stop-Po "pack $p has no set $s" }
+        $sets = @($pack['sets'] | Where-Object { @($_['requires']) -contains $s } | ForEach-Object { $_['id'] }) + @($s)
     }
-    $left = @(Get-PoOwners | Where-Object { $_.StartsWith("pack:${p}:") -and $_ -ne "pack:${p}:payload" })
-    if ($left.Count -eq 0) { Remove-PoOwner "pack:${p}:payload" }
+    foreach ($one in $sets) {
+        foreach ($owner in @(Get-PoOwners)) {
+            if (-not $owner.StartsWith("pack:${p}:")) { continue }
+            $rest = $owner.Substring("pack:${p}:".Length)
+            if (@('payload', 'npm') -contains $rest) { continue }
+            if ($one -ne '*' -and $rest.Split(':')[0] -ne $one) { continue }
+            Remove-PoOwner $owner
+        }
+    }
+    $left = @(Get-PoOwners | Where-Object { $_.StartsWith("pack:${p}:") -and $_ -ne "pack:${p}:payload" -and $_ -ne "pack:${p}:npm" })
+    if ($left.Count -eq 0) { Remove-PoOwner "pack:${p}:payload"; Remove-PoOwner "pack:${p}:npm" }
+}
+
+# ------------------------------------------------------------------ npm and MCP packs
+
+function Get-PoTmp {
+    if (-not $script:Tmp) {
+        $script:Tmp = Join-Path ([System.IO.Path]::GetTempPath()) "po-install-$PID"
+        New-Item -ItemType Directory -Force -Path $script:Tmp | Out-Null
+    }
+    return $script:Tmp
+}
+
+function Get-PoPrefix($Pack) { return Join-Path (Join-Path $script:DataHome 'packages') $Pack['id'] }
+
+function Get-PoNpmPackage($Pack, [string]$SetId) {
+    if (-not $Pack['npm']) { return $null }
+    foreach ($p in $Pack['npm']['packages']) { if ($p['set'] -eq $SetId) { return $p } }
+    return $null
+}
+
+function Get-PoBaseSets($Pack) { return @($Pack['sets'] | Where-Object { -not $_['requires'] } | ForEach-Object { $_['id'] }) }
+
+function Test-PoNodeReady($Pack, [bool]$Npm) {
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { Stop-Po "pack $($Pack['id']) needs Node.js on PATH" }
+    if (-not $Npm) { return }
+    if (-not (Get-Command npm -ErrorAction SilentlyContinue)) { Stop-Po "pack $($Pack['id']) needs npm on PATH" }
+    $out = & node $script:Helper node-check $Pack['npm']['node']
+    if ($LASTEXITCODE -ne 0) { Stop-Po "pack $($Pack['id']): $out" }
+}
+
+function Invoke-PoNpm([string[]]$NpmArgs) {  # npm with a throwaway cache and without notifier, audit and funding messages
+    $vars = [ordered]@{ NO_UPDATE_NOTIFIER = '1'; npm_config_update_notifier = 'false'; npm_config_audit = 'false'
+        npm_config_fund = 'false'; npm_config_cache = (Join-Path (Get-PoTmp) 'npm-cache') }
+    $old = @{}
+    foreach ($k in $vars.Keys) { $old[$k] = [Environment]::GetEnvironmentVariable($k); [Environment]::SetEnvironmentVariable($k, $vars[$k]) }
+    try { & npm @NpmArgs | Out-Host; return $LASTEXITCODE }
+    finally { foreach ($k in $vars.Keys) { [Environment]::SetEnvironmentVariable($k, $old[$k]) } }
+}
+
+function Test-PoNpmPinned([string]$Prefix, $Pkg) {
+    $out = & node $script:Helper npm-check $Prefix $Pkg['name'] $Pkg['version'] $Pkg['integrity']
+    return [pscustomobject]@{ Ok = ($LASTEXITCODE -eq 0); Text = (@($out) -join ' ') }
+}
+
+function Install-PoNpm($Pack, [string]$SetId) {  # the set's pinned npm package in <data_home>/packages/<pack>
+    $pkg = Get-PoNpmPackage $Pack $SetId
+    $prefix = Get-PoPrefix $Pack
+    if ($SetId -ne @($Pack['npm']['packages'])[0]['set']) { Install-PoNpmAddon $Pack $pkg $prefix; return }
+    $spec = "$($pkg['name'])@$($pkg['version'])"
+    Start-PoOwner "pack:$($Pack['id']):npm"
+    if ((Test-PoNpmPinned $prefix $pkg).Ok) {
+        Add-PoRecord 'n' $prefix $spec
+        Assert-PoNpmAbsent $Pack $prefix
+        Complete-PoOwner
+        return
+    }
+    Add-PoChange
+    if ($script:Dry) { Write-PoSay "  would run npm install --prefix $prefix $spec --omit=optional --ignore-scripts and check its integrity"; Complete-PoOwner; return }
+    $ours = $false
+    foreach ($r in $script:Old) { if ($r.Kind -eq 'n' -and $r.Path -eq $prefix) { $ours = $true } }
+    if ((Test-Path -LiteralPath $prefix) -and -not $ours) { Backup-PoItem $prefix }
+    New-PoDir $prefix
+    Write-PoSay "  `$ npm install --prefix $prefix $spec --omit=optional --ignore-scripts --save-exact"
+    $code = Invoke-PoNpm @('install', '--prefix', $prefix, $spec, '--omit=optional', '--ignore-scripts', '--save-exact', '--no-audit', '--no-fund')
+    if ($code -ne 0) { Remove-Item -LiteralPath $prefix -Recurse -Force -ErrorAction SilentlyContinue; Stop-Po "npm install of $spec failed" }
+    $check = Test-PoNpmPinned $prefix $pkg
+    if (-not $check.Ok) {
+        Remove-Item -LiteralPath $prefix -Recurse -Force -ErrorAction SilentlyContinue
+        Stop-Po "$spec in $prefix fails the pinned check ($($check.Text)); refusing to install"
+    }
+    Write-PoSay "  $spec matches the pinned integrity"
+    Add-PoRecord 'n' $prefix $spec
+    Assert-PoNpmAbsent $Pack $prefix
+    Complete-PoOwner
+}
+
+function Assert-PoNpmAbsent($Pack, [string]$Prefix) {  # packages of sets that are not installed must be absent
+    $id = $Pack['id']
+    $base = @($Pack['npm']['packages'])[0]['set']
+    foreach ($p in $Pack['npm']['packages']) {
+        if ($p['set'] -eq $base -or $script:SelSets -contains "${id}:$($p['set'])") { continue }
+        if (@(Get-PoOwners | Where-Object { $_.StartsWith("pack:${id}:$($p['set']):") }).Count -gt 0) { continue }
+        if (Test-Path -LiteralPath (Join-Path (Join-Path $Prefix 'node_modules') $p['name'])) {
+            Stop-Po "$Prefix holds $($p['name']), but set ${id}:$($p['set']) is not installed; remove $Prefix and install again"
+        }
+    }
+}
+
+function Install-PoNpmAddon($Pack, $Pkg, [string]$Prefix) {  # an npm package and its pinned native binding
+    $id = $Pack['id']
+    $name = $Pkg['name']
+    $spec = "$name@$($Pkg['version'])"
+    $b = $Pkg['binding']
+    Start-PoOwner "pack:${id}:$($Pkg['set']):all"
+    $binding = $null
+    $have = ''
+    if ($b) {
+        $binding = Join-Path (Join-Path (Join-Path $Prefix 'node_modules') $name) $b['member'].Replace('/', $script:Sep)
+        foreach ($r in $script:Old) { if ($r.Kind -eq 'x' -and $r.Path -eq $binding) { $have = $r.Hash } }
+    }
+    if ((Test-PoNpmPinned $Prefix $Pkg).Ok -and (-not $b -or ((Test-Path -LiteralPath $binding -PathType Leaf) -and (Get-PoFileHash $binding) -eq $have))) {
+        if ($b) { Add-PoRecord 'x' $binding $have }
+        Add-PoRecord 'u' $Prefix '-' "npm-rm:$name"
+        Complete-PoOwner
+        return
+    }
+    Add-PoChange
+    if ($b) {
+        $plat = ((& node $script:Helper platform) | Out-String).Trim()
+        $want = $b['sha256'][$plat]
+        if (-not $want) { Stop-Po "no pinned digest for the $name binding on $plat; refusing to install ${id}:$($Pkg['set'])" }
+        $url = $b['url'].Replace('{version}', $Pkg['version']).Replace('{platform}', $plat)
+        $file = $url.Substring($url.LastIndexOf('/') + 1)
+    }
+    if ($script:Dry) {
+        if ($b) { Write-PoSay "  would download $url and check its sha256 against $want" }
+        Write-PoSay "  would run npm install --prefix $Prefix $spec --ignore-scripts and check its integrity"
+        Complete-PoOwner
+        return
+    }
+    if ($b) {
+        $src = $script:Bundles[$id]
+        if ($src) {
+            $asset = Join-Path $src $file
+            if (-not (Test-Path -LiteralPath $asset -PathType Leaf)) { Stop-Po "bundle folder has no ${file}: $src" }
+        } else {
+            $asset = Join-Path (Get-PoTmp) $file
+            Write-PoSay "  get $url"
+            Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $asset
+        }
+        $got = Get-PoFileHash $asset
+        if ($got -ne $want) { Stop-Po "$file has sha256 $got, but $id pins $want; refusing to install ${id}:$($Pkg['set'])" }
+        Write-PoSay "  $file matches the pinned sha256"
+        $out = Join-Path (Get-PoTmp) 'binding'
+        if (Test-Path -LiteralPath $out) { Remove-Item -LiteralPath $out -Recurse -Force }
+        New-Item -ItemType Directory -Path $out | Out-Null
+        & tar -xzf $asset -C $out $b['member'] | Out-Host
+        $extracted = Join-Path $out $b['member'].Replace('/', $script:Sep)
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $extracted -PathType Leaf)) { Stop-Po "cannot extract $($b['member']) from $file" }
+    }
+    Write-PoSay "  `$ npm install --prefix $Prefix $spec --ignore-scripts --save-exact"
+    $code = Invoke-PoNpm @('install', '--prefix', $Prefix, $spec, '--omit=optional', '--ignore-scripts', '--save-exact', '--no-audit', '--no-fund')
+    if ($code -ne 0) { Stop-Po "npm install of $spec failed" }
+    $check = Test-PoNpmPinned $Prefix $Pkg
+    if (-not $check.Ok) {
+        $null = Invoke-PoNpm @('uninstall', '--prefix', $Prefix, $name, '--ignore-scripts', '--no-audit', '--no-fund')
+        Stop-Po "$spec in $Prefix fails the pinned check ($($check.Text)); refusing to install"
+    }
+    Write-PoSay "  $spec matches the pinned integrity"
+    if ($b) {
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $binding) | Out-Null
+        Copy-Item -LiteralPath $extracted -Destination $binding -Force
+        Add-PoRecord 'x' $binding (Get-PoFileHash $binding)
+        Write-PoSay "  binding -> $binding"
+    }
+    Add-PoRecord 'u' $Prefix '-' "npm-rm:$name"
+    Complete-PoOwner
+}
+
+function Remove-PoNpmPackage([string]$Prefix, [string]$Name) {  # undo an add-on npm install
+    if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $Prefix 'node_modules') $Name))) { return }
+    $code = 1
+    if (Get-Command npm -ErrorAction SilentlyContinue) { $code = Invoke-PoNpm @('uninstall', '--prefix', $Prefix, $Name, '--ignore-scripts', '--no-audit', '--no-fund') }
+    if ($code -eq 0) { Add-PoChange } else { Write-PoWarn "could not run npm uninstall $Name in $Prefix; remove it by hand" }
+}
+
+function Register-PoMcp($Pack, $Tool) {  # add the pack's MCP server to the tool's config
+    $file = Expand-PoPath $Tool['mcp']['file']
+    $name = $Pack['mcp']['name']
+    $old = '-'
+    foreach ($r in $script:Old) { if ($r.Kind -eq 'm') { $old = $r.Extra } }
+    if ($script:Dry) { Write-PoSay "  would register the MCP server $name in $file"; Add-PoChange; return }
+    New-PoDir (Split-Path -Parent $file)
+    $out = & node $script:Helper mcp-add $Tool['mcp']['format'] $file $name $Pack['mcp']['spec_b64'] (Get-PoPrefix $Pack) $old
+    if ($LASTEXITCODE -ne 0) { Stop-Po "MCP registration failed for $file" }
+    $parts = ([string](@($out) | Select-Object -Last 1)).Split("`t")
+    switch ($parts[0]) {
+        'added' { Add-PoChange; Write-PoSay "  MCP server $name -> $($parts[1])"; Add-PoRecord 'm' $parts[1] $name $parts[2] }
+        'present' { Add-PoRecord 'm' $parts[1] $name $parts[2] }
+        'foreign' { Write-PoSay "  $($parts[1]) already has the same $name entry; the installer leaves it unmanaged" }
+        default { Write-PoWarn "MCP server $name not registered in $($parts[1])" }
+    }
+}
+
+function Unregister-PoMcp([string]$Path, [string]$Name, [string]$Record) {
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { Write-PoWarn "Node.js not found: remove the $Name entry from $Path by hand"; return }
+    $verdict = ((& node $script:Helper mcp-remove $Record) | Out-String).Trim()
+    switch ($verdict) {
+        'removed' { Add-PoChange }
+        'absent' { }
+        'changed' { Write-PoWarn "kept the $Name entry in ${Path}: changed since install" }
+        default { Write-PoWarn "could not remove the $Name entry from $Path" }
+    }
+}
+
+function Switch-PoSel([string]$Key) {  # toggle "pack:set" and keep required sets with it
+    $p, $s = $Key.Split(':', 2)
+    $pack = Get-PoPack $p
+    if ($script:SelSets -contains $Key) {
+        $drop = @($Key) + @($pack['sets'] | Where-Object { @($_['requires']) -contains $s } | ForEach-Object { "${p}:$($_['id'])" })
+        $script:SelSets = @($script:SelSets | Where-Object { $drop -notcontains $_ })
+    } else {
+        foreach ($r in @((Get-PoSet $pack $s)['requires'])) { if ($r) { Add-PoSel "${p}:$r" } }
+        Add-PoSel $Key
+    }
+}
+
+function Get-PoNeedsNote($Set) { if ($Set['requires']) { return " Needs set $(@($Set['requires']) -join ', ')." }; return '' }
+
+function Test-PoRequires {  # refuse a set whose required set is neither selected nor installed
+    foreach ($w in $script:SelSets) {
+        $p, $s = $w.Split(':', 2)
+        foreach ($r in @((Get-PoSet (Get-PoPack $p) $s)['requires'])) {
+            if (-not $r -or $script:SelSets -contains "${p}:$r") { continue }
+            if (@(Get-PoOwners | Where-Object { $_.StartsWith("pack:${p}:${r}:") }).Count -gt 0) { continue }
+            Stop-Po "set $w needs set ${p}:$r; install both, for example --packs ${p}:$r,$s"
+        }
+    }
 }
 
 # ------------------------------------------------------------------ release packs (procable)
@@ -832,7 +1070,7 @@ function Show-PoPacks {
         foreach ($s in $p['sets']) {
             $mark = ' '
             foreach ($o in $owners) { if ($o.StartsWith("pack:$($p['id']):$($s['id']):")) { $mark = 'x' } }
-            Write-PoSay "  [$mark] $($p['id']):$($s['id']) ($($s['count']) skills) $($s['description'])"
+            Write-PoSay "  [$mark] $($p['id']):$($s['id']) ($($s['count']) skills) $($s['description'])$(Get-PoNeedsNote $s)"
         }
     }
 }
@@ -844,7 +1082,7 @@ function Show-PoStatus {
     Write-PoSay "manifest: $($script:Manifest)"
     $all = Read-PoManifest
     foreach ($o in (Get-PoOwners)) {
-        $n = @($all | Where-Object { $_.Owner -ceq $o -and @('f', 'd', 'x', 'b') -contains $_.Kind }).Count
+        $n = @($all | Where-Object { $_.Owner -ceq $o -and @('f', 'd', 'x', 'b', 'm', 'n') -contains $_.Kind }).Count
         Write-PoSay ("  {0,-48} {1} files" -f $o, $n)
     }
     Write-PoSay "created folders: $(@($all | Where-Object { $_.Owner -eq '@dirs' }).Count)"
@@ -944,12 +1182,12 @@ function Invoke-PoTui {
                         $key = "$($p['id']):$($s['id'])"
                         $index += $key
                         $mark = ' '; if ($script:SelSets -contains $key) { $mark = 'x' }
-                        Write-PoSay ("    {0,3}. [{1}] {2}, {3} skills: {4}" -f $n, $mark, $s['label'], $s['count'], $s['description'])
+                        Write-PoSay ("    {0,3}. [{1}] {2}, {3} skills: {4}{5}" -f $n, $mark, $s['label'], $s['count'], $s['description'], (Get-PoNeedsNote $s))
                     }
                 }
                 Write-PoSay "Next step installs $(Get-PoSelCount) skills from the checked sets into:"
                 Get-PoSkillDirs (Get-PoPackTools) | ForEach-Object { Write-PoSay "    $_" }
-                Write-PoSay 'Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit'
+                Write-PoSay 'A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit'
                 $a = Read-PoAnswer
                 if ($a -eq '') { $screen = 5 }
                 elseif ($a -eq 'b') { $screen = 3 }
@@ -958,10 +1196,9 @@ function Invoke-PoTui {
                     $p = @($PO_Data['packs'])[[int]$Matches[1] - 1]
                     $keys = @($p['sets'] | ForEach-Object { "$($p['id']):$($_['id'])" })
                     if ($script:SelSets -contains $keys[0]) { $script:SelSets = @($script:SelSets | Where-Object { $keys -notcontains $_ }) }
-                    else { foreach ($k in $keys) { Add-PoSel $k } }
+                    else { foreach ($k in (Get-PoBaseSets $p)) { Add-PoSel "$($p['id']):$k" } }
                 } elseif ($a -match '^\d+$' -and [int]$a -ge 1 -and [int]$a -le $index.Count) {
-                    $key = $index[[int]$a - 1]
-                    if ($script:SelSets -contains $key) { $script:SelSets = @($script:SelSets | Where-Object { $_ -ne $key }) } else { Add-PoSel $key }
+                    Switch-PoSel $index[[int]$a - 1]
                 } else { Write-PoSay 'unknown choice' }
             }
             5 {
@@ -1009,9 +1246,10 @@ Options:
   --profile-claude NAME   $($PO_Data['harness']['profiles']['claude'] -join ',')
   --profile-codex NAME    $($PO_Data['harness']['profiles']['codex'] -join ',')
   --no-OPTION             turn off a harness option: $opts
-  --packs SPEC            pack[:set][,set...] and more packs
+  --packs SPEC            pack[:set][,set...] and more packs. A bare pack name skips sets
+                          that need another set (rea-frida); name those: --packs rea:rea,rea-frida
   --sets SPEC             same as --packs
-  --bundle PACK=DIR       install a release pack from a local folder (offline machines)
+  --bundle PACK=DIR       read a release pack or a pinned binding from a local folder
   --procable-bundle DIR   same as --bundle procable=DIR
   --no-release-hooks      install release packs without their hooks
   --dry-run               print the plan and change nothing
@@ -1020,12 +1258,15 @@ Options:
 }
 
 function Install-PoAll {
+    Test-PoRequires
     if ($script:Dry) { Write-PoSay 'dry run: nothing is written' }
     if ($script:DoCore) { foreach ($t in $script:SelTools) { Install-PoCore $t } }
     if ($script:DoHarness) { foreach ($t in $script:SelTools) { Install-PoHarness $t } }
     if ($script:SelSets.Count -gt 0) {
         $tools = Get-PoPackTools
-        foreach ($w in $script:SelSets) { $p, $s = $w.Split(':', 2); Install-PoSet $p $s $tools }
+        $ordered = @($script:SelSets | Where-Object { $p, $s = $_.Split(':', 2); -not (Get-PoSet (Get-PoPack $p) $s)['requires'] }) +
+            @($script:SelSets | Where-Object { $p, $s = $_.Split(':', 2); [bool](Get-PoSet (Get-PoPack $p) $s)['requires'] })
+        foreach ($w in $ordered) { $p, $s = $w.Split(':', 2); Install-PoSet $p $s $tools }
     }
     Write-PoReport
 }
@@ -1062,7 +1303,7 @@ function Invoke-PoMain($Argv) {
     $script:SelTools = @($PO_Data['tools'] | Where-Object { $_['default'] } | ForEach-Object { $_['id'] })
     $script:SelSets = @(); $script:ProfileClaude = ''; $script:ProfileCodex = ''; $script:HarnessOff = @()
     $script:Bundles = @{}; $script:ReleaseNoHooks = $false; $script:ProjectDir = ''; $script:Failed = @()
-    $script:Changes = 0; $script:Exit = 0; $script:Owner = ''
+    $script:Changes = 0; $script:Exit = 0; $script:Owner = ''; $script:Tmp = ''
     $script:DirsNew = New-Object System.Collections.Generic.List[object]
     $script:Stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
     $cmd = ''; $sub = ''; $rest = @(); $packsSpec = @()
@@ -1119,6 +1360,7 @@ function Invoke-PoMain($Argv) {
         Initialize-PoLocations
         $script:DataHome = $script:Loc['DATA_HOME']
         $script:Manifest = Join-Path $script:DataHome $PO_Data['manifest']
+        $script:Helper = Join-Path $PO_Root $PO_Data['pack_helper']
         if (-not $cmd) { $cmd = 'install' }
         switch ($cmd) {
             { $_ -in @('install', 'tui') } {
@@ -1157,6 +1399,8 @@ function Invoke-PoMain($Argv) {
         if ("$_" -eq 'cancelled') { Write-PoSay 'cancelled'; return 1 }
         Write-Host "$_" -ForegroundColor Red
         return 1
+    } finally {
+        if ($script:Tmp -and (Test-Path -LiteralPath $script:Tmp)) { Remove-Item -LiteralPath $script:Tmp -Recurse -Force -ErrorAction SilentlyContinue }
     }
     return $script:Exit
 }

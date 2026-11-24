@@ -84,7 +84,8 @@ po_change() { PO_CHANGES=$((PO_CHANGES + 1)); }
 # One line per record: owner, kind, path, hash, extra (tab separated). Kinds: f file (exact
 # copy), d document (compared without the harness block), x file made by an external step,
 # b marker block in a shared file, k backup of a replaced file or folder, u undo step,
-# h harness install, D folder the installer created (owner @dirs).
+# h harness install, m MCP server entry in a client config (extra: helper record),
+# n private npm prefix of a pack, D folder the installer created (owner @dirs).
 
 po_man_lines() { if [ -f "$PO_MANIFEST" ]; then cat "$PO_MANIFEST"; fi; }
 
@@ -440,7 +441,7 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
     local kind path hash extra shared cur
     po_man_lines | awk -F'\t' -v o="$PO_OWNER_REMOVING" '$1!=o && $1!="@dirs"' > "$PO_TMP/ref.tsv"
     if [ -f "$PO_TMP/new.tsv" ] && [ -n "$PO_OWNER" ]; then cat "$PO_TMP/new.tsv" >> "$PO_TMP/ref.tsv"; fi
-    awk -F'\t' 'FILENAME==ARGV[1] { if ($2!="k" && $2!="u" && $2!="h") ref[$3]=1; next } { print (($3 in ref) ? 1 : 0) "\t" $2 "\t" $3 "\t" $4 "\t" $5 }' \
+    awk -F'\t' 'FILENAME==ARGV[1] { if ($2!="k" && $2!="u" && $2!="h" && $2!="m" && $2!="n") ref[$3]=1; next } { print (($3 in ref && $2!="m" && $2!="n") ? 1 : 0) "\t" $2 "\t" $3 "\t" $4 "\t" $5 }' \
         "$PO_TMP/ref.tsv" "$1" > "$PO_TMP/rm.tsv"
     # harness first: its uninstall reads the files the core put there
     while IFS="$PO_TAB" read -r shared kind path hash extra; do
@@ -475,6 +476,7 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
                 else cp "$PO_TMP/block.next" "$path"; fi
                 po_change
                 ;;
+            m) po_mcp_unregister "$path" "$hash" "$extra" ;;
         esac
     done < "$PO_TMP/rm.tsv"
     while IFS="$PO_TAB" read -r shared kind path hash extra; do
@@ -486,6 +488,13 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
                 fi
                 ;;
             u:json-strip:*) po_json_strip "$path" "${extra#json-strip:}" ;;
+            u:npm-rm:*) po_npm_remove "$path" "${extra#npm-rm:}" ;;
+            n:*)
+                case "$path" in
+                    "$PO_DATA/packages/"?*) if [ -d "$path" ]; then rm -rf "$path"; po_change; fi ;;
+                    *) po_warn "kept $path: not inside $PO_DATA/packages" ;;
+                esac
+                ;;
         esac
     done < "$PO_TMP/rm.tsv"
     while IFS="$PO_TAB" read -r shared kind path hash extra; do
@@ -646,7 +655,7 @@ po_add_sets() {  # parse "pack[:set],set,pack2" into PO_SEL_SETS
                 po_pack_known "$p" || po_die "unknown pack: $p (see: install.sh packs list)"
                 cur="$p"
                 if [ -z "$s" ] || [ "$s" = "*" ]; then
-                    for s in $(po_pack_get "$p" sets); do po_sel_add "$p:$s"; done
+                    for s in $(po_base_sets "$p"); do po_sel_add "$p:$s"; done
                 else
                     po_set_known "$p" "$s" || po_die "pack $p has no set $s"
                     po_sel_add "$p:$s"
@@ -655,7 +664,7 @@ po_add_sets() {  # parse "pack[:set],set,pack2" into PO_SEL_SETS
             *)
                 if po_pack_known "$tok"; then
                     cur="$tok"
-                    for s in $(po_pack_get "$tok" sets); do po_sel_add "$tok:$s"; done
+                    for s in $(po_base_sets "$tok"); do po_sel_add "$tok:$s"; done
                 elif [ -n "$cur" ] && po_set_known "$cur" "$tok"; then
                     po_sel_add "$cur:$tok"
                 else
@@ -669,6 +678,24 @@ po_add_sets() {  # parse "pack[:set],set,pack2" into PO_SEL_SETS
 }
 
 po_sel_add() { po_has_word "$PO_SEL_SETS" "$1" || PO_SEL_SETS="${PO_SEL_SETS:+$PO_SEL_SETS }$1"; }
+
+po_base_sets() {  # sets of pack $1 that require no other set; a bare pack name selects these
+    local s
+    for s in $(po_pack_get "$1" sets); do [ -z "$(po_set_get "$1" "$s" requires)" ] && printf '%s ' "$s"; done
+    return 0
+}
+
+po_sel_toggle() {  # toggle "pack:set" and keep required sets with it
+    local p="${1%%:*}" s="${1#*:}" o r
+    if po_has_word "$PO_SEL_SETS" "$1"; then
+        po_sel_del "$1"
+        for o in $(po_pack_get "$p" sets); do po_has_word "$(po_set_get "$p" "$o" requires)" "$s" && po_sel_del "$p:$o"; done
+    else
+        for r in $(po_set_get "$p" "$s" requires); do po_sel_add "$p:$r"; done
+        po_sel_add "$1"
+    fi
+    return 0
+}
 po_sel_del() {
     local out="" w
     for w in $PO_SEL_SETS; do [ "$w" = "$1" ] || out="${out:+$out }$w"; done
@@ -685,12 +712,21 @@ po_pack_tools() {  # tools that receive pack skills
 }
 
 po_install_set() {  # $1 pack, $2 set, $3 tools
-    local pack="$1" set="$2" tools="$3" kind tool dir skill
+    local pack="$1" set="$2" tools="$3" kind tool dir skill mcp=""
     kind="$(po_pack_get "$pack" kind)"
     po_say "=== pack $pack, set $set ($(po_set_get "$pack" "$set" count) skills)"
     if [ "$kind" = release ]; then po_release_install "$pack" "$set" "$tools"; return 0; fi
+    [ -n "$(po_mcp_get "$pack" set)" ] && [ "$(po_mcp_get "$pack" set)" = "$set" ] && mcp=1
+    if po_has_word "$(po_npm_get "$pack" "" sets)" "$set"; then
+        po_node_ready "$pack" npm
+        po_npm_install "$pack" "$set"
+    elif [ -n "$mcp" ]; then
+        po_node_ready "$pack"
+    fi
     for tool in $tools; do
-        [ -n "$(po_tool_skills "$tool")" ] || continue
+        if [ -z "$mcp" ] || [ -z "$(po_tool_mcp "$tool")" ]; then
+            if [ -z "$(po_tool_skills "$tool")" ] || [ -z "$(po_set_get "$pack" "$set" skills)" ]; then continue; fi
+        fi
         po_owner_begin "pack:$pack:$set:$tool"
         for skill in $(po_set_get "$pack" "$set" skills); do
             while IFS= read -r dir; do
@@ -700,6 +736,7 @@ po_install_set() {  # $1 pack, $2 set, $3 tools
 $(po_tool_skills "$tool")
 PO_DIRS
         done
+        if [ -n "$mcp" ]; then po_mcp_register "$pack" "$tool"; fi
         po_owner_end
     done
     if [ "$kind" = package ]; then
@@ -709,24 +746,238 @@ PO_DIRS
     fi
 }
 
-po_remove_pack_spec() {  # "pack" or "pack:set"
-    local spec="$1" pack set owner rest
+po_remove_pack_spec() {  # "pack" or "pack:set"; a set takes the sets that require it along
+    local spec="$1" pack set owner rest sets="" s
     pack="${spec%%:*}"
     set=""
     case "$spec" in *:*) set="${spec#*:}" ;; esac
     po_pack_known "$pack" || po_die "unknown pack: $pack"
-    if [ -n "$set" ]; then po_set_known "$pack" "$set" || po_die "pack $pack has no set $set"; fi
-    po_owners > "$PO_TMP/owners.list"
-    while IFS= read -r owner <&3; do
-        case "$owner" in "pack:$pack:"*) ;; *) continue ;; esac
-        rest="${owner#"pack:$pack:"}"
-        [ "$rest" = payload ] && continue
-        if [ -n "$set" ] && [ "${rest%%:*}" != "$set" ]; then continue; fi
-        po_remove_owner "$owner"
-    done 3< "$PO_TMP/owners.list"
-    if ! po_owner_prefix "pack:$pack:" "pack:$pack:payload"; then
-        po_remove_owner "pack:$pack:payload"
+    if [ -n "$set" ]; then
+        po_set_known "$pack" "$set" || po_die "pack $pack has no set $set"
+        for s in $(po_pack_get "$pack" sets); do po_has_word "$(po_set_get "$pack" "$s" requires)" "$set" && sets="$sets $s"; done
+        sets="$sets $set"
     fi
+    po_owners > "$PO_TMP/owners.list"
+    for s in ${sets:-"*"}; do
+        while IFS= read -r owner <&3; do
+            case "$owner" in "pack:$pack:"*) ;; *) continue ;; esac
+            rest="${owner#"pack:$pack:"}"
+            case "$rest" in payload|npm) continue ;; esac
+            if [ "$s" != "*" ] && [ "${rest%%:*}" != "$s" ]; then continue; fi
+            po_remove_owner "$owner"
+        done 3< "$PO_TMP/owners.list"
+    done
+    if ! po_owners | awk -v p="pack:$pack:" 'index($0, p)==1 && $0!=p "payload" && $0!=p "npm" {f=1} END {exit !f}'; then
+        po_remove_owner "pack:$pack:payload"
+        po_remove_owner "pack:$pack:npm"
+    fi
+}
+
+# ------------------------------------------------------------------ npm and MCP packs
+
+po_helper() { node "$PO_ROOT/$PO_PACK_HELPER" "$@"; }
+
+po_node_ready() {  # $1 pack, $2 "npm" when the pack installs npm packages
+    local pack="$1" range msg
+    command -v node >/dev/null 2>&1 || po_die "pack $pack needs Node.js on PATH"
+    if [ "${2:-}" = npm ]; then
+        command -v npm >/dev/null 2>&1 || po_die "pack $pack needs npm on PATH"
+        range="$(po_npm_get "$pack" "" node)"
+        msg="$(po_helper node-check "$range")" || po_die "pack $pack: $msg"
+    fi
+}
+
+po_npm() {  # npm with a throwaway cache and without the update notifier, audit and funding messages
+    env NO_UPDATE_NOTIFIER=1 npm_config_update_notifier=false npm_config_audit=false npm_config_fund=false \
+        npm_config_cache="$PO_TMP/npm-cache" npm "$@"
+}
+
+po_npm_check() {  # $1 prefix, $2 pack, $3 set: prints the helper verdict, fails unless ok
+    po_helper npm-check "$1" "$(po_npm_get "$2" "$3" name)" "$(po_npm_get "$2" "$3" version)" "$(po_npm_get "$2" "$3" integrity)"
+}
+
+po_npm_install() {  # $1 pack, $2 set: install the set's pinned npm package into <data_home>/packages/<pack>
+    local pack="$1" set="$2" prefix name version verdict
+    prefix="$PO_DATA/packages/$pack"
+    name="$(po_npm_get "$pack" "$set" name)"
+    version="$(po_npm_get "$pack" "$set" version)"
+    if [ "$set" != "$(po_npm_get "$pack" "" base)" ]; then po_npm_addon "$pack" "$set" "$prefix"; return 0; fi
+    po_owner_begin "pack:$pack:npm"
+    if verdict="$(po_npm_check "$prefix" "$pack" "$set")"; then
+        po_rec n "$prefix" "$name@$version"
+        po_npm_absent "$pack" "$prefix"
+        po_owner_end
+        return 0
+    fi
+    po_change
+    if [ "$PO_DRY" = 1 ]; then
+        po_say "  would run npm install --prefix $prefix $name@$version --omit=optional --ignore-scripts and check its integrity"
+        po_owner_end
+        return 0
+    fi
+    if [ -e "$prefix" ] && ! awk -F'\t' -v p="$prefix" '$2=="n" && $3==p {f=1} END {exit !f}' "$PO_TMP/old.tsv"; then po_backup "$prefix"; fi
+    po_ensure_dir "$prefix"
+    po_say "  \$ npm install --prefix $prefix $name@$version --omit=optional --ignore-scripts --save-exact"
+    if ! po_npm install --prefix "$prefix" "$name@$version" --omit=optional --ignore-scripts --save-exact --no-audit --no-fund; then
+        rm -rf "$prefix"
+        po_die "npm install of $name@$version failed"
+    fi
+    if ! verdict="$(po_npm_check "$prefix" "$pack" "$set")"; then
+        rm -rf "$prefix"
+        po_die "$name@$version in $prefix fails the pinned check ($verdict); refusing to install"
+    fi
+    po_say "  $name@$version matches the pinned integrity"
+    po_rec n "$prefix" "$name@$version"
+    po_npm_absent "$pack" "$prefix"
+    po_owner_end
+}
+
+po_npm_absent() {  # $1 pack, $2 prefix: packages of sets that are not installed must be absent
+    local s
+    for s in $(po_npm_get "$1" "" sets); do
+        [ "$s" = "$(po_npm_get "$1" "" base)" ] && continue
+        po_has_word "$PO_SEL_SETS" "$1:$s" && continue
+        po_owner_prefix "pack:$1:$s:" && continue
+        if [ -e "$2/node_modules/$(po_npm_get "$1" "$s" name)" ]; then
+            po_die "$2 holds $(po_npm_get "$1" "$s" name), but set $1:$s is not installed; remove $2 and install again"
+        fi
+    done
+}
+
+po_npm_addon() {  # $1 pack, $2 set, $3 prefix: an npm package and its pinned native binding
+    local pack="$1" set="$2" prefix="$3" name version url member plat want file asset got binding have src
+    name="$(po_npm_get "$pack" "$set" name)"
+    version="$(po_npm_get "$pack" "$set" version)"
+    url="$(po_npm_get "$pack" "$set" url)"
+    member="$(po_npm_get "$pack" "$set" member)"
+    binding="$prefix/node_modules/$name/$member"
+    po_owner_begin "pack:$pack:$set:all"
+    have="$(awk -F'\t' -v p="$binding" '$2=="x" && $3==p {print $4}' "$PO_TMP/old.tsv")"
+    if po_npm_check "$prefix" "$pack" "$set" >/dev/null && { [ -z "$url" ] || { [ -f "$binding" ] && [ "$(po_hash "$binding")" = "$have" ]; }; }; then
+        [ -n "$url" ] && po_rec x "$binding" "$have"
+        po_rec u "$prefix" - "npm-rm:$name"
+        po_owner_end
+        return 0
+    fi
+    po_change
+    if [ -n "$url" ]; then
+        plat="$(po_helper platform)"
+        want="$(po_npm_get "$pack" "$set" "sha256:$plat")"
+        [ -n "$want" ] || po_die "no pinned digest for the $name binding on $plat; refusing to install $pack:$set"
+        url="$(printf '%s' "$url" | sed "s/{version}/$version/g; s/{platform}/$plat/g")"
+        file="${url##*/}"
+    fi
+    if [ "$PO_DRY" = 1 ]; then
+        [ -n "$url" ] && po_say "  would download $url and check its sha256 against $want"
+        po_say "  would run npm install --prefix $prefix $name@$version --ignore-scripts and check its integrity"
+        po_owner_end
+        return 0
+    fi
+    if [ -n "$url" ]; then
+        src="$(po_bundle_for "$pack")"
+        if [ -n "$src" ]; then
+            asset="$src/$file"
+            [ -f "$asset" ] || po_die "bundle folder has no $file: $src"
+        else
+            asset="$PO_TMP/$file"
+            po_fetch "$url" "$asset"
+        fi
+        got="$(po_hash "$asset")"
+        [ "$got" = "$want" ] || po_die "$file has sha256 $got, but $pack pins $want; refusing to install $pack:$set"
+        po_say "  $file matches the pinned sha256"
+        rm -rf "$PO_TMP/binding"
+        mkdir -p "$PO_TMP/binding"
+        tar -xzf "$asset" -C "$PO_TMP/binding" "$member" || po_die "cannot extract $member from $file"
+        [ -f "$PO_TMP/binding/$member" ] || po_die "$file holds no $member"
+    fi
+    po_say "  \$ npm install --prefix $prefix $name@$version --ignore-scripts --save-exact"
+    po_npm install --prefix "$prefix" "$name@$version" --omit=optional --ignore-scripts --save-exact --no-audit --no-fund \
+        || po_die "npm install of $name@$version failed"
+    if ! got="$(po_npm_check "$prefix" "$pack" "$set")"; then
+        po_npm uninstall --prefix "$prefix" "$name" --ignore-scripts --no-audit --no-fund >/dev/null 2>&1 || true
+        po_die "$name@$version in $prefix fails the pinned check ($got); refusing to install"
+    fi
+    po_say "  $name@$version matches the pinned integrity"
+    if [ -n "$url" ]; then
+        mkdir -p "$(dirname "$binding")"
+        cp "$PO_TMP/binding/$member" "$binding"
+        po_rec x "$binding" "$(po_hash "$binding")"
+        po_say "  binding -> $binding"
+    fi
+    po_rec u "$prefix" - "npm-rm:$name"
+    po_owner_end
+}
+
+po_npm_remove() {  # $1 prefix, $2 package: undo an add-on npm install
+    [ -d "$1/node_modules/$2" ] || return 0
+    if command -v npm >/dev/null 2>&1 && po_npm uninstall --prefix "$1" "$2" --ignore-scripts --no-audit --no-fund >/dev/null 2>&1; then
+        po_change
+    else
+        po_warn "could not run npm uninstall $2 in $1; remove $1/node_modules/$2 by hand"
+    fi
+}
+
+po_mcp_register() {  # $1 pack, $2 tool: add the pack's MCP server to the tool's config
+    local pack="$1" tool="$2" line format file name old out status rest resolved rec
+    line="$(po_tool_mcp "$tool")"
+    [ -n "$line" ] || return 0
+    format="${line%%"$PO_TAB"*}"
+    file="$(po_expand "${line#*"$PO_TAB"}")"
+    name="$(po_mcp_get "$pack" name)"
+    old="$(awk -F'\t' '$2=="m" {print $5; exit}' "$PO_TMP/old.tsv")"
+    if [ "$PO_DRY" = 1 ]; then
+        po_say "  would register the MCP server $name in $file"
+        po_change
+        return 0
+    fi
+    po_ensure_dir "$(dirname "$file")"
+    out="$(po_helper mcp-add "$format" "$file" "$name" "$(po_mcp_get "$pack" spec_b64)" "$PO_DATA/packages/$pack" "${old:--}")" \
+        || po_die "MCP registration failed for $file"
+    status="${out%%"$PO_TAB"*}"
+    rest="${out#*"$PO_TAB"}"
+    resolved="${rest%%"$PO_TAB"*}"
+    rec="${rest#*"$PO_TAB"}"
+    case "$status" in
+        added) po_change; po_say "  MCP server $name -> $resolved"; po_rec m "$resolved" "$name" "$rec" ;;
+        present) po_rec m "$resolved" "$name" "$rec" ;;
+        foreign) po_say "  $resolved already has the same $name entry; the installer leaves it unmanaged" ;;
+        *) po_warn "MCP server $name not registered in $resolved" ;;
+    esac
+}
+
+po_mcp_unregister() {  # $1 config file, $2 server name, $3 helper record
+    local verdict
+    if ! command -v node >/dev/null 2>&1; then
+        po_warn "Node.js not found: remove the $2 entry from $1 by hand"
+        return 0
+    fi
+    verdict="$(po_helper mcp-remove "$3")" || verdict=error
+    case "$verdict" in
+        removed) po_change ;;
+        absent) ;;
+        changed) po_warn "kept the $2 entry in $1: changed since install" ;;
+        *) po_warn "could not remove the $2 entry from $1" ;;
+    esac
+}
+
+po_sets_ordered() {  # selected sets, the sets that others require first
+    local w
+    for w in $PO_SEL_SETS; do [ -z "$(po_set_get "${w%%:*}" "${w#*:}" requires)" ] && printf '%s\n' "$w"; done
+    for w in $PO_SEL_SETS; do [ -n "$(po_set_get "${w%%:*}" "${w#*:}" requires)" ] && printf '%s\n' "$w"; done
+    return 0
+}
+
+po_check_requires() {  # refuse a set whose required set is neither selected nor installed
+    local w p s r
+    for w in $PO_SEL_SETS; do
+        p="${w%%:*}"
+        s="${w#*:}"
+        for r in $(po_set_get "$p" "$s" requires); do
+            po_has_word "$PO_SEL_SETS" "$p:$r" && continue
+            po_owner_prefix "pack:$p:$r:" && continue
+            po_die "set $p:$s needs set $p:$r; install both, for example --packs $p:$r,$s"
+        done
+    done
 }
 
 # ------------------------------------------------------------------ release packs (procable)
@@ -910,9 +1161,17 @@ po_packs_list() {
             n=$((n + 1))
             mark=" "
             if po_owner_prefix "pack:$pack:$set:"; then mark=x; fi
-            printf '  [%s] %s:%s (%s skills) %s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" "$(po_set_get "$pack" "$set" description)"
+            printf '  [%s] %s:%s (%s skills) %s%s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" \
+                "$(po_set_get "$pack" "$set" description)" "$(po_needs_note "$pack" "$set")"
         done
     done
+}
+
+po_needs_note() {  # " Needs set X." for a set that requires another
+    local r
+    r="$(po_set_get "$1" "$2" requires)"
+    [ -n "$r" ] && printf ' Needs set %s.' "$r"
+    return 0
 }
 
 po_status() {
@@ -922,7 +1181,7 @@ po_status() {
     if [ ! -f "$PO_MANIFEST" ]; then po_say "nothing installed (no manifest at $PO_MANIFEST)"; return 0; fi
     po_say "manifest: $PO_MANIFEST"
     for owner in $(po_owners); do
-        printf '  %-48s %s files\n' "$owner" "$(po_man_owner "$owner" | awk -F'\t' '$2 ~ /^[fdxb]$/' | wc -l | tr -d ' ')"
+        printf '  %-48s %s files\n' "$owner" "$(po_man_owner "$owner" | awk -F'\t' '$2 ~ /^[fdxbmn]$/' | wc -l | tr -d ' ')"
     done
     po_say "created folders: $(po_man_owner @dirs | wc -l | tr -d ' ')"
 }
@@ -1029,13 +1288,14 @@ po_tui() {
                     po_say "  p$i. $(po_pack_get "$pack" label) ($pack): $(po_pack_get "$pack" description)"
                     for set in $(po_pack_get "$pack" sets); do
                         n=$((n + 1))
-                        printf '    %3d. [%s] %s, %s skills: %s\n' "$n" "$(po_has_word "$PO_SEL_SETS" "$pack:$set" && echo x || echo ' ')" \
-                            "$(po_set_get "$pack" "$set" label)" "$(po_set_get "$pack" "$set" count)" "$(po_set_get "$pack" "$set" description)"
+                        printf '    %3d. [%s] %s, %s skills: %s%s\n' "$n" "$(po_has_word "$PO_SEL_SETS" "$pack:$set" && echo x || echo ' ')" \
+                            "$(po_set_get "$pack" "$set" label)" "$(po_set_get "$pack" "$set" count)" "$(po_set_get "$pack" "$set" description)" \
+                            "$(po_needs_note "$pack" "$set")"
                     done
                 done
                 po_say "Next step installs $(po_sel_count) skills from the checked sets into:"
                 po_skill_dirs_for "$(po_pack_tools)" | sed 's/^/    /'
-                po_say "Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit"
+                po_say "A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit"
                 po_read
                 case "$PO_ANSWER" in
                     "") screen=5 ;; b) screen=3 ;; q) po_say "cancelled"; exit 1 ;;
@@ -1047,7 +1307,7 @@ po_tui() {
                             if po_has_word "$PO_SEL_SETS" "$pack:$(po_pack_get "$pack" sets | awk '{print $1}')"; then
                                 for set in $(po_pack_get "$pack" sets); do po_sel_del "$pack:$set"; done
                             else
-                                for set in $(po_pack_get "$pack" sets); do po_sel_add "$pack:$set"; done
+                                for set in $(po_base_sets "$pack"); do po_sel_add "$pack:$set"; done
                             fi
                         done
                         ;;
@@ -1058,7 +1318,7 @@ po_tui() {
                             for set in $(po_pack_get "$pack" sets); do
                                 n=$((n + 1))
                                 [ "$n" = "$PO_ANSWER" ] || continue
-                                if po_has_word "$PO_SEL_SETS" "$pack:$set"; then po_sel_del "$pack:$set"; else po_sel_add "$pack:$set"; fi
+                                po_sel_toggle "$pack:$set"
                             done
                         done
                         ;;
@@ -1129,8 +1389,10 @@ Options:
   --no-OPTION             turn off a harness option: $(printf '%s' "$PO_HARNESS_OPTIONS" | tr ' ' ',')
   --packs SPEC            pack[:set][,set...] and more packs, for example
                           --packs claude-red-offense:web,recon,logo-design
+                          A bare pack name skips sets that need another set
+                          (rea-frida); name those: --packs rea:rea,rea-frida
   --sets SPEC             same as --packs
-  --bundle PACK=DIR       install a release pack from a local folder (offline machines)
+  --bundle PACK=DIR       read a release pack or a pinned binding from a local folder
   --procable-bundle DIR   same as --bundle procable=DIR
   --no-release-hooks      install release packs without their hooks
   --dry-run               print the plan and change nothing
@@ -1230,6 +1492,7 @@ po_main() {
 
 po_install_all() {
     local t w tools
+    po_check_requires
     [ "$PO_DRY" = 1 ] && po_say "dry run: nothing is written"
     if [ "$PO_DO_CORE" = 1 ]; then
         for t in $PO_SEL_TOOLS; do po_install_core "$t"; done
@@ -1239,7 +1502,7 @@ po_install_all() {
     fi
     if [ -n "$PO_SEL_SETS" ]; then
         tools="$(po_pack_tools)"
-        for w in $PO_SEL_SETS; do po_install_set "${w%%:*}" "${w#*:}" "$tools"; done
+        for w in $(po_sets_ordered); do po_install_set "${w%%:*}" "${w#*:}" "$tools"; done
     fi
     po_report
     if [ "$PO_DO_HARNESS" = 1 ] && po_has_word "$PO_SEL_TOOLS" claude && [ -z "$PO_PROFILE_CLAUDE" ] && po_python_harness >/dev/null; then

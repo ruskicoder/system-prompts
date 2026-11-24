@@ -5,6 +5,7 @@
   "outputs": {"bash": "install/install.sh", "powershell": "install/install.ps1", "cmd": "install/install.cmd"},
   "packs_dir": "packs",
   "manifest": "install-manifest.tsv",
+  "pack_helper": "install/pack_helper.mjs",
   "locations": {
     "HOME": {
       "posix": [{"env": "HOME"}],
@@ -37,6 +38,7 @@
          "hooks_path": "{HOME}/.config/git/no-ai-trailer/hooks"}
       ],
       "skills": ["{HOME}/.claude/skills"],
+      "mcp": {"format": "claude", "file": "{HOME}/.claude.json"},
       "harness": true
     },
     {
@@ -49,6 +51,7 @@
         {"op": "doc", "src": "AGENTS.md", "dest": "{CODEX_HOME}/AGENTS.md"}
       ],
       "skills": ["{HOME}/.agents/skills"],
+      "mcp": {"format": "codex", "file": "{CODEX_HOME}/config.toml"},
       "harness": true
     },
     {
@@ -61,6 +64,7 @@
         {"op": "doc", "src": "AGENTS.md", "dest": "{OPENCODE}/AGENTS.md"}
       ],
       "skills": ["{OPENCODE}/skills"],
+      "mcp": {"format": "opencode", "file": "{OPENCODE}/opencode.json"},
       "harness": true
     },
     {
@@ -73,6 +77,7 @@
         {"op": "doc", "src": "AGENTS.md", "dest": "{HOME}/.cursor/AGENTS.md"}
       ],
       "skills": ["{HOME}/.cursor/skills"],
+      "mcp": {"format": "cursor", "file": "{HOME}/.cursor/mcp.json"},
       "harness": true
     },
     {
@@ -85,6 +90,7 @@
         {"op": "doc", "src": "AGENT.md", "dest": "{HOME}/.gemini/GEMINI.md"}
       ],
       "skills": ["{HOME}/.agents/skills"],
+      "mcp": {"format": "gemini", "file": "{HOME}/.gemini/settings.json"},
       "harness": true
     },
     {

@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Fake npm for the installer tests: install and uninstall into --prefix without a network.
+
+FAKE_NPM_INTEGRITY holds a JSON map from package name to the integrity string the fake writes
+into package-lock.json. FAKE_NPM_LOG names a file that receives one line per call.
+"""
+import json
+import os
+import shutil
+import sys
+
+args = sys.argv[1:]
+if os.environ.get("FAKE_NPM_LOG"):
+    with open(os.environ["FAKE_NPM_LOG"], "a", encoding="utf-8") as log:
+        log.write(" ".join(args) + "\n")
+command = args[0]
+prefix = args[args.index("--prefix") + 1]
+names = [a for a in args[1:] if not a.startswith("-") and a != prefix]
+if "--ignore-scripts" not in args:
+    sys.exit("fake npm: --ignore-scripts missing")
+lock_path = os.path.join(prefix, "package-lock.json")
+pkg_path = os.path.join(prefix, "package.json")
+lock = json.load(open(lock_path)) if os.path.exists(lock_path) else {"lockfileVersion": 3, "packages": {"": {}}}
+pkg = json.load(open(pkg_path)) if os.path.exists(pkg_path) else {"dependencies": {}}
+integrity = json.loads(os.environ.get("FAKE_NPM_INTEGRITY", "{}"))
+for spec in names:
+    name, _, version = spec.rpartition("@") if command == "install" else (spec, "", "")
+    folder = os.path.join(prefix, "node_modules", name)
+    if command == "install":
+        if "--omit=optional" not in args:
+            sys.exit("fake npm: --omit=optional missing")
+        os.makedirs(os.path.join(folder, "scripts"), exist_ok=True)
+        json.dump({"name": name, "version": version}, open(os.path.join(folder, "package.json"), "w"))
+        open(os.path.join(folder, "scripts", "rea.mjs"), "w").write("// fake\n")
+        lock["packages"]["node_modules/" + name] = {"version": version, "integrity": integrity.get(name, "sha512-none")}
+        pkg["dependencies"][name] = version
+    else:
+        shutil.rmtree(folder, ignore_errors=True)
+        lock["packages"].pop("node_modules/" + name, None)
+        pkg["dependencies"].pop(name, None)
+os.makedirs(prefix, exist_ok=True)
+json.dump(lock, open(lock_path, "w"), indent=2)
+json.dump(pkg, open(pkg_path, "w"), indent=2)
+print(f"fake npm: {command} {' '.join(names)}")

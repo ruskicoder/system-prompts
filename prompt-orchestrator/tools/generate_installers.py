@@ -20,6 +20,7 @@ header and a data block built from the spec and the packs. Standard library only
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import sys
@@ -51,6 +52,12 @@ def load_model(packs_dir: Path, source_root: Path | None) -> dict:
         entry["payload"] = (pack.get("package") or {}).get("payload", "")
         entry["sets"] = [dict(s, count=len(s["skills"])) for s in pack["sets"]]
         entry["release"] = pack.get("release")
+        entry["npm"] = pack.get("npm")
+        entry["mcp"] = pack.get("mcp")
+        if entry["mcp"]:
+            server = {key: entry["mcp"][key] for key in ("command", "args", "env")}
+            entry["mcp"] = dict(entry["mcp"], spec_b64=base64.b64encode(
+                json.dumps(server, separators=(",", ":")).encode("utf-8")).decode("ascii"))
         if entry["release"]:
             entry["release"] = dict(entry["release"], bundle_env=pack["id"].upper().replace("-", "_") + "_BUNDLE_PATH")
         model_packs.append(entry)
@@ -129,6 +136,7 @@ def render_bash(model: dict) -> str:
     out += [
         f"PO_PACKS_REL={sq(model['packs_rel'])}",
         f"PO_MANIFEST_NAME={sq(spec['manifest'])}",
+        f"PO_PACK_HELPER={sq(spec['pack_helper'])}",
         f"PO_TOOLS={sq(' '.join(t['id'] for t in tools))}",
         f"PO_DEFAULT_TOOLS={sq(' '.join(t['id'] for t in tools if t['default']))}",
         f"PO_HARNESS_TOOLS={sq(' '.join(t['id'] for t in tools if t.get('harness')))}",
@@ -150,13 +158,15 @@ def render_bash(model: dict) -> str:
                                                  for t in tools if t["steps"]], heredoc=True))
     out.append(bash_case("po_tool_skills", "$1", [(t["id"], "\n".join(t["skills"])) for t in tools if t["skills"]],
                          heredoc=True))
+    out.append(bash_case("po_tool_mcp", "$1", [(t["id"], f"{t['mcp']['format']}\t{t['mcp']['file']}")
+                                               for t in tools if t.get("mcp")]))
     out.append(bash_case("po_project_label", "$1", [(p["id"], p["label"]) for p in spec["projects"]]))
     out.append(bash_case("po_project_steps", "$1", [(p["id"], "\n".join(step_line(s) for s in p["steps"]))
                                                     for p in spec["projects"]], heredoc=True))
     out.append(bash_case("po_harness_family", "$1", list(harness["profile_tools"].items())))
     out.append(bash_case("po_harness_profiles", "$1", [(k, " ".join(v)) for k, v in harness["profiles"].items()]))
     out.append(bash_case("po_harness_option_label", "$1", [(o["id"], o["label"]) for o in harness["options"]]))
-    pack_fields, set_fields, release_fields, providers = [], [], [], []
+    pack_fields, set_fields, release_fields, providers, npm_fields, mcp_fields = [], [], [], [], [], []
     for pack in packs:
         pid = pack["id"]
         for key in ("label", "description", "kind", "license", "payload"):
@@ -167,6 +177,25 @@ def render_bash(model: dict) -> str:
                 set_fields.append((f"{pid}:{entry['id']}:{key}", entry[key]))
             set_fields.append((f"{pid}:{entry['id']}:count", str(entry["count"])))
             set_fields.append((f"{pid}:{entry['id']}:skills", " ".join(entry["skills"])))
+            set_fields.append((f"{pid}:{entry['id']}:requires", " ".join(entry.get("requires") or [])))
+        npm = pack["npm"]
+        if npm:
+            npm_fields.append((f"{pid}::node", npm["node"]))
+            npm_fields.append((f"{pid}::base", npm["packages"][0]["set"]))
+            npm_fields.append((f"{pid}::sets", " ".join(p["set"] for p in npm["packages"])))
+            for pkg in npm["packages"]:
+                for key in ("name", "version", "integrity"):
+                    npm_fields.append((f"{pid}:{pkg['set']}:{key}", pkg[key]))
+                binding = pkg.get("binding")
+                if binding:
+                    npm_fields.append((f"{pid}:{pkg['set']}:url", binding["url"]))
+                    npm_fields.append((f"{pid}:{pkg['set']}:member", binding["member"]))
+                    npm_fields += [(f"{pid}:{pkg['set']}:sha256:{plat}", digest)
+                                   for plat, digest in binding["sha256"].items()]
+        mcp = pack["mcp"]
+        if mcp:
+            for key in ("set", "name", "spec_b64"):
+                mcp_fields.append((f"{pid}:{key}", mcp[key]))
         release = pack["release"]
         if release:
             for key in ("lock", "tag", "bundle", "engine", "bundle_env"):
@@ -181,6 +210,8 @@ def render_bash(model: dict) -> str:
     out.append(bash_case("po_set_get", "$1:$2:$3", set_fields))
     out.append(bash_case("po_release_get", "$1:$2", release_fields))
     out.append(bash_case("po_release_provider", "$1:$2", providers))
+    out.append(bash_case("po_npm_get", "$1:$2:$3", npm_fields))
+    out.append(bash_case("po_mcp_get", "$1:$2", mcp_fields))
     out.append("")
     out.append((TEMPLATES / "runtime.sh").read_text(encoding="utf-8").rstrip("\n"))
     out += ["", 'po_main "$@"', ""]
@@ -217,6 +248,7 @@ def render_powershell(model: dict) -> str:
     data = {
         "packs_rel": model["packs_rel"],
         "manifest": spec["manifest"],
+        "pack_helper": spec["pack_helper"],
         "locations": {name: forms["windows"] for name, forms in spec["locations"].items()},
         "tools": spec["tools"],
         "projects": spec["projects"],

@@ -8,6 +8,7 @@ set -euo pipefail
 PO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PO_PACKS_REL='packs'
 PO_MANIFEST_NAME='install-manifest.tsv'
+PO_PACK_HELPER='install/pack_helper.mjs'
 PO_TOOLS='claude codex opencode cursor gemini antigravity openclaw copilot kiro'
 PO_DEFAULT_TOOLS='claude codex opencode cursor gemini antigravity openclaw'
 PO_HARNESS_TOOLS='claude codex opencode cursor gemini antigravity openclaw copilot kiro'
@@ -16,7 +17,7 @@ PO_HARNESS_PY_MAJOR=3
 PO_HARNESS_PY_MINOR=11
 PO_HARNESS_DEFAULT=1
 PO_HARNESS_OPTIONS='subagent-model statusline hooks legacy-move'
-PO_PACKS='claude-red-offense cyber-skills logo-design procable reverse-skill'
+PO_PACKS='claude-red-offense cyber-skills logo-design procable rea reverse-skill'
 
 # shellcheck disable=SC2034  # the L_* locations are read through po_expand
 po_init_locations() {
@@ -127,6 +128,16 @@ PO_EOF
         *) printf '' ;;
     esac
 }
+po_tool_mcp() {
+    case "$1" in
+        'claude') printf '%s' 'claude	{HOME}/.claude.json' ;;
+        'codex') printf '%s' 'codex	{CODEX_HOME}/config.toml' ;;
+        'opencode') printf '%s' 'opencode	{OPENCODE}/opencode.json' ;;
+        'cursor') printf '%s' 'cursor	{HOME}/.cursor/mcp.json' ;;
+        'gemini') printf '%s' 'gemini	{HOME}/.gemini/settings.json' ;;
+        *) printf '' ;;
+    esac
+}
 po_project_label() {
     case "$1" in
         'project') printf '%s' 'Every tool, inside one project' ;;
@@ -212,6 +223,12 @@ po_pack_get() {
         'procable:license') printf '%s' 'Apache-2.0' ;;
         'procable:payload') printf '%s' '' ;;
         'procable:sets') printf '%s' 'procable' ;;
+        'rea:label') printf '%s' 'rea' ;;
+        'rea:description') printf '%s' 'Reverse engineering MCP server rea-agents 6.10.1 in a private npm prefix, registered with each selected client, plus its bundled skill.' ;;
+        'rea:kind') printf '%s' 'skills' ;;
+        'rea:license') printf '%s' 'MIT' ;;
+        'rea:payload') printf '%s' '' ;;
+        'rea:sets') printf '%s' 'rea rea-frida' ;;
         'reverse-skill:label') printf '%s' 'Reverse Skill' ;;
         'reverse-skill:description') printf '%s' 'Routing package for reverse engineering, exploitation, penetration testing, malware, mobile, firmware and CTF work with case gates, tool bootstrap and MCP setup.' ;;
         'reverse-skill:kind') printf '%s' 'package' ;;
@@ -227,146 +244,192 @@ po_set_get() {
         'claude-red-offense:active-directory:description') printf '%s' 'Active Directory attack paths and NetExec usage for domain assessments.' ;;
         'claude-red-offense:active-directory:count') printf '%s' '2' ;;
         'claude-red-offense:active-directory:skills') printf '%s' 'offensive-active-directory offensive-netexec' ;;
+        'claude-red-offense:active-directory:requires') printf '%s' '' ;;
         'claude-red-offense:ai:label') printf '%s' 'AI security' ;;
         'claude-red-offense:ai:description') printf '%s' 'Prompt injection, jailbreak and model extraction checks for AI and LLM systems.' ;;
         'claude-red-offense:ai:count') printf '%s' '1' ;;
         'claude-red-offense:ai:skills') printf '%s' 'offensive-ai-security' ;;
+        'claude-red-offense:ai:requires') printf '%s' '' ;;
         'claude-red-offense:api:label') printf '%s' 'API' ;;
         'claude-red-offense:api:description') printf '%s' 'Abuse and security testing checklists for REST and other web APIs.' ;;
         'claude-red-offense:api:count') printf '%s' '2' ;;
         'claude-red-offense:api:skills') printf '%s' 'offensive-api-abuse offensive-api-security' ;;
+        'claude-red-offense:api:requires') printf '%s' '' ;;
         'claude-red-offense:auth:label') printf '%s' 'Authentication' ;;
         'claude-red-offense:auth:description') printf '%s' 'Attacks on login flows, sessions, OAuth and JWT handling.' ;;
         'claude-red-offense:auth:count') printf '%s' '2' ;;
         'claude-red-offense:auth:skills') printf '%s' 'offensive-jwt offensive-oauth' ;;
+        'claude-red-offense:auth:requires') printf '%s' '' ;;
         'claude-red-offense:cicd:label') printf '%s' 'CI/CD' ;;
         'claude-red-offense:cicd:description') printf '%s' 'Pipeline compromise and secret exposure checks for CI/CD systems.' ;;
         'claude-red-offense:cicd:count') printf '%s' '2' ;;
         'claude-red-offense:cicd:skills') printf '%s' 'offensive-cicd-pipeline offensive-cicd-secrets' ;;
+        'claude-red-offense:cicd:requires') printf '%s' '' ;;
         'claude-red-offense:cloud:label') printf '%s' 'Cloud' ;;
         'claude-red-offense:cloud:description') printf '%s' 'Attack checklist for cloud accounts, identities and services.' ;;
         'claude-red-offense:cloud:count') printf '%s' '1' ;;
         'claude-red-offense:cloud:skills') printf '%s' 'offensive-cloud' ;;
+        'claude-red-offense:cloud:requires') printf '%s' '' ;;
         'claude-red-offense:container:label') printf '%s' 'Containers' ;;
         'claude-red-offense:container:description') printf '%s' 'Container escape and Kubernetes attack checklists.' ;;
         'claude-red-offense:container:count') printf '%s' '2' ;;
         'claude-red-offense:container:skills') printf '%s' 'offensive-container-escape offensive-k8s-attacks' ;;
+        'claude-red-offense:container:requires') printf '%s' '' ;;
         'claude-red-offense:crypto:label') printf '%s' 'Cryptography' ;;
         'claude-red-offense:crypto:description') printf '%s' 'Checks for weak cryptography and padding oracle attacks.' ;;
         'claude-red-offense:crypto:count') printf '%s' '2' ;;
         'claude-red-offense:crypto:skills') printf '%s' 'offensive-crypto-attacks offensive-tls-attacks' ;;
+        'claude-red-offense:crypto:requires') printf '%s' '' ;;
         'claude-red-offense:exploit-dev:label') printf '%s' 'Exploit development' ;;
         'claude-red-offense:exploit-dev:description') printf '%s' 'Memory corruption exploitation, crash analysis, mitigations and race windows.' ;;
         'claude-red-offense:exploit-dev:count') printf '%s' '6' ;;
         'claude-red-offense:exploit-dev:skills') printf '%s' 'offensive-basic-exploitation offensive-crash-analysis offensive-exploit-dev-course offensive-exploit-development offensive-mitigations offensive-toctou' ;;
+        'claude-red-offense:exploit-dev:requires') printf '%s' '' ;;
         'claude-red-offense:forensics:label') printf '%s' 'Anti-forensics and C2' ;;
         'claude-red-offense:forensics:description') printf '%s' 'Anti-forensics techniques and command-and-control framework usage.' ;;
         'claude-red-offense:forensics:count') printf '%s' '2' ;;
         'claude-red-offense:forensics:skills') printf '%s' 'offensive-anti-forensics offensive-c2-frameworks' ;;
+        'claude-red-offense:forensics:requires') printf '%s' '' ;;
         'claude-red-offense:fuzzing:label') printf '%s' 'Fuzzing' ;;
         'claude-red-offense:fuzzing:description') printf '%s' 'Fuzzing methods, bug identification and vulnerability classes.' ;;
         'claude-red-offense:fuzzing:count') printf '%s' '4' ;;
         'claude-red-offense:fuzzing:skills') printf '%s' 'offensive-bug-identification offensive-fuzzing offensive-fuzzing-course offensive-vuln-classes' ;;
+        'claude-red-offense:fuzzing:requires') printf '%s' '' ;;
         'claude-red-offense:infrastructure:label') printf '%s' 'Infrastructure red team' ;;
         'claude-red-offense:infrastructure:description') printf '%s' 'Initial access, EDR evasion, shellcode and Windows boundary research for red-team operations.' ;;
         'claude-red-offense:infrastructure:count') printf '%s' '7' ;;
         'claude-red-offense:infrastructure:skills') printf '%s' 'offensive-advanced-redteam offensive-edr-evasion offensive-initial-access offensive-keylogger-arch offensive-shellcode offensive-windows-boundaries offensive-windows-mitigations' ;;
+        'claude-red-offense:infrastructure:requires') printf '%s' '' ;;
         'claude-red-offense:iot:label') printf '%s' 'IoT' ;;
         'claude-red-offense:iot:description') printf '%s' 'Attack checklist for IoT devices and their firmware.' ;;
         'claude-red-offense:iot:count') printf '%s' '1' ;;
         'claude-red-offense:iot:skills') printf '%s' 'offensive-iot' ;;
+        'claude-red-offense:iot:requires') printf '%s' '' ;;
         'claude-red-offense:mobile:label') printf '%s' 'Mobile' ;;
         'claude-red-offense:mobile:description') printf '%s' 'Attack checklist for Android and iOS applications.' ;;
         'claude-red-offense:mobile:count') printf '%s' '1' ;;
         'claude-red-offense:mobile:skills') printf '%s' 'offensive-mobile' ;;
+        'claude-red-offense:mobile:requires') printf '%s' '' ;;
         'claude-red-offense:network:label') printf '%s' 'Network' ;;
         'claude-red-offense:network:description') printf '%s' 'Network-layer attacks such as spoofing, relay and man-in-the-middle.' ;;
         'claude-red-offense:network:count') printf '%s' '1' ;;
         'claude-red-offense:network:skills') printf '%s' 'offensive-network-attacks' ;;
+        'claude-red-offense:network:requires') printf '%s' '' ;;
         'claude-red-offense:post-exploitation:label') printf '%s' 'Post-exploitation' ;;
         'claude-red-offense:post-exploitation:description') printf '%s' 'Lateral movement, persistence and data exfiltration after initial access.' ;;
         'claude-red-offense:post-exploitation:count') printf '%s' '3' ;;
         'claude-red-offense:post-exploitation:skills') printf '%s' 'offensive-data-exfiltration offensive-lateral-movement offensive-persistence' ;;
+        'claude-red-offense:post-exploitation:requires') printf '%s' '' ;;
         'claude-red-offense:privesc:label') printf '%s' 'Privilege escalation' ;;
         'claude-red-offense:privesc:description') printf '%s' 'Linux and Windows privilege escalation checklists.' ;;
         'claude-red-offense:privesc:count') printf '%s' '2' ;;
         'claude-red-offense:privesc:skills') printf '%s' 'offensive-linux-privesc offensive-windows-privesc' ;;
+        'claude-red-offense:privesc:requires') printf '%s' '' ;;
         'claude-red-offense:recon:label') printf '%s' 'Reconnaissance' ;;
         'claude-red-offense:recon:description') printf '%s' 'OSINT methodology and reconnaissance techniques.' ;;
         'claude-red-offense:recon:count') printf '%s' '2' ;;
         'claude-red-offense:recon:skills') printf '%s' 'offensive-osint offensive-osint-methodology' ;;
+        'claude-red-offense:recon:requires') printf '%s' '' ;;
         'claude-red-offense:social-engineering:label') printf '%s' 'Social engineering' ;;
         'claude-red-offense:social-engineering:description') printf '%s' 'Phishing and social-engineering campaign checklists.' ;;
         'claude-red-offense:social-engineering:count') printf '%s' '2' ;;
         'claude-red-offense:social-engineering:skills') printf '%s' 'offensive-phishing offensive-social-engineering' ;;
+        'claude-red-offense:social-engineering:requires') printf '%s' '' ;;
         'claude-red-offense:supply-chain:label') printf '%s' 'Supply chain' ;;
         'claude-red-offense:supply-chain:description') printf '%s' 'Dependency confusion and software supply-chain attacks.' ;;
         'claude-red-offense:supply-chain:count') printf '%s' '2' ;;
         'claude-red-offense:supply-chain:skills') printf '%s' 'offensive-dependency-confusion offensive-supply-chain' ;;
+        'claude-red-offense:supply-chain:requires') printf '%s' '' ;;
         'claude-red-offense:utility:label') printf '%s' 'Utilities' ;;
         'claude-red-offense:utility:description') printf '%s' 'Fast triage checks and pentest report writing.' ;;
         'claude-red-offense:utility:count') printf '%s' '2' ;;
         'claude-red-offense:utility:skills') printf '%s' 'offensive-fast-checking offensive-reporting' ;;
+        'claude-red-offense:utility:requires') printf '%s' '' ;;
         'claude-red-offense:web:label') printf '%s' 'Web' ;;
         'claude-red-offense:web:description') printf '%s' 'Web application attacks from SQL injection to request smuggling.' ;;
         'claude-red-offense:web:count') printf '%s' '16' ;;
         'claude-red-offense:web:skills') printf '%s' 'offensive-business-logic offensive-deserialization offensive-file-upload offensive-graphql offensive-idor offensive-open-redirect offensive-parameter-pollution offensive-race-condition offensive-rce offensive-request-smuggling offensive-sqli offensive-ssrf offensive-ssti offensive-waf-bypass offensive-xss offensive-xxe' ;;
+        'claude-red-offense:web:requires') printf '%s' '' ;;
         'claude-red-offense:wireless:label') printf '%s' 'Wireless' ;;
         'claude-red-offense:wireless:description') printf '%s' 'Wi-Fi, Bluetooth, Zigbee, Z-Wave and sub-GHz attack checklists.' ;;
         'claude-red-offense:wireless:count') printf '%s' '14' ;;
         'claude-red-offense:wireless:skills') printf '%s' 'offensive-bluetooth-ble offensive-bluetooth-classic offensive-deauth-disassoc offensive-evil-twin offensive-krack-fragattacks offensive-lorawan-sub-ghz offensive-wifi offensive-wifi-recon offensive-wpa-enterprise offensive-wpa2-psk offensive-wpa3-sae offensive-wps offensive-z-wave offensive-zigbee-thread-matter' ;;
+        'claude-red-offense:wireless:requires') printf '%s' '' ;;
         'cyber-skills:cyber-offense:label') printf '%s' 'Offense and red team' ;;
         'cyber-skills:cyber-offense:description') printf '%s' 'Red team, penetration testing, offensive security and purple team skills for authorized engagements.' ;;
         'cyber-skills:cyber-offense:count') printf '%s' '59' ;;
         'cyber-skills:cyber-offense:skills') printf '%s' 'abusing-dpapi-for-credential-access abusing-shadow-credentials-for-privesc building-c2-infrastructure-with-sliver-framework building-c2-redirector-infrastructure building-red-team-c2-infrastructure-with-havoc coercing-authentication-with-coercer-petitpotam conducting-api-security-testing conducting-domain-persistence-with-dcsync conducting-external-reconnaissance-with-osint conducting-full-scope-red-team-engagement conducting-internal-network-penetration-test conducting-internal-reconnaissance-with-bloodhound-ce conducting-mobile-app-penetration-test conducting-network-penetration-test conducting-pass-the-ticket-attack conducting-social-engineering-penetration-test conducting-social-engineering-pretext-call conducting-spearphishing-simulation-campaign conducting-wireless-network-penetration-test executing-active-directory-attack-simulation executing-phishing-simulation-campaign executing-red-team-engagement-planning executing-red-team-exercise exploiting-active-directory-certificate-services-esc1 exploiting-active-directory-with-bloodhound exploiting-adcs-with-certipy exploiting-constrained-delegation-abuse exploiting-kerberoasting-with-impacket exploiting-ms17-010-eternalblue-vulnerability exploiting-nopac-cve-2021-42278-42287 exploiting-sql-injection-vulnerabilities exploiting-zerologon-vulnerability-cve-2020-1472 implementing-attack-surface-management mapping-attack-paths-with-bloodhound-ce moving-laterally-with-netexec operating-havoc-c2 operating-sliver-c2 performing-active-directory-bloodhound-analysis performing-active-directory-forest-trust-attack performing-active-directory-penetration-test performing-binary-exploitation-analysis performing-credential-access-with-lazagne performing-external-network-penetration-test performing-initial-access-with-evilginx3 performing-iot-security-assessment performing-kerberoasting-attack performing-lateral-movement-with-wmiexec performing-open-source-intelligence-gathering performing-physical-intrusion-assessment performing-privilege-escalation-assessment performing-privilege-escalation-on-linux performing-purple-team-atomic-testing performing-red-team-with-covenant performing-thick-client-application-penetration-test performing-vulnerability-scanning-with-nessus performing-web-application-penetration-test performing-wireless-network-penetration-test relaying-ntlm-for-adcs-esc8 testing-for-xss-vulnerabilities' ;;
+        'cyber-skills:cyber-offense:requires') printf '%s' '' ;;
         'cyber-skills:cyber-soc-detection:label') printf '%s' 'SOC and detection' ;;
         'cyber-skills:cyber-soc-detection:description') printf '%s' 'SOC operations, detection engineering, endpoint security and deception technology skills.' ;;
         'cyber-skills:cyber-soc-detection:count') printf '%s' '93' ;;
         'cyber-skills:cyber-soc-detection:skills') printf '%s' 'analyzing-api-gateway-access-logs analyzing-azure-activity-logs-for-threats analyzing-dns-logs-for-exfiltration analyzing-memory-forensics-with-lime-and-volatility analyzing-powershell-script-block-logging analyzing-tls-certificate-transparency-logs analyzing-web-server-logs-for-intrusion analyzing-windows-event-logs-in-splunk building-automated-malware-submission-pipeline building-detection-rule-with-splunk-spl building-detection-rules-with-sigma building-incident-response-dashboard building-soc-escalation-matrix building-soc-metrics-and-kpi-tracking building-soc-playbook-for-ransomware building-threat-intelligence-enrichment-in-splunk building-threat-intelligence-feed-integration building-vulnerability-scanning-workflow configuring-host-based-intrusion-detection configuring-windows-defender-advanced-settings configuring-windows-event-logging-for-detection correlating-security-events-in-qradar deploying-active-directory-honeytokens deploying-cloud-deception-with-decoy-resources deploying-edr-agent-with-crowdstrike deploying-honeytokens-and-canarytokens deploying-osquery-for-endpoint-monitoring designing-adversary-engagement-with-mitre-engage detecting-beaconing-patterns-with-zeek detecting-credential-dumping-techniques detecting-entra-offensive-tools-in-graph-logs detecting-evasion-techniques-in-endpoint-logs detecting-fileless-attacks-on-endpoints detecting-golden-ticket-forgery detecting-insider-data-exfiltration-via-dlp detecting-insider-threat-with-ueba detecting-living-off-the-land-attacks detecting-living-off-the-land-with-lolbas detecting-pass-the-ticket-attacks detecting-rdp-brute-force-attacks detecting-sql-injection-via-waf-logs detecting-supply-chain-attacks-in-ci-cd extracting-memory-artifacts-with-rekall hardening-linux-endpoint-with-cis-benchmark hardening-windows-endpoint-with-cis-benchmark hunting-credential-stuffing-attacks hunting-saas-sso-token-abuse implementing-alert-fatigue-reduction implementing-application-whitelisting-with-applocker implementing-canary-tokens-for-network-intrusion implementing-deception-based-detection-with-canarytoken implementing-disk-encryption-with-bitlocker implementing-ebpf-security-monitoring implementing-endpoint-detection-with-wazuh implementing-endpoint-dlp-controls implementing-file-integrity-monitoring-with-aide implementing-honeytokens-for-breach-detection implementing-log-forwarding-with-fluentd implementing-log-integrity-with-blockchain implementing-memory-protection-with-dep-aslr implementing-mitre-attack-coverage-mapping implementing-mtls-for-zero-trust-services implementing-network-deception-with-honeypots implementing-security-chaos-engineering implementing-security-monitoring-with-datadog implementing-siem-correlation-rules-for-apt implementing-siem-use-case-tuning implementing-siem-use-cases-for-detection implementing-soar-automation-with-phantom implementing-soar-playbook-for-phishing implementing-soar-playbook-with-palo-alto-xsoar implementing-syslog-centralization-with-rsyslog implementing-threat-modeling-with-mitre-attack implementing-ticketing-system-for-incidents implementing-usb-device-control-policy investigating-insider-threat-indicators investigating-phishing-email-incident performing-alert-triage-with-elastic-siem performing-deception-technology-deployment performing-dns-tunneling-detection performing-endpoint-forensics-investigation performing-endpoint-vulnerability-remediation performing-false-positive-reduction-in-siem performing-ioc-enrichment-automation performing-lateral-movement-detection performing-log-source-onboarding-in-siem performing-purple-team-exercise performing-red-team-phishing-with-gophish performing-soc-tabletop-exercise performing-ssrf-vulnerability-exploitation performing-threat-hunting-with-elastic-siem performing-user-behavior-analytics triaging-security-alerts-in-splunk' ;;
+        'cyber-skills:cyber-soc-detection:requires') printf '%s' '' ;;
         'cyber-skills:cyber-hunting-intel:label') printf '%s' 'Threat hunting and intel' ;;
         'cyber-skills:cyber-hunting-intel:description') printf '%s' 'Threat hunting and threat intelligence skills.' ;;
         'cyber-skills:cyber-hunting-intel:count') printf '%s' '110' ;;
         'cyber-skills:cyber-hunting-intel:skills') printf '%s' 'analyzing-apt-group-with-mitre-navigator analyzing-campaign-attribution-evidence analyzing-certificate-transparency-for-phishing analyzing-cyber-kill-chain analyzing-indicators-of-compromise analyzing-malware-family-relationships-with-malpedia analyzing-persistence-mechanisms-in-linux analyzing-powershell-empire-artifacts analyzing-ransomware-leak-site-intelligence analyzing-ransomware-network-indicators analyzing-threat-actor-ttps-with-mitre-attack analyzing-threat-actor-ttps-with-mitre-navigator analyzing-threat-intelligence-feeds analyzing-threat-landscape-with-misp analyzing-typosquatting-domains-with-dnstwist auditing-tls-certificate-transparency-logs automating-ioc-enrichment building-adversary-infrastructure-tracking-system building-attack-pattern-library-from-cti-reports building-ioc-defanging-and-sharing-pipeline building-ioc-enrichment-pipeline-with-opencti building-threat-actor-profile-from-osint building-threat-feed-aggregation-with-misp building-threat-hunt-hypothesis-framework building-threat-intelligence-platform collecting-open-source-intelligence collecting-threat-intelligence-with-misp correlating-threat-campaigns detecting-dcsync-attack-in-active-directory detecting-dll-sideloading-attacks detecting-email-forwarding-rules-attack detecting-golden-ticket-attacks-in-kerberos-logs detecting-insider-threat-behaviors detecting-kerberoasting-attacks detecting-lateral-movement-with-splunk detecting-malicious-scheduled-tasks-with-sysmon detecting-mimikatz-execution-patterns detecting-ntlm-relay-with-event-correlation detecting-pass-the-hash-attacks detecting-privilege-escalation-attempts detecting-process-hollowing-technique detecting-service-account-abuse detecting-suspicious-powershell-execution detecting-t1003-credential-dumping-with-edr detecting-t1055-process-injection-with-sysmon detecting-t1548-abuse-elevation-control-mechanism detecting-wmi-persistence evaluating-threat-intelligence-platforms fleet-hunting-with-velociraptor generating-threat-intelligence-reports hunting-advanced-persistent-threats hunting-evtx-with-chainsaw hunting-for-anomalous-powershell-execution hunting-for-beaconing-with-frequency-analysis hunting-for-cobalt-strike-beacons hunting-for-command-and-control-beaconing hunting-for-data-exfiltration-indicators hunting-for-data-staging-before-exfiltration hunting-for-dcom-lateral-movement hunting-for-dcsync-attacks hunting-for-defense-evasion-via-timestomping hunting-for-dns-based-persistence hunting-for-dns-tunneling-with-zeek hunting-for-domain-fronting-c2-traffic hunting-for-lateral-movement-via-wmi hunting-for-living-off-the-cloud-techniques hunting-for-living-off-the-land-binaries hunting-for-lolbins-execution-in-endpoint-logs hunting-for-ntlm-relay-attacks hunting-for-persistence-mechanisms-in-windows hunting-for-persistence-via-wmi-subscriptions hunting-for-process-injection-techniques hunting-for-registry-persistence-mechanisms hunting-for-registry-run-key-persistence hunting-for-scheduled-task-persistence hunting-for-shadow-copy-deletion hunting-for-spearphishing-indicators hunting-for-startup-folder-persistence hunting-for-supply-chain-compromise hunting-for-suspicious-scheduled-tasks hunting-for-t1098-account-manipulation hunting-for-unusual-network-connections hunting-for-unusual-service-installations hunting-for-webshell-activity implementing-diamond-model-analysis implementing-security-information-sharing-with-stix2 implementing-stix-taxii-feed-integration implementing-taxii-server-with-opentaxii implementing-threat-intelligence-lifecycle-management managing-intelligence-lifecycle mapping-mitre-attack-techniques modeling-threats-with-opencti monitoring-darkweb-sources operationalizing-misp-threat-feeds performing-ai-driven-osint-correlation performing-brand-monitoring-for-impersonation performing-dark-web-monitoring-for-threats performing-indicator-lifecycle-management performing-ip-reputation-analysis-with-shodan performing-malware-hash-enrichment-with-virustotal performing-malware-ioc-extraction performing-osint-with-spiderfoot performing-paste-site-monitoring-for-credentials performing-threat-emulation-with-atomic-red-team performing-threat-hunting-with-yara-rules performing-threat-intelligence-sharing-with-misp performing-threat-landscape-assessment-for-sector processing-stix-taxii-feeds profiling-threat-actor-groups tracking-threat-actor-infrastructure' ;;
+        'cyber-skills:cyber-hunting-intel:requires') printf '%s' '' ;;
         'cyber-skills:cyber-forensics-ir:label') printf '%s' 'Forensics and incident response' ;;
         'cyber-skills:cyber-forensics-ir:description') printf '%s' 'Digital forensics, incident response and ransomware defense skills.' ;;
         'cyber-skills:cyber-forensics-ir:count') printf '%s' '80' ;;
         'cyber-skills:cyber-forensics-ir:skills') printf '%s' 'acquiring-disk-image-with-dd-and-dcfldd analyzing-browser-forensics-with-hindsight analyzing-disk-image-with-autopsy analyzing-docker-container-forensics analyzing-email-headers-for-phishing-investigation analyzing-linux-audit-logs-for-intrusion analyzing-linux-kernel-rootkits analyzing-linux-system-artifacts analyzing-lnk-file-and-jump-list-artifacts analyzing-mft-for-deleted-file-recovery analyzing-network-traffic-for-incidents analyzing-outlook-pst-for-email-forensics analyzing-prefetch-files-for-execution-history analyzing-ransomware-payment-wallets analyzing-security-logs-with-splunk analyzing-slack-space-and-file-system-artifacts analyzing-usb-device-connection-history analyzing-windows-amcache-artifacts analyzing-windows-lnk-files-for-artifacts analyzing-windows-prefetch-with-python analyzing-windows-registry-for-artifacts analyzing-windows-shellbag-artifacts building-incident-response-playbook building-incident-timeline-with-timesketch building-malware-incident-communication-template building-ransomware-playbook-with-cisa-framework building-super-timelines-with-plaso collecting-indicators-of-compromise collecting-volatile-evidence-from-compromised-host conducting-cloud-incident-response conducting-malware-incident-response conducting-memory-forensics-with-volatility conducting-phishing-incident-response conducting-post-incident-lessons-learned containing-active-breach deploying-decoy-files-for-ransomware-detection deploying-ransomware-canary-files detecting-email-account-compromise detecting-ransomware-encryption-behavior detecting-ransomware-precursors-in-network eradicating-malware-from-infected-systems extracting-browser-history-artifacts extracting-credentials-from-memory-dump extracting-windows-event-logs-artifacts generating-forensic-timelines-with-hayabusa implementing-anti-ransomware-group-policy implementing-honeypot-for-ransomware-detection implementing-immutable-backup-with-restic implementing-ransomware-backup-strategy implementing-ransomware-kill-switch-detection implementing-velociraptor-for-ir-collection investigating-ransomware-attack-artifacts parsing-artifacts-with-eric-zimmerman-tools performing-active-directory-compromise-investigation performing-cloud-forensics-investigation performing-cloud-incident-containment-procedures performing-cloud-storage-forensic-acquisition performing-disk-forensics-investigation performing-file-carving-with-foremost performing-insider-threat-investigation performing-linux-log-forensics-investigation performing-log-analysis-for-forensic-investigation performing-malware-persistence-investigation performing-memory-forensics-with-volatility3 performing-mobile-device-forensics-with-cellebrite performing-network-forensics-with-wireshark performing-network-packet-capture-analysis performing-ransomware-response performing-ransomware-tabletop-exercise performing-sqlite-database-forensics performing-steganography-detection performing-timeline-reconstruction-with-plaso performing-windows-artifact-analysis-with-eric-zimmerman-tools recovering-deleted-files-with-photorec recovering-from-ransomware-attack testing-ransomware-recovery-procedures triaging-security-incident triaging-security-incident-with-ir-playbook triaging-windows-with-kape validating-backup-integrity-for-recovery' ;;
+        'cyber-skills:cyber-forensics-ir:requires') printf '%s' '' ;;
         'cyber-skills:cyber-malware:label') printf '%s' 'Malware analysis' ;;
         'cyber-skills:cyber-malware:description') printf '%s' 'Static and dynamic malware analysis skills.' ;;
         'cyber-skills:cyber-malware:count') printf '%s' '39' ;;
         'cyber-skills:cyber-malware:skills') printf '%s' 'analyzing-android-malware-with-apktool analyzing-bootkit-and-rootkit-samples analyzing-cobalt-strike-beacon-configuration analyzing-cobaltstrike-malleable-c2-profiles analyzing-command-and-control-communication analyzing-golang-malware-with-ghidra analyzing-heap-spray-exploitation analyzing-linux-elf-malware analyzing-macro-malware-in-office-documents analyzing-malicious-pdf-with-peepdf analyzing-malware-behavior-with-cuckoo-sandbox analyzing-malware-persistence-with-autoruns analyzing-malware-sandbox-evasion-techniques analyzing-memory-dumps-with-volatility analyzing-network-covert-channels-in-malware analyzing-network-traffic-of-malware analyzing-packed-malware-with-upx-unpacker analyzing-pdf-malware-with-pdfid analyzing-ransomware-encryption-mechanisms analyzing-supply-chain-malware-artifacts deobfuscating-javascript-malware deobfuscating-powershell-obfuscated-malware detecting-fileless-malware-techniques detecting-process-injection-techniques detecting-rootkit-activity extracting-config-from-agent-tesla-rat extracting-iocs-from-malware-samples performing-automated-malware-analysis-with-cape performing-dynamic-analysis-with-any-run performing-firmware-malware-analysis performing-malware-triage-with-yara performing-memory-forensics-with-volatility3-plugins performing-static-malware-analysis-with-pe-studio performing-yara-rule-development-for-detection reverse-engineering-android-malware-with-jadx reverse-engineering-dotnet-malware-with-dnspy reverse-engineering-malware-with-ghidra reverse-engineering-ransomware-encryption-routine reverse-engineering-rust-malware' ;;
+        'cyber-skills:cyber-malware:requires') printf '%s' '' ;;
         'cyber-skills:cyber-cloud-container:label') printf '%s' 'Cloud, containers and DevSecOps' ;;
         'cyber-skills:cyber-cloud-container:description') printf '%s' 'Cloud, container, DevSecOps and software supply chain security skills.' ;;
         'cyber-skills:cyber-cloud-container:count') printf '%s' '125' ;;
         'cyber-skills:cyber-cloud-container:skills') printf '%s' 'analyzing-cloud-storage-access-patterns analyzing-kubernetes-audit-logs analyzing-office365-audit-logs-for-compromise analyzing-sbom-for-supply-chain-vulnerabilities auditing-aws-s3-bucket-permissions auditing-azure-active-directory-configuration auditing-cloud-with-cis-benchmarks auditing-gcp-iam-permissions auditing-kubernetes-cluster-rbac auditing-kubernetes-rbac-privilege-escalation auditing-terraform-infrastructure-for-security benchmarking-kubernetes-with-kube-bench building-cloud-siem-with-sentinel building-devsecops-pipeline-with-gitlab-ci conducting-cloud-penetration-testing detecting-aws-cloudtrail-anomalies detecting-aws-credential-exposure-with-trufflehog detecting-aws-guardduty-findings-automation detecting-aws-iam-privilege-escalation detecting-azure-lateral-movement detecting-azure-service-principal-abuse detecting-azure-storage-account-misconfigurations detecting-cloud-threats-with-guardduty detecting-compromised-cloud-credentials detecting-container-drift-at-runtime detecting-container-escape-attempts detecting-container-escape-with-falco-rules detecting-container-runtime-threats-with-falco detecting-cryptomining-in-cloud detecting-dependency-confusion detecting-malicious-npm-packages detecting-misconfigured-azure-storage detecting-oauth-token-theft detecting-privilege-escalation-in-kubernetes-pods detecting-s3-data-exfiltration-attempts detecting-serverless-function-injection detecting-shadow-it-cloud-usage detecting-suspicious-oauth-application-consent detecting-typosquatting-packages detecting-typosquatting-packages-in-npm-pypi emulating-cloud-attacks-with-stratus-red-team enumerating-cloud-with-cloudfox escaping-containers-to-host exploiting-aws-with-pacu generating-and-analyzing-sboms hardening-docker-containers-for-production hardening-docker-daemon-configuration implementing-aqua-security-for-container-scanning implementing-aws-config-rules-for-compliance implementing-aws-macie-for-data-classification implementing-aws-nitro-enclave-security implementing-aws-security-hub implementing-aws-security-hub-compliance implementing-azure-defender-for-cloud implementing-cloud-dlp-for-data-protection implementing-cloud-security-posture-management implementing-cloud-trail-log-analysis implementing-cloud-waf-rules implementing-cloud-workload-protection implementing-code-signing-for-artifacts implementing-container-image-minimal-base-with-distroless implementing-container-network-policies-with-calico implementing-fuzz-testing-in-cicd-with-aflplusplus implementing-gcp-binary-authorization implementing-gcp-organization-policy-constraints implementing-gcp-vpc-firewall-rules implementing-github-advanced-security-for-code-scanning implementing-image-provenance-verification-with-cosign implementing-infrastructure-as-code-security-scanning implementing-kubernetes-network-policy-with-calico implementing-kubernetes-pod-security-standards implementing-network-policies-for-kubernetes implementing-opa-gatekeeper-for-policy-enforcement implementing-pod-security-admission-controller implementing-policy-as-code-with-open-policy-agent implementing-rbac-hardening-for-kubernetes implementing-runtime-security-with-tetragon implementing-secret-scanning-with-gitleaks implementing-secrets-management-with-vault implementing-secrets-scanning-in-ci-cd implementing-semgrep-for-custom-sast-rules implementing-sigstore-for-software-signing implementing-supply-chain-security-with-in-toto implementing-zero-trust-in-cloud implementing-zero-trust-network-access integrating-dast-with-owasp-zap-in-pipeline integrating-sast-into-github-actions-pipeline managing-cloud-identity-with-okta performing-aws-account-enumeration-with-scout-suite performing-aws-privilege-escalation-assessment performing-cloud-asset-inventory-with-cartography performing-cloud-forensics-with-aws-cloudtrail performing-cloud-log-forensics-with-athena performing-cloud-native-forensics-with-falco performing-cloud-native-threat-hunting-with-aws-detective performing-cloud-penetration-testing-with-pacu performing-container-escape-detection performing-container-image-hardening performing-container-security-scanning-with-trivy performing-docker-bench-security-assessment performing-gcp-penetration-testing-with-gcpbucketbrute performing-gcp-security-assessment-with-forseti performing-kubernetes-cis-benchmark-with-kube-bench performing-kubernetes-etcd-security-assessment performing-kubernetes-penetration-testing performing-sca-dependency-scanning-with-snyk performing-serverless-function-security-review performing-threat-modeling-with-owasp-threat-dragon remediating-s3-bucket-misconfiguration scanning-container-images-with-grype scanning-containers-with-trivy-in-cicd scanning-docker-images-with-trivy scanning-iac-and-images-with-trivy scanning-kubernetes-manifests-with-kubesec securing-api-gateway-with-aws-waf securing-aws-iam-permissions securing-aws-lambda-execution-roles securing-azure-with-microsoft-defender securing-container-registry-images securing-container-registry-with-harbor securing-github-actions-workflows securing-helm-chart-deployments securing-kubernetes-on-cloud securing-serverless-functions verifying-build-provenance-with-slsa-sigstore' ;;
+        'cyber-skills:cyber-cloud-container:requires') printf '%s' '' ;;
         'cyber-skills:cyber-appsec-api:label') printf '%s' 'Application, API and mobile security' ;;
         'cyber-skills:cyber-appsec-api:description') printf '%s' 'Web application, API, application and mobile security skills.' ;;
         'cyber-skills:cyber-appsec-api:count') printf '%s' '87' ;;
         'cyber-skills:cyber-appsec-api:skills') printf '%s' 'analyzing-ios-app-security-with-objection bypassing-authentication-with-forced-browsing detecting-api-enumeration-attacks detecting-broken-object-property-level-authorization detecting-mobile-malware-behavior detecting-shadow-api-endpoints exploiting-api-injection-vulnerabilities exploiting-broken-function-level-authorization exploiting-broken-link-hijacking exploiting-deeplink-vulnerabilities exploiting-excessive-data-exposure-in-api exploiting-http-request-smuggling exploiting-idor-vulnerabilities exploiting-insecure-data-storage-in-mobile exploiting-insecure-deserialization exploiting-jwt-algorithm-confusion-attack exploiting-mass-assignment-in-rest-apis exploiting-nosql-injection-vulnerabilities exploiting-oauth-misconfiguration exploiting-prototype-pollution-in-javascript exploiting-race-condition-vulnerabilities exploiting-server-side-request-forgery exploiting-sql-injection-with-sqlmap exploiting-template-injection-vulnerabilities exploiting-type-juggling-vulnerabilities exploiting-websocket-vulnerabilities implementing-api-abuse-detection-with-rate-limiting implementing-api-gateway-security-controls implementing-api-key-security-controls implementing-api-rate-limiting-and-throttling implementing-api-schema-validation-security implementing-api-security-posture-management implementing-api-security-testing-with-42crunch implementing-api-threat-protection-with-apigee implementing-devsecops-security-scanning implementing-mobile-application-management implementing-runtime-application-self-protection implementing-web-application-logging-with-modsecurity intercepting-mobile-traffic-with-burpsuite performing-android-app-static-analysis-with-mobsf performing-api-fuzzing-with-restler performing-api-inventory-and-discovery performing-api-rate-limiting-bypass performing-api-security-testing-with-postman performing-blind-ssrf-exploitation performing-clickjacking-attack-test performing-content-security-policy-bypass performing-csrf-attack-simulation performing-directory-traversal-testing performing-dynamic-analysis-of-android-app performing-fuzzing-with-aflplusplus performing-graphql-depth-limit-attack performing-graphql-introspection-attack performing-graphql-security-assessment performing-http-parameter-pollution-attack performing-ios-app-security-assessment performing-jwt-none-algorithm-attack performing-mobile-app-certificate-pinning-bypass performing-second-order-sql-injection performing-security-headers-audit performing-soap-web-service-security-testing performing-subdomain-enumeration-with-subfinder performing-supply-chain-attack-simulation performing-web-application-firewall-bypass performing-web-cache-deception-attack performing-web-cache-poisoning-attack reverse-engineering-ios-app-with-frida testing-android-intents-for-vulnerabilities testing-api-authentication-weaknesses testing-api-for-broken-object-level-authorization testing-api-for-mass-assignment-vulnerability testing-api-security-with-owasp-top-10 testing-cors-misconfiguration testing-for-broken-access-control testing-for-business-logic-vulnerabilities testing-for-email-header-injection testing-for-host-header-injection testing-for-json-web-token-vulnerabilities testing-for-open-redirect-vulnerabilities testing-for-sensitive-data-exposure testing-for-xml-injection-vulnerabilities testing-for-xss-vulnerabilities-with-burpsuite testing-for-xxe-injection-vulnerabilities testing-jwt-token-security testing-mobile-api-authentication testing-oauth2-implementation-flaws testing-websocket-api-security' ;;
+        'cyber-skills:cyber-appsec-api:requires') printf '%s' '' ;;
         'cyber-skills:cyber-identity-zero-trust:label') printf '%s' 'Identity, zero trust and phishing defense' ;;
         'cyber-skills:cyber-identity-zero-trust:description') printf '%s' 'Identity and access management, zero trust architecture, phishing and social engineering defense skills.' ;;
         'cyber-skills:cyber-identity-zero-trust:count') printf '%s' '74' ;;
         'cyber-skills:cyber-identity-zero-trust:skills') printf '%s' 'analyzing-active-directory-acl-abuse analyzing-malicious-url-with-urlscan attacking-entra-id-with-roadtools attacking-oauth-with-device-code-phishing auditing-entra-id-with-aadinternals building-identity-federation-with-saml-azure-ad building-identity-governance-lifecycle-process building-phishing-reporting-button-workflow building-role-mining-for-rbac-optimization configuring-active-directory-tiered-model configuring-aws-verified-access-for-ztna configuring-identity-aware-proxy-with-google-iap configuring-ldap-security-hardening configuring-microsegmentation-for-zero-trust configuring-multi-factor-authentication-with-duo configuring-oauth2-authorization-flow configuring-zscaler-private-access-for-ztna deploying-cloudflare-access-for-zero-trust deploying-palo-alto-prisma-access-zero-trust deploying-software-defined-perimeter deploying-tailscale-for-zero-trust-vpn detecting-anomalous-authentication-patterns detecting-business-email-compromise detecting-business-email-compromise-with-ai detecting-deepfake-audio-in-vishing-attacks detecting-qr-code-phishing-with-email-security detecting-spearphishing-with-email-gateway implementing-anti-phishing-training-program implementing-aws-iam-permission-boundaries implementing-azure-ad-privileged-identity-management implementing-beyondcorp-zero-trust-access-model implementing-cisa-zero-trust-maturity-model implementing-conditional-access-policies-azure-ad implementing-delinea-secret-server-for-pam implementing-device-posture-assessment-in-zero-trust implementing-dmarc-dkim-spf-email-security implementing-email-sandboxing-with-proofpoint implementing-google-workspace-admin-security implementing-google-workspace-phishing-protection implementing-google-workspace-sso-configuration implementing-hardware-security-key-authentication implementing-hashicorp-vault-dynamic-secrets implementing-identity-governance-with-sailpoint implementing-identity-verification-for-zero-trust implementing-just-in-time-access-provisioning implementing-microsegmentation-with-guardicore implementing-mimecast-targeted-attack-protection implementing-pam-for-database-access implementing-passwordless-auth-with-microsoft-entra implementing-passwordless-authentication-with-fido2 implementing-privileged-access-management-with-cyberark implementing-privileged-access-workstation implementing-privileged-session-monitoring implementing-proofpoint-email-security-gateway implementing-saml-sso-with-okta implementing-scim-provisioning-with-okta implementing-zero-standing-privilege-with-cyberark implementing-zero-trust-dns-with-nextdns implementing-zero-trust-for-saas-applications implementing-zero-trust-network-access-with-zscaler implementing-zero-trust-with-beyondcorp implementing-zero-trust-with-hashicorp-boundary performing-access-recertification-with-saviynt performing-access-review-and-certification performing-adversary-in-the-middle-phishing-detection performing-dmarc-policy-enforcement-rollout performing-entitlement-review-with-sailpoint-iiq performing-oauth-scope-minimization-review performing-phishing-simulation-with-gophish performing-privileged-account-access-review performing-privileged-account-discovery performing-service-account-audit performing-service-account-credential-rotation post-exploiting-microsoft-graph-with-graphrunner' ;;
+        'cyber-skills:cyber-identity-zero-trust:requires') printf '%s' '' ;;
         'cyber-skills:cyber-network-ot-iot:label') printf '%s' 'Network, OT, IoT and hardware' ;;
         'cyber-skills:cyber-network-ot-iot:description') printf '%s' 'Network, OT and ICS, wireless, hardware and firmware security skills.' ;;
         'cyber-skills:cyber-network-ot-iot:count') printf '%s' '80' ;;
         'cyber-skills:cyber-network-ot-iot:skills') printf '%s' 'analyzing-network-flow-data-with-netflow analyzing-network-packets-with-scapy analyzing-network-traffic-with-wireshark analyzing-uefi-bootkit-persistence auditing-uefi-firmware-with-chipsec conducting-man-in-the-middle-attack-simulation configuring-network-segmentation-with-vlans configuring-pfsense-firewall-rules configuring-snort-ids-for-intrusion-detection configuring-suricata-for-network-monitoring detecting-anomalies-in-industrial-control-systems detecting-arp-poisoning-in-network-traffic detecting-attacks-on-historian-servers detecting-attacks-on-scada-systems detecting-bluetooth-low-energy-attacks detecting-command-and-control-over-dns detecting-dnp3-protocol-anomalies detecting-dns-exfiltration-with-dns-query-analysis detecting-exfiltration-over-dns-with-zeek detecting-lateral-movement-in-network detecting-lateral-movement-with-zeek detecting-modbus-command-injection-attacks detecting-modbus-protocol-anomalies detecting-network-anomalies-with-zeek detecting-network-scanning-with-ids-signatures detecting-port-scanning-with-fail2ban detecting-secure-boot-bypass detecting-stuxnet-style-attacks exploiting-bgp-hijacking-vulnerabilities exploiting-ipv6-vulnerabilities exploiting-smb-vulnerabilities-with-metasploit hunting-bootkits-in-efi-system-partition implementing-bgp-security-with-rpki implementing-browser-isolation-for-zero-trust implementing-conduit-security-for-ot-remote-access implementing-ddos-mitigation-with-cloudflare implementing-dragos-platform-for-ot-monitoring implementing-ics-firewall-with-tofino implementing-iec-62443-security-zones implementing-nerc-cip-compliance-controls implementing-network-access-control implementing-network-access-control-with-cisco-ise implementing-network-intrusion-prevention-with-suricata implementing-network-segmentation-for-ot implementing-network-segmentation-with-firewall-zones implementing-network-traffic-analysis-with-arkime implementing-network-traffic-baselining implementing-next-generation-firewall-with-palo-alto implementing-ot-incident-response-playbook implementing-ot-network-traffic-analysis-with-nozomi implementing-patch-management-for-ot-systems implementing-purdue-model-network-segmentation monitoring-scada-modbus-traffic-anomalies performing-arp-spoofing-attack-simulation performing-bandwidth-throttling-attack-simulation performing-bluetooth-security-assessment performing-dns-enumeration-and-zone-transfer performing-firmware-extraction-with-binwalk performing-ics-asset-discovery-with-claroty performing-network-traffic-analysis-with-tshark performing-network-traffic-analysis-with-zeek performing-oil-gas-cybersecurity-assessment performing-ot-network-security-assessment performing-ot-vulnerability-assessment-with-claroty performing-ot-vulnerability-scanning-safely performing-packet-injection-attack performing-plc-firmware-security-analysis performing-power-grid-cybersecurity-assessment performing-s7comm-protocol-security-analysis performing-scada-hmi-security-assessment performing-ssl-stripping-attack performing-ssl-tls-inspection-configuration performing-ssl-tls-security-assessment performing-vlan-hopping-attack performing-wifi-password-cracking-with-aircrack performing-wireless-security-assessment-with-kismet scanning-network-with-nmap-advanced securing-historian-server-in-ot-environment securing-remote-access-to-ot-environment validating-tpm-measured-boot-attestation' ;;
+        'cyber-skills:cyber-network-ot-iot:requires') printf '%s' '' ;;
         'cyber-skills:cyber-grc-crypto-ai:label') printf '%s' 'GRC, vulnerability management, crypto and AI' ;;
         'cyber-skills:cyber-grc-crypto-ai:description') printf '%s' 'Governance, risk and compliance, privacy, vulnerability management, cryptography, AI and blockchain security skills.' ;;
         'cyber-skills:cyber-grc-crypto-ai:count') printf '%s' '71' ;;
         'cyber-skills:cyber-grc-crypto-ai:skills') printf '%s' 'achieving-cmmc-level-2-compliance analyzing-ethereum-smart-contract-vulnerabilities assessing-vector-and-embedding-weaknesses auditing-foundry-smart-contract-security auditing-mcp-servers-for-tool-poisoning building-patch-tuesday-response-process building-vulnerability-aging-and-sla-tracking building-vulnerability-dashboard-with-defectdojo building-vulnerability-exception-tracking-system conducting-cyber-risk-assessment-with-nist-800-30 conducting-gdpr-compliance-assessment configuring-certificate-authority-with-openssl configuring-hsm-for-key-storage configuring-tls-1-3-for-secure-communications continuous-llm-red-teaming-with-promptfoo defending-llms-with-guardrails detecting-ai-model-prompt-injection-attacks detecting-data-and-model-poisoning detecting-indirect-prompt-injection detecting-model-extraction-attacks executing-nist-rmf-authorization-to-operate exploiting-vulnerabilities-with-metasploit-framework implementing-aes-encryption-for-data-at-rest implementing-attack-path-analysis-with-xm-cyber implementing-cloud-vulnerability-posture-management implementing-continuous-security-validation-with-bas implementing-data-loss-prevention-with-microsoft-purview implementing-digital-signatures-with-ed25519 implementing-end-to-end-encryption-for-messaging implementing-envelope-encryption-with-aws-kms implementing-epss-score-for-vulnerability-prioritization implementing-gdpr-data-protection-controls implementing-gdpr-data-subject-access-request implementing-hipaa-security-rule-safeguards implementing-iso-27001-information-security-management implementing-jwt-signing-and-verification implementing-llm-guardrails-for-security implementing-patch-management-workflow implementing-pci-dss-compliance-controls implementing-rapid7-insightvm-for-scanning implementing-rsa-key-pair-management implementing-vulnerability-management-with-greenbone implementing-vulnerability-remediation-sla implementing-vulnerability-sla-breach-alerting implementing-zero-knowledge-proof-for-authentication managing-third-party-vendor-risk migrating-to-post-quantum-cryptography orchestrating-llm-attacks-with-pyrit performing-active-directory-vulnerability-assessment performing-agentless-vulnerability-scanning performing-asset-criticality-scoring-for-vulns performing-authenticated-scan-with-openvas performing-authenticated-vulnerability-scan performing-cryptographic-audit-of-application performing-cve-prioritization-with-kev-catalog performing-hardware-security-module-integration performing-hash-cracking-with-hashcat performing-nist-csf-maturity-assessment performing-post-quantum-cryptography-migration performing-privacy-impact-assessment performing-soc2-type2-audit-preparation performing-ssl-certificate-lifecycle-management performing-web-application-scanning-with-nikto performing-web-application-vulnerability-triage prioritizing-vulnerabilities-with-cvss-scoring red-teaming-llms-with-garak scanning-infrastructure-with-nessus securing-agentic-ai-tool-invocation testing-for-system-prompt-leakage testing-prompt-injection-in-rag-pipelines triaging-vulnerabilities-with-ssvc-framework' ;;
+        'cyber-skills:cyber-grc-crypto-ai:requires') printf '%s' '' ;;
         'logo-design:logo-design:label') printf '%s' 'Logo design' ;;
         'logo-design:logo-design:description') printf '%s' 'One skill with references, SVG scripts and the logo library catalog.' ;;
         'logo-design:logo-design:count') printf '%s' '1' ;;
         'logo-design:logo-design:skills') printf '%s' 'logo-design' ;;
+        'logo-design:logo-design:requires') printf '%s' '' ;;
         'procable:procable:label') printf '%s' 'procable' ;;
         'procable:procable:description') printf '%s' 'The procable skill and engine for polish, critique, audit and WCAG 2.2 AA review.' ;;
         'procable:procable:count') printf '%s' '1' ;;
         'procable:procable:skills') printf '%s' 'procable' ;;
+        'procable:procable:requires') printf '%s' '' ;;
+        'rea:rea:label') printf '%s' 'rea MCP server' ;;
+        'rea:rea:description') printf '%s' 'The rea MCP server for Claude Code, Codex, Cursor, Gemini CLI and OpenCode, and the skill reverse-engineer-anything.' ;;
+        'rea:rea:count') printf '%s' '1' ;;
+        'rea:rea:skills') printf '%s' 'reverse-engineer-anything' ;;
+        'rea:rea:requires') printf '%s' '' ;;
+        'rea:rea-frida:label') printf '%s' 'rea with Frida' ;;
+        'rea:rea-frida:description') printf '%s' 'Frida 17.23.2 and its Node binding in the rea prefix, checked against pinned digests, for runtime instrumentation.' ;;
+        'rea:rea-frida:count') printf '%s' '0' ;;
+        'rea:rea-frida:skills') printf '%s' '' ;;
+        'rea:rea-frida:requires') printf '%s' 'rea' ;;
         'reverse-skill:reverse-skill:label') printf '%s' 'Reverse Skill' ;;
         'reverse-skill:reverse-skill:description') printf '%s' 'Entry skill that points the agent at the installed reverse-skill package and its router.' ;;
         'reverse-skill:reverse-skill:count') printf '%s' '1' ;;
         'reverse-skill:reverse-skill:skills') printf '%s' 'reverse-skill' ;;
+        'reverse-skill:reverse-skill:requires') printf '%s' '' ;;
         *) printf '' ;;
     esac
 }
@@ -402,6 +465,33 @@ po_release_provider() {
         'procable:antigravity') printf '%s' 'antigravity' ;;
         'procable:copilot') printf '%s' 'github' ;;
         'procable:kiro') printf '%s' 'kiro' ;;
+        *) printf '' ;;
+    esac
+}
+po_npm_get() {
+    case "$1:$2:$3" in
+        'rea::node') printf '%s' '^22.23.4 || ^24.22.1 || >=26.12.1' ;;
+        'rea::base') printf '%s' 'rea' ;;
+        'rea::sets') printf '%s' 'rea rea-frida' ;;
+        'rea:rea:name') printf '%s' 'rea-agents' ;;
+        'rea:rea:version') printf '%s' '6.10.1' ;;
+        'rea:rea:integrity') printf '%s' 'sha512-3AWrfFEXppvC98FWhZR2Tzulnqs5xJQrSKmAub6+QME/I58Pr3h8pHqqwM30z2DvlnIx/8Hsu8woMngfi4SNyg==' ;;
+        'rea:rea-frida:name') printf '%s' 'frida' ;;
+        'rea:rea-frida:version') printf '%s' '17.23.2' ;;
+        'rea:rea-frida:integrity') printf '%s' 'sha512-gRCmmTUFdEILyHRN1b66erRoXafwsfWTqXyoBBqkSCFX0Ue7Jhvs/KhA3JO0XrgITNlPd91QAGsFvWzh0mhVgg==' ;;
+        'rea:rea-frida:url') printf '%s' 'https://github.com/frida/frida/releases/download/{version}/frida-v{version}-napi-v8-{platform}.tar.gz' ;;
+        'rea:rea-frida:member') printf '%s' 'build/frida_binding.node' ;;
+        'rea:rea-frida:sha256:darwin-arm64') printf '%s' '850fba220a2d9b6aae282ac6dde37f48847e73597b7a06d648737ff9addc3340' ;;
+        'rea:rea-frida:sha256:linux-x64') printf '%s' '9fa8f668ce91eb03713e8564de4f8fbde232233ee91d729c16773fde11dbae95' ;;
+        'rea:rea-frida:sha256:win32-x64') printf '%s' 'e9dbc08d386130610430137f0bb31d90af7b08c0f5710942d4313368ada930ea' ;;
+        *) printf '' ;;
+    esac
+}
+po_mcp_get() {
+    case "$1:$2" in
+        'rea:set') printf '%s' 'rea' ;;
+        'rea:name') printf '%s' 'rea' ;;
+        'rea:spec_b64') printf '%s' 'eyJjb21tYW5kIjoibm9kZSIsImFyZ3MiOlsie1BBQ0tBR0V9L25vZGVfbW9kdWxlcy9yZWEtYWdlbnRzL3NjcmlwdHMvcmVhLm1qcyIsIm1jcCJdLCJlbnYiOnsiTk9fVVBEQVRFX05PVElGSUVSIjoiMSJ9fQ==' ;;
         *) printf '' ;;
     esac
 }
@@ -492,7 +582,8 @@ po_change() { PO_CHANGES=$((PO_CHANGES + 1)); }
 # One line per record: owner, kind, path, hash, extra (tab separated). Kinds: f file (exact
 # copy), d document (compared without the harness block), x file made by an external step,
 # b marker block in a shared file, k backup of a replaced file or folder, u undo step,
-# h harness install, D folder the installer created (owner @dirs).
+# h harness install, m MCP server entry in a client config (extra: helper record),
+# n private npm prefix of a pack, D folder the installer created (owner @dirs).
 
 po_man_lines() { if [ -f "$PO_MANIFEST" ]; then cat "$PO_MANIFEST"; fi; }
 
@@ -848,7 +939,7 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
     local kind path hash extra shared cur
     po_man_lines | awk -F'\t' -v o="$PO_OWNER_REMOVING" '$1!=o && $1!="@dirs"' > "$PO_TMP/ref.tsv"
     if [ -f "$PO_TMP/new.tsv" ] && [ -n "$PO_OWNER" ]; then cat "$PO_TMP/new.tsv" >> "$PO_TMP/ref.tsv"; fi
-    awk -F'\t' 'FILENAME==ARGV[1] { if ($2!="k" && $2!="u" && $2!="h") ref[$3]=1; next } { print (($3 in ref) ? 1 : 0) "\t" $2 "\t" $3 "\t" $4 "\t" $5 }' \
+    awk -F'\t' 'FILENAME==ARGV[1] { if ($2!="k" && $2!="u" && $2!="h" && $2!="m" && $2!="n") ref[$3]=1; next } { print (($3 in ref && $2!="m" && $2!="n") ? 1 : 0) "\t" $2 "\t" $3 "\t" $4 "\t" $5 }' \
         "$PO_TMP/ref.tsv" "$1" > "$PO_TMP/rm.tsv"
     # harness first: its uninstall reads the files the core put there
     while IFS="$PO_TAB" read -r shared kind path hash extra; do
@@ -883,6 +974,7 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
                 else cp "$PO_TMP/block.next" "$path"; fi
                 po_change
                 ;;
+            m) po_mcp_unregister "$path" "$hash" "$extra" ;;
         esac
     done < "$PO_TMP/rm.tsv"
     while IFS="$PO_TAB" read -r shared kind path hash extra; do
@@ -894,6 +986,13 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
                 fi
                 ;;
             u:json-strip:*) po_json_strip "$path" "${extra#json-strip:}" ;;
+            u:npm-rm:*) po_npm_remove "$path" "${extra#npm-rm:}" ;;
+            n:*)
+                case "$path" in
+                    "$PO_DATA/packages/"?*) if [ -d "$path" ]; then rm -rf "$path"; po_change; fi ;;
+                    *) po_warn "kept $path: not inside $PO_DATA/packages" ;;
+                esac
+                ;;
         esac
     done < "$PO_TMP/rm.tsv"
     while IFS="$PO_TAB" read -r shared kind path hash extra; do
@@ -1054,7 +1153,7 @@ po_add_sets() {  # parse "pack[:set],set,pack2" into PO_SEL_SETS
                 po_pack_known "$p" || po_die "unknown pack: $p (see: install.sh packs list)"
                 cur="$p"
                 if [ -z "$s" ] || [ "$s" = "*" ]; then
-                    for s in $(po_pack_get "$p" sets); do po_sel_add "$p:$s"; done
+                    for s in $(po_base_sets "$p"); do po_sel_add "$p:$s"; done
                 else
                     po_set_known "$p" "$s" || po_die "pack $p has no set $s"
                     po_sel_add "$p:$s"
@@ -1063,7 +1162,7 @@ po_add_sets() {  # parse "pack[:set],set,pack2" into PO_SEL_SETS
             *)
                 if po_pack_known "$tok"; then
                     cur="$tok"
-                    for s in $(po_pack_get "$tok" sets); do po_sel_add "$tok:$s"; done
+                    for s in $(po_base_sets "$tok"); do po_sel_add "$tok:$s"; done
                 elif [ -n "$cur" ] && po_set_known "$cur" "$tok"; then
                     po_sel_add "$cur:$tok"
                 else
@@ -1077,6 +1176,24 @@ po_add_sets() {  # parse "pack[:set],set,pack2" into PO_SEL_SETS
 }
 
 po_sel_add() { po_has_word "$PO_SEL_SETS" "$1" || PO_SEL_SETS="${PO_SEL_SETS:+$PO_SEL_SETS }$1"; }
+
+po_base_sets() {  # sets of pack $1 that require no other set; a bare pack name selects these
+    local s
+    for s in $(po_pack_get "$1" sets); do [ -z "$(po_set_get "$1" "$s" requires)" ] && printf '%s ' "$s"; done
+    return 0
+}
+
+po_sel_toggle() {  # toggle "pack:set" and keep required sets with it
+    local p="${1%%:*}" s="${1#*:}" o r
+    if po_has_word "$PO_SEL_SETS" "$1"; then
+        po_sel_del "$1"
+        for o in $(po_pack_get "$p" sets); do po_has_word "$(po_set_get "$p" "$o" requires)" "$s" && po_sel_del "$p:$o"; done
+    else
+        for r in $(po_set_get "$p" "$s" requires); do po_sel_add "$p:$r"; done
+        po_sel_add "$1"
+    fi
+    return 0
+}
 po_sel_del() {
     local out="" w
     for w in $PO_SEL_SETS; do [ "$w" = "$1" ] || out="${out:+$out }$w"; done
@@ -1093,12 +1210,21 @@ po_pack_tools() {  # tools that receive pack skills
 }
 
 po_install_set() {  # $1 pack, $2 set, $3 tools
-    local pack="$1" set="$2" tools="$3" kind tool dir skill
+    local pack="$1" set="$2" tools="$3" kind tool dir skill mcp=""
     kind="$(po_pack_get "$pack" kind)"
     po_say "=== pack $pack, set $set ($(po_set_get "$pack" "$set" count) skills)"
     if [ "$kind" = release ]; then po_release_install "$pack" "$set" "$tools"; return 0; fi
+    [ -n "$(po_mcp_get "$pack" set)" ] && [ "$(po_mcp_get "$pack" set)" = "$set" ] && mcp=1
+    if po_has_word "$(po_npm_get "$pack" "" sets)" "$set"; then
+        po_node_ready "$pack" npm
+        po_npm_install "$pack" "$set"
+    elif [ -n "$mcp" ]; then
+        po_node_ready "$pack"
+    fi
     for tool in $tools; do
-        [ -n "$(po_tool_skills "$tool")" ] || continue
+        if [ -z "$mcp" ] || [ -z "$(po_tool_mcp "$tool")" ]; then
+            if [ -z "$(po_tool_skills "$tool")" ] || [ -z "$(po_set_get "$pack" "$set" skills)" ]; then continue; fi
+        fi
         po_owner_begin "pack:$pack:$set:$tool"
         for skill in $(po_set_get "$pack" "$set" skills); do
             while IFS= read -r dir; do
@@ -1108,6 +1234,7 @@ po_install_set() {  # $1 pack, $2 set, $3 tools
 $(po_tool_skills "$tool")
 PO_DIRS
         done
+        if [ -n "$mcp" ]; then po_mcp_register "$pack" "$tool"; fi
         po_owner_end
     done
     if [ "$kind" = package ]; then
@@ -1117,24 +1244,238 @@ PO_DIRS
     fi
 }
 
-po_remove_pack_spec() {  # "pack" or "pack:set"
-    local spec="$1" pack set owner rest
+po_remove_pack_spec() {  # "pack" or "pack:set"; a set takes the sets that require it along
+    local spec="$1" pack set owner rest sets="" s
     pack="${spec%%:*}"
     set=""
     case "$spec" in *:*) set="${spec#*:}" ;; esac
     po_pack_known "$pack" || po_die "unknown pack: $pack"
-    if [ -n "$set" ]; then po_set_known "$pack" "$set" || po_die "pack $pack has no set $set"; fi
-    po_owners > "$PO_TMP/owners.list"
-    while IFS= read -r owner <&3; do
-        case "$owner" in "pack:$pack:"*) ;; *) continue ;; esac
-        rest="${owner#"pack:$pack:"}"
-        [ "$rest" = payload ] && continue
-        if [ -n "$set" ] && [ "${rest%%:*}" != "$set" ]; then continue; fi
-        po_remove_owner "$owner"
-    done 3< "$PO_TMP/owners.list"
-    if ! po_owner_prefix "pack:$pack:" "pack:$pack:payload"; then
-        po_remove_owner "pack:$pack:payload"
+    if [ -n "$set" ]; then
+        po_set_known "$pack" "$set" || po_die "pack $pack has no set $set"
+        for s in $(po_pack_get "$pack" sets); do po_has_word "$(po_set_get "$pack" "$s" requires)" "$set" && sets="$sets $s"; done
+        sets="$sets $set"
     fi
+    po_owners > "$PO_TMP/owners.list"
+    for s in ${sets:-"*"}; do
+        while IFS= read -r owner <&3; do
+            case "$owner" in "pack:$pack:"*) ;; *) continue ;; esac
+            rest="${owner#"pack:$pack:"}"
+            case "$rest" in payload|npm) continue ;; esac
+            if [ "$s" != "*" ] && [ "${rest%%:*}" != "$s" ]; then continue; fi
+            po_remove_owner "$owner"
+        done 3< "$PO_TMP/owners.list"
+    done
+    if ! po_owners | awk -v p="pack:$pack:" 'index($0, p)==1 && $0!=p "payload" && $0!=p "npm" {f=1} END {exit !f}'; then
+        po_remove_owner "pack:$pack:payload"
+        po_remove_owner "pack:$pack:npm"
+    fi
+}
+
+# ------------------------------------------------------------------ npm and MCP packs
+
+po_helper() { node "$PO_ROOT/$PO_PACK_HELPER" "$@"; }
+
+po_node_ready() {  # $1 pack, $2 "npm" when the pack installs npm packages
+    local pack="$1" range msg
+    command -v node >/dev/null 2>&1 || po_die "pack $pack needs Node.js on PATH"
+    if [ "${2:-}" = npm ]; then
+        command -v npm >/dev/null 2>&1 || po_die "pack $pack needs npm on PATH"
+        range="$(po_npm_get "$pack" "" node)"
+        msg="$(po_helper node-check "$range")" || po_die "pack $pack: $msg"
+    fi
+}
+
+po_npm() {  # npm with a throwaway cache and without the update notifier, audit and funding messages
+    env NO_UPDATE_NOTIFIER=1 npm_config_update_notifier=false npm_config_audit=false npm_config_fund=false \
+        npm_config_cache="$PO_TMP/npm-cache" npm "$@"
+}
+
+po_npm_check() {  # $1 prefix, $2 pack, $3 set: prints the helper verdict, fails unless ok
+    po_helper npm-check "$1" "$(po_npm_get "$2" "$3" name)" "$(po_npm_get "$2" "$3" version)" "$(po_npm_get "$2" "$3" integrity)"
+}
+
+po_npm_install() {  # $1 pack, $2 set: install the set's pinned npm package into <data_home>/packages/<pack>
+    local pack="$1" set="$2" prefix name version verdict
+    prefix="$PO_DATA/packages/$pack"
+    name="$(po_npm_get "$pack" "$set" name)"
+    version="$(po_npm_get "$pack" "$set" version)"
+    if [ "$set" != "$(po_npm_get "$pack" "" base)" ]; then po_npm_addon "$pack" "$set" "$prefix"; return 0; fi
+    po_owner_begin "pack:$pack:npm"
+    if verdict="$(po_npm_check "$prefix" "$pack" "$set")"; then
+        po_rec n "$prefix" "$name@$version"
+        po_npm_absent "$pack" "$prefix"
+        po_owner_end
+        return 0
+    fi
+    po_change
+    if [ "$PO_DRY" = 1 ]; then
+        po_say "  would run npm install --prefix $prefix $name@$version --omit=optional --ignore-scripts and check its integrity"
+        po_owner_end
+        return 0
+    fi
+    if [ -e "$prefix" ] && ! awk -F'\t' -v p="$prefix" '$2=="n" && $3==p {f=1} END {exit !f}' "$PO_TMP/old.tsv"; then po_backup "$prefix"; fi
+    po_ensure_dir "$prefix"
+    po_say "  \$ npm install --prefix $prefix $name@$version --omit=optional --ignore-scripts --save-exact"
+    if ! po_npm install --prefix "$prefix" "$name@$version" --omit=optional --ignore-scripts --save-exact --no-audit --no-fund; then
+        rm -rf "$prefix"
+        po_die "npm install of $name@$version failed"
+    fi
+    if ! verdict="$(po_npm_check "$prefix" "$pack" "$set")"; then
+        rm -rf "$prefix"
+        po_die "$name@$version in $prefix fails the pinned check ($verdict); refusing to install"
+    fi
+    po_say "  $name@$version matches the pinned integrity"
+    po_rec n "$prefix" "$name@$version"
+    po_npm_absent "$pack" "$prefix"
+    po_owner_end
+}
+
+po_npm_absent() {  # $1 pack, $2 prefix: packages of sets that are not installed must be absent
+    local s
+    for s in $(po_npm_get "$1" "" sets); do
+        [ "$s" = "$(po_npm_get "$1" "" base)" ] && continue
+        po_has_word "$PO_SEL_SETS" "$1:$s" && continue
+        po_owner_prefix "pack:$1:$s:" && continue
+        if [ -e "$2/node_modules/$(po_npm_get "$1" "$s" name)" ]; then
+            po_die "$2 holds $(po_npm_get "$1" "$s" name), but set $1:$s is not installed; remove $2 and install again"
+        fi
+    done
+}
+
+po_npm_addon() {  # $1 pack, $2 set, $3 prefix: an npm package and its pinned native binding
+    local pack="$1" set="$2" prefix="$3" name version url member plat want file asset got binding have src
+    name="$(po_npm_get "$pack" "$set" name)"
+    version="$(po_npm_get "$pack" "$set" version)"
+    url="$(po_npm_get "$pack" "$set" url)"
+    member="$(po_npm_get "$pack" "$set" member)"
+    binding="$prefix/node_modules/$name/$member"
+    po_owner_begin "pack:$pack:$set:all"
+    have="$(awk -F'\t' -v p="$binding" '$2=="x" && $3==p {print $4}' "$PO_TMP/old.tsv")"
+    if po_npm_check "$prefix" "$pack" "$set" >/dev/null && { [ -z "$url" ] || { [ -f "$binding" ] && [ "$(po_hash "$binding")" = "$have" ]; }; }; then
+        [ -n "$url" ] && po_rec x "$binding" "$have"
+        po_rec u "$prefix" - "npm-rm:$name"
+        po_owner_end
+        return 0
+    fi
+    po_change
+    if [ -n "$url" ]; then
+        plat="$(po_helper platform)"
+        want="$(po_npm_get "$pack" "$set" "sha256:$plat")"
+        [ -n "$want" ] || po_die "no pinned digest for the $name binding on $plat; refusing to install $pack:$set"
+        url="$(printf '%s' "$url" | sed "s/{version}/$version/g; s/{platform}/$plat/g")"
+        file="${url##*/}"
+    fi
+    if [ "$PO_DRY" = 1 ]; then
+        [ -n "$url" ] && po_say "  would download $url and check its sha256 against $want"
+        po_say "  would run npm install --prefix $prefix $name@$version --ignore-scripts and check its integrity"
+        po_owner_end
+        return 0
+    fi
+    if [ -n "$url" ]; then
+        src="$(po_bundle_for "$pack")"
+        if [ -n "$src" ]; then
+            asset="$src/$file"
+            [ -f "$asset" ] || po_die "bundle folder has no $file: $src"
+        else
+            asset="$PO_TMP/$file"
+            po_fetch "$url" "$asset"
+        fi
+        got="$(po_hash "$asset")"
+        [ "$got" = "$want" ] || po_die "$file has sha256 $got, but $pack pins $want; refusing to install $pack:$set"
+        po_say "  $file matches the pinned sha256"
+        rm -rf "$PO_TMP/binding"
+        mkdir -p "$PO_TMP/binding"
+        tar -xzf "$asset" -C "$PO_TMP/binding" "$member" || po_die "cannot extract $member from $file"
+        [ -f "$PO_TMP/binding/$member" ] || po_die "$file holds no $member"
+    fi
+    po_say "  \$ npm install --prefix $prefix $name@$version --ignore-scripts --save-exact"
+    po_npm install --prefix "$prefix" "$name@$version" --omit=optional --ignore-scripts --save-exact --no-audit --no-fund \
+        || po_die "npm install of $name@$version failed"
+    if ! got="$(po_npm_check "$prefix" "$pack" "$set")"; then
+        po_npm uninstall --prefix "$prefix" "$name" --ignore-scripts --no-audit --no-fund >/dev/null 2>&1 || true
+        po_die "$name@$version in $prefix fails the pinned check ($got); refusing to install"
+    fi
+    po_say "  $name@$version matches the pinned integrity"
+    if [ -n "$url" ]; then
+        mkdir -p "$(dirname "$binding")"
+        cp "$PO_TMP/binding/$member" "$binding"
+        po_rec x "$binding" "$(po_hash "$binding")"
+        po_say "  binding -> $binding"
+    fi
+    po_rec u "$prefix" - "npm-rm:$name"
+    po_owner_end
+}
+
+po_npm_remove() {  # $1 prefix, $2 package: undo an add-on npm install
+    [ -d "$1/node_modules/$2" ] || return 0
+    if command -v npm >/dev/null 2>&1 && po_npm uninstall --prefix "$1" "$2" --ignore-scripts --no-audit --no-fund >/dev/null 2>&1; then
+        po_change
+    else
+        po_warn "could not run npm uninstall $2 in $1; remove $1/node_modules/$2 by hand"
+    fi
+}
+
+po_mcp_register() {  # $1 pack, $2 tool: add the pack's MCP server to the tool's config
+    local pack="$1" tool="$2" line format file name old out status rest resolved rec
+    line="$(po_tool_mcp "$tool")"
+    [ -n "$line" ] || return 0
+    format="${line%%"$PO_TAB"*}"
+    file="$(po_expand "${line#*"$PO_TAB"}")"
+    name="$(po_mcp_get "$pack" name)"
+    old="$(awk -F'\t' '$2=="m" {print $5; exit}' "$PO_TMP/old.tsv")"
+    if [ "$PO_DRY" = 1 ]; then
+        po_say "  would register the MCP server $name in $file"
+        po_change
+        return 0
+    fi
+    po_ensure_dir "$(dirname "$file")"
+    out="$(po_helper mcp-add "$format" "$file" "$name" "$(po_mcp_get "$pack" spec_b64)" "$PO_DATA/packages/$pack" "${old:--}")" \
+        || po_die "MCP registration failed for $file"
+    status="${out%%"$PO_TAB"*}"
+    rest="${out#*"$PO_TAB"}"
+    resolved="${rest%%"$PO_TAB"*}"
+    rec="${rest#*"$PO_TAB"}"
+    case "$status" in
+        added) po_change; po_say "  MCP server $name -> $resolved"; po_rec m "$resolved" "$name" "$rec" ;;
+        present) po_rec m "$resolved" "$name" "$rec" ;;
+        foreign) po_say "  $resolved already has the same $name entry; the installer leaves it unmanaged" ;;
+        *) po_warn "MCP server $name not registered in $resolved" ;;
+    esac
+}
+
+po_mcp_unregister() {  # $1 config file, $2 server name, $3 helper record
+    local verdict
+    if ! command -v node >/dev/null 2>&1; then
+        po_warn "Node.js not found: remove the $2 entry from $1 by hand"
+        return 0
+    fi
+    verdict="$(po_helper mcp-remove "$3")" || verdict=error
+    case "$verdict" in
+        removed) po_change ;;
+        absent) ;;
+        changed) po_warn "kept the $2 entry in $1: changed since install" ;;
+        *) po_warn "could not remove the $2 entry from $1" ;;
+    esac
+}
+
+po_sets_ordered() {  # selected sets, the sets that others require first
+    local w
+    for w in $PO_SEL_SETS; do [ -z "$(po_set_get "${w%%:*}" "${w#*:}" requires)" ] && printf '%s\n' "$w"; done
+    for w in $PO_SEL_SETS; do [ -n "$(po_set_get "${w%%:*}" "${w#*:}" requires)" ] && printf '%s\n' "$w"; done
+    return 0
+}
+
+po_check_requires() {  # refuse a set whose required set is neither selected nor installed
+    local w p s r
+    for w in $PO_SEL_SETS; do
+        p="${w%%:*}"
+        s="${w#*:}"
+        for r in $(po_set_get "$p" "$s" requires); do
+            po_has_word "$PO_SEL_SETS" "$p:$r" && continue
+            po_owner_prefix "pack:$p:$r:" && continue
+            po_die "set $p:$s needs set $p:$r; install both, for example --packs $p:$r,$s"
+        done
+    done
 }
 
 # ------------------------------------------------------------------ release packs (procable)
@@ -1318,9 +1659,17 @@ po_packs_list() {
             n=$((n + 1))
             mark=" "
             if po_owner_prefix "pack:$pack:$set:"; then mark=x; fi
-            printf '  [%s] %s:%s (%s skills) %s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" "$(po_set_get "$pack" "$set" description)"
+            printf '  [%s] %s:%s (%s skills) %s%s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" \
+                "$(po_set_get "$pack" "$set" description)" "$(po_needs_note "$pack" "$set")"
         done
     done
+}
+
+po_needs_note() {  # " Needs set X." for a set that requires another
+    local r
+    r="$(po_set_get "$1" "$2" requires)"
+    [ -n "$r" ] && printf ' Needs set %s.' "$r"
+    return 0
 }
 
 po_status() {
@@ -1330,7 +1679,7 @@ po_status() {
     if [ ! -f "$PO_MANIFEST" ]; then po_say "nothing installed (no manifest at $PO_MANIFEST)"; return 0; fi
     po_say "manifest: $PO_MANIFEST"
     for owner in $(po_owners); do
-        printf '  %-48s %s files\n' "$owner" "$(po_man_owner "$owner" | awk -F'\t' '$2 ~ /^[fdxb]$/' | wc -l | tr -d ' ')"
+        printf '  %-48s %s files\n' "$owner" "$(po_man_owner "$owner" | awk -F'\t' '$2 ~ /^[fdxbmn]$/' | wc -l | tr -d ' ')"
     done
     po_say "created folders: $(po_man_owner @dirs | wc -l | tr -d ' ')"
 }
@@ -1437,13 +1786,14 @@ po_tui() {
                     po_say "  p$i. $(po_pack_get "$pack" label) ($pack): $(po_pack_get "$pack" description)"
                     for set in $(po_pack_get "$pack" sets); do
                         n=$((n + 1))
-                        printf '    %3d. [%s] %s, %s skills: %s\n' "$n" "$(po_has_word "$PO_SEL_SETS" "$pack:$set" && echo x || echo ' ')" \
-                            "$(po_set_get "$pack" "$set" label)" "$(po_set_get "$pack" "$set" count)" "$(po_set_get "$pack" "$set" description)"
+                        printf '    %3d. [%s] %s, %s skills: %s%s\n' "$n" "$(po_has_word "$PO_SEL_SETS" "$pack:$set" && echo x || echo ' ')" \
+                            "$(po_set_get "$pack" "$set" label)" "$(po_set_get "$pack" "$set" count)" "$(po_set_get "$pack" "$set" description)" \
+                            "$(po_needs_note "$pack" "$set")"
                     done
                 done
                 po_say "Next step installs $(po_sel_count) skills from the checked sets into:"
                 po_skill_dirs_for "$(po_pack_tools)" | sed 's/^/    /'
-                po_say "Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit"
+                po_say "A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit"
                 po_read
                 case "$PO_ANSWER" in
                     "") screen=5 ;; b) screen=3 ;; q) po_say "cancelled"; exit 1 ;;
@@ -1455,7 +1805,7 @@ po_tui() {
                             if po_has_word "$PO_SEL_SETS" "$pack:$(po_pack_get "$pack" sets | awk '{print $1}')"; then
                                 for set in $(po_pack_get "$pack" sets); do po_sel_del "$pack:$set"; done
                             else
-                                for set in $(po_pack_get "$pack" sets); do po_sel_add "$pack:$set"; done
+                                for set in $(po_base_sets "$pack"); do po_sel_add "$pack:$set"; done
                             fi
                         done
                         ;;
@@ -1466,7 +1816,7 @@ po_tui() {
                             for set in $(po_pack_get "$pack" sets); do
                                 n=$((n + 1))
                                 [ "$n" = "$PO_ANSWER" ] || continue
-                                if po_has_word "$PO_SEL_SETS" "$pack:$set"; then po_sel_del "$pack:$set"; else po_sel_add "$pack:$set"; fi
+                                po_sel_toggle "$pack:$set"
                             done
                         done
                         ;;
@@ -1537,8 +1887,10 @@ Options:
   --no-OPTION             turn off a harness option: $(printf '%s' "$PO_HARNESS_OPTIONS" | tr ' ' ',')
   --packs SPEC            pack[:set][,set...] and more packs, for example
                           --packs claude-red-offense:web,recon,logo-design
+                          A bare pack name skips sets that need another set
+                          (rea-frida); name those: --packs rea:rea,rea-frida
   --sets SPEC             same as --packs
-  --bundle PACK=DIR       install a release pack from a local folder (offline machines)
+  --bundle PACK=DIR       read a release pack or a pinned binding from a local folder
   --procable-bundle DIR   same as --bundle procable=DIR
   --no-release-hooks      install release packs without their hooks
   --dry-run               print the plan and change nothing
@@ -1638,6 +1990,7 @@ po_main() {
 
 po_install_all() {
     local t w tools
+    po_check_requires
     [ "$PO_DRY" = 1 ] && po_say "dry run: nothing is written"
     if [ "$PO_DO_CORE" = 1 ]; then
         for t in $PO_SEL_TOOLS; do po_install_core "$t"; done
@@ -1647,7 +2000,7 @@ po_install_all() {
     fi
     if [ -n "$PO_SEL_SETS" ]; then
         tools="$(po_pack_tools)"
-        for w in $PO_SEL_SETS; do po_install_set "${w%%:*}" "${w#*:}" "$tools"; done
+        for w in $(po_sets_ordered); do po_install_set "${w%%:*}" "${w#*:}" "$tools"; done
     fi
     po_report
     if [ "$PO_DO_HARNESS" = 1 ] && po_has_word "$PO_SEL_TOOLS" claude && [ -z "$PO_PROFILE_CLAUDE" ] && po_python_harness >/dev/null; then
