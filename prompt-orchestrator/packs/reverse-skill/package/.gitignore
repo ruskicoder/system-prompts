@@ -1,0 +1,77 @@
+# Node modules
+node_modules/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temp files
+*.tmp
+*.bak
+*.log
+implementation-notes.md
+
+# User-specific config
+.claude/
+# Local Issue/PR review exports; do not commit GitHub discussion snapshots.
+issues.json
+issues-index.txt
+
+# Test cases (local)
+test-cases/
+test-cases.zip
+
+# Tool index (differs per machine)
+skills/tool-index.md
+skills/tool-index.json
+
+# Local readiness report (contains user paths and client configuration, not committed)
+LOCAL-READINESS.md
+
+# Build output
+*.exe
+*.dll
+*.so
+*.dylib
+work/
+
+# Signing keys (generated on first run)
+skills/apk-reverse/debug.keystore
+*.keystore
+
+# Build artifacts
+burp-mcp-full/build/classes/
+burp-mcp-full/build/libs/
+burp-mcp-full/lib/
+burp-mcp-full/.gradle/
+*.class
+*.jar
+!burp-mcp-full/build/libs/burp-mcp-full.jar
+!burp-mcp-full/gradle/wrapper/gradle-wrapper.jar
+
+# Deprecated
+BOOTSTRAP.md
+
+# Reports (prevents leaks of unredacted data)
+reports/
+
+# Run output and experiment debris
+master-route-*/
+**/master-route-*/
+mcps/
+# local experiment dirs (never ship)
+*-scope-*/

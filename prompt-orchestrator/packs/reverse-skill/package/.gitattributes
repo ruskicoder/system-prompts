@@ -1,0 +1,18 @@
+# Line endings: sh scripts must use LF (executable on Linux/macOS/Kali)
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.py text eol=lf
+*.js text eol=lf
+*.java text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+
+# Binary
+*.jar binary
+*.zip binary
+*.png binary
+*.keystore binary
