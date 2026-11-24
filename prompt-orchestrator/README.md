@@ -278,7 +278,7 @@ managed, JavaScript, firmware and browser targets. The opt-in pack `rea` has two
 
 The server runs `node <data_home>/packages/rea/node_modules/rea-agents/scripts/rea.mjs mcp` with
 `NO_UPDATE_NOTIFIER=1`. The installer sets no auto-approval, so each client asks before each tool call
-that its approval rules cover. The pack needs Node.js (`^22.23.4`, `^24.22.1` or `>=26.12.1`) and npm.
+that its approval rules cover. The pack needs npm and Node.js `^22.23.4`, `^24.22.1` or `>=26.12.1`.
 
 ```bash
 bash install/install.sh packs install rea --tools claude,codex,cursor,gemini,opencode

@@ -851,6 +851,9 @@ po_npm_addon() {  # $1 pack, $2 set, $3 prefix: an npm package and its pinned na
     url="$(po_npm_get "$pack" "$set" url)"
     member="$(po_npm_get "$pack" "$set" member)"
     binding="$prefix/node_modules/$name/$member"
+    if [ "$PO_DRY" != 1 ] && ! po_npm_check "$prefix" "$pack" "$(po_npm_get "$pack" "" base)" >/dev/null; then
+        po_die "set $pack:$set needs a verified install of set $pack:$(po_npm_get "$pack" "" base) in $prefix; run: install.sh packs install $pack:$(po_npm_get "$pack" "" base)"
+    fi
     po_owner_begin "pack:$pack:$set:all"
     have="$(awk -F'\t' -v p="$binding" '$2=="x" && $3==p {print $4}' "$PO_TMP/old.tsv")"
     if po_npm_check "$prefix" "$pack" "$set" >/dev/null && { [ -z "$url" ] || { [ -f "$binding" ] && [ "$(po_hash "$binding")" = "$have" ]; }; }; then

@@ -2614,6 +2614,10 @@ function Install-PoNpmAddon($Pack, $Pkg, [string]$Prefix) {  # an npm package an
     $name = $Pkg['name']
     $spec = "$name@$($Pkg['version'])"
     $b = $Pkg['binding']
+    $basePkg = @($Pack['npm']['packages'])[0]
+    if (-not $script:Dry -and -not (Test-PoNpmPinned $Prefix $basePkg).Ok) {
+        Stop-Po "set ${id}:$($Pkg['set']) needs a verified install of set ${id}:$($basePkg['set']) in $Prefix; run: install.ps1 packs install ${id}:$($basePkg['set'])"
+    }
     Start-PoOwner "pack:${id}:$($Pkg['set']):all"
     $binding = $null
     $have = ''

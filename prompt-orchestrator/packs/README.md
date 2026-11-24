@@ -108,10 +108,10 @@ client runs `npx` and no install follows `@latest`.
 - `--omit=optional` keeps optional dependencies out. A package that an optional dependency would bring
   arrives only through its own add-on set, and the installer stops if it finds that package without
   its set.
-- `binding` replaces an install script that downloads a native file without a checksum. It has `url`
-  (an `https://github.com/` `.tar.gz` URL with `{version}` and `{platform}`), `member` (the file inside
-  the archive) and `sha256` (a map from `<process.platform>-<process.arch>`, for example `linux-x64`, to
-  the 64-hex digest). The installer downloads the archive, or reads it from `--bundle <pack-id>=DIR`,
+- `binding` replaces an install script that downloads a native file without a checksum. Its `url` is an
+  `https://github.com/` `.tar.gz` URL with `{version}` and `{platform}`. Its `member` names the file
+  inside the archive. Its `sha256` maps each `<process.platform>-<process.arch>` key, for example
+  `linux-x64`, to a 64-hex digest. The installer downloads the archive, or reads it from `--bundle <pack-id>=DIR`,
   checks the digest, installs the npm package with `--ignore-scripts` and extracts `member` into the
   package folder. A platform without a pinned digest and a digest mismatch both stop the install before
   npm runs.
@@ -128,8 +128,8 @@ client runs `npx` and no install follows `@latest`.
 | `env` | map of environment variables for the server |
 
 The validator rejects other keys, so a pack cannot set an auto-approval or trust field. It also rejects
-`npx` and `@latest`. `install/spec.json` names the config file and format of each client that the engine
-can edit safely (`"mcp"` on a tool). Each entry looks like this:
+`npx` and `@latest`. The `"mcp"` key of a tool in `install/spec.json` names the config file and format
+of each client that the engine can edit safely. Each entry looks like this:
 
 | Tool | File | Entry |
 |---|---|---|
