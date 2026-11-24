@@ -8,7 +8,7 @@
   "locations": {
     "HOME": {
       "posix": [{"env": "HOME"}],
-      "windows": [{"env": "USERPROFILE"}]
+      "windows": [{"env": "USERPROFILE"}, {"env": "HOME"}]
     },
     "DATA_HOME": {
       "posix": [{"env": "XDG_DATA_HOME", "join": "prompt-orchestrator"}, {"path": "{HOME}/.local/share/prompt-orchestrator"}],
