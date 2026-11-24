@@ -57,7 +57,7 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 
-# Modified by prompt-orchestrator on 2026-11-25: the shim lives in a private per-user cache
+# Modified by prompt-orchestrator on 2026-11-24: the shim lives in a private per-user cache
 # folder instead of the shared temp folder, and a shim another user owns is never preloaded.
 _SHIM_DIR = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache") / "office-skills"
 _SHIM_SO = _SHIM_DIR / "lo_socket_shim.so"

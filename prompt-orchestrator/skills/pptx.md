@@ -4,10 +4,10 @@ description: "Use this skill any time a .pptx or .potx file is involved in any w
 license: Apache-2.0 (LICENSE.txt has complete terms)
 origin: third-party
 vetting: passed
-vetted: '2026-11-25'
+vetted: '2026-11-24'
 upstream: https://github.com/anthropics/skills/blob/e4bb5d960d87126ff3b3a8af1a104b7db67560ba/skills/pptx/SKILL.md
 upstream-commit: e4bb5d960d87126ff3b3a8af1a104b7db67560ba
-modified: '2026-11-25 prompt-orchestrator: em dashes removed from prose, provenance added; soffice.py shim moved to a private per-user folder'
+modified: '2026-11-24 prompt-orchestrator: em dashes removed from prose, provenance added; soffice.py shim moved to a private per-user folder'
 ---
 
 # PPTX creation, editing, and analysis
