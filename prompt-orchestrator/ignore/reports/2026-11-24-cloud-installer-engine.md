@@ -11,6 +11,12 @@ The installation engine of prompt-orchestrator is one generator with one spec. `
 - Generator and validator. `tools/generate_integrations.py` still writes only core outputs; the core registry dropped from 153 to 73 entries. `tools/validate_packs.py` checks pack format v1. CI now runs the pack validator, `generate_installers.py --check`, shellcheck and `tests/installers`.
 - Docs. README.md, INTEGRATIONS.md (through `tools/generate_integrations.py`), `docs/30-units/installers/README.md` and `tests.md`, the harness unit page, `skills/no-ai-trailer.md` and one line of `harness/HARNESS.md` describe the new installers and packs, with one command per line.
 
+### Follow-up after the leader's answers
+
+- The xlsx, pptx and pdf question stays open with the leader. This branch adds no document skill.
+- `packs/README.md` documents pack format v1 with `release` as an optional third kind. The validator accepts kind `release` only with the `release` object, and a new test covers a missing lock key and a `release` kind without the object. The README and the installers unit page link to `packs/README.md`.
+- `skills/ci-enforcement/check.py` adds `packs/*/skills/*` and `*/packs/*/skills/*` to `DEFAULT_EXCLUDES`, so the prose gate skips vendored pack skills. The root-level pattern follows the existing pairs in that list. `skills/ci-enforcement.md` names the exemption. `test_pack_skills_are_exempt_pack_docs_are_not` checks that an em dash in a pack skill passes and the same em dash in `packs/<pack-id>/README.md` still gates.
+
 ### Old scripts and their replacements
 
 | Old script | Replacement |
@@ -39,17 +45,18 @@ The installation engine of prompt-orchestrator is one generator with one spec. `
 - `3c74b45` refactor(install): replace the per-tool installers with the generated ones; update docs and CI
 - `299507e` test(harness): check harness flags through the generated installer
 - `a1be3ab` fix(install): keep external command output out of the PowerShell result; README wording
+- `85bc98d` docs(report): installer engine report
+- `e78c091` feat(packs): document kind release; prose gate skips vendored pack skills
 
 ## Evidence
 
 CI quality steps and unit tests, run from `prompt-orchestrator/` with Python 3.13 and PyYAML 6.0.3:
 
 ```
-$ python3 -B tools/generate_integrations.py > /dev/null; git status --porcelain -- .
+$ python3 -B tools/generate_integrations.py > /dev/null; git status --porcelain -- . 
 (empty: generated files current)
 $ python3 -B skills/validate_skills.py | tail -2
 Overall Results: 389 passed, 0 failed out of 389 total.
-==================================================
 $ python3 -B tools/validate_packs.py
 pack claude-red-offense: 23 sets, 79 skills, kind skills
 pack logo-design: 1 sets, 1 skills, kind skills
@@ -60,26 +67,26 @@ installers are current
 $ shellcheck -s bash install/install.sh
 exit 0
 $ unit test loop (CI list plus tests/installers)
-harness/tests: Ran 30 tests in 1.675s  OK 
-install: Ran 7 tests in 2.027s  OK 
-tests/installers: Ran 31 tests in 86.953s  OK (skipped=1) 
-skills/academic-writing/scripts: Ran 11 tests in 0.002s  OK 
-skills/architecture-diagrams/scripts: Ran 17 tests in 0.962s  OK 
-skills/ci-enforcement/tests: Ran 34 tests in 1.554s  OK (skipped=1) 
-skills/concision-and-logic/scripts: Ran 9 tests in 0.002s  OK 
-skills/docs-scaffold/scripts: Ran 15 tests in 1.129s  OK 
-skills/human/scripts: Ran 5 tests in 0.226s  OK 
-skills/no-ai-trailer/scripts: Ran 12 tests in 0.394s  OK 
-skills/skill-creator/scripts: Ran 10 tests in 0.011s  OK
+harness/tests: Ran 30 tests  OK 
+install: Ran 7 tests  OK 
+tests/installers: Ran 32 tests  OK (skipped=1) 
+skills/academic-writing/scripts: Ran 11 tests  OK 
+skills/architecture-diagrams/scripts: Ran 17 tests  OK 
+skills/ci-enforcement/tests: Ran 35 tests  OK (skipped=1) 
+skills/concision-and-logic/scripts: Ran 9 tests  OK 
+skills/docs-scaffold/scripts: Ran 15 tests  OK 
+skills/human/scripts: Ran 5 tests  OK 
+skills/no-ai-trailer/scripts: Ran 12 tests  OK 
+skills/skill-creator/scripts: Ran 10 tests  OK
 ```
 
-Gate steps of the workflow, run with base `origin/master` (2c4594d) and head of the branch:
+Gate steps of the workflow, run with base `origin/master` (2c4594d) and head `e78c091`:
 
 ```
-$ python3 -B skills/ci-enforcement/check.py rules
+$ check.py rules
 registry: 21 rules, every gate rule has a checker
 $ check.py prose --repo . --base $B --head $H
-summary: 0 gate finding(s), 551 advisory finding(s) (590 after this report was added)
+summary: 0 gate finding(s), 207 advisory finding(s)
 $ check.py attribution --repo . --base $B --head $H
 summary: 0 gate finding(s), 0 advisory finding(s)
 $ check.py secrets --repo . --base $B --head $H
@@ -148,16 +155,12 @@ PowerShell: pwsh was absent. The session's permission check refused the download
 
 1. `install.ps1` and `install.cmd` never ran. pwsh was absent, and the permission check refused its download. I reviewed the PowerShell runtime by hand and fixed two defects (external command output leaking into the exit value, the owner list shape). Run `python3 -B -m unittest discover -s tests/installers -t tests/installers -v` on a machine with pwsh, or the same flow on Windows, before relying on it.
 2. The real procable engine did not run. The permission check refused the execution of a downloaded binary. The release digest and checksums match the lock, and the stub-engine tests cover the install path.
-3. Pack format v1 knows kinds `skills` and `package`. procable is a release download, so `packs/procable/pack.json` uses kind `release` with a `release` object (lock, tag, bundle, engine, providers, Codex hooks, skill roots, hook files) and ships no `skills/` folder. The validator accepts this third kind only with the `release` object. The two parallel packs need no change.
+3. Kind `release` is documented in `packs/README.md` and accepted by the validator. The two parallel packs use `skills` and `package` and need no change.
 4. Behaviour changes. procable is now opt-in, as the pack move requires. The native harness fallback without Python (pre-rendered agents from `harness/dist`) is gone, because the harness now always runs `install_harness.py` with Python 3.11.
 5. `install_harness.py uninstall` leaves its own state (`~/.local/state/prompt-orchestrator`, backups, `~/.config/prompt-orchestrator/harness.toml`) and empty agent folders. That behaviour is unchanged. The clean-HOME acceptance flow uses `--no-harness`.
 6. For Antigravity, the pack skills folder is `~/.gemini/config/skills`, and for Cursor it is `~/.cursor/skills`. Both come from the procable skill roots and are unverified against those tools.
 7. Without python3 and jq, the bash installer creates `~/.codex/hooks.json` only when the file is absent; for an existing file the installer prints a warning instead of merging the procable hooks.
 8. ADR `docs/60-decisions/0004-procable-fork.md` still names `install/install_procable.py`. The ADR is hash-locked in `docs/90-meta/locks.json`, so I left the ADR unchanged.
-9. The prose gate reports 0 gate findings and 590 advisory findings with this report included. Most advisories sit in the moved pack skills and in older README text.
+9. The prose gate reports 0 gate findings and 207 advisory findings. Since the follow-up, the gate skips vendored pack skills, so the remaining advisories sit in older README text and the docs.
 10. `install/systemd/prompt-orchestrator.service` is a sample unit and no installer uses the file; the file stays in place.
 11. `ensure_attribution_off.py` edits `~/.claude/settings.json`. When the harness or the user also changed that file, uninstall keeps the file and strips only the `no-ai-trailer` hook entries.
-
-QUESTION FOR THE LEADER: The repository has no xlsx, pptx or pdf skill; should the mandatory core gain them? Recommended answer: yes, as in-house core skills ported from Anthropic's document skills after `workflows/third-party-vetting.md`, in a separate branch, so `docx` gets its siblings without changing this installer.
-
-QUESTION FOR THE LEADER: Should pack format v1 add kind `release` (used by `packs/procable`) for the two parallel sessions too? Recommended answer: yes, document kind `release` as an optional third kind in the shared format; the parallel packs stay on `skills` and `package` and need no change.
