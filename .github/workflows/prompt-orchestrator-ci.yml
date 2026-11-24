@@ -65,9 +65,7 @@ jobs:
       - name: PowerShell scripts in packs parse
         shell: pwsh
         run: |
-          # The upstream cyber-skills copy of audit_smb_signing.ps1 has a parse error (switch with no subject).
-          # The step reports that file as a warning. Remove the entry once the file parses.
-          $known = @('packs/cyber-skills/skills/detecting-ntlm-relay-with-event-correlation/scripts/audit_smb_signing.ps1')
+          $known = @()
           $root = (Get-Location).Path
           $files = @(Get-ChildItem -Path packs -Recurse -Filter *.ps1 -File | Sort-Object FullName)
           $failed = 0
