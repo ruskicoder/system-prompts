@@ -97,8 +97,8 @@ the installers skip the harness and say so.
 
 ### Menu (TUI)
 
-Run the installer without arguments in a terminal. The menu has five screens: tools, core, harness,
-packs and review. Each screen names what the next step installs and where. A number toggles an item.
+Run the installer without arguments in a terminal. The menu has five screens (tools, core, harness,
+packs and review). Each screen names what the next step installs and where. A number toggles an item.
 Enter moves to the next screen.
 
 ```bash

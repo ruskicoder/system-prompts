@@ -1134,7 +1134,7 @@ function Invoke-PoAttribution([string]$Script, [string]$HooksPath, $Tracks) {
     if ($script:Dry) { Write-PoSay "  would run $($py[0]) $Script"; return }
     Start-PoTrack $Tracks
     $prefix = $py[1]
-    & $py[0] @prefix $Script --quiet
+    & $py[0] @prefix $Script --quiet | Out-Host
     if ($LASTEXITCODE -ne 0) { Write-PoWarn 'ensure_attribution_off.py exited with an error' }
     Complete-PoTrack
     Add-PoRecord 'u' $HooksPath '-' 'git-hooks'
@@ -1258,7 +1258,7 @@ function Remove-PoRecords($Records, [string]$Removing) {
         if ($r.Extra -eq 'git-hooks') {
             if (Get-Command git -ErrorAction SilentlyContinue) {
                 $cur = (& git config --global --get core.hooksPath 2>$null)
-                if ($cur -and ($cur.Replace('/', $script:Sep) -eq $r.Path)) { & git config --global --unset core.hooksPath; Add-PoChange }
+                if ($cur -and ($cur.Replace('/', $script:Sep) -eq $r.Path)) { & git config --global --unset core.hooksPath | Out-Null; Add-PoChange }
             }
         } elseif ($r.Extra.StartsWith('json-strip:')) {
             Remove-PoJsonHooks $r.Path $r.Extra.Substring(11)
@@ -1306,7 +1306,7 @@ function Clear-PoDirs {  # remove folders the installer created once they are em
 function Get-PoOwners {
     $seen = New-Object System.Collections.Generic.List[string]
     foreach ($r in (Read-PoManifest)) { if ($r.Owner -ne '@dirs' -and -not $seen.Contains($r.Owner)) { $seen.Add($r.Owner) } }
-    return ,$seen
+    return $seen.ToArray()
 }
 
 function Remove-PoOwner([string]$Owner) {
@@ -1379,7 +1379,7 @@ function Install-PoHarness([string]$Tool) {
     Write-PoSay "  `$ $($py[0]) $($argv -join ' ')"
     if ($script:Dry) { return }
     $prefix = $py[1]
-    & $py[0] @prefix @argv
+    & $py[0] @prefix @argv | Out-Host
     if ($LASTEXITCODE -ne 0) { $script:Failed += "harness:$Tool"; return }
     Start-PoOwner "harness:$Tool"
     Add-PoRecord 'h' $Tool
@@ -1391,7 +1391,7 @@ function Uninstall-PoHarness([string]$Tool) {
     $py = Find-PoPython $h['python'][0] $h['python'][1]
     if (-not $py) { Write-PoWarn "harness for $Tool not removed: needs Python $($h['python'][0]).$($h['python'][1])"; return }
     $prefix = $py[1]
-    & $py[0] @prefix (Join-Path $PO_Root $h['script']) uninstall --tool $Tool
+    & $py[0] @prefix (Join-Path $PO_Root $h['script']) uninstall --tool $Tool | Out-Host
     if ($LASTEXITCODE -ne 0) { Write-PoWarn "harness uninstall failed for $Tool" }
 }
 
@@ -1546,7 +1546,7 @@ function Install-PoRelease($Pack, $Set, $Tools) {
     Write-PoSay "  `$ $engineFile $($argv -join ' ')"
     $old = [Environment]::GetEnvironmentVariable($rel['bundle_env'])
     [Environment]::SetEnvironmentVariable($rel['bundle_env'], (Join-Path $src $rel['bundle']))
-    try { & $engineFile @argv; $code = $LASTEXITCODE } finally { [Environment]::SetEnvironmentVariable($rel['bundle_env'], $old) }
+    try { & $engineFile @argv | Out-Host; $code = $LASTEXITCODE } finally { [Environment]::SetEnvironmentVariable($rel['bundle_env'], $old) }
     if ($code -ne 0) { Stop-Po "the $($Pack['id']) installer exited with $code" }
     $bin = $skill
     if ($os -eq 'windows') { $bin += '.exe' }
