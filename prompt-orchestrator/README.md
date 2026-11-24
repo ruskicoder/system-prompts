@@ -198,7 +198,8 @@ does not exist.
 ### Packs
 
 A pack is an opt-in skill set under `packs/<pack-id>/`. The default install skips packs. The user picks
-packs per set. `python3 tools/validate_packs.py` checks the pack format (pack format v1).
+packs per set. `packs/README.md` describes pack format v1, including the optional kind `release`.
+`python3 tools/validate_packs.py` checks the format.
 
 | Pack | Kind | Sets | Content |
 |---|---|---|---|

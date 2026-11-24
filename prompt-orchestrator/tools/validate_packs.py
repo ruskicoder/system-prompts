@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate opt-in packs in packs/<pack-id>/ against pack format v1.
+"""Validate opt-in packs in packs/<pack-id>/ against pack format v1 (packs/README.md).
 
     python3 tools/validate_packs.py                  every pack under packs/
     python3 tools/validate_packs.py --packs-dir DIR  packs in another folder (tests, fixtures)

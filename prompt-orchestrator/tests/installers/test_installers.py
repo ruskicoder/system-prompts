@@ -242,6 +242,20 @@ class ValidatorTests(unittest.TestCase):
         self.assertTrue(any("origin: third-party" in e for e in errors))
         self.assertTrue(any("upstream must be the blob URL" in e for e in errors))
 
+    def test_release_kind_is_accepted_and_checked(self):
+        packs, errors = validate_packs.load_packs(ROOT / "packs")
+        self.assertEqual([], errors)
+        self.assertEqual("release", next(p for p in packs if p["id"] == "procable")["kind"])
+
+        def edit(d):
+            shutil.copytree(ROOT / "packs" / "procable", d / "procable")
+            self.edit_json(d / "procable" / "pack.json", lambda p: p["release"].pop("lock"))
+        self.assertTrue(any("release misses ['lock']" in e for e in self.broken(edit)))
+
+        def edit_kind(d):
+            self.edit_json(d / "fixture-skills" / "pack.json", lambda p: p.update(kind="release"))
+        self.assertTrue(any("needs a release object" in e for e in self.broken(edit_kind)))
+
     def test_core_name_clash_fails(self):
         def edit(d):
             src = d / "fixture-skills" / "skills" / "fixture-three"
