@@ -466,11 +466,23 @@ class FixtureMcpBashTests(unittest.TestCase):
         self.assertEqual([], files_under(box.home))
 
     def test_mode_mcp_without_node_stops_before_writing(self):
-        path = os.pathsep.join(d for d in os.environ.get("PATH", "").split(os.pathsep)
-                               if d and not (Path(d) / "node").exists())
+        box = self.sandbox()
+        # Link every command on PATH except node into one folder: on merged-/usr systems node
+        # shares /usr/bin with coreutils, so dropping whole PATH folders would hide tr and friends.
+        shim = box.tmp / "path-without-node"
+        shim.mkdir()
+        for d in os.environ.get("PATH", "").split(os.pathsep):
+            if not d or not Path(d).is_dir():
+                continue
+            for entry in Path(d).iterdir():
+                target = shim / entry.name
+                if entry.name in ("node", "nodejs") or target.exists() or target.is_symlink():
+                    continue
+                if entry.is_file() and os.access(entry, os.X_OK):
+                    target.symlink_to(entry)
+        path = str(shim)
         if shutil.which("node", path=path):
             self.skipTest("node cannot be hidden from PATH here")
-        box = self.sandbox()
         box.env = lambda: {"PATH": path, "HOME": str(box.home), "TMPDIR": str(box.tmp), "LANG": "C"}
         proc = box.run("packs", "install", "fixture-skills", "--tools", "claude", ok=False)
         self.assertNotEqual(0, proc.returncode)
