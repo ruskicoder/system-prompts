@@ -206,6 +206,7 @@ packs per set. `packs/README.md` describes pack format v1, including the optiona
 | `claude-red-offense` | skills | 23 | 79 offensive security checklists from SnailSploit claude-red (MIT), one set per upstream category |
 | `logo-design` | skills | 1 | Logo and brand-mark design with references, SVG scripts and the logo library catalog (MIT) |
 | `procable` | release | 1 | The offline design skill, installed from a release pinned by digest (Apache-2.0) |
+| `rea` | skills | 2 | The rea reverse engineering MCP server and its skill (MIT), with Frida as the add-on set `rea-frida` |
 
 `bash install/install.sh packs list` prints each set with its skill count and description.
 
@@ -260,6 +261,34 @@ bash install/install.sh packs install procable
 bash install/install.sh packs install procable --procable-bundle /path/to/procable-release
 bash install/install.sh packs remove procable
 ```
+
+### rea: reverse engineering MCP server (pack)
+
+[rea](https://github.com/morluto/rea) is an MCP server and CLI for reverse engineering native,
+managed, JavaScript, firmware and browser targets. The opt-in pack `rea` has two sets:
+
+- `rea` installs `rea-agents@6.10.1` into `<data_home>/packages/rea/` with
+  `npm install --omit=optional --ignore-scripts`, checks its integrity against the pin, registers the
+  `rea` server for Claude Code, Codex, Cursor, Gemini CLI and OpenCode, and copies the skill
+  `reverse-engineer-anything`.
+- `rea-frida` adds `frida@17.23.2` and the Frida Node binding. The installer checks the binding archive
+  against the sha256 pinned per platform. Pinned platforms: `linux-x64`, `linux-arm64`, `darwin-arm64`, `darwin-x64`, `win32-x64`, `win32-arm64`.
+  The installer refuses other platforms. It also refuses `rea-frida` without `rea`, and the menu checks
+  both together.
+
+The server runs `node <data_home>/packages/rea/node_modules/rea-agents/scripts/rea.mjs mcp` with
+`NO_UPDATE_NOTIFIER=1`. The installer sets no auto-approval, so each client asks before each tool call
+that its approval rules cover. The pack needs npm and Node.js `^22.23.4`, `^24.22.1` or `>=26.12.1`.
+
+```bash
+bash install/install.sh packs install rea --tools claude,codex,cursor,gemini,opencode
+bash install/install.sh packs install rea:rea,rea-frida
+bash install/install.sh packs remove rea:rea-frida
+bash install/install.sh packs remove rea
+```
+
+Removal deletes only the `rea` entry from each client config and leaves the rest of the file
+byte-identical. `packs/README.md` describes the `npm` and `mcp` objects.
 
 ### No AI attribution
 

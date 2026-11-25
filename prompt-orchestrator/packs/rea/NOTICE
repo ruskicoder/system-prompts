@@ -1,0 +1,41 @@
+rea pack for prompt-orchestrator
+
+Upstream: https://github.com/morluto/rea, MIT License, copyright (c) 2026 morluto.
+LICENSE in this folder holds the upstream MIT text unchanged.
+
+Source of the vendored skill
+  The folder skills/reverse-engineer-anything/ comes from the npm tarball
+  rea-agents@6.10.1 (integrity sha512-3AWrfFEXppvC98FWhZR2Tzulnqs5xJQrSKmAub6+QME/I58Pr3h8pHqqwM30z2DvlnIx/8Hsu8woMngfi4SNyg==).
+  The tarball's SLSA provenance names morluto/rea commit
+  8bb01b514ac766c0c3ecc8f362bd38186eaec9c2. At that commit the skill lives in
+  .agents/skills/reverse-engineer-anything/. The upstream copy names
+  rea-agents@latest; the tarball copy names rea-agents@6.10.1. This pack keeps
+  the tarball copy.
+
+Changes made in this pack (MIT permits modification; this notice records them)
+  1. SKILL.md front matter: added origin, vetting, vetted, license, upstream and
+     upstream-commit. The name, the description and the metadata block are unchanged.
+  2. SKILL.md: added the section "Installed by prompt-orchestrator", which names
+     the private npm prefix, the MCP server command and the rea-frida set.
+  3. SKILL.md: rewrote one sentence about allowed_origins without em dashes.
+     The meaning is unchanged.
+  4. references/desktop-build.md: harness approval rules override the upstream
+     lines on autonomous decisions, the $4 spend default and licence acceptance
+     on the user's behalf. The edited lines now defer to the user:
+     - "Ask the upfront questions once, then work on your own" now keeps the
+       harness approval rules in force during the build.
+     - The headless defaults no longer measure tasks within $4. Measuring needs
+       a budget that the person names.
+     - The agent never accepts a licence itself. The person accepts it, or tells
+       the agent to accept that named licence, within the harness approval rules.
+     - "Decide everything else yourself" now covers routine build steps only.
+     - The Measure section runs only when the requester asked and named a budget.
+  The other reference files are byte-identical to the tarball.
+
+Frida (set rea-frida)
+  The set rea-frida installs frida@17.23.2 from npm and the Frida Node binding
+  from the Frida GitHub release, checked against pinned sha256 digests. Frida is
+  licensed under LGPL-2.0 WITH WxWindows-exception-3.1. LICENSE.frida holds the
+  wxWindows Library Licence 3.1 text and the GNU Library General Public License
+  version 2 text, copied from the rea-agents@6.10.1 tarball (licenses/).
+  This pack ships no Frida code.

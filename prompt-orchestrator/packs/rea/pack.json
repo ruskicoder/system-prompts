@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "id": "rea",
+  "label": "rea",
+  "description": "Reverse engineering MCP server rea-agents 6.10.1 in a private npm prefix, registered with each selected client, plus its bundled skill.",
+  "kind": "skills",
+  "license": "MIT",
+  "upstream": "https://github.com/morluto/rea",
+  "upstream_commit": "8bb01b514ac766c0c3ecc8f362bd38186eaec9c2",
+  "vetting": {"status": "passed", "vetted": "2026-11-24"},
+  "sets": [
+    {
+      "id": "rea",
+      "label": "rea MCP server",
+      "description": "The rea MCP server for Claude Code, Codex, Cursor, Gemini CLI and OpenCode, and the skill reverse-engineer-anything.",
+      "skills": ["reverse-engineer-anything"]
+    },
+    {
+      "id": "rea-frida",
+      "label": "rea with Frida",
+      "description": "Frida 17.23.2 and its Node binding in the rea prefix, checked against pinned digests, for runtime instrumentation.",
+      "skills": [],
+      "requires": ["rea"]
+    }
+  ],
+  "npm": {
+    "node": "^22.23.4 || ^24.22.1 || >=26.12.1",
+    "packages": [
+      {
+        "set": "rea",
+        "name": "rea-agents",
+        "version": "6.10.1",
+        "integrity": "sha512-3AWrfFEXppvC98FWhZR2Tzulnqs5xJQrSKmAub6+QME/I58Pr3h8pHqqwM30z2DvlnIx/8Hsu8woMngfi4SNyg=="
+      },
+      {
+        "set": "rea-frida",
+        "name": "frida",
+        "version": "17.23.2",
+        "integrity": "sha512-gRCmmTUFdEILyHRN1b66erRoXafwsfWTqXyoBBqkSCFX0Ue7Jhvs/KhA3JO0XrgITNlPd91QAGsFvWzh0mhVgg==",
+        "binding": {
+          "url": "https://github.com/frida/frida/releases/download/{version}/frida-v{version}-napi-v8-{platform}.tar.gz",
+          "member": "build/frida_binding.node",
+          "sha256": {
+            "darwin-arm64": "850fba220a2d9b6aae282ac6dde37f48847e73597b7a06d648737ff9addc3340",
+            "darwin-x64": "f8953b09720cbdccd271c1d6caa4fff085474a9f24def3fe46160526aacdb40b",
+            "linux-arm64": "11083f016a429e87506cd68166bd1445da8febd506a24edf3f6c4a9a7a3ea9fe",
+            "linux-x64": "9fa8f668ce91eb03713e8564de4f8fbde232233ee91d729c16773fde11dbae95",
+            "win32-arm64": "378351a592b2a5212c1c5e0412574fa361fe6cac37da5c093c9e455373114b14",
+            "win32-x64": "e9dbc08d386130610430137f0bb31d90af7b08c0f5710942d4313368ada930ea"
+          }
+        }
+      }
+    ]
+  },
+  "mcp": {
+    "set": "rea",
+    "name": "rea",
+    "command": "node",
+    "args": ["{PACKAGE}/node_modules/rea-agents/scripts/rea.mjs", "mcp"],
+    "env": {"NO_UPDATE_NOTIFIER": "1"}
+  }
+}

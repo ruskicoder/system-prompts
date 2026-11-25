@@ -8,7 +8,8 @@ Checks per pack: pack.json keys and types, the id against the folder name, sets 
 folder under skills/ in exactly one set, each listed skill present), every SKILL.md front matter
 (name equals the folder, name pattern, description of at most 1024 characters, the third-party
 fields when the pack has an upstream), the payload folder for kind "package", the release lock
-for kind "release", the LICENSE file, and skill names that clash with the core or another pack.
+for kind "release", the npm pins and the MCP server of a pack that has them, set requirements,
+the LICENSE file, and skill names that clash with the core or another pack.
 
 Standard library only. Front matter is read with PyYAML when it is installed, otherwise with a
 small reader for the flat key: value form that pack skills use.
@@ -31,7 +32,15 @@ KINDS = ("skills", "package", "release")
 REQUIRED = ("schema", "id", "label", "description", "kind", "license", "upstream", "upstream_commit",
             "vetting", "sets")
 OPTIONAL = {"package": "package", "release": "release"}  # key -> kind that requires it
+ANY_KIND = ("npm", "mcp")  # optional keys for kinds skills and package
 SET_KEYS = {"id", "label", "description", "skills"}
+SET_OPTIONAL = {"requires"}
+NPM_NAME_RE = re.compile(r"^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$")
+EXACT_RE = re.compile(r"^\d+\.\d+\.\d+$")
+INTEGRITY_RE = re.compile(r"^sha512-[A-Za-z0-9+/]{86}==$")
+PLATFORM_RE = re.compile(r"^(?:linux|darwin|win32)-(?:x64|arm64|ia32|arm)$")
+RANGE_RE = re.compile(r"^(?:\^|>=)?\d+\.\d+\.\d+(?: \|\| (?:\^|>=)?\d+\.\d+\.\d+)*$")
+MCP_KEYS = {"set", "name", "command", "args", "env"}
 RELEASE_KEYS = {"lock", "tag", "bundle", "engine", "providers", "codex_hooks", "skill_roots", "hook_files"}
 FRONT_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.DOTALL)
 
@@ -146,6 +155,83 @@ def check_release(pack_dir: Path, pack: dict, errors: list[str]) -> None:
         errors.append("kind release holds one set with one skill")
 
 
+def check_npm(pack: dict, set_ids: dict, errors: list[str]) -> None:
+    npm = pack.get("npm")
+    if not isinstance(npm, dict) or set(npm) != {"node", "packages"}:
+        errors.append('npm must be {"node": RANGE, "packages": [...]}')
+        return
+    if not isinstance(npm["node"], str) or not RANGE_RE.match(npm["node"]):
+        errors.append("npm.node must be versions joined by ' || ', each X.Y.Z, ^X.Y.Z or >=X.Y.Z")
+    packages = npm["packages"]
+    if not isinstance(packages, list) or not packages:
+        errors.append("npm.packages must be a non-empty list")
+        return
+    base = packages[0].get("set") if isinstance(packages[0], dict) else None
+    for i, entry in enumerate(packages):
+        where = f"npm.packages[{i}]"
+        if not isinstance(entry, dict) or not {"set", "name", "version", "integrity"} <= set(entry) \
+                or not set(entry) <= {"set", "name", "version", "integrity", "binding"}:
+            errors.append(f"{where} needs set, name, version and integrity, and may add binding")
+            continue
+        if [p.get("set") for p in packages if isinstance(p, dict)].count(entry["set"]) > 1:
+            errors.append(f"{where}: set {entry['set']} has more than one npm package")
+        if entry["set"] not in set_ids:
+            errors.append(f"{where}: set {entry['set']!r} is not a set of this pack")
+        elif i == 0 and set_ids[entry["set"]].get("requires"):
+            errors.append(f"{where}: the first package installs the prefix, so its set requires nothing")
+        elif i > 0 and base not in (set_ids[entry["set"]].get("requires") or []):
+            errors.append(f"{where}: set {entry['set']} must require set {base}, which installs the prefix")
+        if not isinstance(entry["name"], str) or not NPM_NAME_RE.match(entry["name"]):
+            errors.append(f"{where}: name {entry['name']!r} is not an npm package name")
+        if not isinstance(entry["version"], str) or not EXACT_RE.match(entry["version"]):
+            errors.append(f"{where}: version must be an exact X.Y.Z pin, got {entry['version']!r}")
+        if not isinstance(entry["integrity"], str) or not INTEGRITY_RE.match(entry["integrity"]):
+            errors.append(f"{where}: integrity must be the npm sha512 integrity string")
+        binding = entry.get("binding")
+        if binding is None:
+            continue
+        if not isinstance(binding, dict) or set(binding) != {"url", "member", "sha256"}:
+            errors.append(f"{where}.binding must have exactly url, member and sha256")
+            continue
+        url, member, digests = binding["url"], binding["member"], binding["sha256"]
+        if not (isinstance(url, str) and url.startswith("https://github.com/") and "{version}" in url
+                and "{platform}" in url and url.endswith(".tar.gz")):
+            errors.append(f"{where}.binding.url must be an https://github.com/ .tar.gz URL with {{version}} and {{platform}}")
+        if not isinstance(member, str) or not member or member.startswith(("/", "\\")) or ".." in member.split("/"):
+            errors.append(f"{where}.binding.member must be a relative path inside the archive")
+        if not isinstance(digests, dict) or not digests:
+            errors.append(f"{where}.binding.sha256 must map platforms to digests")
+            continue
+        for plat, digest in digests.items():
+            if not PLATFORM_RE.match(plat):
+                errors.append(f"{where}.binding.sha256: {plat!r} is not <process.platform>-<process.arch>")
+            if not isinstance(digest, str) or not re.match(r"^[0-9a-f]{64}$", digest):
+                errors.append(f"{where}.binding.sha256[{plat}] must be 64 lowercase hex characters")
+
+
+def check_mcp(pack: dict, set_ids: dict, errors: list[str]) -> None:
+    mcp = pack.get("mcp")
+    if not isinstance(mcp, dict) or set(mcp) != MCP_KEYS:
+        errors.append(f"mcp must have exactly the keys {sorted(MCP_KEYS)}")
+        return
+    if mcp["set"] not in set_ids:
+        errors.append(f"mcp.set {mcp['set']!r} is not a set of this pack")
+    if not isinstance(mcp["name"], str) or not NAME_RE.match(mcp["name"]):
+        errors.append(f"mcp.name must match {NAME_RE.pattern}")
+    if not isinstance(mcp["command"], str) or not mcp["command"]:
+        errors.append("mcp.command must be a non-empty string")
+    if not isinstance(mcp["args"], list) or not all(isinstance(a, str) for a in mcp["args"]):
+        errors.append("mcp.args must be a list of strings")
+    env = mcp["env"]
+    if not isinstance(env, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in env.items()):
+        errors.append("mcp.env must map names to strings")
+    text = json.dumps([mcp["command"], mcp["args"], env])
+    if "@latest" in text or re.search(r"\bnpx\b", text):
+        errors.append("mcp must run a pinned local install: no npx and no @latest")
+    if "{PACKAGE}" in text and "npm" not in pack:
+        errors.append("mcp uses {PACKAGE}, so the pack needs an npm object")
+
+
 def validate_pack(pack_dir: Path, core_names: set[str]) -> tuple[list[str], dict | None]:
     errors: list[str] = []
     path = pack_dir / "pack.json"
@@ -157,6 +243,8 @@ def validate_pack(pack_dir: Path, core_names: set[str]) -> tuple[list[str], dict
         return ["pack.json must hold an object"], None
     kind = pack.get("kind")
     allowed = set(REQUIRED) | {key for key, need in OPTIONAL.items() if need == kind}
+    if kind in ("skills", "package"):
+        allowed |= set(ANY_KIND)
     for key in REQUIRED:
         if key not in pack:
             errors.append(f"pack.json misses key {key!r}")
@@ -200,9 +288,11 @@ def validate_pack(pack_dir: Path, core_names: set[str]) -> tuple[list[str], dict
         errors.append("sets must be a non-empty list")
         sets = []
     seen_sets = set()
+    npm_sets = {p.get("set") for p in (pack.get("npm") or {}).get("packages", []) if isinstance(p, dict)}
+    set_ids = {s["id"]: s for s in sets if isinstance(s, dict) and isinstance(s.get("id"), str)}
     for entry in sets:
-        if not isinstance(entry, dict) or set(entry) != SET_KEYS:
-            errors.append(f"set {entry!r} must have exactly the keys {sorted(SET_KEYS)}")
+        if not isinstance(entry, dict) or not SET_KEYS <= set(entry) <= SET_KEYS | SET_OPTIONAL:
+            errors.append(f"set {entry!r} must have the keys {sorted(SET_KEYS)} and may add {sorted(SET_OPTIONAL)}")
             continue
         sid = entry["id"]
         if not isinstance(sid, str) or not NAME_RE.match(sid) or sid in seen_sets:
@@ -212,8 +302,14 @@ def validate_pack(pack_dir: Path, core_names: set[str]) -> tuple[list[str], dict
             errors.append(f"set {sid}: label must be a non-empty string")
         if not one_sentence(entry["description"]):
             errors.append(f"set {sid}: description must be one sentence ending with a period")
-        if not isinstance(entry["skills"], list) or not entry["skills"]:
-            errors.append(f"set {sid}: skills must be a non-empty list")
+        requires = entry.get("requires")
+        if requires is not None:
+            if not isinstance(requires, list) or not requires or any(r == sid or r not in set_ids for r in requires):
+                errors.append(f"set {sid}: requires must list other sets of this pack")
+            elif any(set_ids[r].get("requires") for r in requires):
+                errors.append(f"set {sid}: a required set may not require another set")
+        if not isinstance(entry["skills"], list) or (not entry["skills"] and sid not in npm_sets):
+            errors.append(f"set {sid}: skills must be a non-empty list, unless the set installs an npm package")
             continue
         for skill in entry["skills"]:
             if skill in listed:
@@ -237,6 +333,10 @@ def validate_pack(pack_dir: Path, core_names: set[str]) -> tuple[list[str], dict
     for name in listed:
         if name in core_names:
             errors.append(f"skill {name} has the name of a core skill or workflow")
+    if "npm" in pack:
+        check_npm(pack, set_ids, errors)
+    if "mcp" in pack:
+        check_mcp(pack, set_ids, errors)
     if kind == "package":
         payload = pack.get("package")
         if payload != {"payload": "package"}:
