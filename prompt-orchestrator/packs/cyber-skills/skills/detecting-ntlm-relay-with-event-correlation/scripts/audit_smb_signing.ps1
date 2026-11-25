@@ -322,10 +322,11 @@ if ($llmnrVuln.Count -gt 0) {
     $recommendations += "HIGH: Disable LLMNR via GPO on $($llmnrVuln.Count) hosts to prevent Responder poisoning"
 }
 
-$riskLevel = switch {
-    ($riskScore -ge 60) { "CRITICAL" }
-    ($riskScore -ge 40) { "HIGH" }
-    ($riskScore -ge 20) { "MEDIUM" }
+# Modified by prompt-orchestrator on 2026-11-25: switch gains a subject and break statements so the script parses.
+$riskLevel = switch ($true) {
+    ($riskScore -ge 60) { "CRITICAL"; break }
+    ($riskScore -ge 40) { "HIGH"; break }
+    ($riskScore -ge 20) { "MEDIUM"; break }
     default { "LOW" }
 }
 
