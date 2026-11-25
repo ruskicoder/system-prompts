@@ -6,6 +6,15 @@
   "packs_dir": "packs",
   "manifest": "install-manifest.tsv",
   "pack_helper": "install/pack_helper.mjs",
+  "skills_mcp": {
+    "default_mode": "mcp",
+    "name": "po-skills",
+    "server": "install/po_skills_server.mjs",
+    "dir": "skills-mcp",
+    "command": "node",
+    "args": ["{PACKAGE}/server.mjs"],
+    "env": {}
+  },
   "locations": {
     "HOME": {
       "posix": [{"env": "HOME"}],

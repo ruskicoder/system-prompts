@@ -311,7 +311,7 @@ class FixtureBashTests(unittest.TestCase):
         self.assertIn("==> no change", again.stdout)
 
         box.run("--tools", "claude,codex,opencode", "--no-core", "--no-harness", "--packs",
-                "fixture-skills:alpha,fixture-package", "--yes")
+                "fixture-skills:alpha,fixture-package", "--mode", "skills", "--yes")
         for skills in (box.home / ".claude" / "skills", box.home / ".agents" / "skills", box.home / ".config" / "opencode" / "skills"):
             self.assertTrue((skills / "fixture-one" / "SKILL.md").is_file(), skills)
             self.assertTrue((skills / "fixture-entry" / "SKILL.md").is_file(), skills)
@@ -328,10 +328,10 @@ class FixtureBashTests(unittest.TestCase):
         self.assertIn("pack:fixture-skills:alpha:codex", status)
         self.assertIn("pack:fixture-package:payload", status)
         listing = box.run("packs", "list").stdout
-        self.assertIn("[x] fixture-skills:alpha (2 skills)", listing)
+        self.assertIn("[x] fixture-skills:alpha (2 skills) [skills]", listing)
         self.assertIn("[ ] fixture-skills:beta (1 skills)", listing)
 
-        box.run("packs", "install", "fixture-skills:beta", "--tools", "claude")
+        box.run("packs", "install", "fixture-skills:beta", "--tools", "claude", "--mode", "skills")
         self.assertTrue((box.home / ".claude" / "skills" / "fixture-three" / "SKILL.md").is_file())
         self.assertFalse((box.home / ".agents" / "skills" / "fixture-three").exists())
 
@@ -355,14 +355,17 @@ class FixtureBashTests(unittest.TestCase):
 
     def test_tui_with_scripted_input(self):
         box = self.sandbox()
-        # tools: keep claude only; core: next; harness: off; packs: set 3 (fixture-skills beta); review: install
-        answers = "\n".join(["n", "1", "", "", "h", "", "3", "", ""]) + "\n"
+        # tools: keep claude only; core: next; harness: off; packs: set 3 (fixture-skills beta), mode skills;
+        # review: install
+        answers = "\n".join(["n", "1", "", "", "h", "", "3", "m", "", ""]) + "\n"
         proc = box.run("tui", stdin=answers)
         for screen in ("Step 1 of 5: tools", "Step 2 of 5", "Step 3 of 5", "Step 4 of 5: packs", "Step 5 of 5: review"):
             self.assertIn(screen, proc.stdout)
         self.assertIn("Next step installs the core for the checked tools into:", proc.stdout)
         self.assertIn("Next step installs 1 skills from the checked sets into:", proc.stdout)
         self.assertIn("packs: fixture-skills:beta", proc.stdout)
+        self.assertIn("[m] mode: mcp (one po-skills MCP server", proc.stdout)
+        self.assertIn("pack mode: skills (copies in the skills folder of each tool)", proc.stdout)
         self.assertTrue((box.home / ".claude" / "skills" / "fixture-three" / "SKILL.md").is_file())
         self.assertFalse((box.home / ".codex").exists())
         box.run("uninstall")
@@ -380,7 +383,7 @@ class FixtureBashTests(unittest.TestCase):
         mine = box.home / ".claude" / "skills" / "fixture-one" / "SKILL.md"
         mine.parent.mkdir(parents=True)
         mine.write_text("my own skill\n")
-        box.run("packs", "install", "fixture-skills:alpha", "--tools", "claude")
+        box.run("packs", "install", "fixture-skills:alpha", "--tools", "claude", "--mode", "skills")
         self.assertIn("name: fixture-one", mine.read_text())
         box.run("uninstall")
         self.assertEqual("my own skill\n", mine.read_text())
@@ -389,7 +392,7 @@ class FixtureBashTests(unittest.TestCase):
 
     def test_changed_file_is_kept_on_removal(self):
         box = self.sandbox()
-        box.run("packs", "install", "fixture-skills:beta", "--tools", "claude")
+        box.run("packs", "install", "fixture-skills:beta", "--tools", "claude", "--mode", "skills")
         skill = box.home / ".claude" / "skills" / "fixture-three" / "SKILL.md"
         skill.write_text("edited by the user\n")
         proc = box.run("packs", "remove", "fixture-skills")
@@ -562,7 +565,7 @@ class RepositoryInstallerTests(unittest.TestCase):
         self.assertFalse(list((box.home / ".claude" / "skills").glob("offensive-*")))
         self.assertTrue((box.home / ".claude" / "skills" / "docx" / "SKILL.md").is_file())
 
-        packs = ("--packs", "claude-red-offense:recon,logo-design")
+        packs = ("--packs", "claude-red-offense:recon,logo-design", "--mode", "skills")
         box.run(*core, *packs, "--yes")
         logo = box.home / ".claude" / "skills" / "logo-design"
         self.assertTrue((logo / "assets" / "library" / "catalog.json").is_file())
@@ -612,12 +615,13 @@ class PowerShellTests(unittest.TestCase):
         home.mkdir()
         self.run_ps(home, "--tools", "claude,codex,opencode", "--no-harness", "--yes")
         self.assertIn("no change", self.run_ps(home, "--tools", "claude,codex,opencode", "--no-harness", "--yes").stdout)
-        self.run_ps(home, "packs", "install", "fixture-skills:alpha,fixture-package", "--tools", "claude")
+        self.run_ps(home, "packs", "install", "fixture-skills:alpha,fixture-package", "--tools", "claude", "--mode", "skills")
         self.assertTrue((home / ".claude" / "skills" / "fixture-one" / "SKILL.md").is_file())
         self.run_ps(home, "status")
         self.run_ps(home, "packs", "remove", "fixture-skills")
         self.run_ps(home, "--tools", "claude", "--dry-run")
-        self.run_ps(home, "tui", stdin="\n".join(["n", "1", "", "", "h", "", "3", "", ""]) + "\n")
+        self.run_ps(home, "tui", stdin="\n".join(["n", "1", "", "", "h", "", "3", "m", "", ""]) + "\n")
+        self.assertTrue((home / ".claude" / "skills" / "fixture-three" / "SKILL.md").is_file())
         self.run_ps(home, "uninstall")
         self.assertEqual([], files_under_without_pwsh(home))
 

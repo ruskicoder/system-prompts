@@ -163,7 +163,7 @@ powershell -ExecutionPolicy Bypass -File install\install.ps1 packs list
 ```
 
 `bash install/install.sh --help` lists every flag. For the flags `--tools`, `--core`, `--no-core`,
-`--harness`, `--no-harness`, `--harness-only`, `--profile`, `--packs`, `--sets`, `--dry-run` and `--yes`,
+`--harness`, `--no-harness`, `--harness-only`, `--profile`, `--packs`, `--sets`, `--mode`, `--dry-run` and `--yes`,
 the PowerShell installer uses the same names.
 
 ### Manifest, re-runs and removal
@@ -181,7 +181,7 @@ Windows, `<data_home>` is `%LOCALAPPDATA%\prompt-orchestrator`.
 
 ### Targets
 
-| Tool | Core | Pack skills |
+| Tool | Core | Pack skills in mode skills |
 |---|---|---|
 | Claude Code | `~/.claude/skills`, `~/.claude/AGENTS.md`, import block in `~/.claude/CLAUDE.md`, AI attribution off | `~/.claude/skills` |
 | Codex | `~/.agents/skills`, `$CODEX_HOME/prompts`, `$CODEX_HOME/AGENTS.md` | `~/.agents/skills` |
@@ -208,7 +208,56 @@ packs per set. `packs/README.md` describes pack format v1, including the optiona
 | `procable` | release | 1 | The offline design skill, installed from a release pinned by digest (Apache-2.0) |
 | `rea` | skills | 2 | The rea reverse engineering MCP server and its skill (MIT), with Frida as the add-on set `rea-frida` |
 
-`bash install/install.sh packs list` prints each set with its skill count and description.
+`bash install/install.sh packs list` prints each set with its skill count and description. For an
+installed set, the list adds the install mode, `[mcp]` or `[skills]`.
+
+### Pack install modes (mcp and skills)
+
+Claude Code, Codex and OpenCode load the description of each skill in a skills folder into the context
+of each session. A pack with hundreds of skills fills the context of each session with skill
+descriptions, also when the session needs none of the skills. Mode mcp keeps the pack skills out of the skills folders. One local
+MCP server, `po-skills`, serves the pack skills on demand.
+
+| Mode | Where the pack skills go | What the tools load at session start |
+|---|---|---|
+| `mcp` (default) | `<data_home>/skills-mcp/<pack>/<skill>/`, plus one `po-skills` entry in the MCP config of each selected tool | the three tool names and the server instructions (under 300 characters) |
+| `skills` | the skills folder of each selected tool (Targets table) | the description of each pack skill |
+
+In mode mcp, the `po-skills` server offers three tools.
+
+| Tool | Result |
+|---|---|
+| `search_skills(query, pack, limit)` | ranked skill names with pack, set and the first sentence of the description; `limit` defaults to 10 |
+| `load_skill(name)` | the full `SKILL.md` text and the absolute skill folder, so the agent reads references and runs scripts from that folder |
+| `list_packs()` | the installed packs and sets with skill counts |
+
+With Claude Code tool search on (`ENABLE_TOOL_SEARCH=true`), Claude Code loads the tool names and the
+server instructions at session start and loads the full tool definitions on demand.
+
+The installer copies the server, `install/po_skills_server.mjs`, to `<data_home>/skills-mcp/server.mjs`.
+The server needs Node.js 18 or later and no npm package. The server reads
+`<data_home>/skills-mcp/index.json` and scans no folder per call. After each pack install and removal,
+the installer rebuilds the index. The server answers MCP revision 2026-07-28 (`server/discover` and the protocol version in each request) and
+the revisions that open with `initialize` (2025-11-25, 2025-06-18, 2025-03-26 and 2024-11-05).
+
+- Mode mcp covers the kind `skills` packs, the entry skill of the kind `package` pack `reverse-skill` and
+  the skill of the `rea` pack. The `reverse-skill` payload stays in `<data_home>/packages/`. The `rea`
+  server stays registered as its own MCP server. Core skills install as normal skills.
+- Cursor, Gemini CLI and OpenCode get the same `po-skills` entry as Claude Code and Codex. Antigravity and
+  OpenClaw have no MCP config that the installer edits. In mode mcp, these two tools get skill copies.
+- Without `--mode`, an installed set keeps its mode, and a new set gets mode mcp. To switch an installed
+  pack, name the mode. The switch to mode mcp removes the skill copies that the manifest records. The
+  switch to mode skills removes the copies in `<data_home>/skills-mcp`.
+- Removal of the last mode mcp set removes the server, the index and the `po-skills` entry from each
+  config. The rest of each config stays byte-identical.
+- In the menu, the packs screen shows the mode, and `m` toggles the mode.
+
+```bash
+bash install/install.sh packs install claude-red-offense cyber-skills:cyber-malware --tools claude,codex,opencode
+bash install/install.sh packs install logo-design --mode skills
+bash install/install.sh packs install logo-design --mode mcp
+bash install/install.sh packs remove claude-red-offense
+```
 
 ### Antigravity plugin
 
@@ -269,8 +318,8 @@ managed, JavaScript, firmware and browser targets. The opt-in pack `rea` has two
 
 - `rea` installs `rea-agents@6.10.1` into `<data_home>/packages/rea/` with
   `npm install --omit=optional --ignore-scripts`, checks its integrity against the pin, registers the
-  `rea` server for Claude Code, Codex, Cursor, Gemini CLI and OpenCode, and copies the skill
-  `reverse-engineer-anything`.
+  `rea` server for Claude Code, Codex, Cursor, Gemini CLI and OpenCode, and installs the skill
+  `reverse-engineer-anything` in the pack mode (mcp by default).
 - `rea-frida` adds `frida@17.23.2` and the Frida Node binding. The installer checks the binding archive
   against the sha256 pinned per platform. Pinned platforms: `linux-x64`, `linux-arm64`, `darwin-arm64`, `darwin-x64`, `win32-x64`, `win32-arm64`.
   The installer refuses other platforms. It also refuses `rea-frida` without `rea`, and the menu checks

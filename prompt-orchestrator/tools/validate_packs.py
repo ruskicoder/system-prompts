@@ -9,7 +9,9 @@ folder under skills/ in exactly one set, each listed skill present), every SKILL
 (name equals the folder, name pattern, description of at most 1024 characters, the third-party
 fields when the pack has an upstream), the payload folder for kind "package", the release lock
 for kind "release", the npm pins and the MCP server of a pack that has them, set requirements,
-the LICENSE file, and skill names that clash with the core or another pack.
+the LICENSE file, and skill names that clash with the core or another pack. It also checks that
+each description uses a YAML form that the po-skills index reader in install/pack_helper.mjs reads
+(plain, quoted or a > or | block), and that no pack MCP server takes the po-skills server name.
 
 Standard library only. Front matter is read with PyYAML when it is installed, otherwise with a
 small reader for the flat key: value form that pack skills use.
@@ -43,6 +45,17 @@ RANGE_RE = re.compile(r"^(?:\^|>=)?\d+\.\d+\.\d+(?: \|\| (?:\^|>=)?\d+\.\d+\.\d+
 MCP_KEYS = {"set", "name", "command", "args", "env"}
 RELEASE_KEYS = {"lock", "tag", "bundle", "engine", "providers", "codex_hooks", "skill_roots", "hook_files"}
 FRONT_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.DOTALL)
+# Description forms that the po-skills index reader (install/pack_helper.mjs) reads.
+DESCRIPTION_FORM_RE = re.compile(r"""^description:[ \t]*(?:[>|][+-]?[ \t]*|'.*|".*|[^\s&*!%@`{\[|>#'"].*)$""")
+
+
+def reserved_mcp_name() -> str:
+    """The server name of the po-skills MCP server (install/spec.json skills_mcp.name)."""
+    try:
+        spec = json.loads((ROOT / "install" / "spec.json").read_text(encoding="utf-8"))
+        return str(spec["skills_mcp"]["name"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return "po-skills"
 
 
 def read_front_matter(path: Path) -> dict | None:
@@ -103,6 +116,10 @@ def check_skill(skill_dir: Path, pack: dict, errors: list[str]) -> None:
         return
     name = str(data.get("name", "")).strip()
     description = str(data.get("description", "")).strip()
+    raw = FRONT_RE.match(skill_md.read_text(encoding="utf-8")).group(1)
+    form = [line for line in raw.splitlines() if line.startswith("description:")]
+    if form and not DESCRIPTION_FORM_RE.match(form[0]):
+        errors.append(f"{where}: description must be a plain, quoted or > or | block scalar for the po-skills index")
     if name != skill_dir.name:
         errors.append(f"{where}: front-matter name {name!r} differs from the folder name")
     if not NAME_RE.match(name):
@@ -218,6 +235,8 @@ def check_mcp(pack: dict, set_ids: dict, errors: list[str]) -> None:
         errors.append(f"mcp.set {mcp['set']!r} is not a set of this pack")
     if not isinstance(mcp["name"], str) or not NAME_RE.match(mcp["name"]):
         errors.append(f"mcp.name must match {NAME_RE.pattern}")
+    elif mcp["name"] == reserved_mcp_name():
+        errors.append(f"mcp.name {mcp['name']} is the name of the installer's own MCP server")
     if not isinstance(mcp["command"], str) or not mcp["command"]:
         errors.append("mcp.command must be a non-empty string")
     if not isinstance(mcp["args"], list) or not all(isinstance(a, str) for a in mcp["args"]):

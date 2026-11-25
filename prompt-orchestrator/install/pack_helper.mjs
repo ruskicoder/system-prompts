@@ -7,13 +7,21 @@
 //   node pack_helper.mjs node-check RANGE
 //   node pack_helper.mjs platform
 //   node pack_helper.mjs npm-check PREFIX NAME VERSION INTEGRITY
-//   node pack_helper.mjs mcp-add FORMAT FILE NAME SPEC_B64 PACKAGE_DIR [RECORD_B64]
+//   node pack_helper.mjs mcp-add FORMAT FILE NAME SPEC_B64 PACKAGE_DIR [RECORD_B64 [OTHERS]]
 //   node pack_helper.mjs mcp-remove RECORD_B64
+//   node pack_helper.mjs skills-index MANIFEST ROOT OUT
 //
 // mcp-add prints "status<TAB>file<TAB>record". The status is added, present, foreign or
 // conflict. The record is base64 JSON that mcp-remove needs, or "-". mcp-remove prints removed,
 // absent or changed. An edit touches only the one server entry: it inserts or deletes one text
-// fragment and leaves every other byte of the file as it was.
+// fragment and leaves every other byte of the file as it was. OTHERS lists the records of the other
+// entries the installer manages, comma separated. An entry added next to them inherits their claim
+// on the server container and the file, so the last removal also removes a container or a file that
+// the installer created, whichever entry goes first.
+//
+// skills-index writes the index of the po-skills MCP server to OUT. It reads the skills that the
+// manifest records for the owners pack:<pack>:<set>:mcp under ROOT (<data_home>/skills-mcp) and
+// takes each name and description from the SKILL.md front matter. It prints the skill count.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -244,13 +252,16 @@ function removeMember(text, obj, index) {
   return text.slice(0, ms[index - 1].valueEnd) + text.slice(ms[index].valueEnd);
 }
 
-function jsonAdd(fmt, file, name, entry, old) {
+const ownsFile = (r) => Boolean(r.fileOwned || r.created === "file");
+const ownsContainer = (r) => Boolean(r.containerOwned || r.created === "container" || r.created === "file");
+
+function jsonAdd(fmt, file, name, entry, old, others) {
   const exists = fs.existsSync(file);
   const text = exists ? fs.readFileSync(file, "utf8") : "";
   if (!text.trim()) {
     const created = JSON.stringify({ [fmt.container]: { [name]: entry } }, null, 2) + "\n";
     if (exists && text) return { status: "conflict", reason: "the file holds only whitespace" };
-    return { status: "added", text: created, record: { created: "file", fragment: created } };
+    return { status: "added", text: created, record: { created: "file", fragment: created, fileOwned: true, containerOwned: true } };
   }
   const root = parseJsonc(text);
   if (root.type !== "object") return { status: "conflict", reason: "the top level is not an object" };
@@ -265,14 +276,34 @@ function jsonAdd(fmt, file, name, entry, old) {
   }
   let ins;
   let created = "none";
-  if (box) ins = insertMember(text, box.member.value, name, entry, unit, eol);
-  else {
+  let containerOwned;
+  if (box) {
+    ins = insertMember(text, box.member.value, name, entry, unit, eol);
+    const ours = new Set(others.map((r) => r.name));
+    containerOwned = box.member.value.members.every((m) => ours.has(m.key)) && others.some(ownsContainer);
+  } else {
     ins = insertMember(text, root, fmt.container, { [name]: entry }, unit, eol);
     created = "container";
+    containerOwned = true;
   }
   const next = text.slice(0, ins.at) + ins.fragment + text.slice(ins.at);
   parseJsonc(next);
-  return { status: "added", text: next, record: { created, fragment: ins.fragment, eol } };
+  return { status: "added", text: next,
+    record: { created, fragment: ins.fragment, eol, containerOwned, fileOwned: others.some(ownsFile) } };
+}
+
+// After an entry is gone: drop the server container when the installer created it and it is empty,
+// then delete the file when the installer created it and it holds an empty object.
+function jsonTidy(rec, fmt, text) {
+  let next = text;
+  let root = parseJsonc(next);
+  const box = find(root, fmt.container);
+  if (ownsContainer(rec) && box && box.member.value.type === "object" && !box.member.value.members.length) {
+    next = removeMember(next, root, box.index);
+    root = parseJsonc(next);
+  }
+  if (ownsFile(rec) && root.type === "object" && !root.members.length) return { status: "removed", unlink: true };
+  return { status: "removed", text: next };
 }
 
 function jsonRemove(rec, text) {
@@ -285,15 +316,12 @@ function jsonRemove(rec, text) {
   if (rec.created === "file" && text === rec.fragment) return { status: "removed", unlink: true };
   const at = text.indexOf(rec.fragment);
   if (at >= 0 && text.indexOf(rec.fragment, at + 1) < 0 && at <= have.member.keyStart && have.member.valueEnd <= at + rec.fragment.length) {
-    const next = text.slice(0, at) + text.slice(at + rec.fragment.length);
-    parseJsonc(next);
-    return { status: "removed", text: next };
+    return jsonTidy(rec, fmt, text.slice(0, at) + text.slice(at + rec.fragment.length));
   }
   let next;
   if (rec.created !== "none" && box.member.value.members.length === 1) next = removeMember(text, root, box.index);
   else next = removeMember(text, box.member.value, have.index);
-  parseJsonc(next);
-  return { status: "removed", text: next };
+  return jsonTidy(rec, fmt, next);
 }
 
 // ------------------------------------------------------------------ TOML (Codex)
@@ -347,7 +375,7 @@ function tomlTailOk(rest) {
   return true;
 }
 
-function tomlAdd(fmt, file, name, spec, old) {
+function tomlAdd(fmt, file, name, spec, old, others) {
   const exists = fs.existsSync(file);
   const text = exists ? fs.readFileSync(file, "utf8") : "";
   const eol = text.includes("\r\n") ? "\r\n" : "\n";
@@ -355,9 +383,9 @@ function tomlAdd(fmt, file, name, spec, old) {
   const entry = { command: spec.command, args: spec.args, env: spec.env || {} };
   if (text.includes(block)) return old && deepEqual(old.entry, entry) ? { status: "present", record: old } : { status: "foreign" };
   if (tomlMentions(text, fmt.container, name)) return { status: "conflict", reason: `${fmt.container}.${name} is already defined` };
-  if (!text) return { status: "added", text: block, record: { created: "file", fragment: block, entry, eol } };
+  if (!text) return { status: "added", text: block, record: { created: "file", fragment: block, entry, eol, fileOwned: true } };
   const fragment = (text.endsWith("\n") ? "" : eol) + eol + block;
-  return { status: "added", text: text + fragment, record: { created: "none", fragment, entry, eol } };
+  return { status: "added", text: text + fragment, record: { created: "none", fragment, entry, eol, fileOwned: others.some(ownsFile) } };
 }
 
 function tomlRemove(rec, text) {
@@ -367,7 +395,9 @@ function tomlRemove(rec, text) {
     const at = text.lastIndexOf(piece);
     if (at < 0 || text.indexOf(piece) !== at) continue;
     if (!tomlTailOk(text.slice(at + piece.length))) return { status: "changed" };
-    return { status: "removed", text: text.slice(0, at) + text.slice(at + piece.length) };
+    const next = text.slice(0, at) + text.slice(at + piece.length);
+    if (ownsFile(rec) && !next.trim()) return { status: "removed", unlink: true };
+    return { status: "removed", text: next };
   }
   return { status: tomlMentions(text, FORMATS.codex.container, rec.name) ? "changed" : "absent" };
 }
@@ -413,16 +443,18 @@ function expandSpec(spec, packageDir) {
 
 // ------------------------------------------------------------------ commands
 
-function mcpAdd([format, file, name, specB64, packageDir, oldB64]) {
+function mcpAdd([format, file, name, specB64, packageDir, oldB64, othersCsv]) {
   const fmt = FORMATS[format];
   if (!fmt) die(`unknown MCP format ${format}`);
   const spec = expandSpec(unb64(specB64), path.resolve(packageDir));
   const old = oldB64 && oldB64 !== "-" ? unb64(oldB64) : null;
   const resolved = resolveFile(format, file);
+  const others = String(othersCsv || "").split(",").filter((x) => x && x !== "-").map(unb64)
+    .filter((r) => r.file === resolved && r.format === format && r.name !== name);
   let result;
   try {
-    if (fmt.kind === "toml") result = tomlAdd(fmt, resolved, name, spec, old);
-    else result = jsonAdd(fmt, resolved, name, fmt.entry(spec), old);
+    if (fmt.kind === "toml") result = tomlAdd(fmt, resolved, name, spec, old, others);
+    else result = jsonAdd(fmt, resolved, name, fmt.entry(spec), old, others);
   } catch (error) {
     result = { status: "conflict", reason: `cannot parse ${resolved}: ${error.message}` };
   }
@@ -480,6 +512,125 @@ function npmCheck([prefix, name, version, integrity]) {
   process.stdout.write("ok\n");
 }
 
+// ------------------------------------------------------------------ po-skills index
+
+// Reads the front-matter keys that the skill packs use: plain scalars, single- and double-quoted
+// scalars over one or more lines, and the block scalars >, >-, |, |-. Nested maps are skipped.
+function frontMatter(text) {
+  const m = /^﻿?---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(text);
+  if (!m) return null;
+  const lines = m[1].split(/\r?\n/);
+  const out = {};
+  for (let i = 0; i < lines.length; i++) {
+    const km = /^([A-Za-z0-9_-]+):(?:\s+(.*))?$/.exec(lines[i]);
+    if (!km) continue;
+    const key = km[1];
+    let raw = (km[2] || "").replace(/\s+#.*$/, "").trim();
+    if (/^[>|][+-]?$/.test(raw)) {
+      const block = [];
+      while (i + 1 < lines.length && (lines[i + 1].trim() === "" || /^\s/.test(lines[i + 1]))) block.push(lines[++i]);
+      const indent = Math.min(...block.filter((l) => l.trim()).map((l) => l.match(/^\s*/)[0].length));
+      const body = block.map((l) => l.slice(Number.isFinite(indent) ? indent : 0));
+      let value;
+      if (raw[0] === "|") value = body.join("\n");
+      else {
+        value = "";
+        for (const l of body) value += l === "" ? "\n" : (value && !value.endsWith("\n") ? " " : "") + l;
+      }
+      value = value.replace(/\n+$/, "");
+      out[key] = raw.endsWith("-") ? value : value + "\n";
+      continue;
+    }
+    const quote = raw[0] === "'" || raw[0] === '"' ? raw[0] : "";
+    if (quote) {
+      let joined = km[2].trim();
+      while (!closed(joined, quote) && i + 1 < lines.length) {
+        const next = lines[++i].trim();
+        joined += next === "" ? "\n" : (joined.endsWith("\n") ? "" : " ") + next;
+      }
+      out[key] = unquote(joined, quote);
+      continue;
+    }
+    while (i + 1 < lines.length && /^\s+\S/.test(lines[i + 1]) && !/^\s*-\s/.test(lines[i + 1]) && raw !== "") raw += " " + lines[++i].trim();
+    out[key] = raw;
+  }
+  return out;
+}
+
+function closed(text, quote) {
+  if (text.length < 2 || !text.endsWith(quote)) return false;
+  if (quote === '"') {
+    let backslashes = 0;
+    for (let k = text.length - 2; k >= 0 && text[k] === "\\"; k--) backslashes++;
+    return backslashes % 2 === 0;
+  }
+  const inner = text.slice(1, -1).replace(/''/g, "");
+  return !inner.includes("'");
+}
+
+function unquote(text, quote) {
+  const inner = text.slice(1, -1);
+  if (quote === "'") return inner.replace(/''/g, "'");
+  return JSON.parse(`"${inner.replace(/\n/g, "\\n").replace(/\\'/g, "'")}"`);
+}
+
+const ABBREVIATIONS = /(?:^|\s)(?:e\.g|i\.e|etc|vs|cf|approx|incl|[A-Za-z])\.$/;
+
+// The first sentence of a description, at most 200 characters.
+function summary(description) {
+  const flat = String(description).replace(/\s+/g, " ").trim();
+  let cut = flat;
+  const re = /[.!?](?=\s|$)/g;
+  let m;
+  while ((m = re.exec(flat))) {
+    const head = flat.slice(0, m.index + 1);
+    if (ABBREVIATIONS.test(head)) continue;
+    cut = head;
+    break;
+  }
+  if (cut.length <= 200) return cut;
+  const room = cut.slice(0, 197);
+  const space = room.lastIndexOf(" ");
+  return (space > 120 ? room.slice(0, space) : room).replace(/[\s,;:]+$/, "") + "...";
+}
+
+function skillsIndex([manifest, root, outFile]) {
+  if (!manifest || !root || !outFile) die("usage: pack_helper.mjs skills-index MANIFEST ROOT OUT");
+  const base = path.resolve(root);
+  const skills = [];
+  const lines = fs.existsSync(manifest) ? fs.readFileSync(manifest, "utf8").split(/\r?\n/) : [];
+  for (const line of lines) {
+    const [owner, kind, file] = line.split("\t");
+    const om = /^pack:([a-z0-9-]+):([a-z0-9-]+):mcp$/.exec(owner || "");
+    if (!om || kind !== "f") continue;
+    const parts = path.relative(base, path.resolve(file)).split(/[\\/]/);
+    if (parts.length !== 3 || parts[0] !== om[1] || parts[2] !== "SKILL.md") continue;
+    const folder = path.join(base, parts[0], parts[1]);
+    let fm = null;
+    try {
+      fm = frontMatter(fs.readFileSync(path.join(folder, "SKILL.md"), "utf8"));
+    } catch (error) {
+      process.stderr.write(`pack_helper: cannot read ${path.join(folder, "SKILL.md")}: ${error.message}\n`);
+    }
+    const name = fm && fm.name ? String(fm.name) : parts[1];
+    const description = fm && fm.description ? String(fm.description).trim() : "";
+    skills.push({ name, pack: om[1], set: om[2], summary: summary(description || name), description, path: folder });
+  }
+  const order = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  skills.sort((a, b) => order(a.pack, b.pack) || order(a.set, b.set) || order(a.name, b.name));
+  const packs = [];
+  for (const s of skills) {
+    let p = packs.find((x) => x.id === s.pack);
+    if (!p) packs.push((p = { id: s.pack, sets: [] }));
+    const set = p.sets.find((x) => x.id === s.set);
+    if (set) set.count++;
+    else p.sets.push({ id: s.set, count: 1 });
+  }
+  const index = { schema: 1, server: "po-skills", skills, packs };
+  fs.writeFileSync(outFile, JSON.stringify(index, null, 1) + "\n", "utf8");
+  process.stdout.write(`${skills.length}\n`);
+}
+
 const [command, ...rest] = process.argv.slice(2);
 switch (command) {
   case "node-check":
@@ -501,6 +652,9 @@ switch (command) {
   case "mcp-remove":
     mcpRemove(rest);
     break;
+  case "skills-index":
+    skillsIndex(rest);
+    break;
   default:
-    die("usage: pack_helper.mjs node-check|platform|npm-check|mcp-add|mcp-remove ...");
+    die("usage: pack_helper.mjs node-check|platform|npm-check|mcp-add|mcp-remove|skills-index ...");
 }

@@ -63,10 +63,27 @@ def load_model(packs_dir: Path, source_root: Path | None) -> dict:
         model_packs.append(entry)
     return {
         "spec": spec,
+        "skills_mcp": skills_mcp_model(spec, base),
         "packs": model_packs,
         "packs_rel": packs_rel,
         "source_root": str(source_root.resolve()) if source_root else None,
     }
+
+
+def skills_mcp_model(spec: dict, base: Path) -> dict:
+    """The po-skills server block of the spec, checked, with the server spec as base64 JSON."""
+    block = spec.get("skills_mcp")
+    keys = {"default_mode", "name", "server", "dir", "command", "args", "env"}
+    if not isinstance(block, dict) or set(block) != keys:
+        raise SystemExit(f"spec skills_mcp must have exactly the keys {sorted(keys)}")
+    if block["default_mode"] not in ("mcp", "skills"):
+        raise SystemExit("spec skills_mcp.default_mode must be mcp or skills")
+    if not validate_packs.NAME_RE.match(block["name"]) or not validate_packs.NAME_RE.match(block["dir"]):
+        raise SystemExit(f"spec skills_mcp.name and dir must match {validate_packs.NAME_RE.pattern}")
+    if not (base / block["server"]).is_file():
+        raise SystemExit(f"spec skills_mcp.server {block['server']} does not exist")
+    server = {key: block[key] for key in ("command", "args", "env")}
+    return dict(block, spec_b64=base64.b64encode(json.dumps(server, separators=(",", ":")).encode("utf-8")).decode("ascii"))
 
 
 # ------------------------------------------------------------------ bash
@@ -137,6 +154,11 @@ def render_bash(model: dict) -> str:
         f"PO_PACKS_REL={sq(model['packs_rel'])}",
         f"PO_MANIFEST_NAME={sq(spec['manifest'])}",
         f"PO_PACK_HELPER={sq(spec['pack_helper'])}",
+        f"PO_DEFAULT_MODE={sq(model['skills_mcp']['default_mode'])}",
+        f"PO_SKILLS_MCP_NAME={sq(model['skills_mcp']['name'])}",
+        f"PO_SKILLS_MCP_SERVER={sq(model['skills_mcp']['server'])}",
+        f"PO_SKILLS_MCP_DIR={sq(model['skills_mcp']['dir'])}",
+        f"PO_SKILLS_MCP_SPEC={sq(model['skills_mcp']['spec_b64'])}",
         f"PO_TOOLS={sq(' '.join(t['id'] for t in tools))}",
         f"PO_DEFAULT_TOOLS={sq(' '.join(t['id'] for t in tools if t['default']))}",
         f"PO_HARNESS_TOOLS={sq(' '.join(t['id'] for t in tools if t.get('harness')))}",
@@ -249,6 +271,7 @@ def render_powershell(model: dict) -> str:
         "packs_rel": model["packs_rel"],
         "manifest": spec["manifest"],
         "pack_helper": spec["pack_helper"],
+        "skills_mcp": model["skills_mcp"],
         "locations": {name: forms["windows"] for name, forms in spec["locations"].items()},
         "tools": spec["tools"],
         "projects": spec["projects"],

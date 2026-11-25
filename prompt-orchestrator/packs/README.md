@@ -46,11 +46,15 @@ set `rea-frida` with no skill.
 ## Skills
 
 `packs/<pack-id>/skills/<skill-name>/` holds one skill in Agent Skills layout (`SKILL.md` plus the
-skill's own `scripts/`, `references/`, `assets/` and `LICENSE`). The installer copies the folder as is into
-the skills folder of each selected tool.
+skill's own `scripts/`, `references/`, `assets/` and `LICENSE`). The installer copies the folder as is.
+In mode mcp (the default), the copy goes to `<data_home>/skills-mcp/<pack-id>/<skill-name>/`. In mode
+skills, the copy goes into the skills folder of each selected tool. The section on install modes below
+has the details.
 
 - The folder name equals the front-matter `name`. The name matches `^[a-z0-9][a-z0-9-]*$`.
-- The description holds at most 1024 characters.
+- The description holds at most 1024 characters. The description is a plain scalar, a quoted scalar or
+  a `>` or `|` block scalar, because the `po-skills` index reader in `install/pack_helper.mjs` reads
+  these forms. The first sentence, cut at 200 characters, is the summary that `search_skills` shows.
 - Each skill folder belongs to exactly one set. A set may hold one skill.
 - A skill name may not repeat a core skill, a core workflow or a skill of another pack.
 - In a third-party pack, `SKILL.md` carries `origin: third-party`, `vetting: passed`, `vetted`, `license`,
@@ -128,7 +132,7 @@ client runs `npx` and no install follows `@latest`.
 | `env` | map of environment variables for the server |
 
 The validator rejects other keys, so a pack cannot set an auto-approval or trust field. It also rejects
-`npx` and `@latest`. The `"mcp"` key of a tool in `install/spec.json` names the config file and format
+`npx` and `@latest`, and the name `po-skills`, which the installer's own server uses. The `"mcp"` key of a tool in `install/spec.json` names the config file and format
 of each client that the engine can edit safely. Each entry looks like this:
 
 | Tool | File | Entry |
@@ -142,10 +146,54 @@ of each client that the engine can edit safely. Each entry looks like this:
 `install/pack_helper.mjs` makes every config edit, for `install.sh` and `install.ps1` alike. It
 inserts the one entry as a text fragment and keeps comments, key order, indentation and line endings.
 The manifest records the fragment. Removal deletes only that fragment, so the rest of the file stays
-byte-identical. An entry that the user changed after install stays in place with a warning. An existing
+byte-identical. When two installer entries share one config (a pack's own server and `po-skills`), the
+second entry inherits the claim of the first on the `mcpServers` container and on the file. After the
+last of the two entries goes, in either order, the installer removes the container or the file that
+the installer created. An entry that the user changed after install stays in place with a warning. An existing
 entry with the same name and other content also stays: the installer reports it and adds nothing.
 
-## Manifest kinds for npm and MCP
+## Install modes (`--mode mcp` and `--mode skills`)
+
+Mode mcp keeps the pack skills out of the skills folders of the tools. One local MCP server,
+`po-skills`, serves the skills on demand with the tools `search_skills`, `load_skill` and `list_packs`.
+`install/spec.json` holds the server settings under `skills_mcp`.
+
+| Key | Value |
+|---|---|
+| `default_mode` | `mcp`, the mode of a set that is not installed yet when `--mode` is absent |
+| `name` | `po-skills`, the server name in each client config |
+| `server` | `install/po_skills_server.mjs`, copied to `<data_home>/skills-mcp/server.mjs` |
+| `dir` | `skills-mcp`, the folder under `<data_home>` |
+| `command`, `args`, `env` | the server command; `{PACKAGE}` stands for `<data_home>/skills-mcp` |
+
+In mode mcp, the installer runs these steps for a set.
+
+1. The installer copies the skills of the set to `<data_home>/skills-mcp/<pack-id>/`.
+2. A tool with an `mcp` entry in `install/spec.json` gets no skill copy. The installer removes the
+   copies of an earlier mode skills install from the tool's skills folders. A tool without an `mcp`
+   entry (Antigravity, OpenClaw) gets skill copies.
+3. After the last set, `pack_helper.mjs skills-index` builds `<data_home>/skills-mcp/index.json` from the
+   manifest and the `SKILL.md` front matter.
+4. The installer registers `po-skills` once in the config of each selected tool. The edit uses the same
+   helper and the same byte-identical removal as a pack's own MCP server.
+
+Without `--mode`, an installed set keeps its mode. `--mode mcp` on a set in mode skills removes the
+skill copies that the manifest records and switches the set. `--mode skills` does the reverse. Removal
+of the last mode mcp set removes the server, the index and each `po-skills` entry.
+
+Mode mcp needs Node.js 18 or later. The installer stops before the first write when `node` is missing
+and names `--mode skills` as the alternative. Release packs (`procable`) ignore the mode, because the
+release engine installs the skill. A set without skills (`rea-frida`) has no mode.
+
+## Manifest owners and kinds for npm and MCP
+
+| Owner | Records |
+|---|---|
+| `pack:<pack-id>:<set>:<tool>` | skill copies in the tool's skills folder (mode skills) and a pack's own MCP entry |
+| `pack:<pack-id>:<set>:mcp` | skill copies in `<data_home>/skills-mcp/<pack-id>/` (mode mcp) |
+| `po-skills` | `server.mjs` and `index.json` in `<data_home>/skills-mcp/` |
+| `po-skills:<tool>` | the `po-skills` entry in the tool's MCP config |
+
 
 | Kind | Path | Removal |
 |---|---|---|
@@ -163,6 +211,8 @@ entry with the same name and other content also stays: the installer reports it 
 ```bash
 bash install/install.sh packs list
 bash install/install.sh packs install claude-red-offense:web,recon
+bash install/install.sh packs install logo-design --mode skills
+bash install/install.sh packs install logo-design --mode mcp
 bash install/install.sh packs remove claude-red-offense
 bash install/install.sh packs install rea --tools claude,codex,cursor,gemini,opencode
 bash install/install.sh packs install rea:rea,rea-frida
