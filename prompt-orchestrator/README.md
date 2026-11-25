@@ -302,8 +302,11 @@ take precedence over its directives.
 
 procable is the opt-in pack `procable`. The installer downloads the release pinned in
 `packs/procable/procable.lock.json` once, checks `SHA256SUMS` against the pinned digest and each file
-against `SHA256SUMS`, runs procable's own installer at user scope, and places the engine next to each
-installed skill. For a machine without network, pass a folder that already holds the release:
+against `SHA256SUMS`, and runs procable's own installer. Mode mcp is the default. In mode mcp, the
+skill and its engine go to `<data_home>/skills-mcp/procable/procable/`. The `po-skills` MCP server
+serves the skill, and the Claude Code and Codex hooks run the engine from that folder. With
+`--mode skills`, procable's installer puts the skill into the skills folder of each tool, and the
+installer places the engine next to each copy. For a machine without network, pass a folder that already holds the release:
 
 ```bash
 bash install/install.sh packs install procable

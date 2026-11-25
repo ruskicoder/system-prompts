@@ -413,22 +413,38 @@ function Test-PoJsonHas([string]$File, [string]$Needle) {
     return $text.Contains($Needle.Replace('\', '/'))
 }
 
-function Remove-PoJsonHooks([string]$File, [string]$Needle) {
-    if (-not (Test-PoJsonHas $File $Needle)) { return }
-    $data = (Read-PoText $File) | ConvertFrom-Json
-    if (-not $data.hooks) { return }
-    $removed = 0
-    foreach ($prop in @($data.hooks.PSObject.Properties)) {
-        $groups = @()
-        foreach ($g in @($prop.Value)) {
-            $entries = @($g.hooks)
-            $kept = @($entries | Where-Object { -not ([string]$_.command).Replace('\', '/').Contains($Needle) })
-            $removed += $entries.Count - $kept.Count
-            if ($kept.Count -gt 0) { $g.hooks = $kept; $groups += $g }
-        }
-        if ($groups.Count -gt 0) { $prop.Value = $groups } else { $data.hooks.PSObject.Properties.Remove($prop.Name) }
+function Remove-PoJsonHooks([string]$File, [string]$Needle, [string]$Keep) {  # $Keep: copy of the file before install, or -
+    if (-not $Keep -or $Keep -eq '-' -or -not (Test-Path -LiteralPath $Keep -PathType Leaf)) { $Keep = '' }
+    if (-not (Test-Path -LiteralPath $File -PathType Leaf) -or (-not $Keep -and -not (Test-PoJsonHas $File $Needle))) {
+        if ($Keep) { Remove-Item -LiteralPath $Keep -Force }
+        return
     }
-    if ($removed -gt 0) { Write-PoText $File (($data | ConvertTo-Json -Depth 32) + "`n"); Add-PoChange }
+    $data = (Read-PoText $File) | ConvertFrom-Json
+    $removed = 0
+    if ($data.hooks) {
+        foreach ($prop in @($data.hooks.PSObject.Properties)) {
+            $groups = @()
+            foreach ($g in @($prop.Value)) {
+                $entries = @($g.hooks)
+                $kept = @($entries | Where-Object { -not ([string]$_.command).Replace('\', '/').Contains($Needle) })
+                $removed += $entries.Count - $kept.Count
+                if ($kept.Count -gt 0) { $g.hooks = $kept; $groups += $g }
+            }
+            if ($groups.Count -gt 0) { $prop.Value = $groups } else { $data.hooks.PSObject.Properties.Remove($prop.Name) }
+        }
+    }
+    $restored = $false
+    if ($Keep) {
+        # the file holds what it held before the install: give back its exact bytes
+        $now = $data | ConvertTo-Json -Depth 32 -Compress
+        $was = (Read-PoText $Keep) | ConvertFrom-Json | ConvertTo-Json -Depth 32 -Compress
+        if ($now -ceq $was) {
+            if ((Get-PoFileHash $File) -ne (Get-PoFileHash $Keep)) { Copy-Item -LiteralPath $Keep -Destination $File -Force; Add-PoChange }
+            $restored = $true
+        }
+        Remove-Item -LiteralPath $Keep -Force
+    }
+    if ($removed -gt 0 -and -not $restored) { Write-PoText $File (($data | ConvertTo-Json -Depth 32) + "`n"); Add-PoChange }
 }
 
 function Add-PoJsonHooks([string]$File, [string]$Command, $Hooks) {
@@ -490,7 +506,7 @@ function Remove-PoRecords($Records, [string]$Removing) {
                 if ($cur -and ($cur.Replace('/', $script:Sep) -eq $r.Path)) { & git config --global --unset core.hooksPath | Out-Null; Add-PoChange }
             }
         } elseif ($r.Extra.StartsWith('json-strip:')) {
-            Remove-PoJsonHooks $r.Path $r.Extra.Substring(11)
+            Remove-PoJsonHooks $r.Path $r.Extra.Substring(11) $r.Hash
         } elseif ($r.Extra.StartsWith('npm-rm:')) {
             Remove-PoNpmPackage $r.Path $r.Extra.Substring(7)
         }
@@ -685,6 +701,7 @@ function Get-PoSetMode([string]$PackId, [string]$SetId) {  # --mode wins; an ins
     if ($script:Mode) { return $script:Mode }
     if (Test-PoOwner "pack:${PackId}:${SetId}:mcp") { return 'mcp' }
     if ((Get-PoSetCopyTools $PackId $SetId).Count -gt 0) { return 'skills' }
+    if ((Get-PoPack $PackId)['kind'] -eq 'release' -and (Test-PoOwner "pack:${PackId}:${SetId}:all")) { return 'skills' }
     return $PO_Data['skills_mcp']['default_mode']
 }
 
@@ -1033,8 +1050,42 @@ function Get-PoPlatform {
     return @('linux', $arch)
 }
 
+function Expand-PoStagePath([string]$Stage, [string]$Text) {  # the path that the release engine sees under the stage
+    $saved = $script:Loc
+    $script:Loc = [ordered]@{}
+    foreach ($k in $saved.Keys) { $script:Loc[$k] = $saved[$k] }
+    $script:Loc['HOME'] = $Stage
+    $script:Loc['CODEX_HOME'] = Join-Path $Stage '.codex'
+    $script:Loc['OPENCODE'] = Join-Path (Join-Path $Stage '.config') 'opencode'
+    try { return Expand-PoPath $Text } finally { $script:Loc = $saved }
+}
+
+function Add-PoHooks([string]$File, [string]$Groups) {  # hook groups as text fragments that the manifest records
+    $old = '-'
+    foreach ($r in $script:Old) { if ($r.Kind -eq 'm' -and $r.Path -eq $File) { $old = $r.Extra } }
+    New-PoDir (Split-Path -Parent $File)
+    $out = & node $script:Helper hooks-add $File $Groups $old
+    if ($LASTEXITCODE -ne 0) { Stop-Po "cannot add the hooks to $File" }
+    $parts = ([string](@($out) | Select-Object -Last 1)).Split("`t")
+    switch ($parts[0]) {
+        'added' { Add-PoChange; Write-PoSay "  hooks -> $File"; Add-PoRecord 'm' $File 'hooks' $parts[2] }
+        'present' { Add-PoRecord 'm' $File 'hooks' $parts[2] }
+        'foreign' { Write-PoSay "  $File already holds these hooks; the installer leaves them unmanaged" }
+        default { Write-PoWarn "hooks not added to $File" }
+    }
+}
+
+function Invoke-PoEngine([string]$EngineFile, $Argv, $EnvVars) {  # run the release engine with extra environment variables
+    $saved = @{}
+    foreach ($k in $EnvVars.Keys) { $saved[$k] = [Environment]::GetEnvironmentVariable($k); [Environment]::SetEnvironmentVariable($k, $EnvVars[$k]) }
+    try { & $EngineFile @Argv | Out-Host; $code = $LASTEXITCODE }
+    finally { foreach ($k in $saved.Keys) { [Environment]::SetEnvironmentVariable($k, $saved[$k]) } }
+    return $code
+}
+
 function Install-PoRelease($Pack, $Set, $Tools) {
     $rel = $Pack['release']
+    $sm = $PO_Data['skills_mcp']
     $packsDir = Join-Path $PO_Root $PO_Data['packs_rel']
     $lockPath = Join-Path (Join-Path $packsDir $Pack['id']) $rel['lock']
     $lock = (Read-PoText $lockPath) | ConvertFrom-Json
@@ -1043,9 +1094,22 @@ function Install-PoRelease($Pack, $Set, $Tools) {
     $engine = $rel['engine'].Replace('{os}', $os).Replace('{arch}', $arch)
     if ($os -eq 'windows') { $engine += '.exe' }
     $skill = @($Set['skills'])[0]
+    $mode = Get-PoSetMode $Pack['id'] $Set['id']
     $providers = @()
-    foreach ($t in $Tools) { $p = $rel['providers'][$t]; if ($p -and $providers -notcontains $p) { $providers += $p } }
-    if ($providers.Count -eq 0) { Write-PoSay "  no selected tool is supported by $($Pack['id'])"; return }
+    $skipped = @()
+    foreach ($t in $Tools) {
+        $p = $rel['providers'][$t]
+        if (-not $p) { continue }
+        $tool = Get-PoTool $t
+        if ($mode -eq 'mcp' -and -not $tool['mcp']) { $skipped += $tool['label']; continue }
+        if ($mode -eq 'mcp' -and $script:McpTools -notcontains $t) { $script:McpTools += $t }
+        if ($providers -notcontains $p) { $providers += $p }
+    }
+    if ($mode -eq 'mcp') {
+        if (-not (Get-Command node -ErrorAction SilentlyContinue)) { Stop-Po "mode mcp needs Node.js 18 or later on PATH for the $($sm['name']) MCP server; install Node.js or use --mode skills" }
+        if ($skipped.Count -gt 0) { Write-PoSay "  mode mcp: $($skipped -join ', ') has no MCP config that the installer edits: it gets no $skill skill (use --mode skills)" }
+    }
+    if ($providers.Count -eq 0) { Write-PoSay "  no selected tool is supported by $($Pack['id']) in mode $mode"; return }
     $providers = @($providers | Sort-Object)
     $tag = $rel['tag'].Replace('{version}', $lock.version)
     $base = "https://github.com/$($lock.repo)/releases/download/$tag"
@@ -1056,13 +1120,15 @@ function Install-PoRelease($Pack, $Set, $Tools) {
     } else {
         $src = Join-Path (Join-Path (Join-Path $script:DataHome 'packages') $Pack['id']) $lock.version
     }
-    Write-PoSay "  $($Pack['id']) $($lock.version) for $($providers -join ',') ($os-$arch) from $src"
+    $dest = Join-Path (Join-Path (Join-Path $script:DataHome $sm['dir']) $Pack['id']) $skill
+    Write-PoSay "  $($Pack['id']) $($lock.version) for $($providers -join ',') ($os-$arch, mode $mode) from $src"
     if ($script:Dry) {
         Write-PoSay "  would verify SHA256SUMS against $($lock.sha256sums) and run $engine install --global --yes --providers=$($providers -join ',')"
+        if ($mode -eq 'mcp') { Write-PoSay "  would copy the $skill skill and its engine to $dest and point its hooks there" }
         Add-PoChange
         return
     }
-    Start-PoOwner "pack:$($Pack['id']):$($Set['id']):all"
+    Start-PoOwner "pack:$($Pack['id']):payload"
     if (-not $bundleDir) {
         New-PoDir $src
         foreach ($name in @('SHA256SUMS', $rel['bundle'], $engine)) {
@@ -1075,6 +1141,7 @@ function Install-PoRelease($Pack, $Set, $Tools) {
             Add-PoRecord 'x' $file (Get-PoFileHash $file)
         }
     }
+    Complete-PoOwner
     if ((Get-PoFileHash (Join-Path $src 'SHA256SUMS')) -ne $lock.sha256sums) {
         Stop-Po "$src\SHA256SUMS does not match the digest pinned in $lockPath; refusing to install"
     }
@@ -1087,41 +1154,122 @@ function Install-PoRelease($Pack, $Set, $Tools) {
         if (-not $sums.ContainsKey($name)) { Stop-Po "SHA256SUMS lists no $name" }
         if ((Get-PoFileHash (Join-Path $src $name)) -ne $sums[$name]) { Stop-Po "$src\$name fails its checksum; refusing to install" }
     }
-    $track = @()
-    foreach ($r in $rel['skill_roots']) { $track += (Join-Path (Expand-PoPath $r) $skill) }
-    foreach ($f in $rel['hook_files']) { $track += (Expand-PoPath $f) }
-    Start-PoTrack $track
     $engineFile = Join-Path $src $engine
     $argv = @('install', '--global', '--yes', "--providers=$($providers -join ',')")
     if ($script:ReleaseNoHooks) { $argv += '--no-hooks' }
-    Write-PoSay "  `$ $engineFile $($argv -join ' ')"
-    $old = [Environment]::GetEnvironmentVariable($rel['bundle_env'])
-    [Environment]::SetEnvironmentVariable($rel['bundle_env'], (Join-Path $src $rel['bundle']))
-    try { & $engineFile @argv | Out-Host; $code = $LASTEXITCODE } finally { [Environment]::SetEnvironmentVariable($rel['bundle_env'], $old) }
-    if ($code -ne 0) { Stop-Po "the $($Pack['id']) installer exited with $code" }
+    $bundleEnv = @{ $rel['bundle_env'] = (Join-Path $src $rel['bundle']) }
     $bin = $skill
     if ($os -eq 'windows') { $bin += '.exe' }
-    foreach ($r in $rel['skill_roots']) {
-        $dir = Join-Path (Expand-PoPath $r) $skill
-        if (-not (Test-Path -LiteralPath (Join-Path $dir 'SKILL.md'))) { continue }
-        $binDir = Join-Path (Join-Path (Join-Path $dir 'scripts') 'bin') "$os-$arch"
-        $dest = Join-Path $binDir $bin
-        if (-not (Test-Path -LiteralPath $dest) -or (Get-PoFileHash $dest) -ne (Get-PoFileHash $engineFile)) {
-            New-PoDir $binDir
-            Copy-Item -LiteralPath $engineFile -Destination $dest -Force
+    $setOwner = "pack:$($Pack['id']):$($Set['id'])"
+    if ($mode -eq 'mcp') {
+        # a switch from mode skills: the engine's copies and hooks go first
+        if (Test-PoOwner "${setOwner}:all") { Remove-PoOwner "${setOwner}:all" }
+        # the engine installs into an empty home under the temporary folder; only its skill folder and
+        # its hooks move on, to <data_home>/skills-mcp and the real hook files
+        $stage = Join-Path (Get-PoTmp) 'release-stage'
+        if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
+        New-Item -ItemType Directory -Force -Path $stage | Out-Null
+        Write-PoSay "  `$ $engineFile $($argv -join ' ') (HOME=$stage)"
+        $vars = @{ 'HOME' = $stage; 'USERPROFILE' = $stage; 'CODEX_HOME' = (Join-Path $stage '.codex')
+                   'XDG_CONFIG_HOME' = (Join-Path $stage '.config'); 'XDG_DATA_HOME' = (Join-Path (Join-Path $stage '.local') 'share')
+                   'APPDATA' = (Join-Path (Join-Path $stage 'AppData') 'Roaming'); 'LOCALAPPDATA' = (Join-Path (Join-Path $stage 'AppData') 'Local') }
+        foreach ($k in $bundleEnv.Keys) { $vars[$k] = $bundleEnv[$k] }
+        $code = Invoke-PoEngine $engineFile $argv $vars
+        if ($code -ne 0) { Stop-Po "the $($Pack['id']) installer exited with $code" }
+        $dir = $null
+        foreach ($r in $rel['skill_roots']) {
+            $d = Join-Path (Expand-PoStagePath $stage $r) $skill
+            if (-not $dir -and (Test-Path -LiteralPath (Join-Path $d 'SKILL.md') -PathType Leaf)) { $dir = $d }
         }
-        Write-PoSay "  engine -> $dest"
+        if (-not $dir) {
+            $found = Get-ChildItem -LiteralPath $stage -Recurse -File -Force -Filter 'SKILL.md' |
+                Where-Object { $_.Directory.Name -eq $skill } | Sort-Object FullName | Select-Object -First 1
+            if ($found) { $dir = $found.Directory.FullName }
+        }
+        if (-not $dir) { Stop-Po "the $($Pack['id']) installer put no $skill\SKILL.md under $stage" }
+        $binDir = Join-Path (Join-Path (Join-Path $dir 'scripts') 'bin') "$os-$arch"
+        New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+        Copy-Item -LiteralPath $engineFile -Destination (Join-Path $binDir $bin) -Force
+        if ($os -ne 'windows') { & chmod +x (Join-Path $binDir $bin) }
+        Write-PoSay "  mode mcp: the $($sm['name']) MCP server serves $skill from $dest"
+        Start-PoOwner "${setOwner}:mcp"
+        Copy-PoTree $dir $dest
+        Write-PoSay "  engine -> $(Join-Path (Join-Path (Join-Path (Join-Path $dest 'scripts') 'bin') "$os-$arch") $bin)"
+        if (-not $script:ReleaseNoHooks) {
+            $codexHooks = Join-Path $script:Loc['CODEX_HOME'] 'hooks.json'
+            foreach ($f in $rel['hook_files']) {
+                $staged = Expand-PoStagePath $stage $f
+                $real = Expand-PoPath $f
+                $groups = '-'
+                if (Test-Path -LiteralPath $staged -PathType Leaf) {
+                    $groups = ([string](@(& node $script:Helper hooks-groups staged $staged $stage $skill $dest) | Select-Object -Last 1)).Trim()
+                    if ($LASTEXITCODE -ne 0) { Stop-Po "cannot read the hooks in $staged" }
+                }
+                # the engine writes Codex hooks only at project scope; the pack lists them for user scope
+                if ($groups -eq '-' -and $real -eq $codexHooks -and $providers -contains 'codex') {
+                    $launcher = Join-Path (Join-Path $dest 'scripts') $skill
+                    if ($os -eq 'windows') { $launcher += '.cmd' }
+                    $spec = @($rel['codex_hooks'] | ForEach-Object {
+                        $m = $_['matcher']; if (-not $m) { $m = '-' }
+                        "$($_['event'])`t$m`t$($_['timeout'])`t$($_['status'])" }) -join "`n"
+                    $groups = ([string](@(& node $script:Helper hooks-groups spec $launcher $spec) | Select-Object -Last 1)).Trim()
+                    if ($LASTEXITCODE -ne 0) { Stop-Po "cannot build the Codex hooks" }
+                }
+                if ($groups -ne '-') { Add-PoHooks $real $groups }
+            }
+        }
+        Complete-PoOwner
+        Remove-Item -LiteralPath $stage -Recurse -Force
+    } else {
+        # a switch from mode mcp: the skills-mcp copy and its hooks go first
+        if (Test-PoOwner "${setOwner}:mcp") { Remove-PoOwner "${setOwner}:mcp" }
+        Start-PoOwner "${setOwner}:all"
+        # a copy of each hook file as the user had it, so that removal can give back its exact bytes
+        $keeps = [ordered]@{}
+        foreach ($f in $rel['hook_files']) {
+            $real = Expand-PoPath $f
+            $keep = ''
+            foreach ($r in $script:Old) { if ($r.Kind -eq 'u' -and $r.Path -eq $real -and $r.Hash -ne '-') { $keep = $r.Hash } }
+            if (-not $keep -or -not (Test-Path -LiteralPath $keep -PathType Leaf)) {
+                $keep = '-'
+                if ((Test-Path -LiteralPath $real -PathType Leaf) -and -not (Test-PoJsonHas $real "$skill/scripts/$skill")) {
+                    $dir = Join-Path (Join-Path $script:DataHome 'backups') 'release-hooks'
+                    $keep = Join-Path $dir ((Get-PoTextHash $real).Substring(0, 16) + '.json')
+                    New-PoDir $dir
+                    Copy-Item -LiteralPath $real -Destination $keep -Force
+                }
+            }
+            $keeps[$real] = $keep
+        }
+        $track = @()
+        foreach ($r in $rel['skill_roots']) { $track += (Join-Path (Expand-PoPath $r) $skill) }
+        foreach ($f in $rel['hook_files']) { $track += (Expand-PoPath $f) }
+        Start-PoTrack $track
+        Write-PoSay "  `$ $engineFile $($argv -join ' ')"
+        $code = Invoke-PoEngine $engineFile $argv $bundleEnv
+        if ($code -ne 0) { Stop-Po "the $($Pack['id']) installer exited with $code" }
+        foreach ($r in $rel['skill_roots']) {
+            $dir = Join-Path (Expand-PoPath $r) $skill
+            if (-not (Test-Path -LiteralPath (Join-Path $dir 'SKILL.md'))) { continue }
+            $binDir = Join-Path (Join-Path (Join-Path $dir 'scripts') 'bin') "$os-$arch"
+            $target = Join-Path $binDir $bin
+            if (-not (Test-Path -LiteralPath $target) -or (Get-PoFileHash $target) -ne (Get-PoFileHash $engineFile)) {
+                New-PoDir $binDir
+                Copy-Item -LiteralPath $engineFile -Destination $target -Force
+            }
+            Write-PoSay "  engine -> $target"
+        }
+        $codexDir = Join-Path (Join-Path (Join-Path $script:Loc['HOME'] '.agents') 'skills') $skill
+        if ($providers -contains 'codex' -and -not $script:ReleaseNoHooks -and (Test-Path -LiteralPath (Join-Path $codexDir 'SKILL.md'))) {
+            $launcher = Join-Path (Join-Path $codexDir 'scripts') $skill
+            if ($os -eq 'windows') { $launcher += '.cmd' }
+            $hooksFile = Join-Path $script:Loc['CODEX_HOME'] 'hooks.json'
+            if (Add-PoJsonHooks $hooksFile "`"$launcher`" hook" $rel['codex_hooks']) { Write-PoSay "  codex hooks added to $hooksFile" }
+        }
+        Complete-PoTrack
+        foreach ($real in $keeps.Keys) { Add-PoRecord 'u' $real $keeps[$real] "json-strip:$skill/scripts/$skill" }
+        Complete-PoOwner
     }
-    $codexDir = Join-Path (Join-Path (Join-Path $script:Loc['HOME'] '.agents') 'skills') $skill
-    if ($providers -contains 'codex' -and -not $script:ReleaseNoHooks -and (Test-Path -LiteralPath (Join-Path $codexDir 'SKILL.md'))) {
-        $launcher = Join-Path (Join-Path $codexDir 'scripts') $skill
-        if ($os -eq 'windows') { $launcher += '.cmd' }
-        $hooksFile = Join-Path $script:Loc['CODEX_HOME'] 'hooks.json'
-        if (Add-PoJsonHooks $hooksFile "`"$launcher`" hook" $rel['codex_hooks']) { Write-PoSay "  codex hooks added to $hooksFile" }
-    }
-    Complete-PoTrack
-    foreach ($f in $rel['hook_files']) { Add-PoRecord 'u' (Expand-PoPath $f) '-' "json-strip:$skill/scripts/$skill" }
-    Complete-PoOwner
     Write-PoSay "==> $($Pack['id']) $($lock.version) installed; it runs offline."
 }
 
@@ -1180,6 +1328,7 @@ function Show-PoPacks {
             if ($mark -eq 'x') {
                 if ($owners -ccontains "pack:$($p['id']):$($s['id']):mcp") { $mode = ' [mcp]' }
                 elseif ((Get-PoSetCopyTools $p['id'] $s['id']).Count -gt 0) { $mode = ' [skills]' }
+                elseif ($p['kind'] -eq 'release') { $mode = ' [skills]' }
             }
             Write-PoSay "  [$mark] $($p['id']):$($s['id']) ($($s['count']) skills)$mode $($s['description'])$(Get-PoNeedsNote $s)"
         }

@@ -10,6 +10,9 @@
 //   node pack_helper.mjs mcp-add FORMAT FILE NAME SPEC_B64 PACKAGE_DIR [RECORD_B64 [OTHERS]]
 //   node pack_helper.mjs mcp-remove RECORD_B64
 //   node pack_helper.mjs skills-index MANIFEST ROOT OUT
+//   node pack_helper.mjs hooks-groups staged FILE STAGE SKILL DEST
+//   node pack_helper.mjs hooks-groups spec LAUNCHER SPEC
+//   node pack_helper.mjs hooks-add FILE GROUPS_B64 [RECORD_B64]
 //
 // mcp-add prints "status<TAB>file<TAB>record". The status is added, present, foreign or
 // conflict. The record is base64 JSON that mcp-remove needs, or "-". mcp-remove prints removed,
@@ -22,6 +25,16 @@
 // skills-index writes the index of the po-skills MCP server to OUT. It reads the skills that the
 // manifest records for the owners pack:<pack>:<set>:mcp under ROOT (<data_home>/skills-mcp) and
 // takes each name and description from the SKILL.md front matter. It prints the skill count.
+//
+// The hooks commands serve a release pack in mode mcp. hooks-groups prints the hook groups as base64
+// JSON, or "-" when there are none. Source staged reads a settings file that the release engine wrote
+// under the folder STAGE. It keeps each group whose strings name the skill folder STAGE/.../SKILL and
+// writes DEST in place of that folder. Source spec builds one group per line of SPEC, "event<TAB>
+// matcher<TAB>timeout<TAB>status" (matcher "-" for none), around the command "LAUNCHER" hook.
+// hooks-add appends each group to the array hooks.<event> of FILE as one text fragment and prints
+// "status<TAB>file<TAB>record" like mcp-add. mcp-remove takes that record too. It deletes the
+// fragments in reverse order, so the file returns to its bytes before the install. It also removes a
+// hooks object, an event array or a file that hooks-add created, once that part is empty.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -149,7 +162,7 @@ class Parser {
       else if (this.text[this.i] !== "]") this.fail("expected , or ]");
     }
     this.i++;
-    return { type: "array", start, end: this.i, value: items.map((x) => x.value) };
+    return { type: "array", start, end: this.i, items, value: items.map((x) => x.value) };
   }
 
   object() {
@@ -402,6 +415,188 @@ function tomlRemove(rec, text) {
   return { status: tomlMentions(text, FORMATS.codex.container, rec.name) ? "changed" : "absent" };
 }
 
+// ------------------------------------------------------------------ hook groups (release packs)
+
+function hookArray(text, event) {
+  const root = parseJsonc(text);
+  if (root.type !== "object") throw new Error("the top level is not an object");
+  const box = find(root, "hooks");
+  if (box && box.member.value.type !== "object") throw new Error("hooks is not an object");
+  const arr = box && find(box.member.value, event);
+  if (arr && arr.member.value.type !== "array") throw new Error(`hooks.${event} is not an array`);
+  return { root, box, arr };
+}
+
+function countGroup(text, event, group) {
+  const { arr } = hookArray(text, event);
+  return arr ? arr.member.value.items.filter((it) => deepEqual(it.value, group)).length : 0;
+}
+
+function insertElement(text, arr, value, unit, eol) {
+  const items = arr.items;
+  const own = lineIndent(text, arr.start).indent;
+  if (items.length) {
+    const last = items[items.length - 1];
+    const li = lineIndent(text, last.start);
+    const indent = li.startsLine ? li.indent : own + unit;
+    return { at: last.end, fragment: "," + eol + indent + render(value, unit, indent, eol) };
+  }
+  const indent = own + unit;
+  return { at: arr.start + 1, fragment: eol + indent + render(value, unit, indent, eol) + eol + own };
+}
+
+function removeElement(text, arr, index) {
+  const items = arr.items;
+  if (items.length === 1) return text.slice(0, arr.start + 1) + text.slice(arr.end - 1);
+  if (index < items.length - 1) return text.slice(0, items[index].start) + text.slice(items[index + 1].start);
+  return text.slice(0, items[index - 1].end) + text.slice(items[index].end);
+}
+
+function hookInsert(text, event, group) {
+  if (!text.trim()) {
+    const created = JSON.stringify({ hooks: { [event]: [group] } }, null, 2) + "\n";
+    return { text: created, item: { event, group, created: "file", fragment: created } };
+  }
+  const { root, box, arr } = hookArray(text, event);
+  const eol = text.includes("\r\n") ? "\r\n" : "\n";
+  const unit = indentUnit(text, root);
+  let ins;
+  let created;
+  if (arr) {
+    ins = insertElement(text, arr.member.value, group, unit, eol);
+    created = "none";
+  } else if (box) {
+    ins = insertMember(text, box.member.value, event, [group], unit, eol);
+    created = "event";
+  } else {
+    ins = insertMember(text, root, "hooks", { [event]: [group] }, unit, eol);
+    created = "hooks";
+  }
+  const next = text.slice(0, ins.at) + ins.fragment + text.slice(ins.at);
+  parseJsonc(next);
+  return { text: next, item: { event, group, created, fragment: ins.fragment } };
+}
+
+// Drop an event array, then the hooks object, then the file, as far as hooks-add created them.
+function hookTidy(text, item) {
+  let next = text;
+  const deep = { none: 0, event: 1, hooks: 2, file: 3 }[item.created] || 0;
+  let { root, box, arr } = hookArray(next, item.event);
+  if (deep >= 1 && arr && !arr.member.value.items.length) {
+    next = removeMember(next, box.member.value, arr.index);
+    ({ root, box } = hookArray(next, item.event));
+  }
+  if (deep >= 2 && box && !box.member.value.members.length) {
+    next = removeMember(next, root, box.index);
+    root = parseJsonc(next);
+  }
+  if (deep >= 3 && !root.members.length) return { unlink: true };
+  return { text: next };
+}
+
+function hookRemoveItem(text, item) {
+  if (item.created === "file" && text === item.fragment) return { status: "removed", unlink: true };
+  const before = countGroup(text, item.event, item.group);
+  if (!before) return { status: "absent", text };
+  const at = text.indexOf(item.fragment);
+  if (at >= 0 && text.indexOf(item.fragment, at + 1) < 0) {
+    const next = text.slice(0, at) + text.slice(at + item.fragment.length);
+    try {
+      if (countGroup(next, item.event, item.group) === before - 1) return { status: "removed", text: next };
+    } catch {
+      // the fragment no longer stands alone; fall back to the structure
+    }
+  }
+  const { arr } = hookArray(text, item.event);
+  const items = arr.member.value.items;
+  let index = -1;
+  for (let k = items.length - 1; k >= 0 && index < 0; k--) if (deepEqual(items[k].value, item.group)) index = k;
+  const tidy = hookTidy(removeElement(text, arr.member.value, index), item);
+  return { status: "removed", ...tidy };
+}
+
+function hooksRemove(rec, text) {
+  let next = text;
+  let removed = false;
+  for (const item of [...rec.items].reverse()) {
+    const r = hookRemoveItem(next, item);
+    if (r.unlink) return { status: "removed", unlink: true };
+    if (r.status === "removed") removed = true;
+    next = r.text;
+  }
+  return removed ? { status: "removed", text: next } : { status: "absent" };
+}
+
+function escapeStage(stage) {
+  return stage.split(/[\\/]+/).filter(Boolean).map(escapeRe).join("[\\\\/]+");
+}
+
+function rewrite(value, re, dest) {
+  if (typeof value === "string") return value.replace(re, dest);
+  if (Array.isArray(value)) return value.map((v) => rewrite(v, re, dest));
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, rewrite(v, re, dest)]));
+  return value;
+}
+
+function hooksGroups([source, ...args]) {
+  const groups = [];
+  if (source === "staged") {
+    const [file, stage, skill, dest] = args;
+    if (!file || !stage || !skill || !dest) die("usage: pack_helper.mjs hooks-groups staged FILE STAGE SKILL DEST");
+    const lead = /^[\\/]/.test(stage) ? "[\\\\/]+" : "";
+    const flags = process.platform === "win32" ? "gi" : "g";
+    const re = new RegExp(`${lead}${escapeStage(stage)}[\\\\/]+(?:[^"']*?[\\\\/]+)?${escapeRe(skill)}(?=[\\\\/]|["']|$)`, flags);
+    const hooks = (parseJsonc(fs.readFileSync(file, "utf8")).value || {}).hooks || {};
+    for (const [event, list] of Object.entries(hooks)) {
+      for (const group of Array.isArray(list) ? list : []) {
+        const moved = rewrite(group, re, dest);
+        if (!deepEqual(moved, group)) groups.push({ event, group: moved });
+      }
+    }
+  } else if (source === "spec") {
+    const [launcher, spec] = args;
+    if (!launcher || spec === undefined) die("usage: pack_helper.mjs hooks-groups spec LAUNCHER SPEC");
+    const command = `"${launcher}" hook`;
+    for (const line of spec.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      const [event, matcher, timeout, status] = line.split("\t");
+      const hook = { type: "command", command, timeout: Number(timeout), statusMessage: status };
+      groups.push({ event, group: matcher && matcher !== "-" ? { matcher, hooks: [hook] } : { hooks: [hook] } });
+    }
+  } else die("usage: pack_helper.mjs hooks-groups staged|spec ...");
+  process.stdout.write(groups.length ? `${b64(groups)}\n` : "-\n");
+}
+
+function hooksAdd([file, groupsB64, oldB64]) {
+  if (!file || !groupsB64) die("usage: pack_helper.mjs hooks-add FILE GROUPS_B64 [RECORD_B64]");
+  const groups = groupsB64 === "-" ? [] : unb64(groupsB64);
+  const old = oldB64 && oldB64 !== "-" ? unb64(oldB64) : null;
+  let text = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
+  const items = [];
+  let added = 0;
+  try {
+    for (const { event, group } of groups) {
+      if (text.trim() && countGroup(text, event, group)) {
+        const was = old && (old.items || []).find((it) => it.event === event && deepEqual(it.group, group));
+        if (was) items.push(was);
+        else process.stderr.write(`pack_helper: ${file} already holds a ${event} hook group of its own; the installer leaves it unmanaged\n`);
+        continue;
+      }
+      const r = hookInsert(text, event, group);
+      text = r.text;
+      items.push(r.item);
+      added++;
+    }
+  } catch (error) {
+    process.stderr.write(`pack_helper: cannot edit ${file}: ${error.message}\n`);
+    process.stdout.write(`conflict\t${file}\t-\n`);
+    return;
+  }
+  if (added) writeAtomic(file, text);
+  const record = items.length ? b64({ format: "hooks", file, name: "hooks", items }) : "-";
+  process.stdout.write(`${added ? "added" : items.length ? "present" : "foreign"}\t${file}\t${record}\n`);
+}
+
 // ------------------------------------------------------------------ files
 
 function target(file) {
@@ -476,7 +671,8 @@ function mcpRemove([recB64]) {
   const text = fs.readFileSync(rec.file, "utf8");
   let result;
   try {
-    result = FORMATS[rec.format].kind === "toml" ? tomlRemove(rec, text) : jsonRemove(rec, text);
+    if (rec.format === "hooks") result = hooksRemove(rec, text);
+    else result = FORMATS[rec.format].kind === "toml" ? tomlRemove(rec, text) : jsonRemove(rec, text);
   } catch (error) {
     process.stderr.write(`pack_helper: cannot parse ${rec.file}: ${error.message}\n`);
     result = { status: "changed" };
@@ -655,6 +851,12 @@ switch (command) {
   case "skills-index":
     skillsIndex(rest);
     break;
+  case "hooks-groups":
+    hooksGroups(rest);
+    break;
+  case "hooks-add":
+    hooksAdd(rest);
+    break;
   default:
-    die("usage: pack_helper.mjs node-check|platform|npm-check|mcp-add|mcp-remove|skills-index ...");
+    die("usage: pack_helper.mjs node-check|platform|npm-check|mcp-add|mcp-remove|skills-index|hooks-groups|hooks-add ...");
 }

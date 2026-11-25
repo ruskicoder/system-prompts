@@ -590,10 +590,13 @@ po_change() { PO_CHANGES=$((PO_CHANGES + 1)); }
 # One line per record: owner, kind, path, hash, extra (tab separated). Kinds: f file (exact
 # copy), d document (compared without the harness block), x file made by an external step,
 # b marker block in a shared file, k backup of a replaced file or folder, u undo step,
-# h harness install, m MCP server entry in a client config (extra: helper record),
+# h harness install, m MCP server entry in a client config or hook groups in a hook file (extra:
+# helper record),
 # n private npm prefix of a pack, D folder the installer created (owner @dirs).
 # Owners: core:<tool>, harness:<tool>, pack:<pack>:<set>:<tool> (skill copies, a pack's own MCP
-# entry), pack:<pack>:<set>:mcp (mode mcp copies in <data_home>/skills-mcp), pack:<pack>:payload,
+# entry), pack:<pack>:<set>:mcp (mode mcp copies in <data_home>/skills-mcp and, for a release pack,
+# its hook fragments), pack:<pack>:<set>:all (a release engine's own install in mode skills),
+# pack:<pack>:payload (package payload or downloaded release files),
 # pack:<pack>:npm, po-skills (server and index) and po-skills:<tool> (server entry).
 
 po_man_lines() { if [ -f "$PO_MANIFEST" ]; then cat "$PO_MANIFEST"; fi; }
@@ -861,14 +864,17 @@ po_plugin() {  # $1 package, $2 mirror folder, $3 destination, $4 backup folder
 
 # ------------------------------------------------------------------ JSON hook edits
 
-po_json_strip() {  # $1 file, $2 text: drop hook entries whose command holds the text
-    local f="$1" needle="$2" py
-    [ -f "$f" ] || return 0
-    grep -qF "$needle" "$f" || return 0
+po_json_strip() {  # $1 file, $2 text: drop hook entries whose command holds the text; $3 copy of the file before install or -
+    local f="$1" needle="$2" keep="${3:--}" py
+    [ "$keep" = - ] || [ -f "$keep" ] || keep=-
+    if [ ! -f "$f" ] || { [ "$keep" = - ] && ! grep -qF "$needle" "$f"; }; then
+        [ "$keep" = - ] || rm -f "$keep"
+        return 0
+    fi
     if py="$(po_python_any)"; then
-        "$py" - "$f" "$needle" <<'PO_PY'
-import json, sys
-path, needle = sys.argv[1], sys.argv[2]
+        "$py" - "$f" "$needle" "$keep" <<'PO_PY'
+import json, os, sys
+path, needle, keep = sys.argv[1], sys.argv[2], sys.argv[3]
 with open(path, encoding="utf-8") as fh:
     data = json.load(fh)
 hooks = data.get("hooks")
@@ -886,16 +892,29 @@ if isinstance(hooks, dict):
             hooks[event] = kept_groups
         else:
             del hooks[event]
-if removed:
+original = None
+if keep != "-":
+    with open(keep, "rb") as fh:
+        original = fh.read()
+if original is not None and json.loads(original.decode("utf-8")) == data:
+    # the file holds what it held before the install: give back its exact bytes
+    with open(path, "rb") as fh:
+        same = fh.read() == original
+    if not same:
+        with open(path, "wb") as fh:
+            fh.write(original)
+elif removed:
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(json.dumps(data, indent=2) + "\n")
 PO_PY
     elif command -v jq >/dev/null 2>&1; then
         jq --arg n "$needle" '(.hooks // {}) as $h | if ($h|type)=="object" then .hooks = ($h | with_entries(.value |= (map(.hooks |= map(select(((.command // "") | gsub("\\\\"; "/") | contains($n)) | not))) | map(select((.hooks | length) > 0)))) | with_entries(select((.value | length) > 0))) else . end' \
             "$f" > "$PO_TMP/json.next" && cp "$PO_TMP/json.next" "$f"
+        if [ "$keep" != - ] && [ "$(jq -S -c . "$f")" = "$(jq -S -c . "$keep")" ]; then cp "$keep" "$f"; fi
     else
         po_warn "$f still holds hook entries for $needle; remove them by hand (no python3 or jq)"
     fi
+    [ "$keep" = - ] || rm -f "$keep"
 }
 
 po_json_add_hooks() {  # $1 file, $2 command, $3 lines "event<TAB>matcher<TAB>timeout<TAB>status", $4 text that marks ours
@@ -996,7 +1015,7 @@ po_remove_lines() {  # remove the records in file $1; paths other owners still u
                     if [ "$cur" = "$path" ]; then git config --global --unset core.hooksPath && po_change; fi
                 fi
                 ;;
-            u:json-strip:*) po_json_strip "$path" "${extra#json-strip:}" ;;
+            u:json-strip:*) po_json_strip "$path" "${extra#json-strip:}" "$hash" ;;
             u:npm-rm:*) po_npm_remove "$path" "${extra#npm-rm:}" ;;
             n:*)
                 case "$path" in
@@ -1231,6 +1250,7 @@ po_set_mode() {  # $1 pack, $2 set: --mode wins; an installed set keeps its mode
     if [ -n "$PO_MODE" ]; then printf '%s' "$PO_MODE"
     elif po_has_owner "pack:$1:$2:mcp"; then printf mcp
     elif [ -n "$(po_set_copy_tools "$1" "$2")" ]; then printf skills
+    elif [ "$(po_pack_get "$1" kind)" = release ] && po_has_owner "pack:$1:$2:all"; then printf skills
     else printf '%s' "$PO_DEFAULT_MODE"; fi
 }
 
@@ -1590,9 +1610,31 @@ po_fetch() {
     mv "$2.part" "$2"
 }
 
+po_expand_stage() {  # $1 stage folder, $2 template: the path that the release engine sees under the stage
+    # shellcheck disable=SC2034  # read through po_expand
+    (L_HOME="$1"; L_CODEX_HOME="$1/.codex"; L_OPENCODE="$1/.config/opencode"; po_expand "$2")
+}
+
+po_hooks_add() {  # $1 hook file, $2 hook groups (base64 JSON): text fragments that the manifest records
+    local file="$1" old out status rest rec
+    old="$(awk -F'\t' -v p="$file" '$2=="m" && $3==p {print $5; exit}' "$PO_TMP/old.tsv")"
+    po_ensure_dir "$(dirname "$file")"
+    out="$(po_helper hooks-add "$file" "$2" "${old:--}")" || po_die "cannot add the hooks to $file"
+    status="${out%%"$PO_TAB"*}"
+    rest="${out#*"$PO_TAB"}"
+    rec="${rest#*"$PO_TAB"}"
+    case "$status" in
+        added) po_change; po_say "  hooks -> $file"; po_rec m "$file" hooks "$rec" ;;
+        present) po_rec m "$file" hooks "$rec" ;;
+        foreign) po_say "  $file already holds these hooks; the installer leaves them unmanaged" ;;
+        *) po_warn "hooks not added to $file" ;;
+    esac
+}
+
 po_release_install() {  # $1 pack, $2 set, $3 tools
-    local pack="$1" set="$2" tools="$3" lock version repo pinned os arch engine bundle src tag base name
-    local providers="" t p skill roots root dir bin hooks codex_dir launcher env_name
+    local pack="$1" set="$2" tools="$3" lock version repo pinned os arch engine bundle src tag base name want mode
+    local providers="" skipped="" t p skill roots root dir bin hooks codex_dir launcher env_name stage dest staged real groups
+    local keep keeps
     lock="$PO_PACKS_DIR/$pack/$(po_release_get "$pack" lock)"
     version="$(po_lock_value "$lock" version)"
     repo="$(po_lock_value "$lock" repo)"
@@ -1605,11 +1647,19 @@ po_release_install() {  # $1 pack, $2 set, $3 tools
     [ "$os" = windows ] && engine="$engine.exe"
     bundle="$(po_release_get "$pack" bundle)"
     skill="$(po_set_get "$pack" "$set" skills)"
+    mode="$(po_set_mode "$pack" "$set")"
     for t in $tools; do
         p="$(po_release_provider "$pack" "$t")"
-        [ -n "$p" ] && ! po_has_word "$providers" "$p" && providers="${providers:+$providers }$p"
+        [ -n "$p" ] || continue
+        if [ "$mode" = mcp ] && [ -z "$(po_tool_mcp "$t")" ]; then skipped="${skipped:+$skipped, }$(po_tool_label "$t")"; continue; fi
+        [ "$mode" = mcp ] && ! po_has_word "$PO_MCP_TOOLS" "$t" && PO_MCP_TOOLS="${PO_MCP_TOOLS:+$PO_MCP_TOOLS }$t"
+        po_has_word "$providers" "$p" || providers="${providers:+$providers }$p"
     done
-    if [ -z "$providers" ]; then po_say "  no selected tool is supported by $pack"; return 0; fi
+    if [ "$mode" = mcp ]; then
+        command -v node >/dev/null 2>&1 || po_die "mode mcp needs Node.js 18 or later on PATH for the $PO_SKILLS_MCP_NAME MCP server; install Node.js or use --mode skills"
+        [ -n "$skipped" ] && po_say "  mode mcp: $skipped has no MCP config that the installer edits: it gets no $skill skill (use --mode skills)"
+    fi
+    if [ -z "$providers" ]; then po_say "  no selected tool is supported by $pack in mode $mode"; return 0; fi
     providers="$(printf '%s' "$providers" | tr ' ' '\n' | LC_ALL=C sort | tr '\n' ',' | sed 's/,$//')"
     tag="$(po_release_get "$pack" tag | sed "s/{version}/$version/")"
     base="https://github.com/$repo/releases/download/$tag"
@@ -1620,13 +1670,15 @@ po_release_install() {  # $1 pack, $2 set, $3 tools
     else
         src="$PO_DATA/packages/$pack/$version"
     fi
-    po_say "  $pack $version for $providers ($os-$arch) from $src"
+    dest="$PO_DATA/$PO_SKILLS_MCP_DIR/$pack/$skill"
+    po_say "  $pack $version for $providers ($os-$arch, mode $mode) from $src"
     if [ "$PO_DRY" = 1 ]; then
         po_say "  would verify SHA256SUMS against $pinned and run $engine install --global --yes --providers=$providers"
+        [ "$mode" = mcp ] && po_say "  would copy the $skill skill and its engine to $dest and point its hooks there"
         po_change
         return 0
     fi
-    po_owner_begin "pack:$pack:$set:all"
+    po_owner_begin "pack:$pack:payload"
     if [ -z "$(po_bundle_for "$pack")" ]; then
         po_ensure_dir "$src"
         for name in SHA256SUMS "$bundle" "$engine"; do
@@ -1634,60 +1686,136 @@ po_release_install() {  # $1 pack, $2 set, $3 tools
             po_rec x "$src/$name" "$(po_hash "$src/$name")"
         done
     fi
+    po_owner_end
     [ "$(po_hash "$src/SHA256SUMS")" = "$pinned" ] || po_die "$src/SHA256SUMS does not match the digest pinned in $lock; refusing to install"
     for name in "$bundle" "$engine"; do
-        local want
         want="$(awk -v n="$name" '{ f=$2; sub(/^\*/, "", f); if (f==n) print tolower($1) }' "$src/SHA256SUMS" | head -n 1)"
         [ -n "$want" ] || po_die "SHA256SUMS lists no $name"
         [ "$(po_hash "$src/$name")" = "$want" ] || po_die "$src/$name fails its checksum; refusing to install"
     done
-    PO_TRACK=()
-    roots="$(po_release_get "$pack" roots)"
-    while IFS= read -r root; do [ -n "$root" ] && PO_TRACK+=("$(po_expand "$root")/$skill"); done <<PO_ROOTS
-$roots
-PO_ROOTS
-    hooks="$(po_release_get "$pack" hook_files)"
-    while IFS= read -r root; do [ -n "$root" ] && PO_TRACK+=("$(po_expand "$root")"); done <<PO_HOOKS
-$hooks
-PO_HOOKS
-    po_track_begin
     chmod +x "$src/$engine" 2>/dev/null || true
-    set -- "$src/$engine" install --global --yes "--providers=$providers"
-    [ "$PO_RELEASE_NO_HOOKS" = 1 ] && set -- "$@" --no-hooks
+    roots="$(po_release_get "$pack" roots)"
+    hooks="$(po_release_get "$pack" hook_files)"
     env_name="$(po_release_get "$pack" bundle_env)"
-    po_say "  \$ $*"
-    env "$env_name=$src/$bundle" "$@" || po_die "the $pack installer exited with an error"
     bin="$skill"
     [ "$os" = windows ] && bin="$skill.exe"
-    while IFS= read -r root; do
-        [ -n "$root" ] || continue
-        dir="$(po_expand "$root")/$skill"
-        if [ -f "$dir/SKILL.md" ]; then
-            if ! cmp -s "$src/$engine" "$dir/scripts/bin/$os-$arch/$bin" 2>/dev/null; then
-                po_ensure_dir "$dir/scripts/bin/$os-$arch"
-                cp "$src/$engine" "$dir/scripts/bin/$os-$arch/$bin"
-                chmod +x "$dir/scripts/bin/$os-$arch/$bin" 2>/dev/null || true
-            fi
-            po_say "  engine -> $dir/scripts/bin/$os-$arch/$bin"
-        fi
-    done <<PO_ROOTS
+    set -- "$src/$engine" install --global --yes "--providers=$providers"
+    [ "$PO_RELEASE_NO_HOOKS" = 1 ] && set -- "$@" --no-hooks
+    if [ "$mode" = mcp ]; then
+        # a switch from mode skills: the engine's copies and hooks go first
+        po_has_owner "pack:$pack:$set:all" && po_remove_owner "pack:$pack:$set:all"
+        # the engine installs into an empty home under the temporary folder; only its skill folder and
+        # its hooks move on, to <data_home>/skills-mcp and the real hook files
+        stage="$PO_TMP/release-stage"
+        rm -rf "$stage"
+        mkdir -p "$stage"
+        po_say "  \$ $* (HOME=$stage)"
+        env HOME="$stage" USERPROFILE="$stage" CODEX_HOME="$stage/.codex" XDG_CONFIG_HOME="$stage/.config" \
+            XDG_DATA_HOME="$stage/.local/share" APPDATA="$stage/AppData/Roaming" LOCALAPPDATA="$stage/AppData/Local" \
+            "$env_name=$src/$bundle" "$@" || po_die "the $pack installer exited with an error"
+        dir=""
+        while IFS= read -r root; do
+            [ -n "$root" ] || continue
+            staged="$(po_expand_stage "$stage" "$root")/$skill"
+            if [ -z "$dir" ] && [ -f "$staged/SKILL.md" ]; then dir="$staged"; fi
+        done <<PO_ROOTS
 $roots
 PO_ROOTS
-    codex_dir="$(po_expand '{HOME}')/.agents/skills/$skill"
-    if po_has_word "$(printf '%s' "$providers" | tr ',' ' ')" codex && [ "$PO_RELEASE_NO_HOOKS" != 1 ] && [ -f "$codex_dir/SKILL.md" ]; then
-        launcher="$codex_dir/scripts/$skill"
-        [ "$os" = windows ] && launcher="$codex_dir/scripts/$skill.cmd"
-        if po_json_add_hooks "$(po_expand '{CODEX_HOME}')/hooks.json" "\"$launcher\" hook" "$(po_release_get "$pack" codex_hooks)" "$launcher"; then
-            po_say "  codex hooks added to $(po_expand '{CODEX_HOME}')/hooks.json"
-        fi
-    fi
-    po_track_end
-    while IFS= read -r root; do
-        [ -n "$root" ] && po_rec u "$(po_expand "$root")" - "json-strip:$skill/scripts/$skill"
-    done <<PO_HOOKS
+        [ -n "$dir" ] || dir="$(find "$stage" -type f -path "*/$skill/SKILL.md" | LC_ALL=C sort | head -n 1)"
+        dir="${dir%/SKILL.md}"
+        [ -n "$dir" ] || po_die "the $pack installer put no $skill/SKILL.md under $stage"
+        mkdir -p "$dir/scripts/bin/$os-$arch"
+        cp "$src/$engine" "$dir/scripts/bin/$os-$arch/$bin"
+        chmod +x "$dir/scripts/bin/$os-$arch/$bin" 2>/dev/null || true
+        po_say "  mode mcp: the $PO_SKILLS_MCP_NAME MCP server serves $skill from $dest"
+        po_owner_begin "pack:$pack:$set:mcp"
+        po_tree "$dir" "$dest"
+        po_say "  engine -> $dest/scripts/bin/$os-$arch/$bin"
+        if [ "$PO_RELEASE_NO_HOOKS" != 1 ]; then
+            while IFS= read -r root; do
+                [ -n "$root" ] || continue
+                staged="$(po_expand_stage "$stage" "$root")"
+                real="$(po_expand "$root")"
+                groups=-
+                if [ -f "$staged" ]; then
+                    groups="$(po_helper hooks-groups staged "$staged" "$stage" "$skill" "$dest")" || po_die "cannot read the hooks in $staged"
+                fi
+                # the engine writes Codex hooks only at project scope; the pack lists them for user scope
+                if [ "$groups" = - ] && [ "$real" = "$(po_expand '{CODEX_HOME}')/hooks.json" ] \
+                    && po_has_word "$(printf '%s' "$providers" | tr ',' ' ')" codex; then
+                    launcher="$dest/scripts/$skill"
+                    [ "$os" = windows ] && launcher="$dest/scripts/$skill.cmd"
+                    groups="$(po_helper hooks-groups spec "$launcher" "$(po_release_get "$pack" codex_hooks)")"
+                fi
+                [ "$groups" = - ] || po_hooks_add "$real" "$groups"
+            done <<PO_HOOKS
 $hooks
 PO_HOOKS
-    po_owner_end
+        fi
+        po_owner_end
+        rm -rf "$stage"
+    else
+        # a switch from mode mcp: the skills-mcp copy and its hooks go first
+        po_has_owner "pack:$pack:$set:mcp" && po_remove_owner "pack:$pack:$set:mcp"
+        po_owner_begin "pack:$pack:$set:all"
+        # a copy of each hook file as the user had it, so that removal can give back its exact bytes
+        keeps=""
+        while IFS= read -r root; do
+            [ -n "$root" ] || continue
+            real="$(po_expand "$root")"
+            keep="$(awk -F'\t' -v p="$real" '$2=="u" && $3==p && $4!="-" {print $4; exit}' "$PO_TMP/old.tsv")"
+            if [ -z "$keep" ] || [ ! -f "$keep" ]; then
+                keep=-
+                if [ -f "$real" ] && ! grep -qF "$skill/scripts/$skill" "$real"; then
+                    keep="$PO_DATA/backups/release-hooks/$(printf '%s' "$real" | po_sha | cut -c1-16).json"
+                    po_ensure_dir "$(dirname "$keep")"
+                    cp "$real" "$keep"
+                fi
+            fi
+            keeps="$keeps$real$PO_TAB$keep$PO_NL"
+        done <<PO_HOOKS
+$hooks
+PO_HOOKS
+        PO_TRACK=()
+        while IFS= read -r root; do [ -n "$root" ] && PO_TRACK+=("$(po_expand "$root")/$skill"); done <<PO_ROOTS
+$roots
+PO_ROOTS
+        while IFS= read -r root; do [ -n "$root" ] && PO_TRACK+=("$(po_expand "$root")"); done <<PO_HOOKS
+$hooks
+PO_HOOKS
+        po_track_begin
+        po_say "  \$ $*"
+        env "$env_name=$src/$bundle" "$@" || po_die "the $pack installer exited with an error"
+        while IFS= read -r root; do
+            [ -n "$root" ] || continue
+            dir="$(po_expand "$root")/$skill"
+            if [ -f "$dir/SKILL.md" ]; then
+                if ! cmp -s "$src/$engine" "$dir/scripts/bin/$os-$arch/$bin" 2>/dev/null; then
+                    po_ensure_dir "$dir/scripts/bin/$os-$arch"
+                    cp "$src/$engine" "$dir/scripts/bin/$os-$arch/$bin"
+                    chmod +x "$dir/scripts/bin/$os-$arch/$bin" 2>/dev/null || true
+                fi
+                po_say "  engine -> $dir/scripts/bin/$os-$arch/$bin"
+            fi
+        done <<PO_ROOTS
+$roots
+PO_ROOTS
+        codex_dir="$(po_expand '{HOME}')/.agents/skills/$skill"
+        if po_has_word "$(printf '%s' "$providers" | tr ',' ' ')" codex && [ "$PO_RELEASE_NO_HOOKS" != 1 ] && [ -f "$codex_dir/SKILL.md" ]; then
+            launcher="$codex_dir/scripts/$skill"
+            [ "$os" = windows ] && launcher="$codex_dir/scripts/$skill.cmd"
+            if po_json_add_hooks "$(po_expand '{CODEX_HOME}')/hooks.json" "\"$launcher\" hook" "$(po_release_get "$pack" codex_hooks)" "$launcher"; then
+                po_say "  codex hooks added to $(po_expand '{CODEX_HOME}')/hooks.json"
+            fi
+        fi
+        po_track_end
+        while IFS="$PO_TAB" read -r real keep; do
+            [ -n "$real" ] && po_rec u "$real" "$keep" "json-strip:$skill/scripts/$skill"
+        done <<PO_KEEPS
+$keeps
+PO_KEEPS
+        po_owner_end
+    fi
     po_say "==> $pack $version installed; it runs offline."
 }
 
@@ -1762,7 +1890,8 @@ po_packs_list() {
             if po_owner_prefix "pack:$pack:$set:"; then
                 mark=x
                 if po_has_owner "pack:$pack:$set:mcp"; then mode=" [mcp]"
-                elif [ -n "$(po_set_copy_tools "$pack" "$set")" ]; then mode=" [skills]"; fi
+                elif [ -n "$(po_set_copy_tools "$pack" "$set")" ]; then mode=" [skills]"
+                elif [ "$(po_pack_get "$pack" kind)" = release ]; then mode=" [skills]"; fi
             fi
             printf '  [%s] %s:%s (%s skills)%s %s%s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" "$mode" \
                 "$(po_set_get "$pack" "$set" description)" "$(po_needs_note "$pack" "$set")"

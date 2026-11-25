@@ -90,6 +90,29 @@ The installer downloads `SHA256SUMS`, the bundle and the engine for the platform
 engine runs, the installer checks the digest of `SHA256SUMS` against the lock and each file against
 `SHA256SUMS`. A mismatch stops the install.
 
+The section on install modes below sets the mode of a release pack too.
+
+- In mode skills, the engine runs at user scope and installs the skill into the skills folder of each
+  selected tool. The installer copies the engine binary into `scripts/bin/<os>-<arch>/` of each copy,
+  adds `codex_hooks` to `$CODEX_HOME/hooks.json` and records the files that the engine created.
+  Before the engine runs, the installer keeps a copy of each hook file that the user already has in
+  `<data_home>/backups/release-hooks/`. On removal, the installer strips the release hooks. When the
+  stripped JSON equals the copy, the installer writes the copy back, so the file keeps its bytes.
+- In mode mcp, the engine runs once with an empty home folder under the installer's temporary folder.
+  The installer copies the skill folder from there, with the engine binary in
+  `scripts/bin/<os>-<arch>/`, to `<data_home>/skills-mcp/<pack-id>/<skill>/`. The `po-skills` index
+  lists the skill, and no skills folder of a tool gets a copy.
+- In mode mcp, the installer reads the hooks that the engine wrote into each file of `hook_files` under
+  the temporary home. Each hook command then names the launcher in `<data_home>/skills-mcp`. The
+  installer adds those hook groups to the real files of `hook_files`. For Codex, the engine writes
+  hooks only at project scope, so the installer adds `codex_hooks` around the skills-mcp launcher. The
+  hooks run the engine from `<data_home>/skills-mcp` whether a session loads the skill or not.
+- `pack_helper.mjs hooks-add` inserts each hook group as one text fragment, and the manifest records
+  the fragments. Removal deletes the fragments and leaves the rest of the hook file byte-identical. A
+  file, a `hooks` object or an event array that the installer created goes once it is empty.
+- In mode mcp, a tool without an `mcp` entry in `install/spec.json` gets no copy of the release skill.
+  The installer names the tool and points to `--mode skills`.
+
 ## npm packages (`npm`)
 
 The `npm` object installs pinned npm packages into one private prefix per pack,
@@ -182,15 +205,21 @@ skill copies that the manifest records and switches the set. `--mode skills` doe
 of the last mode mcp set removes the server, the index and each `po-skills` entry.
 
 Mode mcp needs Node.js 18 or later. The installer stops before the first write when `node` is missing
-and names `--mode skills` as the alternative. Release packs (`procable`) ignore the mode, because the
-release engine installs the skill. A set without skills (`rea-frida`) has no mode.
+and names `--mode skills` as the alternative. A set without skills (`rea-frida`) has no mode.
+
+For the release pack `procable`, `--mode mcp` on a set in mode skills removes the skill copies and the
+hook entries that the manifest records, installs the skill in `<data_home>/skills-mcp` and adds the
+hooks with the skills-mcp launcher. `--mode skills` removes the skills-mcp copy and the hook fragments
+and runs the engine at user scope again. An install from before mode mcp counts as mode skills.
 
 ## Manifest owners and kinds for npm and MCP
 
 | Owner | Records |
 |---|---|
 | `pack:<pack-id>:<set>:<tool>` | skill copies in the tool's skills folder (mode skills) and a pack's own MCP entry |
-| `pack:<pack-id>:<set>:mcp` | skill copies in `<data_home>/skills-mcp/<pack-id>/` (mode mcp) |
+| `pack:<pack-id>:<set>:mcp` | skill copies in `<data_home>/skills-mcp/<pack-id>/` (mode mcp), and the hook fragments of a release pack |
+| `pack:<pack-id>:<set>:all` | the files that a release engine created in mode skills, and the hook strip on removal |
+| `pack:<pack-id>:payload` | the payload of kind package, and the downloaded files of a release pack |
 | `po-skills` | `server.mjs` and `index.json` in `<data_home>/skills-mcp/` |
 | `po-skills:<tool>` | the `po-skills` entry in the tool's MCP config |
 
@@ -198,7 +227,7 @@ release engine installs the skill. A set without skills (`rea-frida`) has no mod
 | Kind | Path | Removal |
 |---|---|---|
 | `n` | the npm prefix, owner `pack:<pack-id>:npm` | the folder goes once no set of the pack is left |
-| `m` | a client config file, owner `pack:<pack-id>:<set>:<tool>` | the helper removes the recorded entry |
+| `m` | a client config file, owner `pack:<pack-id>:<set>:<tool>`, or a hook file, owner `pack:<pack-id>:<set>:mcp` | the helper removes the recorded entry or hook fragments |
 | `x` | an extracted binding | removed when its digest still matches |
 | `u` with `npm-rm:<name>` | the npm prefix | `npm uninstall <name>` in the prefix |
 
@@ -213,6 +242,8 @@ bash install/install.sh packs list
 bash install/install.sh packs install claude-red-offense:web,recon
 bash install/install.sh packs install logo-design --mode skills
 bash install/install.sh packs install logo-design --mode mcp
+bash install/install.sh packs install procable --tools claude,codex
+bash install/install.sh packs install procable --mode skills
 bash install/install.sh packs remove claude-red-offense
 bash install/install.sh packs install rea --tools claude,codex,cursor,gemini,opencode
 bash install/install.sh packs install rea:rea,rea-frida

@@ -455,28 +455,75 @@ def platform_tag() -> tuple[str, str]:
     return system, "arm64" if machine in ("arm64", "aarch64") else "x64"
 
 
-STUB_ENGINE = """#!/bin/sh
-# Fixture engine: installs the skill for each provider and one Claude hook.
+STUB_ENGINE = r"""#!/bin/sh
+# Fixture engine: installs the skill for each provider and two Claude hooks; "hook" answers a hook call.
+name=@NAME@
 providers=""
 hooks=1
+[ "${1:-}" = hook ] && { echo "$name hook ran"; exit 0; }
 for a in "$@"; do
     case "$a" in --providers=*) providers="${a#--providers=}" ;; --no-hooks) hooks=0 ;; esac
 done
-[ -f "$FIXTURE_RELEASE_BUNDLE_PATH" ] || { echo "bundle missing" >&2; exit 3; }
+[ -f "$@BUNDLE_ENV@" ] || { echo "bundle missing" >&2; exit 3; }
 for p in $(echo "$providers" | tr ',' ' '); do
     case "$p" in
-        claude) d="$HOME/.claude/skills/fixture-release" ;;
-        codex) d="$HOME/.agents/skills/fixture-release" ;;
+        claude) d="$HOME/.claude/skills/$name" ;;
+        codex) d="$HOME/.agents/skills/$name" ;;
+        antigravity) d="$HOME/.gemini/config/skills/$name" ;;
         *) continue ;;
     esac
-    mkdir -p "$d/scripts"
-    printf -- '---\\nname: fixture-release\\ndescription: Release fixture.\\n---\\n' > "$d/SKILL.md"
-    printf '#!/bin/sh\\n' > "$d/scripts/fixture-release"
+    mkdir -p "$d/scripts" "$d/reference"
+    printf -- '---\nname: %s\ndescription: Design skill for polish, critique, audit and WCAG 2.2 AA review.\n---\n' "$name" > "$d/SKILL.md"
+    printf 'Typography and colour notes.\n' > "$d/reference/typography.md"
+    printf '#!/bin/sh\nfor b in "$(dirname "$0")"/bin/*/%s; do exec "$b" "$@"; done\nexit 9\n' "$name" > "$d/scripts/$name"
+    chmod +x "$d/scripts/$name"
 done
-if [ "$hooks" = 1 ] && echo "$providers" | grep -q claude && [ ! -f "$HOME/.claude/settings.json" ]; then
-    printf '{"hooks": {"Stop": [{"hooks": [{"type": "command", "command": "%s/.claude/skills/fixture-release/scripts/fixture-release hook"}]}]}}\\n' "$HOME" > "$HOME/.claude/settings.json"
+if [ "$hooks" = 1 ] && echo "$providers" | grep -q claude; then
+    python3 - "$HOME/.claude/settings.json" "$HOME/.claude/skills/$name/scripts/$name" <<'PY'
+import json, os, sys
+path, launcher = sys.argv[1], sys.argv[2]
+data = json.load(open(path)) if os.path.exists(path) else {}
+if launcher not in json.dumps(data):
+    hooks = data.setdefault("hooks", {})
+    hooks.setdefault("PostToolUse", []).append(
+        {"matcher": "Edit|Write", "hooks": [{"type": "command", "command": f'"{launcher}" hook', "timeout": 5}]})
+    hooks.setdefault("Stop", []).append({"hooks": [{"type": "command", "command": f'"{launcher}" hook'}]})
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as fh:
+        fh.write(json.dumps(data, indent=2) + "\n")
+PY
 fi
 """
+
+
+def release_fixture(base: Path, pack_id: str) -> tuple[Path, Path]:
+    """A bundle folder with a stub engine and a packs folder that pins it; returns (bundle, packs)."""
+    os_name, arch = platform_tag()
+    bundle = base / "bundle"
+    bundle.mkdir()
+    engine = bundle / f"{pack_id}-{os_name}-{arch}"
+    bundle_env = pack_id.upper().replace("-", "_") + "_BUNDLE_PATH"
+    engine.write_text(STUB_ENGINE.replace("@NAME@", pack_id).replace("@BUNDLE_ENV@", bundle_env))
+    engine.chmod(0o755)
+    (bundle / "universal.zip").write_bytes(b"zip bytes")
+    sums = "".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n" for p in (engine, bundle / "universal.zip"))
+    (bundle / "SHA256SUMS").write_text(sums)
+    digest = hashlib.sha256(sums.encode()).hexdigest()
+    packs = base / "packs"
+    pack = packs / pack_id
+    pack.mkdir(parents=True)
+    (pack / "LICENSE").write_text("Apache License 2.0 fixture\n")
+    release = json.loads((ROOT / "packs" / "procable" / "pack.json").read_text())["release"]
+    release["tag"] = pack_id + "-v{version}"
+    release["engine"] = pack_id + "-{os}-{arch}"
+    (pack / release["lock"]).write_text(json.dumps({"version": "0.1.0", "repo": f"example/{pack_id}", "sha256sums": digest}))
+    (pack / "pack.json").write_text(json.dumps({
+        "schema": 1, "id": pack_id, "label": "Fixture release",
+        "description": "Release pack for the installer tests.", "kind": "release", "license": "Apache-2.0",
+        "upstream": None, "upstream_commit": None, "vetting": None,
+        "sets": [{"id": pack_id, "label": "Fixture release", "description": "The release skill.", "skills": [pack_id]}],
+        "release": release}))
+    return bundle, packs
 
 
 @unittest.skipUnless(BASH and platform.system() in ("Linux", "Darwin"), "bash on Linux or macOS required")
@@ -487,33 +534,7 @@ class ReleaseBashTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory(prefix="po release ")
         self.addCleanup(self.temporary.cleanup)
         base = Path(self.temporary.name)
-        os_name, arch = platform_tag()
-        self.bundle = base / "bundle"
-        self.bundle.mkdir()
-        engine = self.bundle / f"fixture-release-{os_name}-{arch}"
-        engine.write_text(STUB_ENGINE)
-        engine.chmod(0o755)
-        (self.bundle / "universal.zip").write_bytes(b"zip bytes")
-        sums = "".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n" for p in (engine, self.bundle / "universal.zip"))
-        (self.bundle / "SHA256SUMS").write_text(sums)
-        digest = hashlib.sha256(sums.encode()).hexdigest()
-        packs = base / "packs"
-        pack = packs / "fixture-release"
-        pack.mkdir(parents=True)
-        (pack / "LICENSE").write_text("Apache License 2.0 fixture\n")
-        (pack / "release.lock.json").write_text(json.dumps({"version": "0.1.0", "repo": "example/fixture-release",
-                                                            "sha256sums": digest}))
-        release = json.loads((ROOT / "packs" / "procable" / "pack.json").read_text())["release"]
-        release["lock"] = "release.lock.json"
-        release["tag"] = "fixture-release-v{version}"
-        release["engine"] = "fixture-release-{os}-{arch}"
-        (pack / "pack.json").write_text(json.dumps({
-            "schema": 1, "id": "fixture-release", "label": "Fixture release",
-            "description": "Release pack for the installer tests.", "kind": "release", "license": "Apache-2.0",
-            "upstream": None, "upstream_commit": None, "vetting": None,
-            "sets": [{"id": "fixture-release", "label": "Fixture release", "description": "The release skill.",
-                      "skills": ["fixture-release"]}],
-            "release": release}))
+        self.bundle, packs = release_fixture(base, "fixture-release")
         self.out = base / "out"
         generate(self.out, packs)
         self.box = Sandbox(self, self.out / "install.sh")
@@ -522,7 +543,7 @@ class ReleaseBashTests(unittest.TestCase):
         box = self.box
         args = ("--tools", "claude,codex", "--no-core", "--no-harness", "--packs", "fixture-release",
                 "--bundle", f"fixture-release={self.bundle}", "--yes")
-        box.run(*args)
+        box.run(*args, "--mode", "skills")
         os_name, arch = platform_tag()
         for skills in (box.home / ".claude" / "skills", box.home / ".agents" / "skills"):
             engine = skills / "fixture-release" / "scripts" / "bin" / f"{os_name}-{arch}" / "fixture-release"
@@ -530,7 +551,7 @@ class ReleaseBashTests(unittest.TestCase):
         hooks = json.loads((box.home / ".codex" / "hooks.json").read_text())
         self.assertEqual({"PostToolUse", "Stop"}, set(hooks["hooks"]))
         self.assertIn("==> no change", box.run(*args).stdout)
-        self.assertIn("[x] fixture-release:fixture-release", box.run("packs", "list").stdout)
+        self.assertIn("[x] fixture-release:fixture-release (1 skills) [skills]", box.run("packs", "list").stdout)
         box.run("uninstall")
         self.assertEqual([], files_under(box.home))
 
@@ -542,6 +563,7 @@ class ReleaseBashTests(unittest.TestCase):
         self.assertNotEqual(0, proc.returncode)
         self.assertIn("does not match the digest pinned", proc.stderr)
         self.assertFalse((self.box.home / ".claude" / "skills" / "fixture-release").exists())
+        self.assertFalse((self.box.data / "skills-mcp").exists())
 
     def test_tampered_engine_is_refused(self):
         os_name, arch = platform_tag()
