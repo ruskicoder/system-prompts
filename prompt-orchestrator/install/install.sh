@@ -9,6 +9,11 @@ PO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PO_PACKS_REL='packs'
 PO_MANIFEST_NAME='install-manifest.tsv'
 PO_PACK_HELPER='install/pack_helper.mjs'
+PO_DEFAULT_MODE='mcp'
+PO_SKILLS_MCP_NAME='po-skills'
+PO_SKILLS_MCP_SERVER='install/po_skills_server.mjs'
+PO_SKILLS_MCP_DIR='skills-mcp'
+PO_SKILLS_MCP_SPEC='eyJjb21tYW5kIjoibm9kZSIsImFyZ3MiOlsie1BBQ0tBR0V9L3NlcnZlci5tanMiXSwiZW52Ijp7fX0='
 PO_TOOLS='claude codex opencode cursor gemini antigravity openclaw copilot kiro'
 PO_DEFAULT_TOOLS='claude codex opencode cursor gemini antigravity openclaw'
 PO_HARNESS_TOOLS='claude codex opencode cursor gemini antigravity openclaw copilot kiro'
@@ -587,6 +592,9 @@ po_change() { PO_CHANGES=$((PO_CHANGES + 1)); }
 # b marker block in a shared file, k backup of a replaced file or folder, u undo step,
 # h harness install, m MCP server entry in a client config (extra: helper record),
 # n private npm prefix of a pack, D folder the installer created (owner @dirs).
+# Owners: core:<tool>, harness:<tool>, pack:<pack>:<set>:<tool> (skill copies, a pack's own MCP
+# entry), pack:<pack>:<set>:mcp (mode mcp copies in <data_home>/skills-mcp), pack:<pack>:payload,
+# pack:<pack>:npm, po-skills (server and index) and po-skills:<tool> (server entry).
 
 po_man_lines() { if [ -f "$PO_MANIFEST" ]; then cat "$PO_MANIFEST"; fi; }
 
@@ -1212,11 +1220,27 @@ po_pack_tools() {  # tools that receive pack skills
     printf '%s' "$out"
 }
 
+po_has_owner() { po_owners | awk -v o="$1" '$0==o {f=1} END {exit !f}'; }
+
+po_set_copy_tools() {  # $1 pack, $2 set: tools whose skills folders hold copies of the set
+    po_man_lines | awk -F'\t' -v p="pack:$1:$2:" 'index($1, p)==1 && $2=="f" {
+        t=substr($1, length(p)+1); if (t!="mcp" && t!="all" && !seen[t]++) print t }'
+}
+
+po_set_mode() {  # $1 pack, $2 set: --mode wins; an installed set keeps its mode; a new set gets the default
+    if [ -n "$PO_MODE" ]; then printf '%s' "$PO_MODE"
+    elif po_has_owner "pack:$1:$2:mcp"; then printf mcp
+    elif [ -n "$(po_set_copy_tools "$1" "$2")" ]; then printf skills
+    else printf '%s' "$PO_DEFAULT_MODE"; fi
+}
+
 po_install_set() {  # $1 pack, $2 set, $3 tools
-    local pack="$1" set="$2" tools="$3" kind tool dir skill mcp=""
+    local pack="$1" set="$2" tools="$3" kind tool dir skill skills mcp="" mode="" copy reg t
     kind="$(po_pack_get "$pack" kind)"
     po_say "=== pack $pack, set $set ($(po_set_get "$pack" "$set" count) skills)"
     if [ "$kind" = release ]; then po_release_install "$pack" "$set" "$tools"; return 0; fi
+    skills="$(po_set_get "$pack" "$set" skills)"
+    [ -n "$skills" ] && mode="$(po_set_mode "$pack" "$set")"
     [ -n "$(po_mcp_get "$pack" set)" ] && [ "$(po_mcp_get "$pack" set)" = "$set" ] && mcp=1
     if po_has_word "$(po_npm_get "$pack" "" sets)" "$set"; then
         po_node_ready "$pack" npm
@@ -1224,20 +1248,41 @@ po_install_set() {  # $1 pack, $2 set, $3 tools
     elif [ -n "$mcp" ]; then
         po_node_ready "$pack"
     fi
+    if [ "$mode" = mcp ]; then
+        command -v node >/dev/null 2>&1 || po_die "mode mcp needs Node.js 18 or later on PATH for the $PO_SKILLS_MCP_NAME MCP server; install Node.js or use --mode skills"
+        po_say "  mode mcp: the $PO_SKILLS_MCP_NAME MCP server serves the skills from $PO_DATA/$PO_SKILLS_MCP_DIR/$pack"
+        po_owner_begin "pack:$pack:$set:mcp"
+        for skill in $skills; do po_tree "$PO_PACKS_DIR/$pack/skills/$skill" "$PO_DATA/$PO_SKILLS_MCP_DIR/$pack/$skill"; done
+        po_owner_end
+        # a switch from mode skills also takes the tools that hold copies
+        for t in $(po_set_copy_tools "$pack" "$set"); do po_has_word "$tools" "$t" || tools="$tools $t"; done
+    elif [ "$mode" = skills ] && po_has_owner "pack:$pack:$set:mcp"; then
+        po_remove_owner "pack:$pack:$set:mcp"
+    fi
     for tool in $tools; do
-        if [ -z "$mcp" ] || [ -z "$(po_tool_mcp "$tool")" ]; then
-            if [ -z "$(po_tool_skills "$tool")" ] || [ -z "$(po_set_get "$pack" "$set" skills)" ]; then continue; fi
+        copy=""
+        [ -n "$skills" ] && [ -n "$(po_tool_skills "$tool")" ] && copy=1
+        if [ "$mode" = mcp ] && [ -n "$(po_tool_mcp "$tool")" ]; then
+            copy=""
+            po_has_word "$PO_MCP_TOOLS" "$tool" || PO_MCP_TOOLS="${PO_MCP_TOOLS:+$PO_MCP_TOOLS }$tool"
+        elif [ "$mode" = mcp ] && [ -n "$copy" ]; then
+            po_say "  $(po_tool_label "$tool") has no MCP config that the installer edits: it gets skill copies"
         fi
+        reg=""
+        [ -n "$mcp" ] && [ -n "$(po_tool_mcp "$tool")" ] && reg=1
+        if [ -z "$copy$reg" ] && ! po_has_owner "pack:$pack:$set:$tool"; then continue; fi
         po_owner_begin "pack:$pack:$set:$tool"
-        for skill in $(po_set_get "$pack" "$set" skills); do
-            while IFS= read -r dir; do
-                [ -n "$dir" ] || continue
-                po_tree "$PO_PACKS_DIR/$pack/skills/$skill" "$(po_expand "$dir")/$skill"
-            done <<PO_DIRS
+        if [ -n "$copy" ]; then
+            for skill in $skills; do
+                while IFS= read -r dir; do
+                    [ -n "$dir" ] || continue
+                    po_tree "$PO_PACKS_DIR/$pack/skills/$skill" "$(po_expand "$dir")/$skill"
+                done <<PO_DIRS
 $(po_tool_skills "$tool")
 PO_DIRS
-        done
-        if [ -n "$mcp" ]; then po_mcp_register "$pack" "$tool"; fi
+            done
+        fi
+        if [ -n "$reg" ]; then po_mcp_register "$pack" "$tool"; fi
         po_owner_end
     done
     if [ "$kind" = package ]; then
@@ -1422,12 +1467,15 @@ po_npm_remove() {  # $1 prefix, $2 package: undo an add-on npm install
 }
 
 po_mcp_register() {  # $1 pack, $2 tool: add the pack's MCP server to the tool's config
-    local pack="$1" tool="$2" line format file name old out status rest resolved rec
+    po_mcp_add "$2" "$(po_mcp_get "$1" name)" "$(po_mcp_get "$1" spec_b64)" "$PO_DATA/packages/$1"
+}
+
+po_mcp_add() {  # $1 tool, $2 server name, $3 server spec (base64 JSON), $4 folder for {PACKAGE}
+    local tool="$1" name="$2" spec="$3" package="$4" line format file old others out status rest resolved rec
     line="$(po_tool_mcp "$tool")"
     [ -n "$line" ] || return 0
     format="${line%%"$PO_TAB"*}"
     file="$(po_expand "${line#*"$PO_TAB"}")"
-    name="$(po_mcp_get "$pack" name)"
     old="$(awk -F'\t' '$2=="m" {print $5; exit}' "$PO_TMP/old.tsv")"
     if [ "$PO_DRY" = 1 ]; then
         po_say "  would register the MCP server $name in $file"
@@ -1435,7 +1483,8 @@ po_mcp_register() {  # $1 pack, $2 tool: add the pack's MCP server to the tool's
         return 0
     fi
     po_ensure_dir "$(dirname "$file")"
-    out="$(po_helper mcp-add "$format" "$file" "$name" "$(po_mcp_get "$pack" spec_b64)" "$PO_DATA/packages/$pack" "${old:--}")" \
+    others="$(po_man_lines | awk -F'\t' -v o="$PO_OWNER" '$2=="m" && $1!=o {print $5}' | paste -s -d, -)"
+    out="$(po_helper mcp-add "$format" "$file" "$name" "$spec" "$package" "${old:--}" "${others:--}")" \
         || po_die "MCP registration failed for $file"
     status="${out%%"$PO_TAB"*}"
     rest="${out#*"$PO_TAB"}"
@@ -1462,6 +1511,32 @@ po_mcp_unregister() {  # $1 config file, $2 server name, $3 helper record
         changed) po_warn "kept the $2 entry in $1: changed since install" ;;
         *) po_warn "could not remove the $2 entry from $1" ;;
     esac
+}
+
+po_skills_mcp_sync() {  # the po-skills server, its index and its config entries follow the mode mcp sets
+    local root="$PO_DATA/$PO_SKILLS_MCP_DIR" t owner dh
+    if [ "$PO_DRY" = 1 ]; then
+        [ -n "$PO_MCP_TOOLS" ] && po_say "  would write $root/server.mjs and $root/index.json and register $PO_SKILLS_MCP_NAME for: $PO_MCP_TOOLS"
+        return 0
+    fi
+    if po_owners | grep -q '^pack:[^:]*:[^:]*:mcp$'; then
+        po_say "=== $PO_SKILLS_MCP_NAME MCP server: $root"
+        po_owner_begin "$PO_SKILLS_MCP_NAME"
+        po_file "$PO_ROOT/$PO_SKILLS_MCP_SERVER" "$root/server.mjs"
+        po_helper skills-index "$PO_MANIFEST" "$root" "$PO_TMP/index.json" >/dev/null || po_die "cannot build $root/index.json"
+        dh="-"
+        [ -f "$root/index.json" ] && dh="$(po_hash "$root/index.json")"
+        po_put_file "$PO_TMP/index.json" "$root/index.json" "$(po_hash "$PO_TMP/index.json")" "$dh"
+        po_owner_end
+        for t in $PO_MCP_TOOLS; do
+            po_owner_begin "$PO_SKILLS_MCP_NAME:$t"
+            po_mcp_add "$t" "$PO_SKILLS_MCP_NAME" "$PO_SKILLS_MCP_SPEC" "$root"
+            po_owner_end
+        done
+    else
+        for owner in $(po_owners | awk -v p="$PO_SKILLS_MCP_NAME:" 'index($0, p)==1'); do po_remove_owner "$owner"; done
+        po_remove_owner "$PO_SKILLS_MCP_NAME"
+    fi
 }
 
 po_sets_ordered() {  # selected sets, the sets that others require first
@@ -1656,16 +1731,40 @@ PO_DIRS
     printf '%s' "$out"
 }
 
+po_mcp_where() {  # $1 tools: where mode mcp puts the skills and the server entry
+    local t line
+    printf '    %s (served by the %s MCP server)\n' "$PO_DATA/$PO_SKILLS_MCP_DIR" "$PO_SKILLS_MCP_NAME"
+    for t in $1; do
+        line="$(po_tool_mcp "$t")"
+        if [ -n "$line" ]; then printf '    %s: %s (%s entry)\n' "$t" "$(po_expand "${line#*"$PO_TAB"}")" "$PO_SKILLS_MCP_NAME"
+        elif [ -n "$(po_tool_skills "$t")" ]; then printf '    %s: %s (skill copies, no MCP config)\n' "$t" "$(po_skill_dirs_for "$t" | head -n 1)"; fi
+    done
+}
+
+po_mode_label() {
+    case "${PO_MODE:-$PO_DEFAULT_MODE}" in
+        mcp) printf 'mcp (one %s MCP server serves the pack skills; no copies in the skills folders)' "$PO_SKILLS_MCP_NAME" ;;
+        *) printf 'skills (copies in the skills folder of each tool)' ;;
+    esac
+    [ -z "$PO_MODE" ] && printf ', the default; installed sets keep their mode'
+    return 0
+}
+
 po_packs_list() {
-    local pack set mark n=0
+    local pack set mark mode n=0
     for pack in $PO_PACKS; do
         po_say "$pack: $(po_pack_get "$pack" label) [$(po_pack_get "$pack" kind), $(po_pack_get "$pack" license)]"
         po_say "  $(po_pack_get "$pack" description)"
         for set in $(po_pack_get "$pack" sets); do
             n=$((n + 1))
             mark=" "
-            if po_owner_prefix "pack:$pack:$set:"; then mark=x; fi
-            printf '  [%s] %s:%s (%s skills) %s%s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" \
+            mode=""
+            if po_owner_prefix "pack:$pack:$set:"; then
+                mark=x
+                if po_has_owner "pack:$pack:$set:mcp"; then mode=" [mcp]"
+                elif [ -n "$(po_set_copy_tools "$pack" "$set")" ]; then mode=" [skills]"; fi
+            fi
+            printf '  [%s] %s:%s (%s skills)%s %s%s\n' "$mark" "$pack" "$set" "$(po_set_get "$pack" "$set" count)" "$mode" \
                 "$(po_set_get "$pack" "$set" description)" "$(po_needs_note "$pack" "$set")"
         done
     done
@@ -1797,12 +1896,15 @@ po_tui() {
                             "$(po_needs_note "$pack" "$set")"
                     done
                 done
+                po_say "  [m] mode: $(po_mode_label)"
                 po_say "Next step installs $(po_sel_count) skills from the checked sets into:"
-                po_skill_dirs_for "$(po_pack_tools)" | sed 's/^/    /'
-                po_say "A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit"
+                if [ "${PO_MODE:-$PO_DEFAULT_MODE}" = mcp ]; then po_mcp_where "$(po_pack_tools)"
+                else po_skill_dirs_for "$(po_pack_tools)" | sed 's/^/    /'; fi
+                po_say "A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, m toggles the mode, Enter next, b back, q quit"
                 po_read
                 case "$PO_ANSWER" in
                     "") screen=5 ;; b) screen=3 ;; q) po_say "cancelled"; exit 1 ;;
+                    m) if [ "${PO_MODE:-$PO_DEFAULT_MODE}" = mcp ]; then PO_MODE=skills; else PO_MODE=mcp; fi ;;
                     p[0-9]*)
                         i=0
                         for pack in $PO_PACKS; do
@@ -1834,6 +1936,7 @@ po_tui() {
                 po_say "  core: $([ "$PO_DO_CORE" = 1 ] && echo yes || echo no)"
                 po_say "  harness: $([ "$PO_DO_HARNESS" = 1 ] && echo yes || echo no)"
                 po_say "  packs: ${PO_SEL_SETS:-none}"
+                po_say "  pack mode: $(po_mode_label)"
                 po_say "Next step installs the items above. The manifest goes to $PO_MANIFEST."
                 po_say "Keys: Enter installs, b back, q quit"
                 po_read
@@ -1896,6 +1999,10 @@ Options:
                           A bare pack name skips sets that need another set
                           (rea-frida); name those: --packs rea:rea,rea-frida
   --sets SPEC             same as --packs
+  --mode MODE             mcp (default) or skills. Mode mcp copies the pack skills to
+                          <data_home>/skills-mcp and registers one po-skills MCP server per tool.
+                          Mode skills copies them into the skills folder of each tool.
+                          Without --mode, an installed set keeps its mode
   --bundle PACK=DIR       read a release pack or a pinned binding from a local folder
   --procable-bundle DIR   same as --bundle procable=DIR
   --no-release-hooks      install release packs without their hooks
@@ -1924,6 +2031,8 @@ po_main() {
     PO_PROJECT_DIR=""
     PO_FAILED=""
     PO_OWNER_REMOVING=""
+    PO_MODE=""
+    PO_MCP_TOOLS=""
     local packs_spec="" arg opt t
     while [ $# -gt 0 ]; do
         arg="$1"
@@ -1944,6 +2053,7 @@ po_main() {
             --profile-claude) shift; po_has_word "$(po_harness_profiles claude)" "${1:-}" || po_die "unknown Claude profile: ${1:-}"; PO_PROFILE_CLAUDE="$1" ;;
             --profile-codex) shift; po_has_word "$(po_harness_profiles codex)" "${1:-}" || po_die "unknown Codex profile: ${1:-}"; PO_PROFILE_CODEX="$1" ;;
             --packs|--sets) shift; [ $# -gt 0 ] || po_die "$arg needs a value"; packs_spec="$packs_spec${packs_spec:+,}$1" ;;
+            --mode) shift; case "${1:-}" in mcp|skills) PO_MODE="$1" ;; *) po_die "--mode needs mcp or skills" ;; esac ;;
             --bundle) shift; case "${1:-}" in *=*) PO_BUNDLES="$PO_BUNDLES$PO_NL$1" ;; *) po_die "--bundle needs PACK=DIR" ;; esac ;;
             --procable-bundle) shift; [ $# -gt 0 ] || po_die "--procable-bundle needs a folder"; PO_BUNDLES="$PO_BUNDLES${PO_NL}procable=$1" ;;
             --no-release-hooks|--no-procable-hooks) PO_RELEASE_NO_HOOKS=1 ;;
@@ -1982,6 +2092,7 @@ po_main() {
                 remove|rm|uninstall)
                     [ -n "$PO_ARGS" ] || po_die "name a pack or set to remove"
                     for arg in $PO_ARGS; do po_remove_pack_spec "$arg"; done
+                    po_skills_mcp_sync
                     po_report ;;
                 *) po_die "unknown packs command: $PO_SUB" ;;
             esac
@@ -2007,6 +2118,7 @@ po_install_all() {
     if [ -n "$PO_SEL_SETS" ]; then
         tools="$(po_pack_tools)"
         for w in $(po_sets_ordered); do po_install_set "${w%%:*}" "${w#*:}" "$tools"; done
+        po_skills_mcp_sync
     fi
     po_report
     if [ "$PO_DO_HARNESS" = 1 ] && po_has_word "$PO_SEL_TOOLS" claude && [ -z "$PO_PROFILE_CLAUDE" ] && po_python_harness >/dev/null; then
@@ -2032,7 +2144,7 @@ po_uninstall() {
     elif [ -n "$PO_TOOLS_GIVEN" ]; then
         for t in $PO_SEL_TOOLS; do
             while IFS= read -r owner <&3; do
-                case "$owner" in "harness:$t"|"core:$t"|pack:*:"$t") po_remove_owner "$owner" ;; esac
+                case "$owner" in "harness:$t"|"core:$t"|pack:*:"$t"|"$PO_SKILLS_MCP_NAME:$t") po_remove_owner "$owner" ;; esac
             done 3< "$PO_TMP/owners.all"
         done
     else

@@ -668,23 +668,69 @@ function Get-PoPackTools {
     return ,$out
 }
 
+function Test-PoOwner([string]$Owner) { return (@(Get-PoOwners) -ccontains $Owner) }
+
+function Get-PoSetCopyTools([string]$PackId, [string]$SetId) {  # tools whose skills folders hold copies of the set
+    $prefix = "pack:${PackId}:${SetId}:"
+    $out = @()
+    foreach ($r in (Read-PoManifest)) {
+        if ($r.Kind -ne 'f' -or -not $r.Owner.StartsWith($prefix)) { continue }
+        $t = $r.Owner.Substring($prefix.Length)
+        if (@('mcp', 'all') -notcontains $t -and $out -notcontains $t) { $out += $t }
+    }
+    return ,$out
+}
+
+function Get-PoSetMode([string]$PackId, [string]$SetId) {  # --mode wins; an installed set keeps its mode; a new set gets the default
+    if ($script:Mode) { return $script:Mode }
+    if (Test-PoOwner "pack:${PackId}:${SetId}:mcp") { return 'mcp' }
+    if ((Get-PoSetCopyTools $PackId $SetId).Count -gt 0) { return 'skills' }
+    return $PO_Data['skills_mcp']['default_mode']
+}
+
 function Install-PoSet([string]$PackId, [string]$SetId, $Tools) {
     $pack = Get-PoPack $PackId
     $set = Get-PoSet $pack $SetId
+    $sm = $PO_Data['skills_mcp']
     Write-PoSay "=== pack $PackId, set $SetId ($($set['count']) skills)"
     if ($pack['kind'] -eq 'release') { Install-PoRelease $pack $set $Tools; return }
+    $skills = @($set['skills'])
+    $mode = ''
+    if ($skills.Count -gt 0) { $mode = Get-PoSetMode $PackId $SetId }
     $mcp = [bool]($pack['mcp'] -and $pack['mcp']['set'] -eq $SetId)
     if (Get-PoNpmPackage $pack $SetId) { Test-PoNodeReady $pack $true; Install-PoNpm $pack $SetId }
     elseif ($mcp) { Test-PoNodeReady $pack $false }
     $packsDir = Join-Path $PO_Root $PO_Data['packs_rel']
+    $Tools = @($Tools)
+    if ($mode -eq 'mcp') {
+        if (-not (Get-Command node -ErrorAction SilentlyContinue)) { Stop-Po "mode mcp needs Node.js 18 or later on PATH for the $($sm['name']) MCP server; install Node.js or use --mode skills" }
+        $root = Join-Path (Join-Path $script:DataHome $sm['dir']) $PackId
+        Write-PoSay "  mode mcp: the $($sm['name']) MCP server serves the skills from $root"
+        Start-PoOwner "pack:${PackId}:${SetId}:mcp"
+        foreach ($skill in $skills) { Copy-PoTree (Join-Path (Join-Path (Join-Path $packsDir $PackId) 'skills') $skill) (Join-Path $root $skill) }
+        Complete-PoOwner
+        # a switch from mode skills also takes the tools that hold copies
+        foreach ($t in (Get-PoSetCopyTools $PackId $SetId)) { if ($Tools -notcontains $t) { $Tools += $t } }
+    } elseif ($mode -eq 'skills' -and (Test-PoOwner "pack:${PackId}:${SetId}:mcp")) {
+        Remove-PoOwner "pack:${PackId}:${SetId}:mcp"
+    }
     foreach ($tool in $Tools) {
         $t = Get-PoTool $tool
+        $copy = [bool]($skills.Count -gt 0 -and @($t['skills']).Count -gt 0)
+        if ($mode -eq 'mcp' -and $t['mcp']) {
+            $copy = $false
+            if ($script:McpTools -notcontains $tool) { $script:McpTools += $tool }
+        } elseif ($mode -eq 'mcp' -and $copy) {
+            Write-PoSay "  $($t['label']) has no MCP config that the installer edits: it gets skill copies"
+        }
         $withMcp = [bool]($mcp -and $t['mcp'])
-        if (-not $withMcp -and (@($t['skills']).Count -eq 0 -or @($set['skills']).Count -eq 0)) { continue }
+        if (-not $copy -and -not $withMcp -and -not (Test-PoOwner "pack:${PackId}:${SetId}:$tool")) { continue }
         Start-PoOwner "pack:${PackId}:${SetId}:$tool"
-        foreach ($skill in $set['skills']) {
-            foreach ($dir in $t['skills']) {
-                Copy-PoTree (Join-Path (Join-Path (Join-Path $packsDir $PackId) 'skills') $skill) (Join-Path (Expand-PoPath $dir) $skill)
+        if ($copy) {
+            foreach ($skill in $skills) {
+                foreach ($dir in $t['skills']) {
+                    Copy-PoTree (Join-Path (Join-Path (Join-Path $packsDir $PackId) 'skills') $skill) (Join-Path (Expand-PoPath $dir) $skill)
+                }
             }
         }
         if ($withMcp) { Register-PoMcp $pack $t }
@@ -888,13 +934,20 @@ function Remove-PoNpmPackage([string]$Prefix, [string]$Name) {  # undo an add-on
 }
 
 function Register-PoMcp($Pack, $Tool) {  # add the pack's MCP server to the tool's config
+    Add-PoMcpServer $Tool $Pack['mcp']['name'] $Pack['mcp']['spec_b64'] (Get-PoPrefix $Pack)
+}
+
+function Add-PoMcpServer($Tool, [string]$Name, [string]$SpecB64, [string]$Package) {  # one server entry in the tool's config
+    if (-not $Tool['mcp']) { return }
     $file = Expand-PoPath $Tool['mcp']['file']
-    $name = $Pack['mcp']['name']
+    $name = $Name
     $old = '-'
     foreach ($r in $script:Old) { if ($r.Kind -eq 'm') { $old = $r.Extra } }
     if ($script:Dry) { Write-PoSay "  would register the MCP server $name in $file"; Add-PoChange; return }
     New-PoDir (Split-Path -Parent $file)
-    $out = & node $script:Helper mcp-add $Tool['mcp']['format'] $file $name $Pack['mcp']['spec_b64'] (Get-PoPrefix $Pack) $old
+    $others = @((Read-PoManifest) | Where-Object { $_.Kind -eq 'm' -and $_.Owner -cne $script:Owner } | ForEach-Object { $_.Extra }) -join ','
+    if (-not $others) { $others = '-' }
+    $out = & node $script:Helper mcp-add $Tool['mcp']['format'] $file $name $SpecB64 $Package $old $others
     if ($LASTEXITCODE -ne 0) { Stop-Po "MCP registration failed for $file" }
     $parts = ([string](@($out) | Select-Object -Last 1)).Split("`t")
     switch ($parts[0]) {
@@ -913,6 +966,34 @@ function Unregister-PoMcp([string]$Path, [string]$Name, [string]$Record) {
         'absent' { }
         'changed' { Write-PoWarn "kept the $Name entry in ${Path}: changed since install" }
         default { Write-PoWarn "could not remove the $Name entry from $Path" }
+    }
+}
+
+function Sync-PoSkillsMcp {  # the po-skills server, its index and its config entries follow the mode mcp sets
+    $sm = $PO_Data['skills_mcp']
+    $root = Join-Path $script:DataHome $sm['dir']
+    if ($script:Dry) {
+        if ($script:McpTools.Count -gt 0) { Write-PoSay "  would write $root and register $($sm['name']) for: $($script:McpTools -join ' ')" }
+        return
+    }
+    $mcpOwners = @(Get-PoOwners | Where-Object { $_ -match '^pack:[^:]+:[^:]+:mcp$' })
+    if ($mcpOwners.Count -gt 0) {
+        Write-PoSay "=== $($sm['name']) MCP server: $root"
+        Start-PoOwner $sm['name']
+        Copy-PoSingle (Join-Path $PO_Root $sm['server']) (Join-Path $root 'server.mjs')
+        $tmp = Join-Path (Get-PoTmp) 'index.json'
+        $null = & node $script:Helper skills-index $script:Manifest $root $tmp
+        if ($LASTEXITCODE -ne 0) { Stop-Po "cannot build $(Join-Path $root 'index.json')" }
+        Copy-PoFile $tmp (Join-Path $root 'index.json') (Get-PoFileHash $tmp)
+        Complete-PoOwner
+        foreach ($tool in $script:McpTools) {
+            Start-PoOwner "$($sm['name']):$tool"
+            Add-PoMcpServer (Get-PoTool $tool) $sm['name'] $sm['spec_b64'] $root
+            Complete-PoOwner
+        }
+    } else {
+        foreach ($o in @(Get-PoOwners)) { if ($o.StartsWith("$($sm['name']):")) { Remove-PoOwner $o } }
+        Remove-PoOwner $sm['name']
     }
 }
 
@@ -1066,6 +1147,27 @@ function Get-PoSkillDirs($Tools) {
     return $out
 }
 
+function Get-PoModeLabel {
+    $sm = $PO_Data['skills_mcp']
+    $mode = $script:Mode
+    if (-not $mode) { $mode = $sm['default_mode'] }
+    if ($mode -eq 'mcp') { $text = "mcp (one $($sm['name']) MCP server serves the pack skills; no copies in the skills folders)" }
+    else { $text = 'skills (copies in the skills folder of each tool)' }
+    if (-not $script:Mode) { $text += ', the default; installed sets keep their mode' }
+    return $text
+}
+
+function Get-PoMcpWhere($Tools) {  # where mode mcp puts the skills and the server entry
+    $sm = $PO_Data['skills_mcp']
+    $lines = @("    $(Join-Path $script:DataHome $sm['dir']) (served by the $($sm['name']) MCP server)")
+    foreach ($tool in $Tools) {
+        $t = Get-PoTool $tool
+        if ($t['mcp']) { $lines += "    ${tool}: $(Expand-PoPath $t['mcp']['file']) ($($sm['name']) entry)" }
+        elseif (@($t['skills']).Count -gt 0) { $lines += "    ${tool}: $(Expand-PoPath @($t['skills'])[0]) (skill copies, no MCP config)" }
+    }
+    return $lines
+}
+
 function Show-PoPacks {
     $owners = Get-PoOwners
     foreach ($p in $PO_Data['packs']) {
@@ -1073,8 +1175,13 @@ function Show-PoPacks {
         Write-PoSay "  $($p['description'])"
         foreach ($s in $p['sets']) {
             $mark = ' '
+            $mode = ''
             foreach ($o in $owners) { if ($o.StartsWith("pack:$($p['id']):$($s['id']):")) { $mark = 'x' } }
-            Write-PoSay "  [$mark] $($p['id']):$($s['id']) ($($s['count']) skills) $($s['description'])$(Get-PoNeedsNote $s)"
+            if ($mark -eq 'x') {
+                if ($owners -ccontains "pack:$($p['id']):$($s['id']):mcp") { $mode = ' [mcp]' }
+                elseif ((Get-PoSetCopyTools $p['id'] $s['id']).Count -gt 0) { $mode = ' [skills]' }
+            }
+            Write-PoSay "  [$mark] $($p['id']):$($s['id']) ($($s['count']) skills)$mode $($s['description'])$(Get-PoNeedsNote $s)"
         }
     }
 }
@@ -1189,12 +1296,17 @@ function Invoke-PoTui {
                         Write-PoSay ("    {0,3}. [{1}] {2}, {3} skills: {4}{5}" -f $n, $mark, $s['label'], $s['count'], $s['description'], (Get-PoNeedsNote $s))
                     }
                 }
+                Write-PoSay "  [m] mode: $(Get-PoModeLabel)"
                 Write-PoSay "Next step installs $(Get-PoSelCount) skills from the checked sets into:"
-                Get-PoSkillDirs (Get-PoPackTools) | ForEach-Object { Write-PoSay "    $_" }
-                Write-PoSay 'A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, Enter next, b back, q quit'
+                $effective = $script:Mode
+                if (-not $effective) { $effective = $PO_Data['skills_mcp']['default_mode'] }
+                if ($effective -eq 'mcp') { Get-PoMcpWhere (Get-PoPackTools) | ForEach-Object { Write-PoSay $_ } }
+                else { Get-PoSkillDirs (Get-PoPackTools) | ForEach-Object { Write-PoSay "    $_" } }
+                Write-PoSay 'A set that needs another set selects both. Keys: number toggles a set, p<number> toggles a whole pack, m toggles the mode, Enter next, b back, q quit'
                 $a = Read-PoAnswer
                 if ($a -eq '') { $screen = 5 }
                 elseif ($a -eq 'b') { $screen = 3 }
+                elseif ($a -eq 'm') { if ($effective -eq 'mcp') { $script:Mode = 'skills' } else { $script:Mode = 'mcp' } }
                 elseif ($a -eq 'q') { throw 'cancelled' }
                 elseif ($a -match '^p(\d+)$' -and [int]$Matches[1] -ge 1 -and [int]$Matches[1] -le @($PO_Data['packs']).Count) {
                     $p = @($PO_Data['packs'])[[int]$Matches[1] - 1]
@@ -1211,6 +1323,7 @@ function Invoke-PoTui {
                 Write-PoSay "  core: $(if ($script:DoCore) { 'yes' } else { 'no' })"
                 Write-PoSay "  harness: $(if ($script:DoHarness) { 'yes' } else { 'no' })"
                 Write-PoSay "  packs: $(if ($script:SelSets) { $script:SelSets -join ' ' } else { 'none' })"
+                Write-PoSay "  pack mode: $(Get-PoModeLabel)"
                 Write-PoSay "Next step installs the items above. The manifest goes to $($script:Manifest)."
                 Write-PoSay 'Keys: Enter installs, b back, q quit'
                 $a = Read-PoAnswer
@@ -1253,6 +1366,10 @@ Options:
   --packs SPEC            pack[:set][,set...] and more packs. A bare pack name skips sets
                           that need another set (rea-frida); name those: --packs rea:rea,rea-frida
   --sets SPEC             same as --packs
+  --mode MODE             mcp (default) or skills. Mode mcp copies the pack skills to
+                          <data_home>\skills-mcp and registers one po-skills MCP server per tool.
+                          Mode skills copies them into the skills folder of each tool.
+                          Without --mode, an installed set keeps its mode
   --bundle PACK=DIR       read a release pack or a pinned binding from a local folder
   --procable-bundle DIR   same as --bundle procable=DIR
   --no-release-hooks      install release packs without their hooks
@@ -1271,6 +1388,7 @@ function Install-PoAll {
         $ordered = @($script:SelSets | Where-Object { $p, $s = $_.Split(':', 2); -not (Get-PoSet (Get-PoPack $p) $s)['requires'] }) +
             @($script:SelSets | Where-Object { $p, $s = $_.Split(':', 2); [bool](Get-PoSet (Get-PoPack $p) $s)['requires'] })
         foreach ($w in $ordered) { $p, $s = $w.Split(':', 2); Install-PoSet $p $s $tools }
+        Sync-PoSkillsMcp
     }
     Write-PoReport
 }
@@ -1290,7 +1408,9 @@ function Invoke-PoUninstall {
         foreach ($o in $owners) { if ($o -ceq "project:$dir" -or $o -ceq "windsurf:$dir") { Remove-PoOwner $o } }
     } elseif ($script:ToolsGiven) {
         foreach ($t in $script:SelTools) {
-            foreach ($o in $owners) { if ($o -ceq "harness:$t" -or $o -ceq "core:$t" -or ($o -like 'pack:*' -and $o.EndsWith(":$t"))) { Remove-PoOwner $o } }
+            foreach ($o in $owners) {
+                if ($o -ceq "harness:$t" -or $o -ceq "core:$t" -or ($o -like 'pack:*' -and $o.EndsWith(":$t")) -or $o -ceq "$($PO_Data['skills_mcp']['name']):$t") { Remove-PoOwner $o }
+            }
         }
     } else {
         foreach ($prefix in @('harness:', 'pack:', 'core:', '')) {
@@ -1308,6 +1428,7 @@ function Invoke-PoMain($Argv) {
     $script:SelSets = @(); $script:ProfileClaude = ''; $script:ProfileCodex = ''; $script:HarnessOff = @()
     $script:Bundles = @{}; $script:ReleaseNoHooks = $false; $script:ProjectDir = ''; $script:Failed = @()
     $script:Changes = 0; $script:Exit = 0; $script:Owner = ''; $script:Tmp = ''
+    $script:Mode = ''; $script:McpTools = @()
     $script:DirsNew = New-Object System.Collections.Generic.List[object]
     $script:Stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
     $cmd = ''; $sub = ''; $rest = @(); $packsSpec = @()
@@ -1342,6 +1463,7 @@ function Invoke-PoMain($Argv) {
                 '^--profile-claude$' { if ($PO_Data['harness']['profiles']['claude'] -notcontains $next) { Stop-Po "unknown Claude profile: $next" }; $script:ProfileClaude = $next; $i++; break }
                 '^--profile-codex$' { if ($PO_Data['harness']['profiles']['codex'] -notcontains $next) { Stop-Po "unknown Codex profile: $next" }; $script:ProfileCodex = $next; $i++; break }
                 '^--(packs|sets)$' { if (-not $next) { Stop-Po "$arg needs a value" }; $packsSpec += $next; $i++; break }
+                '^--mode$' { if (@('mcp', 'skills') -notcontains $next) { Stop-Po '--mode needs mcp or skills' }; $script:Mode = $next; $i++; break }
                 '^--bundle$' { if ($next -notmatch '=') { Stop-Po '--bundle needs PACK=DIR' }; $k, $v = $next.Split('=', 2); $script:Bundles[$k] = $v; $i++; break }
                 '^--procable-bundle$' { $script:Bundles['procable'] = $next; $i++; break }
                 '^--no-(release|procable)-hooks$' { $script:ReleaseNoHooks = $true; break }
@@ -1385,6 +1507,7 @@ function Invoke-PoMain($Argv) {
                     { $_ -in @('remove', 'rm', 'uninstall') } {
                         if ($rest.Count -eq 0) { Stop-Po 'name a pack or set to remove' }
                         foreach ($s in $rest) { Remove-PoPackSpec $s }
+                        Sync-PoSkillsMcp
                         Write-PoReport
                     }
                     default { Stop-Po "unknown packs command: $sub" }

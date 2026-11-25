@@ -261,8 +261,11 @@ class ReaBashTests(unittest.TestCase):
             self.assertEqual([pinned_entry(prefix)], entries[tool], tool)
         self.assertEqual(1, entries["codex_headers"])
         self.assertFalse((prefix / "node_modules" / "frida").exists())
+        # mode mcp (the default): the skill sits in skills-mcp and po-skills serves it
+        self.assertIn("origin: third-party", (box.data / "skills-mcp" / "rea" / "reverse-engineer-anything" / "SKILL.md").read_text())
         for skills in (".claude/skills", ".agents/skills", ".cursor/skills", ".config/opencode/skills"):
-            self.assertIn("origin: third-party", (box.home / skills / "reverse-engineer-anything" / "SKILL.md").read_text())
+            self.assertFalse((box.home / skills / "reverse-engineer-anything").exists(), skills)
+        self.assertIn('"po-skills"', (box.home / ".claude.json").read_text())
         calls = box.log.read_text().splitlines()
         self.assertEqual(1, len(calls))
         self.assertIn("rea-agents@6.10.1 --omit=optional --ignore-scripts", calls[0])
@@ -270,7 +273,7 @@ class ReaBashTests(unittest.TestCase):
 
         self.assertIn("==> no change", box.run("packs", "install", "rea", *self.tools).stdout)
         self.assertEqual(1, len(box.log.read_text().splitlines()))
-        self.assertIn("[x] rea:rea (1 skills)", box.run("packs", "list").stdout)
+        self.assertIn("[x] rea:rea (1 skills) [mcp]", box.run("packs", "list").stdout)
 
         box.run("packs", "remove", "rea")
         for rel, text in CONFIGS.items():
