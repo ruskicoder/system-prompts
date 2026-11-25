@@ -20,7 +20,8 @@ import tomllib
 import unittest
 from pathlib import Path
 
-from test_installers import BASH, FIXTURES, PWSH, ROOT, Sandbox, files_under, files_under_without_pwsh, generate
+from test_installers import (BASH, FIXTURES, PWSH, ROOT, Sandbox, files_under, files_under_without_pwsh, generate,
+                             platform_tag, release_fixture)
 
 sys.path.insert(0, str(ROOT / "tools"))
 import validate_packs  # noqa: E402
@@ -495,6 +496,135 @@ class FixtureMcpBashTests(unittest.TestCase):
         self.assertIn("--mode needs mcp or skills", self.sandbox().run("--mode", "copy", "--yes", ok=False).stderr)
 
 
+# ---------------------------------------------------------------------------------- release pack in mode mcp
+
+RELEASE = json.loads((ROOT / "packs" / "procable" / "pack.json").read_text(encoding="utf-8"))["release"]
+# Hook files a user already has, in a layout that json.dumps would not write.
+USER_HOOKS = {
+    ".claude/settings.json": '{\n    "model": "opus",\n    "hooks": {\n        "Stop": [\n'
+                             '            {"hooks": [{"type": "command", "command": "mine stop"}]}\n        ]\n    }\n}\n',
+    ".codex/hooks.json": '{"hooks": {"Stop": [{"hooks": [{"type": "command", "command": "mine codex"}]}]}}',
+}
+
+
+def skill_roots(home: Path) -> list[Path]:
+    opencode = str(home / ".config" / "opencode")
+    return [Path(r.replace("{HOME}", str(home)).replace("{OPENCODE}", opencode)) for r in RELEASE["skill_roots"]]
+
+
+def release_commands(path: Path) -> list[str]:
+    """Hook commands in a hook file that run the release launcher."""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return [h["command"] for groups in data.get("hooks", {}).values() for g in groups for h in g.get("hooks", [])
+            if "procable/scripts/procable" in h.get("command", "")]
+
+
+@unittest.skipUnless(BASH and NODE and sys.platform != "win32", "bash and node on Linux or macOS required")
+class ReleaseMcpBashTests(unittest.TestCase):
+    """The procable release pack in mode mcp, from a stub release bundle (tests/installers/test_installers.py)."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="po release mcp ")
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        self.bundle, packs = release_fixture(base, "procable")
+        generate(base / "out", packs)
+        self.box = Sandbox(self, base / "out" / "install.sh")
+        self.args = ("packs", "install", "procable", "--tools", "claude,codex", "--bundle", f"procable={self.bundle}")
+
+    def write_user_hooks(self, layout: dict[str, str]) -> None:
+        for rel, text in layout.items():
+            path = self.box.home / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(text.encode())
+
+    def assert_served(self) -> Path:
+        box = self.box
+        dest = box.data / "skills-mcp" / "procable" / "procable"
+        for root in skill_roots(box.home):
+            self.assertFalse((root / "procable").exists(), root)
+        os_name, arch = platform_tag()
+        self.assertTrue(os.access(dest / "scripts" / "bin" / f"{os_name}-{arch}" / "procable", os.X_OK))
+        self.assertTrue((dest / "reference" / "typography.md").is_file())
+        claude = release_commands(box.home / ".claude" / "settings.json")
+        codex = release_commands(box.home / ".codex" / "hooks.json")
+        self.assertEqual(2, len(claude))
+        self.assertEqual(2, len(codex))
+        for command in claude + codex:
+            self.assertIn(str(dest / "scripts" / "procable"), command)
+            # the hook runs the engine without the skill being loaded
+            proc = subprocess.run(["sh", "-c", command], capture_output=True, text=True, env={"PATH": os.environ["PATH"]})
+            self.assertEqual("procable hook ran\n", proc.stdout, proc.stderr)
+        self.assertIn(NAME, json.loads((box.home / ".claude.json").read_text())["mcpServers"])
+        self.assertIn(f"[mcp_servers.{NAME}]", (box.home / ".codex" / "config.toml").read_text())
+        index = json.loads((box.data / "skills-mcp" / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual([("procable", "procable", str(dest))], [(s["name"], s["pack"], s["path"]) for s in index["skills"]])
+        return dest
+
+    def test_mode_mcp_install_rerun_search_and_byte_identical_removal(self):
+        box = self.box
+        self.write_user_hooks(USER_HOOKS)
+        first = box.run(*self.args)
+        self.assertIn("hooks -> ", first.stdout)
+        dest = self.assert_served()
+        session = Session(self, server=box.data / "skills-mcp" / "server.mjs")
+        found = text_of(session.call("search_skills", {"query": "procable design"}))
+        self.assertTrue(found.startswith("1. procable (pack procable, set procable): Design skill"), found)
+        self.assertIn(f"Folder: {dest}", text_of(session.call("load_skill", {"name": "procable"})))
+        self.assertIn("==> no change", box.run(*self.args).stdout)
+        self.assertIn("[x] procable:procable (1 skills) [mcp]", box.run("packs", "list").stdout)
+        box.run("packs", "remove", "procable")
+        for rel, text in USER_HOOKS.items():
+            self.assertEqual(text.encode(), (box.home / rel).read_bytes(), rel)
+        self.assertFalse(box.data.exists())
+        self.assertEqual(sorted(USER_HOOKS), [p for p in files_under(box.home) if (box.home / p).is_file()])
+
+    def test_switch_from_skills_to_mcp_and_back(self):
+        box = self.box
+        layout = USER_HOOKS
+        self.write_user_hooks(layout)
+        box.run(*self.args, "--mode", "skills")
+        claude_copy = box.home / ".claude" / "skills" / "procable"
+        self.assertTrue((claude_copy / "SKILL.md").is_file())
+        self.assertTrue(all(str(claude_copy) in c for c in release_commands(box.home / ".claude" / "settings.json")))
+        self.assertIn("[x] procable:procable (1 skills) [skills]", box.run("packs", "list").stdout)
+        self.assertIn("==> no change", box.run(*self.args).stdout)
+
+        box.run(*self.args, "--mode", "mcp")
+        self.assert_served()
+        self.assertIn("==> no change", box.run(*self.args).stdout)
+
+        box.run(*self.args, "--mode", "skills")
+        self.assertTrue((claude_copy / "SKILL.md").is_file())
+        self.assertTrue((box.home / ".agents" / "skills" / "procable" / "SKILL.md").is_file())
+        self.assertFalse((box.data / "skills-mcp").exists())
+        self.assertFalse((box.home / ".claude.json").exists())
+        self.assertTrue(all(str(claude_copy) in c for c in release_commands(box.home / ".claude" / "settings.json")))
+
+        box.run(*self.args, "--mode", "mcp")
+        self.assert_served()
+        box.run("uninstall")
+        for rel, text in layout.items():
+            self.assertEqual(text.encode(), (box.home / rel).read_bytes(), rel)
+        self.assertEqual(sorted(layout), [p for p in files_under(box.home) if (box.home / p).is_file()])
+
+    def test_tool_without_mcp_config_and_no_hooks(self):
+        box = self.box
+        proc = box.run("packs", "install", "procable", "--tools", "claude,antigravity", "--no-release-hooks",
+                       "--bundle", f"procable={self.bundle}")
+        self.assertIn("Antigravity has no MCP config that the installer edits: it gets no procable skill", proc.stdout)
+        self.assertFalse((box.home / ".gemini").exists())
+        self.assertFalse((box.home / ".claude" / "settings.json").exists())
+        self.assertTrue((box.data / "skills-mcp" / "procable" / "procable" / "SKILL.md").is_file())
+        box.run("uninstall")
+        self.assertEqual([], files_under(box.home))
+
+    def test_dry_run_writes_nothing(self):
+        proc = self.box.run(*self.args, "--dry-run")
+        self.assertIn("would copy the procable skill and its engine to", proc.stdout)
+        self.assertEqual([], files_under(self.box.home))
+
+
 # ---------------------------------------------------------------------------------- PowerShell
 
 @unittest.skipUnless(PWSH and NODE, "pwsh and node required")
@@ -537,6 +667,56 @@ class AcceptancePowerShellTests(unittest.TestCase):
             self.assertEqual(text.encode(), (home / rel).read_bytes(), rel)
         run("uninstall")
         self.assertEqual(set(CONFIGS), {p for p in files_under_without_pwsh(home) if (home / p).is_file()})
+
+
+@unittest.skipUnless(PWSH and NODE and sys.platform != "win32", "pwsh and node on Linux or macOS required")
+class ReleaseMcpPowerShellTests(unittest.TestCase):
+    """install.ps1 with the stub procable release: mode mcp, switch to skills and back, removal."""
+
+    def test_flow(self):
+        temporary = tempfile.TemporaryDirectory(prefix="po pwsh release mcp ")
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        bundle, packs = release_fixture(base, "procable")
+        generate(base / "out", packs)
+        home = base / "home"
+        home.mkdir()
+        for rel, text in USER_HOOKS.items():
+            (home / rel).parent.mkdir(parents=True, exist_ok=True)
+            (home / rel).write_bytes(text.encode())
+        env = {"PATH": os.environ.get("PATH", ""), "HOME": str(home), "USERPROFILE": str(home),
+               "LOCALAPPDATA": str(home / "AppData" / "Local")}
+
+        def run(*args):
+            proc = subprocess.run([PWSH, "-NoProfile", "-File", str(base / "out" / "install.ps1"), *args],
+                                  capture_output=True, text=True, env=env, timeout=900)
+            self.assertEqual(0, proc.returncode, proc.stdout + proc.stderr)
+            return proc
+
+        install = ("packs", "install", "procable", "--tools", "claude,codex", "--bundle", f"procable={bundle}")
+        run(*install)
+        dest = home / "AppData" / "Local" / "prompt-orchestrator" / "skills-mcp" / "procable" / "procable"
+        self.assertTrue((dest / "SKILL.md").is_file())
+        for root in skill_roots(home):
+            self.assertFalse((root / "procable").exists(), root)
+        for rel in USER_HOOKS:
+            commands = release_commands(home / rel)
+            self.assertEqual(2, len(commands), rel)
+            self.assertTrue(all(str(dest / "scripts" / "procable") in c for c in commands), commands)
+        self.assertIn("no change", run(*install).stdout)
+        self.assertIn("[x] procable:procable (1 skills) [mcp]", run("packs", "list").stdout)
+
+        run(*install, "--mode", "skills")
+        self.assertTrue((home / ".claude" / "skills" / "procable" / "SKILL.md").is_file())
+        self.assertFalse(dest.exists())
+        run(*install, "--mode", "mcp")
+        self.assertFalse((home / ".claude" / "skills" / "procable").exists())
+        self.assertTrue((dest / "SKILL.md").is_file())
+
+        run("packs", "remove", "procable")
+        self.assertFalse(dest.exists())
+        for rel, text in USER_HOOKS.items():
+            self.assertEqual(text.encode(), (home / rel).read_bytes(), rel)
 
 
 # ---------------------------------------------------------------------------------- validator
