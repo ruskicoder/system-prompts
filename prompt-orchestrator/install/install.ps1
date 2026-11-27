@@ -1652,6 +1652,39 @@ $PO_Data = [ordered]@{
             'mcp' = $null
         },
         [ordered]@{
+            'id' = 'playwright-cli'
+            'label' = 'Playwright CLI'
+            'description' = 'Browser automation and Playwright test authoring through the playwright-cli command, installed in a private npm prefix.'
+            'kind' = 'skills'
+            'license' = 'Apache-2.0'
+            'upstream' = 'https://github.com/microsoft/playwright-cli'
+            'payload' = ''
+            'sets' = @(
+                [ordered]@{
+                    'id' = 'playwright-cli'
+                    'label' = 'Playwright CLI'
+                    'description' = 'The playwright-cli browser-automation skill and the pinned @playwright/cli package in a private npm prefix.'
+                    'skills' = @(
+                        'playwright-cli'
+                    )
+                    'count' = 1
+                }
+            )
+            'release' = $null
+            'npm' = [ordered]@{
+                'node' = '>=20.0.0'
+                'packages' = @(
+                    [ordered]@{
+                        'set' = 'playwright-cli'
+                        'name' = '@playwright/cli'
+                        'version' = '0.1.25'
+                        'integrity' = 'sha512-v1qjq3/ssK2lf9z/+Cu0gHGXm2uDgAQwq5fWPCBM1SxkJqcB0FOyvbbsTrpPn4j4WJey8bLTYT4tEB8o4FbwBw=='
+                    }
+                )
+            }
+            'mcp' = $null
+        },
+        [ordered]@{
             'id' = 'procable'
             'label' = 'procable'
             'description' = 'Offline design skill with a design detector and per-edit hooks, installed from a release pinned by digest.'
