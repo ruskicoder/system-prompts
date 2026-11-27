@@ -1,0 +1,105 @@
+artex-defense pack for prompt-orchestrator
+
+Upstream: https://github.com/jiwoochris/artex-global
+Commit: 06b36d7219244c5e2b6467394f60eca160c785cf
+License: GNU Affero General Public License v3.0 (AGPL-3.0).
+LICENSE in this folder, and LICENSE in the skill folder, hold the upstream
+AGPL-3.0 text unchanged.
+
+What this pack holds
+  The defensive material from the upstream repository only: the Sigma and
+  Suricata rules, the ATT&CK Navigator layer, the indicator CSV and MISP event,
+  the host-triage script, the detection test harness with its recorded
+  fixtures, and the English defence guide. The pack ships no part of the ARTEX
+  application, none of its agent prompts and none of its offensive skills.
+
+Files copied unchanged (paths under skills/detecting-artex-autonomous-attacks/)
+  references/sigma/*.yml and references/sigma/correlation/*.yml
+      from detections/sigma/
+  references/suricata/artex.rules        from detections/suricata/artex.rules
+  references/attack/artex_navigator_layer.json
+      from detections/attack/artex_navigator_layer.json
+  references/indicators/artex_indicators.csv and artex_indicators.misp.json
+      from detections/indicators/
+  scripts/artex_host_triage.py           from detections/triage/artex_host_triage.py
+  scripts/tests/                         from detections/tests/, except the
+      files listed as modified below; README.md and README.ko.md of that
+      folder are not shipped
+
+Files modified (AGPL-3.0 section 5(a)). Each modified file carries a dated
+notice line at its top. prompt-orchestrator made every change on 2026-11-27.
+  references/defense-en.md
+      Copied from docs/defense-en.md. The Korean-edition line now points at the
+      upstream copy of defense-ko.md. Relative links and path names point at
+      this pack's layout or at upstream blob URLs at the commit. The Sigma
+      template block is unchanged.
+  scripts/tests/sigma/run.sh, sigma_match/run.sh, sigma_lint/run.sh,
+  sigma_backends/run.sh
+      Read the Sigma rules from references/sigma.
+  scripts/tests/attack/run.sh
+      Mounts references/ as the detections tree.
+  scripts/tests/indicators/run.sh
+      Mounts references/ as the detections tree and drops the mounts of the
+      ARTEX source, CI and pre-commit files.
+  scripts/tests/misp/run.sh
+      Mounts references/ as the detections tree and drops the CI workflow mount.
+  scripts/tests/suricata/run.sh
+      Reads the rules from references/suricata and replays the bundled captures
+      in captures/ instead of synthesizing new ones.
+  scripts/tests/triage-selftest.sh
+      Mounts scripts/, where the pack keeps artex_host_triage.py.
+  scripts/tests/check-harness-sync.sh
+      Mounts the tests folder as the detections/tests tree and drops the CI
+      workflow mount.
+  scripts/tests/check-harness-sync.py
+      Skips the CI-workflow leg when the workflow is absent.
+  scripts/tests/check-defense-template.sh
+      Mounts references/, where the pack keeps defense-en.md.
+  scripts/tests/check-defense-template.py
+      Runs on the English guide alone when the Korean guide is absent, and
+      excludes the d3_fendtag validator, with a SKIP line, when
+      d3fend.mitre.org is unreachable.
+  scripts/tests/sigma/check.sh, scripts/tests/sigma_lint/check.sh
+      Exclude the d3_fendtag validator, with a SKIP line, when d3fend.mitre.org
+      is unreachable. The shipped rules carry no D3FEND tags.
+  scripts/tests/indicators/check.py
+      Skips the checks that read the ARTEX source tree, CI workflow and
+      pre-commit config when they are absent, and then checks the hunting-rule
+      side of the deny-list alone.
+  scripts/tests/misp/check.py
+      Skips the CI-trigger check when the workflow is absent.
+
+Files written for this pack
+  skills/detecting-artex-autonomous-attacks/SKILL.md
+  references/artex-security-analysis.md (analysis of the upstream source; no
+      source code is included)
+  scripts/tests/suricata/captures/enrich.pcap, norma.pcap, benign.pcap
+      Built once offline with the unmodified scripts/tests/suricata/gen_pcap.py
+      (scapy 2.6.1), with the arguments of the upstream suricata/run.sh
+      (35 flows of artex-enrich/1.0, 8 flows of norma/0.4, 35 flows of a
+      Firefox User-Agent). The captures hold synthetic plaintext HTTP GET
+      requests between 10.10.10.9 and 10.10.10.80 for Host shop.example.test.
+      They are not recordings of observed traffic. A rebuild is byte-identical.
+      sha256:
+        d6a7b8e72b4f018df2d95bcd48001a10f373f070e69781ca7961d0a057565238  enrich.pcap
+        d830db74dfe81548c45c0bb7e3245d1fe04af35ea5fefac7dd276b63e1161b92  norma.pcap
+        1f024b5db5295c6567bd62f075ca508267de8398eae225ab54b3e2cb5f6255b9  benign.pcap
+
+Fixture review (2026-11-27)
+  Every fixture under scripts/tests/ was read before shipping. No fixture holds
+  a working exploit payload, shell code, credentials or a live target address,
+  so no fixture was dropped or replaced.
+  - sigma_match/events/*.json and events/correlation/*.json: log, proxy,
+    file-event and process-creation samples. Addresses are 203.0.113.0/24
+    (documentation range) and 10.0.0.0/8; hosts are *.example.test, web01,
+    web02 and db02. The destructive command strings (rm -rf /var/www/html,
+    rm -rf / --no-preserve-root, DROP TABLE customers, iptables -F) are
+    telemetry values that pySigma matches in memory. No test executes them.
+  - The guard audit marker in the fixtures is a detection signature and stays
+    byte-identical.
+  - scripts/artex_host_triage.py self-test: a synthetic ss line names the peer
+    93.184.216.34 as the remote end of an established session, to prove that
+    a non-listening socket is ignored. The script parses that text only and
+    never connects to the address.
+  - suricata/gen_pcap.py writes a file and sends no packet. The suite replays
+    the bundled captures and does not run gen_pcap.py.
