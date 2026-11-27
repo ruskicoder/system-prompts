@@ -141,8 +141,15 @@ def check_skill(skill_dir: Path, pack: dict, errors: list[str]) -> None:
             errors.append(f"{where}: upstream-commit must be a 40-hex sha")
         upstream = str(data.get("upstream", ""))
         prefix = f"{pack['upstream']}/blob/{commit}/"
-        if not (upstream.startswith(prefix) and upstream.endswith("SKILL.md")):
-            errors.append(f"{where}: upstream must be the blob URL of SKILL.md under {prefix}")
+        # A skill written for the pack from an upstream Markdown document (the upstream
+        # has no SKILL.md for it) sets upstream-type: document and names that document.
+        kind = data.get("upstream-type")
+        if kind not in (None, "document"):
+            errors.append(f"{where}: upstream-type must be document when set")
+        suffix = ".md" if kind == "document" else "SKILL.md"
+        if not (upstream.startswith(prefix) and upstream.endswith(suffix)):
+            errors.append(f"{where}: upstream must be the blob URL of SKILL.md under {prefix}"
+                          " (with upstream-type: document, of a .md document under it)")
 
 
 def check_release(pack_dir: Path, pack: dict, errors: list[str]) -> None:
