@@ -264,4 +264,142 @@ Then drop the two branch reports under `prompt-orchestrator/ignore/reports/`, as
 3. In this session, the artex harness needs two workarounds. The proxy refuses `github.com/<repo>/raw/` for pySigma's ATT&CK data, and `d3fend.mitre.org` is blocked. GitHub runners and open networks need neither workaround.
 4. The pack report for artex-defense lists the analysis gaps (`web/` dependencies, `guard/` bypass resistance, upstream CI, go-mitmproxy key file mode). This review did not close them.
 
-QUESTION FOR THE LEADER: should the playwright-cli merge take `cloud/review-fixes-1128` (the B1 notice fix) in place of `cloud/pack-playwright-cli`? Recommended answer: yes, merge `cloud/review-fixes-1128`, because the fix is the branch plus one commit and its full CI passes.
+Leader answer: merge `cloud/review-fixes-1128` in place of `cloud/pack-playwright-cli`, after the fix round below.
+
+## Fix round
+
+Final heads: `cloud/review-fixes-1128` at `80736e26`, `cloud/pack-artex-defense` at `7cb7a2f4`. Both branches are ready for a PR against master `2aa81014`.
+
+The leader chose "fix first, then PRs". The playwright-cli merge uses `cloud/review-fixes-1128` in place of `cloud/pack-playwright-cli`.
+
+### Finding status
+
+| ID | Status | Commit | Change |
+|---|---|---|---|
+| B1 | Fixed | `92ac6272` | Dated Apache-2.0 section 4(b) comment in the five modified files. NOTICE describes the comments. |
+| S1 | Fixed | `249571d4` | The prefix path in SKILL.md is `"${XDG_DATA_HOME:-$HOME/.local/share}/prompt-orchestrator/packages/playwright-cli/node_modules/.bin"`. Windows keeps `%LOCALAPPDATA%\prompt-orchestrator\packages\playwright-cli\node_modules\.bin`. |
+| S2 | Fixed | `249571d4` | The Installation section gives one setup line per shell, for bash or zsh and for PowerShell. The line puts the prefix `.bin` folder first on PATH and sets `NO_UPDATE_NOTIFIER=1`. The bare `playwright-cli` examples then match `Bash(playwright-cli:*)`. The rule to ask the user before an install step stays. |
+| S3 | Fixed | `249571d4` | After the upstream `npm init playwright@latest` fence, `test-generation.md` gains a note. The note says that the step installs packages and needs the user's approval. The agent pins the version that the user names. The fence is verbatim. |
+| N1 | Fixed | `249571d4` | The Windows path names `playwright-cli.cmd`. The text also names the `.cmd` file as the way past an execution policy that blocks `playwright-cli.ps1`. |
+| N2 | Fixed | `249571d4` | The rule reads "Ask the user before each install step." |
+| S4 | Open | none | The alpha dependencies need a stable upstream release of `@playwright/cli`. |
+| S5 | Fixed | `ba1d4bc7` | SKILL.md step 1 has a table of the hosts that the harness reaches. The table names Docker Hub, PyPI, `d3fend.mitre.org` and `github.com` (`mitre-attack/attack-stix-data`). For each host, the table names the checks that skip or fail when the host is blocked. |
+| S6 | Fixed | `ba1d4bc7` | Step 2 runs `mkdir -p /tmp/artex-suricata` before Suricata. Both commands use `references/suricata/artex.rules`. |
+| S7 | Fixed | `ba1d4bc7` | The 11 harness scripts that set a default image pin `python:3.12-slim@sha256:5b5fe805...ec15016` and `jasonish/suricata:8.0.8@sha256:d5a3a178...20bda2c3`. A comment in each script names the source tag and the date. `PYTHON_IMAGE` and `SURICATA_IMAGE` still override the defaults. On 2026-11-28, `jasonish/suricata:latest`, `:8.0` and `:8.0.8` had the same digest on Docker Hub. Each script's section 5(a) notice gains a 2026-11-28 entry, and NOTICE lists the pins. |
+| S8 | No action | none | The review result for the validator change stands. |
+| N3 | No action | `80736e26` | The playwright-cli session report left the branch. |
+| N4 | Open | none | The SPDX id stays `AGPL-3.0`, to match upstream and GitHub, until the leader picks `AGPL-3.0-only` or `AGPL-3.0-or-later`. |
+| N5 | Fixed | `ba1d4bc7` | F4 cites `install.sh:73` for `DB_SSL=disable`. |
+| N6 | Fixed | `ba1d4bc7` | The notifier row cites `notify/telegram.go:93` (base URL) and `notify/telegram.go:97` (path). |
+| N7 | Left as is | none | The upstream self-test address stays. NOTICE describes the address. |
+
+### PR readiness
+
+| Step | playwright-cli (`cloud/review-fixes-1128`) | artex-defense (`cloud/pack-artex-defense`) |
+|---|---|---|
+| Merge of `origin/master` (`2aa81014`) | `Already up to date`, so no regeneration | `Already up to date`, so no regeneration |
+| Session report dropped | `80736e26` "chore: drop the cloud session report before merge" | `7cb7a2f4` "chore: drop the cloud session report before merge" |
+| Files under `ignore/reports/` after the drop | only master's `2026-11-08-ci-enforcement.md` | only master's `2026-11-08-ci-enforcement.md` |
+| Commit identity | allowlisted owner identity | allowlisted owner identity |
+| `ai_trailer.py check` over the branch commits | 0 findings | 0 findings |
+
+This review report stays on `cloud/review-1128` only.
+
+### CI evidence
+
+Each run used a fresh worktree of the pushed head, with `/usr/bin` first on PATH so that the rm-guard test links `/usr/bin/rm`. The tools match the first round (Python 3.13.18, PyYAML 6.0.2, ShellCheck 0.9.0, PowerShell 7.7.0, Node.js 22.23.5).
+
+| Step | `80736e26` | `7cb7a2f4` | combined `9f65cee6` |
+|---|---|---|---|
+| Generated integrations | pass | pass | pass |
+| Skill validator | 404 of 404 | 404 of 404 | 404 of 404 |
+| Pack validator | 7 packs, 0 problems | 7 packs, 0 problems | 8 packs, 0 problems |
+| PowerShell parse | 42 files, 0 errors | 42 files, 0 errors | 42 files, 0 errors |
+| Installers current | yes | yes | yes |
+| ShellCheck | clean | clean | clean |
+| Unit tests, 11 folders | pass (installers 78, skipped 1) | pass (installers 79, skipped 1) | pass (installers 79, skipped 1) |
+| Gate: rules, prose, attribution, secrets, unicode, commits, models | 0 gate findings (0 prose advisories) | 0 gate findings (22 prose advisories) | 0 gate findings (22 prose advisories) |
+| Overall | PASS | PASS | PASS |
+
+For the combined tree, the commands below reproduce the merge. Only `install/install.sh` conflicts. The auto-merged `install.ps1` equals the regenerated file. For the commits gate, the allow file added the identity of my two local scratch merge commits. The branch commits pass with the repository allowlist alone.
+
+```bash
+git checkout -B merge-packs origin/master
+```
+
+```bash
+git merge --no-ff origin/cloud/review-fixes-1128
+```
+
+```bash
+git merge --no-ff origin/cloud/pack-artex-defense
+```
+
+```bash
+cd prompt-orchestrator && python3 tools/generate_installers.py && python3 tools/generate_installers.py --check
+```
+
+```bash
+git add install/install.sh install/install.ps1 && git commit --no-edit
+```
+
+### artex-defense harness
+
+The harness ran on `ba1d4bc7`. The final head `7cb7a2f4` changes no file under `packs/`. The default Suricata image came from the new pin with no override. `PYTHON_IMAGE` pointed at a local image built `FROM` the pinned Python digest, with the proxy CA and the ATT&CK URL rewrite of the first round. Containers reached the proxy through the `--network host` shim.
+
+```
+  PASS  sigma
+  PASS  sigma_match
+  PASS  sigma_lint
+  PASS  sigma_backends
+  PASS  suricata
+  PASS  attack
+  PASS  indicators
+  PASS  misp
+RESULT: PASS
+EXIT=0
+PASS lines: 166  FAIL lines: 0  SKIP lines: 10
+```
+
+The 10 SKIP lines equal the first round. The SKILL.md table also matched one accidental run. The session proxy port changed after a container restart, so pip could not connect. In that run, `sigma`, `sigma_match`, `sigma_lint`, `sigma_backends`, `misp` and the defence template gate failed, and `suricata`, `attack`, `indicators`, the triage self-test and harness sync passed. The table names the same checks for a blocked PyPI.
+
+`triage-selftest.sh` ran with the pinned default Python image and no override, and printed `RESULT: PASS`. The host self-test `python3 scripts/artex_host_triage.py --self-test` exits 0 with 23 PASS lines.
+
+SKILL.md step 2, run as written in the pinned Suricata image:
+
+```
+mkdir -p /tmp/artex-suricata
+suricata -r scripts/tests/suricata/captures/enrich.pcap -S references/suricata/artex.rules -k none -l /tmp/artex-suricata
+suricata-exit=0
+     35 "signature_id":1000001
+      5 "signature_id":1000002
+```
+
+The `artex-defense` set installs from `7cb7a2f4` in a temporary HOME with 58 changes. The 55 installed files equal the pack folder. Removal leaves 0 entries.
+
+### playwright-cli install, setup line and removal
+
+The install and removal ran from `80736e26`, in a temporary HOME, once without and once with XDG_DATA_HOME. After the install, a clean shell ran the SKILL.md setup line and then the bare `playwright-cli --version`.
+
+```
+setup line: export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/prompt-orchestrator/packages/playwright-cli/node_modules/.bin:$PATH" NO_UPDATE_NOTIFIER=1
+[noxdg] install exit=0 @playwright/cli@0.1.25 matches the pinned integrity | ==> done: 15 changes
+  which: $T/home/.local/share/prompt-orchestrator/packages/playwright-cli/node_modules/.bin/playwright-cli
+  NO_UPDATE_NOTIFIER=1
+  version: 0.1.25
+[noxdg] remove exit=0 ==> done: 15 changes | entries left: 0
+[xdg] install exit=0 @playwright/cli@0.1.25 matches the pinned integrity | ==> done: 15 changes
+  which: $T/xdg/prompt-orchestrator/packages/playwright-cli/node_modules/.bin/playwright-cli
+  NO_UPDATE_NOTIFIER=1
+  version: 0.1.25
+[xdg] remove exit=0 ==> done: 15 changes | entries left: 0
+```
+
+The PowerShell setup line parses with 0 errors in PowerShell 7.7.0. This review ran no Windows host, so the Windows line is untested on Windows.
+
+### Open after the fix round
+
+1. S4: `@playwright/cli` 0.1.25 depends on `playwright` and `playwright-core` alpha builds. A stable upstream release is needed.
+2. N4: the SPDX id stays `AGPL-3.0` until the leader picks `AGPL-3.0-only` or `AGPL-3.0-or-later`.
+3. The PowerShell setup line is untested on a Windows host.
+4. Open issues 1 to 4 above still apply.
