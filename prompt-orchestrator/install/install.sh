@@ -22,7 +22,7 @@ PO_HARNESS_PY_MAJOR=3
 PO_HARNESS_PY_MINOR=11
 PO_HARNESS_DEFAULT=1
 PO_HARNESS_OPTIONS='subagent-model statusline hooks legacy-move'
-PO_PACKS='artex-defense claude-red-offense cyber-skills logo-design procable rea reverse-skill'
+PO_PACKS='artex-defense claude-red-offense cyber-skills logo-design playwright-cli procable rea reverse-skill'
 
 # shellcheck disable=SC2034  # the L_* locations are read through po_expand
 po_init_locations() {
@@ -228,6 +228,12 @@ po_pack_get() {
         'logo-design:license') printf '%s' 'MIT' ;;
         'logo-design:payload') printf '%s' '' ;;
         'logo-design:sets') printf '%s' 'logo-design' ;;
+        'playwright-cli:label') printf '%s' 'Playwright CLI' ;;
+        'playwright-cli:description') printf '%s' 'Browser automation and Playwright test authoring through the playwright-cli command, installed in a private npm prefix.' ;;
+        'playwright-cli:kind') printf '%s' 'skills' ;;
+        'playwright-cli:license') printf '%s' 'Apache-2.0' ;;
+        'playwright-cli:payload') printf '%s' '' ;;
+        'playwright-cli:sets') printf '%s' 'playwright-cli' ;;
         'procable:label') printf '%s' 'procable' ;;
         'procable:description') printf '%s' 'Offline design skill with a design detector and per-edit hooks, installed from a release pinned by digest.' ;;
         'procable:kind') printf '%s' 'release' ;;
@@ -426,6 +432,11 @@ po_set_get() {
         'logo-design:logo-design:count') printf '%s' '1' ;;
         'logo-design:logo-design:skills') printf '%s' 'logo-design' ;;
         'logo-design:logo-design:requires') printf '%s' '' ;;
+        'playwright-cli:playwright-cli:label') printf '%s' 'Playwright CLI' ;;
+        'playwright-cli:playwright-cli:description') printf '%s' 'The playwright-cli browser-automation skill and the pinned @playwright/cli package in a private npm prefix.' ;;
+        'playwright-cli:playwright-cli:count') printf '%s' '1' ;;
+        'playwright-cli:playwright-cli:skills') printf '%s' 'playwright-cli' ;;
+        'playwright-cli:playwright-cli:requires') printf '%s' '' ;;
         'procable:procable:label') printf '%s' 'procable' ;;
         'procable:procable:description') printf '%s' 'The procable skill and engine for polish, critique, audit and WCAG 2.2 AA review.' ;;
         'procable:procable:count') printf '%s' '1' ;;
@@ -486,6 +497,12 @@ po_release_provider() {
 }
 po_npm_get() {
     case "$1:$2:$3" in
+        'playwright-cli::node') printf '%s' '>=20.0.0' ;;
+        'playwright-cli::base') printf '%s' 'playwright-cli' ;;
+        'playwright-cli::sets') printf '%s' 'playwright-cli' ;;
+        'playwright-cli:playwright-cli:name') printf '%s' '@playwright/cli' ;;
+        'playwright-cli:playwright-cli:version') printf '%s' '0.1.25' ;;
+        'playwright-cli:playwright-cli:integrity') printf '%s' 'sha512-v1qjq3/ssK2lf9z/+Cu0gHGXm2uDgAQwq5fWPCBM1SxkJqcB0FOyvbbsTrpPn4j4WJey8bLTYT4tEB8o4FbwBw==' ;;
         'rea::node') printf '%s' '^22.23.4 || ^24.22.1 || >=26.12.1' ;;
         'rea::base') printf '%s' 'rea' ;;
         'rea::sets') printf '%s' 'rea rea-frida' ;;
