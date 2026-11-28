@@ -227,7 +227,7 @@ In mode skills, the install reports 12 changes. The copy in `~/.claude/skills/pl
 
 ## Merge recipe
 
-The recipe merges the fix into the playwright-cli branch first. Without the fix, skip the first two commands.
+The recipe merges the playwright-cli branch with the fix first. Without the fix, name `origin/cloud/pack-playwright-cli` in the third command.
 
 ```bash
 git fetch origin master cloud/pack-playwright-cli cloud/pack-artex-defense cloud/review-fixes-1128
