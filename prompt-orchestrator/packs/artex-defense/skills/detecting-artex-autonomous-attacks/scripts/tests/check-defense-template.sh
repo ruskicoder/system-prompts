@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): mounts references/, where the pack keeps defense-en.md.
+# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): mounts references/, where the pack keeps defense-en.md; changed again on 2026-11-28 to pin the default images by digest.
 #
 # Documentation-claim consistency gate for the inline Sigma correlation template
 # in the defense guide (see check-defense-template.py for the assertions). It
@@ -26,13 +26,15 @@
 # suites (PYTHON_IMAGE, SIGMA_CLI_VERSION).
 #
 # Usage:   detections/tests/check-defense-template.sh
-# Env:     PYTHON_IMAGE      (default python:3.12-slim)
+# Env:     PYTHON_IMAGE      (default python:3.12-slim, pinned by digest below)
 #          SIGMA_CLI_VERSION (default 3.1.0 — the pinned reference version)
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
-PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim}"
+# prompt-orchestrator pack: the default image is pinned by digest. The digest was read on
+# 2026-11-28 from Docker Hub for the tag python:3.12-slim. PYTHON_IMAGE still overrides it.
+PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim@sha256:5b5fe805d367f8f5a359ded6ab2652b7f9a206453ee6ee789c0045ba6ec15016}"
 SIGMA_CLI_VERSION="${SIGMA_CLI_VERSION:-3.1.0}"
 
 # Install the pinned sigma-cli plus the same four backends the sigma_backends suite

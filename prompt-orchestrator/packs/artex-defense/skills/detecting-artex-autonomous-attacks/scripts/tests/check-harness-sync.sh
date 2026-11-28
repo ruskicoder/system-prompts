@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): mounts this tests folder as the detections/tests tree and drops the CI workflow mount.
+# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): mounts this tests folder as the detections/tests tree and drops the CI workflow mount; changed again on 2026-11-28 to pin the default images by digest.
 #
 # Harness self-consistency check for the detection test suites (see
 # check-harness-sync.py for the assertions). It proves the one thing the eight
@@ -19,12 +19,14 @@
 # nothing is written to the repo.
 #
 # Usage:   detections/tests/check-harness-sync.sh
-# Env:     PYTHON_IMAGE  (default python:3.12-slim)
+# Env:     PYTHON_IMAGE  (default python:3.12-slim, pinned by digest below)
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
-PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim}"
+# prompt-orchestrator pack: the default image is pinned by digest. The digest was read on
+# 2026-11-28 from Docker Hub for the tag python:3.12-slim. PYTHON_IMAGE still overrides it.
+PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim@sha256:5b5fe805d367f8f5a359ded6ab2652b7f9a206453ee6ee789c0045ba6ec15016}"
 
 docker run --rm \
   -e ARTEX_REPO_ROOT=/repo \

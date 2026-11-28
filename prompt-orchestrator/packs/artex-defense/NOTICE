@@ -27,7 +27,8 @@ Files copied unchanged (paths under skills/detecting-artex-autonomous-attacks/)
       folder are not shipped
 
 Files modified (AGPL-3.0 section 5(a)). Each modified file carries a dated
-notice line at its top. prompt-orchestrator made every change on 2026-11-27.
+notice line at its top. prompt-orchestrator made the changes below on
+2026-11-27, except the image pins, which date from 2026-11-28.
   references/defense-en.md
       Copied from docs/defense-en.md. The Korean-edition line now points at the
       upstream copy of defense-ko.md. Relative links and path names point at
@@ -68,6 +69,18 @@ notice line at its top. prompt-orchestrator made every change on 2026-11-27.
       side of the deny-list alone.
   scripts/tests/misp/check.py
       Skips the CI-trigger check when the workflow is absent.
+
+  Image pins (2026-11-28) in 11 scripts under scripts/tests/:
+      attack/run.sh, check-defense-template.sh, check-harness-sync.sh,
+      indicators/run.sh, misp/run.sh, sigma/run.sh, sigma_backends/run.sh,
+      sigma_lint/run.sh, sigma_match/run.sh, suricata/run.sh,
+      triage-selftest.sh
+      The default python:3.12-slim image is pinned by digest
+      sha256:5b5fe805d367f8f5a359ded6ab2652b7f9a206453ee6ee789c0045ba6ec15016,
+      and the default jasonish/suricata image by tag 8.0.8 and digest
+      sha256:d5a3a1785299ab40918d465e54fedf8e3afeeedba76bb64b0cc74dbc20bda2c3.
+      Docker Hub served both digests on 2026-11-28. PYTHON_IMAGE and
+      SURICATA_IMAGE still override the defaults.
 
 Files written for this pack
   skills/detecting-artex-autonomous-attacks/SKILL.md

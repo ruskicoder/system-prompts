@@ -77,7 +77,7 @@ Evidence:
 - `cmd/artex/main.go:55` sets the server default to `127.0.0.1:8787`, and `cmd/artex/main.go:57` sets the recorder default to `127.0.0.1:8788`.
 - `Dockerfile:43` exposes 8787 and 8788, and `Dockerfile:45` starts the server with `-addr :8787 -proxy :8788` inside the container.
 - `docker-compose.yml:46` publishes 8787 on `${ARTEX_BIND:-127.0.0.1}`, and `docker-compose.yml:47` publishes 8788 on `127.0.0.1`.
-- `install.sh:70` starts PostgreSQL with `-p 5432:5432`, and `install.sh:72` sets `DB_SSL=disable`.
+- `install.sh:70` starts PostgreSQL with `-p 5432:5432`, and `install.sh:73` sets `DB_SSL=disable`.
 
 The compose file keeps both ports on loopback by default. A plain `docker run -p 8787:8787 -p 8788:8788` of the same image publishes both ports on every host interface, because Docker binds a published port on all interfaces when no address is given. Port 8788 then serves an open forward proxy that decrypts TLS (F1). The local install path publishes the database that stores the asset graph and the findings on every interface, without TLS.
 
@@ -155,7 +155,7 @@ The pack ships no Sigma or Suricata rule for the patterns below. Use them as hun
 |---|---|---|
 | MCP client identity `"clientInfo": {"name": "artex", "version": "0.2"}` in the MCP `initialize` request | `mcphttp/client.go:250` | Request logs of MCP servers that you operate |
 | MCP header `MCP-Protocol-Version: 2025-06-18` and the `Mcp-Session-Id` header | `mcphttp/client.go:31`, `mcphttp/client.go:381`, `mcphttp/client.go:437` | Egress or reverse-proxy logs with header capture |
-| Notifier egress to `api.telegram.org/bot<token>/sendMessage` | `notify/telegram.go:93` | Egress proxy logs from a host that also shows other ARTEX indicators |
+| Notifier egress to `api.telegram.org/bot<token>/sendMessage` | `notify/telegram.go:93` (base URL), `notify/telegram.go:97` (path) | Egress proxy logs from a host that also shows other ARTEX indicators |
 | Notifier egress to DingTalk, Feishu or WeCom bot webhooks, and to generic webhooks | Operator-configured URLs, signed for DingTalk and Feishu (`notify/dingtalk.go:113-123`, `notify/feishu.go:92-94`) | Egress proxy logs, correlated with the indicators above |
 
 At dial time, the notifier refuses loopback, link-local, unspecified and multicast destinations and allows RFC 1918 private addresses on purpose (`notify/http.go:47-55`, `notify/http.go:66`). Chat-bot webhooks are common in legitimate tooling, so treat a hit as a lead only when another ARTEX indicator appears on the same host.

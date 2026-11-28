@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): reads the rules from references/suricata and replays the bundled captures in captures/ instead of synthesizing new ones.
+# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): reads the rules from references/suricata and replays the bundled captures in captures/ instead of synthesizing new ones; changed again on 2026-11-28 to pin the default images by digest.
 #
 # Reproducible regression test for the ARTEX Suricata rules
 # (../../suricata/artex.rules). It proves four properties with no committed
@@ -21,15 +21,18 @@
 # committed.
 #
 # Usage:   detections/tests/suricata/run.sh
-# Env:     SURICATA_IMAGE (default jasonish/suricata:latest)
-#          PYTHON_IMAGE   (default python:3.12-slim)
+# Env:     SURICATA_IMAGE (default jasonish/suricata:8.0.8, pinned by digest below)
+#          PYTHON_IMAGE   (default python:3.12-slim, pinned by digest below)
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 RULES_DIR="$REPO/references/suricata"
-SURICATA_IMAGE="${SURICATA_IMAGE:-jasonish/suricata:latest}"
-PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim}"
+# prompt-orchestrator pack: the default images are pinned by digest. The digests were read on
+# 2026-11-28 from Docker Hub for the tags python:3.12-slim and jasonish/suricata:8.0.8 (then also :latest).
+# PYTHON_IMAGE and SURICATA_IMAGE still override the defaults.
+SURICATA_IMAGE="${SURICATA_IMAGE:-jasonish/suricata:8.0.8@sha256:d5a3a1785299ab40918d465e54fedf8e3afeeedba76bb64b0cc74dbc20bda2c3}"
+PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim@sha256:5b5fe805d367f8f5a359ded6ab2652b7f9a206453ee6ee789c0045ba6ec15016}"
 
 NUM_FLOWS=35
 ENRICH_UA="artex-enrich/1.0"

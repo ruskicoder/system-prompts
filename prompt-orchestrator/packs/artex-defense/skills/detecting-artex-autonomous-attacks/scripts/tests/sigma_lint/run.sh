@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): reads the Sigma rules from references/sigma in the pack layout.
+# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): reads the Sigma rules from references/sigma in the pack layout; changed again on 2026-11-28 to pin the default images by digest.
 #
 # Reproducible SigmaHQ-convention lint for the ARTEX Sigma rules (../../sigma/).
 # `sigma check` on its own runs only pySigma's core validators; this test runs
@@ -19,7 +19,7 @@
 # The four exclusions and the rationale for each live in validators.yml.
 #
 # Usage:   detections/tests/sigma_lint/run.sh
-# Env:     PYTHON_IMAGE                (default python:3.12-slim)
+# Env:     PYTHON_IMAGE                (default python:3.12-slim, pinned by digest below)
 #          SIGMA_CLI_VERSION           (default 3.1.0 — the pinned reference version)
 #          SIGMAHQ_VALIDATORS_VERSION  (default 0.21.0 — the pinned validator plugin)
 set -euo pipefail
@@ -27,7 +27,9 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 SIGMA_DIR="$REPO/references/sigma"
-PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim}"
+# prompt-orchestrator pack: the default image is pinned by digest. The digest was read on
+# 2026-11-28 from Docker Hub for the tag python:3.12-slim. PYTHON_IMAGE still overrides it.
+PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim@sha256:5b5fe805d367f8f5a359ded6ab2652b7f9a206453ee6ee789c0045ba6ec15016}"
 SIGMA_CLI_VERSION="${SIGMA_CLI_VERSION:-3.1.0}"
 SIGMAHQ_VALIDATORS_VERSION="${SIGMAHQ_VALIDATORS_VERSION:-0.21.0}"
 

@@ -86,24 +86,34 @@ Static fingerprints can change at the operator's discretion. The absence of a fi
 
 Run the five steps in order. Steps 1 and 2 use the fixtures in this skill. Steps 3 to 5 use your own data.
 
-1. **Lint the Sigma rules and match them against the bundled fixtures.** The harness needs Docker, and network access to PyPI and the image registry. Each suite runs in a container and writes nothing outside its own scratch folder.
+1. **Lint the Sigma rules and match them against the bundled fixtures.** The harness needs Docker. Each suite runs in a container and writes nothing outside its own scratch folder.
 
    ```bash
    scripts/tests/run-all.sh
    ```
 
-   `PYTHON_IMAGE` and `SURICATA_IMAGE` override the default images. The harness prints `SKIP` for checks that need files this pack does not ship (the ARTEX source tree, the upstream CI workflow and the Korean guide). On a network that cannot reach `d3fend.mitre.org`, the harness excludes the `d3_fendtag` validator and prints `SKIP`. The bundled rules carry no D3FEND tags. Read the summary at the end. A `RESULT: PASS` line means that every suite and gate passed.
+   The harness reaches the hosts in the table below. The harness sends no traffic to a target or to an ARTEX host.
+
+   | Host | Use | When the host is blocked |
+   |---|---|---|
+   | Docker Hub (`registry-1.docker.io`), or the registry of an override image | Pulls the `python:3.12-slim` and `jasonish/suricata` images, pinned by digest in `scripts/tests` | Each suite and gate fails, unless the images are already in the local Docker cache |
+   | PyPI (`pypi.org`, `files.pythonhosted.org`) | Installs sigma-cli, pySigma, the SigmaHQ validators and pymisp inside the containers | `sigma`, `sigma_match`, `sigma_lint`, `sigma_backends`, `misp` and the defence template gate fail |
+   | `d3fend.mitre.org` | D3FEND data for the `d3_fendtag` validator | `sigma`, `sigma_lint` and the defence template gate exclude that validator and print `SKIP`. The bundled rules carry no D3FEND tags, so these checks still pass |
+   | `github.com` (`mitre-attack/attack-stix-data`) | ATT&CK data that pySigma downloads for its ATT&CK validators | `sigma`, `sigma_lint` and the defence template gate fail |
+
+   `PYTHON_IMAGE` and `SURICATA_IMAGE` override the default images. The harness prints `SKIP` for checks that need files this pack does not ship (the ARTEX source tree, the upstream CI workflow and the Korean guide). Read the summary at the end. A `RESULT: PASS` line means that every suite and gate passed.
 
 2. **Test the Suricata rules offline, first on the bundled captures and then on captures from your own network.** The bundled captures were built offline from synthetic HTTP requests between private addresses. They carry no exploit payload.
 
    ```bash
+   mkdir -p /tmp/artex-suricata
    suricata -r scripts/tests/suricata/captures/enrich.pcap -S references/suricata/artex.rules -k none -l /tmp/artex-suricata
    ```
 
    Expect 35 alerts for sid 1000001 and at least one for sid 1000002 in `/tmp/artex-suricata/eve.json`. `norma.pcap` yields 8 alerts for sid 1000003, and `benign.pcap` yields none. The `-k none` option is needed only for the synthetic captures, whose checksums are not valid. Then replay captures from your own network:
 
    ```bash
-   suricata -r <capture.pcap> -S artex.rules
+   suricata -r <capture.pcap> -S references/suricata/artex.rules
    ```
 
 3. **Convert the Sigma rules for your SIEM and replay your own logs.** Use `sigma-cli` with the backend of your SIEM, and pass the atomic rules together with the correlation rules, because a correlation rule needs its base rules.

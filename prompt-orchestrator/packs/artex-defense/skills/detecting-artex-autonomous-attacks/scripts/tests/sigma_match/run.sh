@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): reads the Sigma rules from references/sigma in the pack layout.
+# Modified by prompt-orchestrator on 2026-11-27 (AGPL-3.0 section 5(a)): reads the Sigma rules from references/sigma in the pack layout; changed again on 2026-11-28 to pin the default images by digest.
 #
 # Reproducible live event-matching test for the ARTEX Sigma rules — both the
 # atomic rules (../../sigma/*.yml) and the correlation rules
@@ -34,14 +34,16 @@
 # notes.
 #
 # Usage:   detections/tests/sigma_match/run.sh
-# Env:     PYTHON_IMAGE    (default python:3.12-slim)
+# Env:     PYTHON_IMAGE    (default python:3.12-slim, pinned by digest below)
 #          PYSIGMA_VERSION (default 2.0.0 — the pinned reference version)
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../../.." && pwd)"
 SIGMA_DIR="$REPO/references/sigma"
-PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim}"
+# prompt-orchestrator pack: the default image is pinned by digest. The digest was read on
+# 2026-11-28 from Docker Hub for the tag python:3.12-slim. PYTHON_IMAGE still overrides it.
+PYTHON_IMAGE="${PYTHON_IMAGE:-python:3.12-slim@sha256:5b5fe805d367f8f5a359ded6ab2652b7f9a206453ee6ee789c0045ba6ec15016}"
 PYSIGMA_VERSION="${PYSIGMA_VERSION:-2.0.0}"
 
 # Everything runs inside the container: check.sh installs the pinned pySigma and
