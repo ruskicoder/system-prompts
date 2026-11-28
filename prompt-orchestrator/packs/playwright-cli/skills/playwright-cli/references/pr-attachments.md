@@ -1,3 +1,5 @@
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): added the section "Approval before posting". NOTICE in the pack folder lists each change. -->
+
 # Attaching Screenshots and Videos to Pull Requests
 
 `gh` 2.99+ uploads local images and videos with the repeatable `--attach` flag on `gh pr create`, `gh pr comment`, `gh pr edit`, `gh issue create`, `gh issue comment` and `gh issue edit`. PNG, JPEG, GIF, WebP, SVG, MP4, MOV and WebM are accepted, so `playwright-cli screenshot` and `video-start` output can be attached as is.

@@ -20,9 +20,10 @@ npm package
   the lockfile at install time against registry.npmjs.org. This pack ships no
   Playwright code.
 
-Changes made in this pack (Apache License 2.0 section 4(b): the following
-modified files carry notice that prompt-orchestrator changed them on
-2026-11-27)
+Changes made in this pack (Apache License 2.0 section 4(b))
+  prompt-orchestrator changed the files below on 2026-11-27. Each modified
+  file carries a dated notice comment at its top. In SKILL.md, the comment
+  follows the front matter.
 
   1. skills/playwright-cli/SKILL.md, front matter: added origin, vetting,
      vetted, license, upstream and upstream-commit. The name, the description

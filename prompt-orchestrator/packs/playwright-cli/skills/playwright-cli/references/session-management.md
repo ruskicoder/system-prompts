@@ -1,3 +1,5 @@
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): rewrote 1 prose em dash. NOTICE in the pack folder lists each change. -->
+
 # Browser Session Management
 
 Run multiple isolated browser sessions concurrently with state persistence.

@@ -10,6 +10,8 @@ upstream: https://github.com/microsoft/playwright-cli/blob/dc5f4d5616ab5a28ded12
 upstream-commit: dc5f4d5616ab5a28ded12fd7101a4d49bd59a820
 ---
 
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): added the third-party front-matter fields, rewrote the Installation section for the pack's private npm prefix and rewrote 1 prose em dash. NOTICE in the pack folder lists each change. -->
+
 # Browser Automation with playwright-cli
 
 ## Quick start

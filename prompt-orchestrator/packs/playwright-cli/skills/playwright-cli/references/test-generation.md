@@ -1,3 +1,5 @@
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): rewrote 15 prose em dashes. NOTICE in the pack folder lists each change. -->
+
 # Test generation (plan → generate → heal)
 
 End-to-end workflow for authoring and maintaining Playwright tests with `playwright-cli`. Every `playwright-cli` action emits the equivalent Playwright TypeScript, and that generated code is the raw material for every test. The sections below can be used independently:

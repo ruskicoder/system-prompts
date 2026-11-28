@@ -1,3 +1,5 @@
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): rewrote 3 prose em dashes. NOTICE in the pack folder lists each change. -->
+
 # Video Recording
 
 Capture browser automation sessions as video for debugging, documentation, or verification. Produces WebM (VP8/VP9 codec).
