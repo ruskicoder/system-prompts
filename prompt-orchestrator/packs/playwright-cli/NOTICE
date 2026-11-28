@@ -30,10 +30,14 @@ Changes made in this pack (Apache License 2.0 section 4(b))
      and allowed-tools are unchanged.
 
   2. skills/playwright-cli/SKILL.md, the "## Installation" section: replaced the
-     global install step `npm install -g @playwright/cli@latest` with the
-     `playwright-cli` binary in this pack's private npm prefix, run with
-     NO_UPDATE_NOTIFIER=1, and an instruction to ask the user before any install
-     step. The npx local-version check above it is unchanged.
+     global install step `npm install -g @playwright/cli@latest` with one setup
+     line per shell (bash or zsh, and PowerShell). The line puts the .bin folder
+     of this pack's private npm prefix first on PATH and sets
+     NO_UPDATE_NOTIFIER=1, so the bare `playwright-cli` commands match the
+     allowed-tools grant. The prefix path falls back to ~/.local/share when
+     XDG_DATA_HOME is unset. The section names playwright-cli.cmd on Windows and
+     asks the user before each install step. The npx local-version check above
+     it is unchanged.
 
   3. skills/playwright-cli/references/pr-attachments.md: added the section
      "## Approval before posting". The agent drafts the pull request or issue
@@ -41,7 +45,12 @@ Changes made in this pack (Apache License 2.0 section 4(b))
      `gh pr create`, `gh pr comment`, `gh pr edit`, `gh issue create` or
      `gh issue comment`.
 
-  4. Em dashes removed from prose, with the facts kept and code fences left
+  4. skills/playwright-cli/references/test-generation.md: added a note after
+     the upstream `npm init playwright@latest` code fence. The note says that
+     the step installs packages, that the agent asks the user first and that
+     the agent pins the version the user names. The code fence is unchanged.
+
+  5. Em dashes removed from prose, with the facts kept and code fences left
      verbatim. Twenty prose em dashes were rewritten across four files:
      skills/playwright-cli/SKILL.md (1), references/session-management.md (1),
      references/test-generation.md (15) and references/video-recording.md (3).

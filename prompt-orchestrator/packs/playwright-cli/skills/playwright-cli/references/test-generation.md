@@ -1,4 +1,4 @@
-<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): rewrote 15 prose em dashes. NOTICE in the pack folder lists each change. -->
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): rewrote 15 prose em dashes and added an approval note after `npm init playwright@latest`. NOTICE in the pack folder lists each change. -->
 
 # Test generation (plan → generate → heal)
 
@@ -160,6 +160,8 @@ If there is no Playwright install, bootstrap one and let the user pick the defau
 ```bash
 npm init playwright@latest
 ```
+
+This step installs packages into the user's project. Ask the user before you run it. When the user names a version, pin that version in place of `@latest`, for example `npm init playwright@1.2.3`.
 
 ### 1.2 Prerequisite: seed test
 

@@ -10,7 +10,7 @@ upstream: https://github.com/microsoft/playwright-cli/blob/dc5f4d5616ab5a28ded12
 upstream-commit: dc5f4d5616ab5a28ded12fd7101a4d49bd59a820
 ---
 
-<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): added the third-party front-matter fields, rewrote the Installation section for the pack's private npm prefix and rewrote 1 prose em dash. NOTICE in the pack folder lists each change. -->
+<!-- Modified by prompt-orchestrator on 2026-11-27 (Apache-2.0 section 4(b)): added the third-party front-matter fields, rewrote the Installation section for the pack's private npm prefix, with one setup line per shell, and rewrote 1 prose em dash. NOTICE in the pack folder lists each change. -->
 
 # Browser Automation with playwright-cli
 
@@ -421,17 +421,29 @@ If global `playwright-cli` command is not available, try a local version via `np
 npx --no-install playwright --version
 ```
 
-When a local version is available, use `npx playwright cli` in all commands. Otherwise, use the `playwright-cli` binary that the prompt-orchestrator installer placed in this pack's private npm prefix, and run it with `NO_UPDATE_NOTIFIER=1`. Ask the user before any install step.
+When a local version is available, use `npx playwright cli` in all commands. Otherwise, use the `playwright-cli` binary that the prompt-orchestrator installer placed in this pack's private npm prefix. Run the setup line for your shell once per shell session. After the setup line, the bare `playwright-cli` commands in this skill run the pinned binary with the npm update check turned off.
 
-- Linux and macOS with XDG_DATA_HOME set: `$XDG_DATA_HOME/prompt-orchestrator/packages/playwright-cli/node_modules/.bin/playwright-cli`
-- Linux and macOS without XDG_DATA_HOME: `~/.local/share/prompt-orchestrator/packages/playwright-cli/node_modules/.bin/playwright-cli`
-- Windows: `%LOCALAPPDATA%\prompt-orchestrator\packages\playwright-cli\node_modules\.bin\playwright-cli`
+Linux and macOS (bash or zsh):
 
 ```bash
-NO_UPDATE_NOTIFIER=1 "$XDG_DATA_HOME/prompt-orchestrator/packages/playwright-cli/node_modules/.bin/playwright-cli" --version
+export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/prompt-orchestrator/packages/playwright-cli/node_modules/.bin:$PATH" NO_UPDATE_NOTIFIER=1
 ```
 
-Do not run `npm install -g` and do not fetch an `@latest` build.
+Windows (PowerShell):
+
+```powershell
+$env:PATH = "$env:LOCALAPPDATA\prompt-orchestrator\packages\playwright-cli\node_modules\.bin;$env:PATH"; $env:NO_UPDATE_NOTIFIER = "1"
+```
+
+On Windows, the binary is `%LOCALAPPDATA%\prompt-orchestrator\packages\playwright-cli\node_modules\.bin\playwright-cli.cmd`. When the PowerShell execution policy blocks `playwright-cli.ps1` in the same folder, run `playwright-cli.cmd`.
+
+Check the setup:
+
+```bash
+playwright-cli --version
+```
+
+Ask the user before each install step. Do not run `npm install -g` and do not fetch an `@latest` build.
 
 ## Example: Form submission
 
