@@ -440,6 +440,29 @@ $PO_Data = [ordered]@{
     }
     'packs' = @(
         [ordered]@{
+            'id' = 'artex-defense'
+            'label' = 'ARTEX defense'
+            'description' = 'Detection, validation and hardening for ARTEX autonomous attacks on assets the reader owns or is authorized to defend, with no ARTEX code, no agent prompts and no attack tooling in the pack.'
+            'kind' = 'skills'
+            'license' = 'AGPL-3.0'
+            'upstream' = 'https://github.com/jiwoochris/artex-global'
+            'payload' = ''
+            'sets' = @(
+                [ordered]@{
+                    'id' = 'artex-defense'
+                    'label' = 'ARTEX defense'
+                    'description' = 'The skill detecting-artex-autonomous-attacks with Sigma and Suricata rules, indicators, a host-triage script, an offline rule test harness and a security analysis.'
+                    'skills' = @(
+                        'detecting-artex-autonomous-attacks'
+                    )
+                    'count' = 1
+                }
+            )
+            'release' = $null
+            'npm' = $null
+            'mcp' = $null
+        },
+        [ordered]@{
             'id' = 'claude-red-offense'
             'label' = 'Claude Red offense'
             'description' = 'Offensive security checklists from SnailSploit claude-red, grouped by attack area.'

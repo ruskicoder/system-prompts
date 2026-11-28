@@ -59,6 +59,8 @@ has the details.
 - A skill name may not repeat a core skill, a core workflow or a skill of another pack.
 - In a third-party pack, `SKILL.md` carries `origin: third-party`, `vetting: passed`, `vetted`, `license`,
   `upstream` (GitHub blob URL of the upstream `SKILL.md` at the commit) and `upstream-commit`.
+- A skill that the pack writes from an upstream Markdown document, where the upstream has no `SKILL.md`,
+  adds `upstream-type: document`. Its `upstream` is then the blob URL of that `.md` document at the commit.
 
 ## Kind package
 

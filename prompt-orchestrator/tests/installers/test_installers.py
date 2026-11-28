@@ -256,6 +256,25 @@ class ValidatorTests(unittest.TestCase):
         self.assertTrue(any("origin: third-party" in e for e in errors))
         self.assertTrue(any("upstream must be the blob URL" in e for e in errors))
 
+    def test_upstream_document_form(self):
+        def edit(d, kind, path):
+            self.edit_json(d / "fixture-skills" / "pack.json", lambda p: p.update(
+                upstream="https://github.com/example/repo", upstream_commit="a" * 40,
+                vetting={"status": "passed", "vetted": "2026-01-01"}))
+            blob = "https://github.com/example/repo/blob/" + "a" * 40 + "/" + path
+            for skill in ("fixture-one", "fixture-two", "fixture-three"):
+                md = d / "fixture-skills" / "skills" / skill / "SKILL.md"
+                extra = (f"upstream-type: {kind}\n" if kind else "")
+                md.write_text(md.read_text().replace("---\n\n", (
+                    "origin: third-party\nvetting: passed\nvetted: '2026-01-01'\nlicense: MIT\n"
+                    f"upstream: {blob}\nupstream-commit: {'a' * 40}\n{extra}---\n\n"), 1))
+        ok = self.broken(lambda d: edit(d, "document", "docs/guide.md"))
+        self.assertFalse([e for e in ok if "fixture-skills" in e], ok)
+        plain = self.broken(lambda d: edit(d, None, "docs/guide.md"))
+        self.assertTrue(any("upstream must be the blob URL" in e for e in plain))
+        bad_kind = self.broken(lambda d: edit(d, "other", "docs/SKILL.md"))
+        self.assertTrue(any("upstream-type must be document" in e for e in bad_kind))
+
     def test_release_kind_is_accepted_and_checked(self):
         packs, errors = validate_packs.load_packs(ROOT / "packs")
         self.assertEqual([], errors)

@@ -22,7 +22,7 @@ PO_HARNESS_PY_MAJOR=3
 PO_HARNESS_PY_MINOR=11
 PO_HARNESS_DEFAULT=1
 PO_HARNESS_OPTIONS='subagent-model statusline hooks legacy-move'
-PO_PACKS='claude-red-offense cyber-skills logo-design playwright-cli procable rea reverse-skill'
+PO_PACKS='artex-defense claude-red-offense cyber-skills logo-design playwright-cli procable rea reverse-skill'
 
 # shellcheck disable=SC2034  # the L_* locations are read through po_expand
 po_init_locations() {
@@ -204,6 +204,12 @@ po_harness_option_label() {
 }
 po_pack_get() {
     case "$1:$2" in
+        'artex-defense:label') printf '%s' 'ARTEX defense' ;;
+        'artex-defense:description') printf '%s' 'Detection, validation and hardening for ARTEX autonomous attacks on assets the reader owns or is authorized to defend, with no ARTEX code, no agent prompts and no attack tooling in the pack.' ;;
+        'artex-defense:kind') printf '%s' 'skills' ;;
+        'artex-defense:license') printf '%s' 'AGPL-3.0' ;;
+        'artex-defense:payload') printf '%s' '' ;;
+        'artex-defense:sets') printf '%s' 'artex-defense' ;;
         'claude-red-offense:label') printf '%s' 'Claude Red offense' ;;
         'claude-red-offense:description') printf '%s' 'Offensive security checklists from SnailSploit claude-red, grouped by attack area.' ;;
         'claude-red-offense:kind') printf '%s' 'skills' ;;
@@ -251,6 +257,11 @@ po_pack_get() {
 }
 po_set_get() {
     case "$1:$2:$3" in
+        'artex-defense:artex-defense:label') printf '%s' 'ARTEX defense' ;;
+        'artex-defense:artex-defense:description') printf '%s' 'The skill detecting-artex-autonomous-attacks with Sigma and Suricata rules, indicators, a host-triage script, an offline rule test harness and a security analysis.' ;;
+        'artex-defense:artex-defense:count') printf '%s' '1' ;;
+        'artex-defense:artex-defense:skills') printf '%s' 'detecting-artex-autonomous-attacks' ;;
+        'artex-defense:artex-defense:requires') printf '%s' '' ;;
         'claude-red-offense:active-directory:label') printf '%s' 'Active Directory' ;;
         'claude-red-offense:active-directory:description') printf '%s' 'Active Directory attack paths and NetExec usage for domain assessments.' ;;
         'claude-red-offense:active-directory:count') printf '%s' '2' ;;
